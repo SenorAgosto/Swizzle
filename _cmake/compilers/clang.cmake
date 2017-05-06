@@ -1,5 +1,5 @@
 add_definitions(
-	    --std=c++11
+	    --std=c++14
 	    --stdlib=libc++
 
             -Wall

@@ -4,7 +4,7 @@ An on-wire message description language and transpiler.
 
 ### Dependencies 
 
-- c++11
+- c++14
 - [UsingIntrusivePtrIn](https://github.com/paxos1977/UsingIntrusivePtrIn)
 - [boost](http://boost.org). Uses intrusive_ptr in production code by default. Uses filesystem, bind, and asio in example code.
 - [ObjectGraph](https://github.com/paxos1977/ObjectGraph)

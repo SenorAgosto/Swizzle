@@ -1,4 +1,5 @@
 #include <swizzle/lexer/TokenType.hpp>
+#include <swizzle/Exceptions.hpp>
 
 namespace swizzle { namespace lexer {
 
@@ -19,12 +20,32 @@ namespace swizzle { namespace lexer {
         case TokenType::r_bracket:              return os << "TokenType::r_bracket";
         case TokenType::equal:                  return os << "TokenType::equal";
         case TokenType::end_statement:          return os << "TokenType::end_statement";
-        case TokenType::underlying_type:        return os << "TokenType::underlying_type";
-        case TokenType::scope_operator:         return os << "TokenType::scope_operator";
+        case TokenType::colon:                  return os << "TokenType::colon";
+        case TokenType::dot:                    return os << "TokenType::dot";
         case TokenType::comment:                return os << "TokenType::comment";
         case TokenType::multiline_comment:      return os << "TokenType::multiline_comment";
 
         default:                                return os << "Unknown TokenType Value";
         };
+    }
+
+    TokenType CharToTokenType(const char c)
+    {
+        switch(c)
+        {
+        case '{':   return TokenType::l_brace;
+        case '}':   return TokenType::r_brace;
+        case '[':   return TokenType::l_bracket;
+        case ']':   return TokenType::r_bracket;
+        case '=':   return TokenType::equal;
+        case ';':   return TokenType::end_statement;
+        case '@':   return TokenType::attribute;
+        case '.':   return TokenType::dot;
+        case ':':   return TokenType::colon;
+
+        default: break;
+        };
+
+        throw TokenizerError("Unknown TokenType character: " + std::string(1, c));
     }
 }}

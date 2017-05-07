@@ -66,7 +66,7 @@ namespace {
         Token token;
     };
 
-    TEST_FIXTURE(AnyInputFixture, verifyExpandToken)
+    TEST_FIXTURE(AnyInputFixture, verifyConsumeToken)
     {
         CHECK_EQUAL(0U, tokens.size());
 

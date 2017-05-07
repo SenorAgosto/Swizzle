@@ -29,8 +29,10 @@ namespace swizzle { namespace lexer {
         void incrementLine() { end_.incrementLine(); }
         void incrementColumn() { end_.incrementColumn(); }
         void incrementColumnBy(const std::size_t count) { end_.incrementColumnBy(count); }
+
+        void advanceBy(const char c);
         void advanceBy(const Token& token);
-        
+
         bool empty() const { return start_ == end_; }
         
     private:

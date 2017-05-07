@@ -130,7 +130,20 @@ namespace {
         CHECK_EQUAL(end.line() + 2, info.end().line());
         CHECK_EQUAL(11U, info.end().column());
     }
-    
+
+    TEST_FIXTURE(FileInfoFixture, verifyAdvanceByChar)
+    {
+        CHECK_EQUAL(end, info.end());
+
+        info.advanceBy('a');
+        CHECK_EQUAL(end.line(), info.end().line());
+        CHECK_EQUAL(end.column() + 1, info.end().column());
+
+        info.advanceBy('\n');
+        CHECK_EQUAL(end.line() + 1, info.end().line());
+        CHECK_EQUAL(1U, info.end().column());
+    }
+
     TEST_FIXTURE(FileInfoFixture, verifyEmpty)
     {
         LineInfo empty;

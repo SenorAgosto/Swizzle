@@ -5,6 +5,11 @@ namespace swizzle { namespace lexer {
 
     Token ResetToken(const boost::string_view& source, const std::size_t position)
     {
-        return Token(source.substr(position, 1), TokenType::string);
+        return ResetToken(source, position, TokenType::string);
+    }
+
+    Token ResetToken(const boost::string_view& source, const std::size_t position, const TokenType tokenType)
+    {
+        return Token(source.substr(position, 1), tokenType);
     }
 }}

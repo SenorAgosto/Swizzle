@@ -47,13 +47,15 @@ namespace {
         CHECK_EQUAL("This", token.to_string());
     }
 
-    TEST(verifyExpandThrowsWhenOutOfRange)
+    TEST(verifyExpandTruncatesOnOverrun)
     {
         const std::string s = "This is a string";
         const boost::string_view sv(s);
 
         Token token(boost::string_view(s.c_str(), 2), TokenType::string);
-        CHECK_THROW(token.expand(sv, 100), std::out_of_range);
+        token.expand(sv, 100);
+
+        CHECK_EQUAL(s, token.to_string());
     }
 
     TEST(verifyEmpty)

@@ -1,0 +1,67 @@
+#include "./platform/UnitTestSupport.hpp"
+#include <swizzle/lexer/TokenProducer.hpp>
+
+#include <swizzle/lexer/FileInfo.hpp>
+#include <swizzle/lexer/TokenInfo.hpp>
+#include <swizzle/lexer/Token.hpp>
+
+#include <deque>
+
+namespace {
+
+    using namespace swizzle::lexer;
+
+    class Callback
+    {
+    public:
+        Callback(std::deque<TokenInfo>& tokens)
+            : tokens_(tokens)
+        {
+        }
+
+        void operator()(const TokenInfo& info)
+        {
+            tokens_.push_back(info);
+        }
+
+    private:
+        std::deque<TokenInfo>& tokens_;
+    };
+
+    struct TokenProducerFixture
+    {
+        std::deque<TokenInfo> tokens;
+        Callback callback = Callback(tokens);
+
+        TokenProducer<Callback> producer = TokenProducer<Callback>(callback);
+        FileInfo info = FileInfo("test_file");
+    };
+
+    TEST_FIXTURE(TokenProducerFixture, verifyCallback)
+    {
+        Token token("test", TokenType::string);
+        producer.produceToken(token, info);
+
+        REQUIRE CHECK_EQUAL(1U, tokens.size());
+        CHECK_EQUAL("test", tokens[0].token().to_string());
+        CHECK_EQUAL(TokenType::string, tokens[0].token().type());
+    }
+
+    TEST_FIXTURE(TokenProducerFixture, verifyCallbackOnKeyword)
+    {
+        Token token("import", TokenType::string);
+        producer.produceToken(token, info);
+
+        REQUIRE CHECK_EQUAL(1U, tokens.size());
+        CHECK_EQUAL("import", tokens[0].token().to_string());
+        CHECK_EQUAL(TokenType::keyword, tokens[0].token().type());
+    }
+
+    TEST_FIXTURE(TokenProducerFixture, verifyCallbackOnEmptyToken)
+    {
+        Token token("", TokenType::string);
+        producer.produceToken(token, info);
+
+        REQUIRE CHECK_EQUAL(0U, tokens.size());
+    }
+}

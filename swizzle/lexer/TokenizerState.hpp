@@ -15,6 +15,7 @@ namespace swizzle { namespace lexer {
         EscapedCharInCharLiteral,
         EndCharLiteral,
         EscapedCharInStringLiteral,
+        BeginString,
         SyntaxError,
     };
 

@@ -24,18 +24,23 @@ namespace swizzle { namespace lexer {
     {
     }
 
+    void FileInfo::advanceBy(const char c)
+    {
+        if(c == '\n')
+        {
+            end_.incrementLine();
+        }
+        else
+        {
+            end_.incrementColumn();
+        }
+    }
+
     void FileInfo::advanceBy(const Token& token)
     {
-        for(const auto c : token.to_string())
+        for(auto c : token.value())
         {
-            if(c == '\n')
-            {
-                end_.incrementLine();
-            }
-            else
-            {
-                end_.incrementColumn();
-            }
+            advanceBy(c);
         }
     }
 }}

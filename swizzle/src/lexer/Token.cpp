@@ -16,13 +16,14 @@ namespace swizzle { namespace lexer {
 
     void Token::expand(const boost::string_view& source, const std::size_t count)
     {
-        const std::size_t newLength = value_.length() + count;
-        if(newLength > source.length())
+        if(value_.empty())
         {
-            throw std::out_of_range("newLength is larger than source std::string_view.");
+            value_ = source.substr(0, count);
+            return;
         }
 
-        value_ = boost::string_view(value_.begin(), newLength);
+        // NOTE: substr() truncates if count extends past the end of the buffer
+        value_ = source.substr(std::distance(source.cbegin(), value_.cbegin()), value_.length() + count);
     }
 
     bool Token::empty() const

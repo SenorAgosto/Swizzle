@@ -26,12 +26,13 @@ namespace swizzle { namespace lexer {
         end_statement,          // ;
         dot,                    // .
 
-        underlying_type,        // :
-        scope_operator,         // ::
+        colon,                  // :    scope operator :: will be handled by parser.
 
         comment,
         multiline_comment,
     };
-    
+
     std::ostream& operator<<(std::ostream& os, const TokenType type);
+	
+    TokenType CharToTokenType(const char c);
 }}

@@ -22,6 +22,7 @@ namespace swizzle { namespace lexer {
         case TokenType::end_statement:          return os << "TokenType::end_statement";
         case TokenType::colon:                  return os << "TokenType::colon";
         case TokenType::dot:                    return os << "TokenType::dot";
+        case TokenType::comma:                  return os << "TokenType::comma";
         case TokenType::comment:                return os << "TokenType::comment";
         case TokenType::multiline_comment:      return os << "TokenType::multiline_comment";
 
@@ -42,6 +43,7 @@ namespace swizzle { namespace lexer {
         case '@':   return TokenType::attribute;
         case '.':   return TokenType::dot;
         case ':':   return TokenType::colon;
+        case ',':   return TokenType::comma;
 
         default: break;
         };

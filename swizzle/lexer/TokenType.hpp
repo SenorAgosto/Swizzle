@@ -25,7 +25,7 @@ namespace swizzle { namespace lexer {
         equal,                  // =
         end_statement,          // ;
         dot,                    // .
-
+        comma,                  // ,
         colon,                  // :    scope operator :: will be handled by parser.
 
         comment,

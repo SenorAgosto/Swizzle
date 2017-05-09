@@ -16,7 +16,6 @@ namespace swizzle { namespace lexer {
         EndCharLiteral,
         EscapedCharInStringLiteral,
         BeginString,
-        SyntaxError,
     };
 
     std::ostream& operator<<(std::ostream& os, const TokenizerState state);

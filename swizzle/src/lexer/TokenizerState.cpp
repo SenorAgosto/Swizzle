@@ -13,6 +13,8 @@ namespace swizzle { namespace lexer {
         case TokenizerState::StringLiteral:                 return os << "TokenizerState::StringLiteral";
         case TokenizerState::CharLiteral:                   return os << "TokenizerState::CharLiteral";
         case TokenizerState::NumericLiteral:                return os << "TokenizerState::NumericLiteral";
+        case TokenizerState::BeginHexLiteral:               return os << "TokenizerState::BeginHexLiteral";
+        case TokenizerState::HexLiteral:                    return os << "TokenizerState::HexLiteral";
         case TokenizerState::EscapedCharInCharLiteral:      return os << "TokenizerState::EscapedCharInCharLiteral";
         case TokenizerState::EndCharLiteral:                return os << "TokenizerState::EndCharLiteral";
         case TokenizerState::EscapedCharInStringLiteral:    return os << "TokenizerState::EscapedCharInStringLiteral";

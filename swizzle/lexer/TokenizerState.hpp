@@ -12,6 +12,8 @@ namespace swizzle { namespace lexer {
         StringLiteral,
         CharLiteral,
         NumericLiteral,
+        BeginHexLiteral,
+        HexLiteral,
         EscapedCharInCharLiteral,
         EndCharLiteral,
         EscapedCharInStringLiteral,

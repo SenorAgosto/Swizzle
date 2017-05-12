@@ -4,6 +4,7 @@
 #include <string>
 
 namespace swizzle { namespace lexer {
+    class FileInfo;
     class TokenInfo;
     enum class TokenizerState : std::uint8_t;
 }}
@@ -31,7 +32,13 @@ namespace swizzle {
     public:
         UnknownTokenizerState(const lexer::TokenizerState state);
     };
-    
+
+    class TokenizerSyntaxError : public TokenizerError
+    {
+    public:
+        TokenizerSyntaxError(const lexer::FileInfo& info, const std::string& reason);
+    };
+
     class SyntaxError : public ParserError
     {
     public:

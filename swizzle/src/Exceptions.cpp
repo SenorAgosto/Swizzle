@@ -21,7 +21,18 @@ namespace swizzle {
         }
 
         // TODO: use ncurses to print the line and put squiggles under the error
-        std::string constructFileLocationString(const std::string& s, const lexer::TokenInfo& info, const std::string& error)
+        std::string constructError(const std::string& s, const lexer::FileInfo& info, const std::string& error)
+        {
+            std::stringstream ss;
+            ss  << s
+                << info.filename() << "[" << info.end().line() << ":" << info.end().column() << "]"
+                << ": " << error;
+
+            return ss.str();
+        }
+
+        // TODO: use ncurses to print the line and put squiggles under the error
+        std::string constructError(const std::string& s, const lexer::TokenInfo& info, const std::string& error)
         {
             std::stringstream ss;
             ss  << s
@@ -31,7 +42,7 @@ namespace swizzle {
             return ss.str();
         }
 
-        std::string constructParserStateError(const std::string& s, const parser::ParserState state)
+        std::string constructError(const std::string& s, const parser::ParserState state)
         {
             std::stringstream ss;
             ss << s << static_cast<std::int64_t>(state);
@@ -55,13 +66,18 @@ namespace swizzle {
     {
     }
 
+    TokenizerSyntaxError::TokenizerSyntaxError(const lexer::FileInfo& info, const std::string& reason)
+        : TokenizerError(constructError("Syntax Error: ", info, reason))
+    {
+    }
+
     SyntaxError::SyntaxError(const std::string& error, const lexer::TokenInfo& info)
-        : ParserError(constructFileLocationString("Syntax Error: ", info, error))
+        : ParserError(constructError("Syntax Error: ", info, error))
     {
     }
 
     UnknownParserState::UnknownParserState(const parser::ParserState state)
-        : ParserError(constructParserStateError("Unknown Parser State: ", state))
+        : ParserError(constructError("Unknown Parser State: ", state))
     {
     }
 }

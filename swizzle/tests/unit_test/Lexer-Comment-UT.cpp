@@ -116,7 +116,7 @@ namespace {
 
         CHECK_EQUAL(TokenizerState::MultilineComment, tokenState);
         CHECK_EQUAL(TokenType::multiline_comment, token.type());
-        CHECK_EQUAL("b", token.to_string());
+        CHECK_EQUAL("b\\", token.to_string());
 
         CHECK_EQUAL(0U, tokens.size());
     }

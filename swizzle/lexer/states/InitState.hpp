@@ -84,7 +84,7 @@ namespace swizzle { namespace lexer { namespace states {
                 return TokenizerState::Init;
             }
 
-            token.expand(source);
+            token = ResetToken(source, position);
             return TokenizerState::BeginString;
         }
     };

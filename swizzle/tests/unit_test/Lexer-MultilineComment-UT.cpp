@@ -1,5 +1,5 @@
 #include "./platform/UnitTestSupport.hpp"
-#include <swizzle/lexer/states/MultilineComment.hpp>
+#include <swizzle/lexer/states/MultilineCommentState.hpp>
 
 #include <swizzle/lexer/FileInfo.hpp>
 #include <swizzle/lexer/Token.hpp>

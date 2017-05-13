@@ -1,5 +1,5 @@
 #include "./platform/UnitTestSupport.hpp"
-#include <swizzle/lexer/states/BeginString.hpp>
+#include <swizzle/lexer/states/BeginStringState.hpp>
 
 #include <swizzle/lexer/FileInfo.hpp>
 #include <swizzle/lexer/Token.hpp>

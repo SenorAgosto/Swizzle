@@ -1,5 +1,5 @@
 #include "./platform/UnitTestSupport.hpp"
-#include <swizzle/lexer/states/EscapedCharInCharLiteral.hpp>
+#include <swizzle/lexer/states/EscapedCharInCharLiteralState.hpp>
 
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/lexer/Token.hpp>

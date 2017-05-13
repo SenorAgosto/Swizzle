@@ -1,5 +1,5 @@
 #include "./platform/UnitTestSupport.hpp"
-#include <swizzle/lexer/states/BeginHexLiteral.hpp>
+#include <swizzle/lexer/states/BeginHexLiteralState.hpp>
 
 #include <swizzle/lexer/Token.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>

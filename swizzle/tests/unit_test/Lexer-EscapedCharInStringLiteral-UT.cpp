@@ -44,7 +44,7 @@ namespace {
         Token token = Token(boost::string_view(""), TokenType::string_literal);
         FileInfo info = FileInfo("testfile");
 
-        states::EscapedCharInStringLiteral<CreateTokenCallback> state = states::EscapedCharInStringLiteral<CreateTokenCallback>(callback);
+        states::EscapedCharInStringLiteralState<CreateTokenCallback> state = states::EscapedCharInStringLiteralState<CreateTokenCallback>(callback);
 
         std::size_t position = 0;
     };

@@ -11,11 +11,10 @@
 namespace swizzle { namespace lexer { namespace states {
 
     template<class CreateTokenCallback>
-    class FirstSlash : public TokenizerStateInterface
+    class FirstSlashState : public TokenizerStateInterface
     {
     public:
-        FirstSlash(CreateTokenCallback createToken)
-            : createToken_(createToken)
+        FirstSlashState(CreateTokenCallback)
         {
         }
 
@@ -31,8 +30,5 @@ namespace swizzle { namespace lexer { namespace states {
             // TODO: improve error reporting to print the line and draw squiggles
             throw TokenizerError("Expected '/' to begin comment, found " + std::string(1, c));
         }
-
-    private:
-        CreateTokenCallback createToken_;
     };
 }}}

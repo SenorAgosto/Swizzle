@@ -10,11 +10,10 @@
 namespace swizzle { namespace lexer { namespace states {
 
     template<class CreateTokenCallback>
-    class MultilineComment : public TokenizerStateInterface
+    class MultilineCommentState : public TokenizerStateInterface
     {
     public:
-        MultilineComment(CreateTokenCallback createToken)
-            : createToken_(createToken)
+        MultilineCommentState(CreateTokenCallback)
         {
         }
 
@@ -34,8 +33,5 @@ namespace swizzle { namespace lexer { namespace states {
 
             return TokenizerState::MultilineComment;
         }
-
-    private:
-        CreateTokenCallback createToken_;
     };
 }}}

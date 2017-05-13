@@ -1,5 +1,5 @@
 #include "./platform/UnitTestSupport.hpp"
-#include <swizzle/lexer/states/FirstSlash.hpp>
+#include <swizzle/lexer/states/FirstSlashState.hpp>
 
 #include <swizzle/lexer/FileInfo.hpp>
 #include <swizzle/lexer/Token.hpp>

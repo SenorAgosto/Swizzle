@@ -1,5 +1,5 @@
 #include "./platform/UnitTestSupport.hpp"
-#include <swizzle/lexer/states/Init.hpp>
+#include <swizzle/lexer/states/InitState.hpp>
 
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/lexer/Token.hpp>

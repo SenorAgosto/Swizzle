@@ -1,5 +1,5 @@
 #include "./platform/UnitTestSupport.hpp"
-#include <swizzle/lexer/states/EndCharLiteral.hpp>
+#include <swizzle/lexer/states/EndCharLiteralState.hpp>
 
 #include <swizzle/lexer/Token.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>

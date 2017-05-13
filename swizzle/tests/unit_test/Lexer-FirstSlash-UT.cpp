@@ -41,7 +41,7 @@ namespace {
         CreateTokenCallback callback = CreateTokenCallback(tokens);
 
         FileInfo info = FileInfo("testfile");
-        states::FirstSlash<CreateTokenCallback> state = states::FirstSlash<CreateTokenCallback>(callback);
+        states::FirstSlashState<CreateTokenCallback> state = states::FirstSlashState<CreateTokenCallback>(callback);
 
         std::size_t position = 0;
     };

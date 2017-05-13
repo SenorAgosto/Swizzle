@@ -10,10 +10,10 @@
 namespace swizzle { namespace lexer { namespace states {
 
     template<class CreateTokenCallback>
-    class EscapedCharInCharLiteral : public TokenizerStateInterface
+    class EscapedCharInCharLiteralState : public TokenizerStateInterface
     {
     public:
-        EscapedCharInCharLiteral(CreateTokenCallback)
+        EscapedCharInCharLiteralState(CreateTokenCallback)
         {
         }
 

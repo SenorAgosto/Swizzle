@@ -5,16 +5,19 @@
 #include <swizzle/lexer/ResetToken.hpp>
 #include <swizzle/lexer/Token.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
+#include <swizzle/lexer/TokenProducer.hpp>
 #include <swizzle/lexer/TokenizerState.hpp>
 
 namespace swizzle { namespace lexer { namespace states {
 
     template<class CreateTokenCallback>
-    class Comment : public TokenizerStateInterface
+    class CommentState
+        : public TokenizerStateInterface
+        , private TokenProducer<CreateTokenCallback>
     {
     public:
-        Comment(CreateTokenCallback callback)
-            : createToken(callback)
+        CommentState(CreateTokenCallback callback)
+            : TokenProducer<CreateTokenCallback>(callback)
         {
         }
 
@@ -31,7 +34,7 @@ namespace swizzle { namespace lexer { namespace states {
 
             if(c == '\n')
             {
-                createToken(TokenInfo(token, filePosition));
+                this->produceToken(token, filePosition);
                 token = ResetToken(source, position);
 
                 filePosition.incrementLine();
@@ -44,8 +47,5 @@ namespace swizzle { namespace lexer { namespace states {
 
             return TokenizerState::Comment;
         }
-
-    private:
-        CreateTokenCallback createToken;
     };
 }}}

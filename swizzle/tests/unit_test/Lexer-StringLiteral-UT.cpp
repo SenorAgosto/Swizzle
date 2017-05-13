@@ -44,7 +44,7 @@ namespace {
         Token token = Token(boost::string_view(""), TokenType::string_literal);
         FileInfo info = FileInfo("testfile");
 
-        states::StringLiteral<CreateTokenCallback> state = states::StringLiteral<CreateTokenCallback>(callback);
+        states::StringLiteralState<CreateTokenCallback> state = states::StringLiteralState<CreateTokenCallback>(callback);
 
         std::size_t position = 0;
     };

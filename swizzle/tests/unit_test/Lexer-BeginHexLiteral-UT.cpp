@@ -43,7 +43,7 @@ namespace {
         Token token = Token(boost::string_view(), TokenType::hex_literal);
         FileInfo info = FileInfo("testfile");
 
-        states::BeginHexLiteral<CreateTokenCallback> state = states::BeginHexLiteral<CreateTokenCallback>(callback);
+        states::BeginHexLiteralState<CreateTokenCallback> state = states::BeginHexLiteralState<CreateTokenCallback>(callback);
 
         std::size_t position = 0;
     };

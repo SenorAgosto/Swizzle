@@ -14,12 +14,12 @@
 namespace swizzle { namespace lexer { namespace states {
 
     template<class CreateTokenCallback>
-    class Init
+    class InitState
         : public TokenizerStateInterface
-        , public TokenProducer<CreateTokenCallback>
+        , private TokenProducer<CreateTokenCallback>
     {
     public:
-        Init(CreateTokenCallback callback)
+        InitState(CreateTokenCallback callback)
             : TokenProducer<CreateTokenCallback>(callback)
         {
         }

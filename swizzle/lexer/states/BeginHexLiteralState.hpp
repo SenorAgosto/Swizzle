@@ -51,7 +51,7 @@ namespace swizzle { namespace lexer { namespace states {
                 fileInfo = this->produceToken(token, fileInfo);
 
                 token = ResetToken(source, position);
-                fileInfo.advanceBy(c);
+                fileInfo.advanceTo(fileInfo);
 
                 return TokenizerState::Init;
             }
@@ -65,7 +65,9 @@ namespace swizzle { namespace lexer { namespace states {
                 token.expand(source);
 
                 this->produceToken(token, fileInfo);
+
                 token = ResetToken(source, position);
+                fileInfo.advanceTo(fileInfo);
 
                 return TokenizerState::Init;
             }

@@ -25,6 +25,7 @@ namespace swizzle { namespace lexer {
         case TokenType::comma:                  return os << "TokenType::comma";
         case TokenType::comment:                return os << "TokenType::comment";
         case TokenType::multiline_comment:      return os << "TokenType::multiline_comment";
+        case TokenType::whitespace:             return os << "TokenType::whitespace";
 
         default:                                return os << "Unknown TokenType Value";
         };

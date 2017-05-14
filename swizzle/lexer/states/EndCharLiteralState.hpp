@@ -22,18 +22,18 @@ namespace swizzle { namespace lexer { namespace states {
         {
         }
 
-        TokenizerState consume(const boost::string_view& source, const std::size_t position, FileInfo& filePosition, Token& token) override
+        TokenizerState consume(const boost::string_view& source, const std::size_t position, FileInfo& fileInfo, Token& token) override
         {
             const char c = source.at(position);
             if(c == '\'')
             {
-                filePosition = this->produceToken(token, filePosition);
+                fileInfo = this->produceToken(token, fileInfo);
                 token = ResetToken(source, position);
 
                 return TokenizerState::Init;
             }
 
-            throw TokenizerSyntaxError(filePosition, "Expected ' to terminate character literal, found '" + std::string(1, c) + "'");
+            throw TokenizerSyntaxError(fileInfo, "Expected ' to terminate character literal, found '" + std::string(1, c) + "'");
         }
     };
 }}}

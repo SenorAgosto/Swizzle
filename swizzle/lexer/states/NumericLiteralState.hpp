@@ -24,14 +24,14 @@ namespace swizzle { namespace lexer { namespace states {
         {
         }
 
-        TokenizerState consume(const boost::string_view& source, const std::size_t position, FileInfo& filePosition, Token& token) override
+        TokenizerState consume(const boost::string_view& source, const std::size_t position, FileInfo& fileInfo, Token& token) override
         {
             const char c = source.at(position);
 
             if(std::isdigit(c))
             {
                 token.expand(source);
-                filePosition.advanceBy(c);
+                fileInfo.advanceBy(c);
 
                 return TokenizerState::NumericLiteral;
             }
@@ -39,10 +39,10 @@ namespace swizzle { namespace lexer { namespace states {
             static const std::string whitespace(" \t\r\n");
             if(whitespace.find_first_of(c) != std::string::npos)
             {
-                filePosition = this->produceToken(token, filePosition);
+                fileInfo = this->produceToken(token, fileInfo);
 
                 token = ResetToken(source, position);
-                filePosition.advanceBy(c);
+                fileInfo.advanceBy(c);
 
                 return TokenizerState::Init;
             }
@@ -50,12 +50,12 @@ namespace swizzle { namespace lexer { namespace states {
             static const std::string tokenProducers("]}.;,");
             if(tokenProducers.find_first_of(c) != std::string::npos)
             {
-                filePosition = this->produceToken(token, filePosition);
+                fileInfo = this->produceToken(token, fileInfo);
 
                 token = ResetToken(source, position, CharToTokenType(c));
                 token.expand(source);
 
-                filePosition = this->produceToken(token, filePosition);
+                fileInfo = this->produceToken(token, fileInfo);
                 token = ResetToken(source, position);
 
                 return TokenizerState::Init;

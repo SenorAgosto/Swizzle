@@ -21,22 +21,22 @@ namespace swizzle { namespace lexer { namespace states {
         {
         }
 
-        TokenizerState consume(const boost::string_view& source, const std::size_t position, FileInfo& filePosition, Token& token) override
+        TokenizerState consume(const boost::string_view& source, const std::size_t position, FileInfo& fileInfo, Token& token) override
         {
             const char c = source.at(position);
             if(c == '\\')
             {
                 token.expand(source);
                 token.type(TokenType::multiline_comment);
-                filePosition.advanceBy(c);
+                fileInfo.advanceBy(c);
 
                 return TokenizerState::MultilineComment;
             }
 
             if(c == '\n')
             {
-                filePosition = this->produceToken(token, filePosition);
-                filePosition.advanceBy(c);
+                fileInfo = this->produceToken(token, fileInfo);
+                fileInfo.advanceBy(c);
 
                 token = ResetToken(source, position);
 
@@ -44,7 +44,7 @@ namespace swizzle { namespace lexer { namespace states {
             }
 
             token.expand(source);
-            filePosition.advanceBy(c);
+            fileInfo.advanceBy(c);
 
             return TokenizerState::Comment;
         }

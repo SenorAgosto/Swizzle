@@ -14,6 +14,6 @@ namespace swizzle { namespace lexer {
     {
     public:
         virtual ~TokenizerStateInterface(){}
-        virtual TokenizerState consume(const boost::string_view& source, const std::size_t position, FileInfo& filePosition, Token& token) = 0;
+        virtual TokenizerState consume(const boost::string_view& source, const std::size_t position, FileInfo& fileInfo, Token& token) = 0;
     };
 }}

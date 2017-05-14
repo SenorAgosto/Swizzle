@@ -72,8 +72,8 @@ namespace swizzle { namespace lexer { namespace states {
             {
                 fileInfo = this->produceToken(token, fileInfo);
 
-                token = ResetToken(source, position + 1, TokenType::whitespace);
-                fileInfo.advanceTo(fileInfo);
+                token.expand(source);
+                token.type(TokenType::whitespace);
 
                 return TokenizerState::Init;
             }

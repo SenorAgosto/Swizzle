@@ -74,8 +74,8 @@ namespace swizzle { namespace lexer { namespace states {
             static const std::string whitespace(" \t\r\n");
             if(whitespace.find_first_of(c) != std::string::npos)
             {
-                token = ResetToken(source, position, TokenType::whitespace);
-                fileInfo.advanceTo(fileInfo);
+                token.expand(source);
+                token.type(TokenType::whitespace);
 
                 return TokenizerState::Init;
             }

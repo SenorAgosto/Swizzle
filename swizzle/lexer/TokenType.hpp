@@ -31,6 +31,8 @@ namespace swizzle { namespace lexer {
 
         comment,
         multiline_comment,
+
+        whitespace,             // space \t \r \n
     };
 
     std::ostream& operator<<(std::ostream& os, const TokenType type);

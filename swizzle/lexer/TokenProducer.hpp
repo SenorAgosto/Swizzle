@@ -21,9 +21,8 @@ namespace swizzle { namespace lexer {
 
         FileInfo produceToken(Token& token, const FileInfo& info)
         {
-            const LineInfo newStart = info.end();
-            const LineInfo newEnd = LineInfo(newStart.line(), newStart.column() + 1);
-            const FileInfo newInfo(info.filename(), newStart, newEnd);
+            FileInfo newInfo(info.filename());
+            newInfo.advanceTo(info);
 
             if(token.empty())
             {

@@ -33,6 +33,8 @@ namespace swizzle { namespace lexer {
         void advanceBy(const char c);
         void advanceBy(const Token& token);
 
+        void advanceTo(const FileInfo& info);
+
         bool empty() const { return start_ == end_; }
         
     private:

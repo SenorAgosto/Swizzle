@@ -33,6 +33,11 @@ namespace swizzle { namespace lexer {
             return false;
         }
 
+        if(type_ == TokenType::whitespace)
+        {
+            return true;
+        }
+
         const auto spot = value_.find_first_not_of("\n\r\t ");
         return spot == boost::string_view::npos;
     }

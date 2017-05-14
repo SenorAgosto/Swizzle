@@ -21,8 +21,8 @@ namespace swizzle { namespace lexer {
 
         FileInfo produceToken(Token& token, const FileInfo& info)
         {
-            FileInfo newInfo(info.filename());
-            newInfo.advanceTo(info);
+            FileInfo newInfo(info.filename(), info.end(), info.end());
+            newInfo.advanceBy(token);
 
             if(token.empty())
             {
@@ -34,8 +34,7 @@ namespace swizzle { namespace lexer {
                 token.type(TokenType::keyword);
             }
 
-            createToken(TokenInfo(token, info));
-
+            createToken(TokenInfo(token, newInfo));
             return newInfo;
         }
 

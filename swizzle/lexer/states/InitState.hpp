@@ -75,6 +75,8 @@ namespace swizzle { namespace lexer { namespace states {
             if(whitespace.find_first_of(c) != std::string::npos)
             {
                 token = Token();
+                fileInfo.advanceTo(fileInfo);
+
                 return TokenizerState::Init;
             }
 
@@ -85,7 +87,9 @@ namespace swizzle { namespace lexer { namespace states {
                 token.type(CharToTokenType(c));
 
                 fileInfo = this->produceToken(token, fileInfo);
+
                 token = Token();
+                fileInfo.advanceTo(fileInfo);
 
                 return TokenizerState::Init;
             }

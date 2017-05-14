@@ -3,6 +3,7 @@
 #include <swizzle/IsKeyword.hpp>
 
 #include <swizzle/lexer/FileInfo.hpp>
+#include <swizzle/lexer/LineInfo.hpp>
 #include <swizzle/lexer/Token.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
 #include <swizzle/lexer/TokenType.hpp>
@@ -18,11 +19,15 @@ namespace swizzle { namespace lexer {
         {
         }
 
-        void produceToken(Token& token, const FileInfo& info)
+        FileInfo produceToken(Token& token, const FileInfo& info)
         {
+            const LineInfo newStart = info.end();
+            const LineInfo newEnd = LineInfo(newStart.line(), newStart.column() + 1);
+            const FileInfo newInfo(info.filename(), newStart, newEnd);
+
             if(token.empty())
             {
-                return;
+                return newInfo;
             }
 
             if(IsKeyword(token.value()))
@@ -31,6 +36,8 @@ namespace swizzle { namespace lexer {
             }
 
             createToken(TokenInfo(token, info));
+
+            return newInfo;
         }
 
     private:

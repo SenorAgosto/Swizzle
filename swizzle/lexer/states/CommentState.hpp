@@ -35,16 +35,16 @@ namespace swizzle { namespace lexer { namespace states {
 
             if(c == '\n')
             {
-                this->produceToken(token, filePosition);
-                token = ResetToken(source, position);
+                filePosition = this->produceToken(token, filePosition);
+                filePosition.advanceBy(c);
 
-                filePosition.incrementLine();
+                token = ResetToken(source, position);
 
                 return TokenizerState::Init;
             }
 
             token.expand(source);
-            filePosition.incrementColumn();
+            filePosition.advanceBy(c);
 
             return TokenizerState::Comment;
         }

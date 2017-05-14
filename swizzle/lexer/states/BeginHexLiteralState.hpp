@@ -48,7 +48,7 @@ namespace swizzle { namespace lexer { namespace states {
             static const std::string whitespace(" \t\r\n");
             if(whitespace.find_first_of(c) != std::string::npos)
             {
-                this->produceToken(token, filePosition);
+                filePosition = this->produceToken(token, filePosition);
 
                 token = ResetToken(source, position);
                 filePosition.advanceBy(c);
@@ -59,13 +59,7 @@ namespace swizzle { namespace lexer { namespace states {
             static const std::string tokenProducers("]}.;,");
             if(tokenProducers.find_first_of(c) != std::string::npos)
             {
-                this->produceToken(token, filePosition);
-
-                LineInfo newStart = LineInfo(filePosition.end().line(), filePosition.end().column());
-                LineInfo newEnd = newStart;
-                newEnd.incrementColumn();
-
-                filePosition = FileInfo(filePosition.filename(), newStart, newEnd);
+                filePosition = this->produceToken(token, filePosition);
 
                 token = ResetToken(source, position, CharToTokenType(c));
                 token.expand(source);

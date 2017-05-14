@@ -43,4 +43,12 @@ namespace swizzle { namespace lexer {
             advanceBy(c);
         }
     }
+
+    void FileInfo::advanceTo(const FileInfo& info)
+    {
+        start_ = info.end_;
+
+        end_ = start_;
+        end_.incrementColumn();
+    }
 }}

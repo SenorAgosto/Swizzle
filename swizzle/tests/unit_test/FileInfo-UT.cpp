@@ -144,6 +144,23 @@ namespace {
         CHECK_EQUAL(1U, info.end().column());
     }
 
+    TEST_FIXTURE(FileInfoFixture, verifyAdvanceTo)
+    {
+        FileInfo next(info.filename());
+
+        CHECK_EQUAL(1U, next.start().line());
+        CHECK_EQUAL(1U, next.start().column());
+        CHECK_EQUAL(1U, next.end().line());
+        CHECK_EQUAL(1U, next.end().column());
+
+        next.advanceTo(info);
+
+        CHECK_EQUAL(info.end().line(), next.start().line());
+        CHECK_EQUAL(info.end().column(), next.start().column());
+        CHECK_EQUAL(info.end().line(), next.end().line());
+        CHECK_EQUAL(info.end().column() + 1, next.end().column());
+    }
+
     TEST_FIXTURE(FileInfoFixture, verifyEmpty)
     {
         LineInfo empty;

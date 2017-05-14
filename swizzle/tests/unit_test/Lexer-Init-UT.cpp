@@ -143,8 +143,8 @@ namespace {
         auto tokenState = state.consume(sv, position, info, token);
 
         CHECK_EQUAL(TokenizerState::Init, tokenState);
-        CHECK_EQUAL(TokenType::string, token.type());
-        CHECK_EQUAL("", token.to_string());
+        CHECK_EQUAL(TokenType::whitespace, token.type());
+        CHECK_EQUAL(" ", token.to_string());
 
         CHECK_EQUAL(0U, tokens.size());
     }
@@ -162,8 +162,8 @@ namespace {
         auto tokenState = state.consume(sv, position, info, token);
 
         CHECK_EQUAL(TokenizerState::Init, tokenState);
-        CHECK_EQUAL(TokenType::string, token.type());
-        CHECK_EQUAL("", token.to_string());
+        CHECK_EQUAL(TokenType::whitespace, token.type());
+        CHECK_EQUAL("\t", token.to_string());
 
         CHECK_EQUAL(0U, tokens.size());
     }
@@ -181,8 +181,8 @@ namespace {
         auto tokenState = state.consume(sv, position, info, token);
 
         CHECK_EQUAL(TokenizerState::Init, tokenState);
-        CHECK_EQUAL(TokenType::string, token.type());
-        CHECK_EQUAL("", token.to_string());
+        CHECK_EQUAL(TokenType::whitespace, token.type());
+        CHECK_EQUAL("\r", token.to_string());
 
         CHECK_EQUAL(0U, tokens.size());
     }
@@ -200,8 +200,8 @@ namespace {
         auto tokenState = state.consume(sv, position, info, token);
 
         CHECK_EQUAL(TokenizerState::Init, tokenState);
-        CHECK_EQUAL(TokenType::string, token.type());
-        CHECK_EQUAL("", token.to_string());
+        CHECK_EQUAL(TokenType::whitespace, token.type());
+        CHECK_EQUAL("\n", token.to_string());
 
         CHECK_EQUAL(0U, tokens.size());
     }

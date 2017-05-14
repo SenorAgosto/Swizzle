@@ -32,18 +32,24 @@ namespace swizzle { namespace lexer { namespace states {
             if(c == '/')
             {
                 token = ResetToken(source, position + 1, TokenType::comment);
+                filePosition.incrementColumn();
+
                 return TokenizerState::FirstSlash;
             }
 
             if(c == '"')
             {
                 token = ResetToken(source, position + 1, TokenType::string_literal);
+                filePosition.incrementColumn();
+
                 return TokenizerState::StringLiteral;
             }
 
             if(c == '\'')
             {
                 token = ResetToken(source, position + 1, TokenType::char_literal);
+                filePosition.incrementColumn();
+
                 return TokenizerState::CharLiteral;
             }
 
@@ -68,7 +74,7 @@ namespace swizzle { namespace lexer { namespace states {
             static const std::string whitespace(" \t\r\n");
             if(whitespace.find_first_of(c) != std::string::npos)
             {
-                token = ResetToken(source, position + 1);
+                token = Token();
                 return TokenizerState::Init;
             }
 
@@ -78,8 +84,8 @@ namespace swizzle { namespace lexer { namespace states {
                 token.expand(source);
                 token.type(CharToTokenType(c));
 
-                this->produceToken(token, filePosition);
-                token = ResetToken(source, position + 1);
+                filePosition = this->produceToken(token, filePosition);
+                token = Token();
 
                 return TokenizerState::Init;
             }

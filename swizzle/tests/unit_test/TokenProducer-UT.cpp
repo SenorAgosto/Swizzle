@@ -34,17 +34,28 @@ namespace {
         Callback callback = Callback(tokens);
 
         TokenProducer<Callback> producer = TokenProducer<Callback>(callback);
-        FileInfo info = FileInfo("test_file");
+        FileInfo info = FileInfo("test_file", LineInfo(1, 1), LineInfo(1, 5));
     };
 
     TEST_FIXTURE(TokenProducerFixture, verifyCallback)
     {
         Token token("test", TokenType::string);
-        producer.produceToken(token, info);
+        info = producer.produceToken(token, info);
+
+        CHECK_EQUAL(1U, info.start().line());
+        CHECK_EQUAL(5U, info.start().column());
+        CHECK_EQUAL(1U, info.end().line());
+        CHECK_EQUAL(6U, info.end().column());
 
         REQUIRE CHECK_EQUAL(1U, tokens.size());
+
         CHECK_EQUAL("test", tokens[0].token().to_string());
         CHECK_EQUAL(TokenType::string, tokens[0].token().type());
+
+        CHECK_EQUAL(1U, tokens[0].fileInfo().start().line());
+        CHECK_EQUAL(1U, tokens[0].fileInfo().start().column());
+        CHECK_EQUAL(1U, tokens[0].fileInfo().end().line());
+        CHECK_EQUAL(5U, tokens[0].fileInfo().end().column());
     }
 
     TEST_FIXTURE(TokenProducerFixture, verifyCallbackOnKeyword)

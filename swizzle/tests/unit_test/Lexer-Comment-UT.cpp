@@ -86,12 +86,18 @@ namespace {
         CHECK(token.empty());
 
         CHECK_EQUAL(1U, info.start().line());
-        CHECK_EQUAL(1U, info.start().column());
+        CHECK_EQUAL(3U, info.start().column());
         CHECK_EQUAL(2U, info.end().line());
         CHECK_EQUAL(1U, info.end().column());
 
         CHECK_EQUAL(1U, tokens.size());
+        CHECK_EQUAL(TokenType::comment, tokens[0].token().type());
         CHECK_EQUAL("bl", tokens[0].token().to_string());
+
+        CHECK_EQUAL(1U, tokens[0].fileInfo().start().line());
+        CHECK_EQUAL(1U, tokens[0].fileInfo().start().column());
+        CHECK_EQUAL(1U, tokens[0].fileInfo().end().line());
+        CHECK_EQUAL(3U, tokens[0].fileInfo().end().column());
     }
 
     struct MultilineCommentFixture : public TokenizerFixture

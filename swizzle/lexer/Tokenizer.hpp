@@ -32,7 +32,7 @@ namespace swizzle { namespace lexer {
 
         void flush()
         {
-            this->produceToken(token_, fileInfo_);
+            fileInfo_ = this->produceToken(token_, fileInfo_);
         }
 
     private:

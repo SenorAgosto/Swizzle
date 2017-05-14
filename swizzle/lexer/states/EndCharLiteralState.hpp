@@ -27,7 +27,7 @@ namespace swizzle { namespace lexer { namespace states {
             const char c = source.at(position);
             if(c == '\'')
             {
-                this->produceToken(token, filePosition);
+                filePosition = this->produceToken(token, filePosition);
                 token = ResetToken(source, position);
 
                 return TokenizerState::Init;

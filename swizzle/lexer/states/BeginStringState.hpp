@@ -26,12 +26,12 @@ namespace swizzle { namespace lexer { namespace states {
         TokenizerState consume(const boost::string_view& source, const std::size_t position, FileInfo& filePosition, Token& token) override
         {
             const char c = source.at(position);
+
             if(c == '/')
             {
                 this->produceToken(token, filePosition);
-
                 token = ResetToken(source, position, TokenType::comment);
-                filePosition.incrementColumn();
+                filePosition.advanceBy(c);
 
                 return TokenizerState::FirstSlash;
             }
@@ -39,9 +39,8 @@ namespace swizzle { namespace lexer { namespace states {
             if(c == '"')
             {
                 this->produceToken(token, filePosition);
-
                 token = ResetToken(source, position, TokenType::string_literal);
-                filePosition.incrementColumn();
+                filePosition.advanceBy(c);
 
                 return TokenizerState::StringLiteral;
             }
@@ -49,9 +48,8 @@ namespace swizzle { namespace lexer { namespace states {
             if(c == '\'')
             {
                 this->produceToken(token, filePosition);
-
                 token = ResetToken(source, position, TokenType::char_literal);
-                filePosition.incrementColumn();
+                filePosition.advanceBy(c);
 
                 return TokenizerState::CharLiteral;
             }
@@ -60,8 +58,9 @@ namespace swizzle { namespace lexer { namespace states {
             if(tokenProducers.find_first_of(c) != std::string::npos)
             {
                 this->produceToken(token, filePosition);
+                filePosition.advanceBy(c);
 
-                LineInfo newStart = LineInfo(filePosition.end().line(), filePosition.end().column());
+                LineInfo newStart = LineInfo(filePosition.end().line(), filePosition.end().column() - 1);
                 LineInfo newEnd = newStart;
                 newEnd.incrementColumn();
 
@@ -81,6 +80,7 @@ namespace swizzle { namespace lexer { namespace states {
             {
                 this->produceToken(token, filePosition);
                 token = ResetToken(source, position);
+                filePosition.advanceBy(c);
 
                 return TokenizerState::Init;
             }

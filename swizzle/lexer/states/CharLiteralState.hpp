@@ -23,7 +23,7 @@ namespace swizzle { namespace lexer { namespace states {
                 return TokenizerState::EscapedCharInCharLiteral;
             }
 
-            token.expand(source);
+            token.expand(1);
             fileInfo.advanceBy(c);
 
             return TokenizerState::EndCharLiteral;

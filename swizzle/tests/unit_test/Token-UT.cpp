@@ -18,7 +18,7 @@ namespace {
     
     TEST(verifyInstantationWithValueAndType)
     {
-        const Token token("value", TokenType::comment);
+        const Token token("value", 0, 5, TokenType::comment);
         
         CHECK_EQUAL("value", token.to_string());
         CHECK_EQUAL(TokenType::comment, token.type());
@@ -26,7 +26,7 @@ namespace {
     
     TEST(verifySettingType)
     {
-        Token token("value", TokenType::comment);
+        Token token("value", 0, 5, TokenType::comment);
         
         CHECK_EQUAL("value", token.to_string());
         CHECK_EQUAL(TokenType::comment, token.type());
@@ -40,8 +40,8 @@ namespace {
         const std::string s = "This is a string";
         const boost::string_view sv(s);
 
-        Token token(boost::string_view(s.c_str(), 2), TokenType::string);
-        token.expand(sv, 2);
+        Token token(sv, 0, 2, TokenType::string);
+        token.expand(2);
 
         CHECK_EQUAL("This", token.value());
         CHECK_EQUAL("This", token.to_string());
@@ -52,8 +52,8 @@ namespace {
         const std::string s = "This is a string";
         const boost::string_view sv(s);
 
-        Token token(boost::string_view(s.c_str(), 2), TokenType::string);
-        token.expand(sv, 100);
+        Token token(sv, 0, 5, TokenType::string);
+        token.expand(100);
 
         CHECK_EQUAL(s, token.to_string());
     }
@@ -63,42 +63,28 @@ namespace {
         const std::string s = " \t\r \na";
         const boost::string_view sv(s);
 
-        Token token(boost::string_view(s.c_str(), 0), TokenType::string);
+        Token token(sv, 0, 0, TokenType::string);
         CHECK(token.empty());
 
-        token.expand(sv);   // ' '
+        token.expand(1);   // ' '
         CHECK(token.empty());
 
-        token.expand(sv);   // \t
+        token.expand(1);   // \t
         CHECK(token.empty());
 
-        token.expand(sv);   // \r
+        token.expand(1);   // \r
         CHECK(token.empty());
 
-        token.expand(sv);   // ' '
+        token.expand(1);   // ' '
         CHECK(token.empty());
 
-        token.expand(sv);   // \n
+        token.expand(1);   // \n
         CHECK(token.empty());
 
-        token.expand(sv);   // a
+        token.expand(1);   // a
         CHECK(!token.empty());
 
-        const Token token2(boost::string_view(s.c_str(), 0), TokenType::string_literal);
+        const Token token2(sv, 0, 0, TokenType::string_literal);
         CHECK(!token.empty());
-    }
-
-    TEST(verifyClear)
-    {
-        Token token("value", TokenType::comment);
-
-        CHECK_EQUAL("value", token.to_string());
-        CHECK_EQUAL(TokenType::comment, token.type());
-
-        token.clear();
-        
-        CHECK_EQUAL("", token.to_string());
-        CHECK_EQUAL(TokenType::string, token.type());
-        CHECK(token.empty());
     }
 }

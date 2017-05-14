@@ -51,7 +51,7 @@ namespace {
         const std::string s = "blah\n";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(boost::string_view(), TokenType::multiline_comment);
+        Token token = Token(boost::string_view(), 0, 0, TokenType::multiline_comment);
     };
 
     TEST_FIXTURE(MultilineCommentFixture, verifyConstruction)

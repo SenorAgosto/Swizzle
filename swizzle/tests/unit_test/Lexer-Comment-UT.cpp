@@ -51,7 +51,7 @@ namespace {
         const std::string s = "bl\n";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(boost::string_view(), TokenType::comment);
+        Token token = Token(boost::string_view(), 0, 0, TokenType::comment);
     };
 
     TEST_FIXTURE(CommentFixture, verifyConstruction)
@@ -105,7 +105,7 @@ namespace {
         const std::string s = "b\\";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(boost::string_view(), TokenType::comment);
+        Token token = Token(boost::string_view(), 0, 0, TokenType::comment);
     };
 
     TEST_FIXTURE(MultilineCommentFixture, verifyConsumeTransitionsToMultilineComment)

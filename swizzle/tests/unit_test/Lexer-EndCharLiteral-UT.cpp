@@ -40,7 +40,7 @@ namespace {
         std::deque<TokenInfo> tokens;
         CreateTokenCallback callback = CreateTokenCallback(tokens);
 
-        Token token = Token(boost::string_view("a"), TokenType::char_literal);
+        Token token = Token(boost::string_view("a"), 0, 1, TokenType::char_literal);
         FileInfo info = FileInfo("testfile");
 
         states::EndCharLiteralState<CreateTokenCallback> state = states::EndCharLiteralState<CreateTokenCallback>(callback);

@@ -26,7 +26,7 @@ namespace swizzle { namespace lexer { namespace states {
             const char c = source.at(position);
             if(c == '\\')
             {
-                token.expand(source);
+                token.expand();
                 token.type(TokenType::multiline_comment);
                 fileInfo.advanceBy(c);
 
@@ -43,7 +43,7 @@ namespace swizzle { namespace lexer { namespace states {
                 return TokenizerState::Init;
             }
 
-            token.expand(source);
+            token.expand();
             fileInfo.advanceBy(c);
 
             return TokenizerState::Comment;

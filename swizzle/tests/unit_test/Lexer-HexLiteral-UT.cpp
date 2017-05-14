@@ -41,7 +41,7 @@ namespace {
         std::deque<TokenInfo> tokens;
         CreateTokenCallback callback = CreateTokenCallback(tokens);
 
-        Token token = Token(boost::string_view(), TokenType::hex_literal);
+        Token token = Token(boost::string_view(), 0, 0, TokenType::hex_literal);
         FileInfo info = FileInfo("testfile");
 
         states::HexLiteralState<CreateTokenCallback> state = states::HexLiteralState<CreateTokenCallback>(callback);

@@ -22,12 +22,12 @@ namespace swizzle { namespace lexer { namespace states {
         {
         }
 
-        TokenizerState consume(const boost::string_view& source, const std::size_t position, FileInfo& filePosition, Token& token) override
+        TokenizerState consume(const boost::string_view& source, const std::size_t position, FileInfo& fileInfo, Token& token) override
         {
             const char c = source.at(position);
             if(c == '"')
             {
-                filePosition = this->produceToken(token, filePosition);
+                fileInfo = this->produceToken(token, fileInfo);
                 token = ResetToken(source, position);
 
                 return TokenizerState::Init;
@@ -36,13 +36,13 @@ namespace swizzle { namespace lexer { namespace states {
             if(c == '\\')
             {
                 token.expand(source);
-                filePosition.advanceBy(c);
+                fileInfo.advanceBy(c);
 
                 return TokenizerState::EscapedCharInStringLiteral;
             }
 
             token.expand(source);
-            filePosition.advanceBy(c);
+            fileInfo.advanceBy(c);
 
             return TokenizerState::StringLiteral;
         }

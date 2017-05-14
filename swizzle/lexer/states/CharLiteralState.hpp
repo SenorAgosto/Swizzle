@@ -15,7 +15,7 @@ namespace swizzle { namespace lexer { namespace states {
         {
         }
 
-        TokenizerState consume(const boost::string_view& source, const std::size_t position, FileInfo& filePosition, Token& token) override
+        TokenizerState consume(const boost::string_view& source, const std::size_t position, FileInfo& fileInfo, Token& token) override
         {
             const char c = source.at(position);
             if(c == '\\')
@@ -24,7 +24,7 @@ namespace swizzle { namespace lexer { namespace states {
             }
 
             token.expand(source);
-            filePosition.advanceBy(c);
+            fileInfo.advanceBy(c);
 
             return TokenizerState::EndCharLiteral;
         }

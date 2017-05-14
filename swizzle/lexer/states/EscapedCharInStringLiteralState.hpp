@@ -17,7 +17,7 @@ namespace swizzle { namespace lexer { namespace states {
         {
         }
 
-        TokenizerState consume(const boost::string_view& source, const std::size_t position, FileInfo& filePosition, Token& token) override
+        TokenizerState consume(const boost::string_view& source, const std::size_t position, FileInfo& fileInfo, Token& token) override
         {
             const char c = source.at(position);
             if((c == '\'') ||
@@ -27,12 +27,12 @@ namespace swizzle { namespace lexer { namespace states {
                (c == 'n'))
             {
                 token.expand(source);
-                filePosition.advanceBy(c);
+                fileInfo.advanceBy(c);
 
                 return TokenizerState::StringLiteral;
             }
 
-            throw TokenizerSyntaxError(filePosition, "Expected a valid escape sequence (\\a \\' \\r \\n \\0) found '\\" + std::string(1, c) + "'");
+            throw TokenizerSyntaxError(fileInfo, "Expected a valid escape sequence (\\a \\' \\r \\n \\0) found '\\" + std::string(1, c) + "'");
         }
     };
 }}}

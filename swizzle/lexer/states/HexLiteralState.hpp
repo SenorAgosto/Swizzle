@@ -30,7 +30,7 @@ namespace swizzle { namespace lexer { namespace states {
 
             if(std::isxdigit(c))
             {
-                token.expand(source);
+                token.expand();
                 fileInfo.advanceBy(c);
 
                 return TokenizerState::HexLiteral;
@@ -41,7 +41,7 @@ namespace swizzle { namespace lexer { namespace states {
             {
                 fileInfo = this->produceToken(token, fileInfo);
 
-                token.expand(source);
+                token.expand();
                 token.type(TokenType::whitespace);
 
                 return TokenizerState::Init;
@@ -53,7 +53,7 @@ namespace swizzle { namespace lexer { namespace states {
                 fileInfo = this->produceToken(token, fileInfo);
 
                 token = ResetToken(source, position, CharToTokenType(c));
-                token.expand(source);
+                token.expand();
 
                 fileInfo = this->produceToken(token, fileInfo);
 

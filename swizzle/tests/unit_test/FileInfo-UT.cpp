@@ -111,7 +111,7 @@ namespace {
     
     TEST_FIXTURE(FileInfoFixture, verifyAdvanceBy)
     {
-        Token token("variable20", TokenType::string);
+        Token token("variable20", 0, 10, TokenType::string);
         
         CHECK_EQUAL(end, info.end());
         
@@ -122,7 +122,7 @@ namespace {
     
     TEST_FIXTURE(FileInfoFixture, verifyAdvanceByWithEmbededNewLines)
     {
-        Token token("variable20\nvariable21\nvariable22", TokenType::multiline_comment);
+        Token token("variable20\nvariable21\nvariable22", 0, 34, TokenType::multiline_comment);
         
         CHECK_EQUAL(end, info.end());
         

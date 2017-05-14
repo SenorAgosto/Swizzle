@@ -22,13 +22,13 @@ namespace swizzle { namespace lexer { namespace states {
             const char c = source.at(position);
             if(c == '\n')
             {
-                token.expand(source);
+                token.expand();
                 fileInfo.incrementLine();
 
                 return TokenizerState::Comment;
             }
 
-            token.expand(source);
+            token.expand();
             fileInfo.incrementColumn();
 
             return TokenizerState::MultilineComment;

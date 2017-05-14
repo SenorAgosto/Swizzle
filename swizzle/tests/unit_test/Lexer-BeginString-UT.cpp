@@ -51,7 +51,7 @@ namespace {
         const std::string s = "";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(boost::string_view(), TokenType::string);
+        Token token = Token(boost::string_view(), 0, 0, TokenType::string);
     };
 
     TEST_FIXTURE(WhenInputIsEmpty, verifyConstruction)
@@ -63,7 +63,7 @@ namespace {
         const std::string s = "f/";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(boost::string_view(), TokenType::string);
+        Token token = Token(boost::string_view(), 0, 0, TokenType::string);
     };
 
     TEST_FIXTURE(WhenNextCharacterIsSlash, verifyConsumeSpace)
@@ -90,7 +90,7 @@ namespace {
         const std::string s = "f'";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(boost::string_view(), TokenType::string);
+        Token token = Token(boost::string_view(), 0, 0, TokenType::string);
     };
 
     TEST_FIXTURE(WhenNextCharacterIsSingleQuote, verifyConsumeSpace)
@@ -117,7 +117,7 @@ namespace {
         const std::string s = "f\"";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(boost::string_view(), TokenType::string);
+        Token token = Token(boost::string_view(), 0, 0, TokenType::string);
     };
 
     TEST_FIXTURE(WhenNextCharacterIsDoubleQuote, verifyConsumeSpace)
@@ -144,7 +144,7 @@ namespace {
         const std::string s = "fld1;";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(boost::string_view(), TokenType::string);
+        Token token = Token(boost::string_view(), 0, 0, TokenType::string);
     };
 
     TEST_FIXTURE(WhenLastCharacterIsSemiColon, verifyConsume)
@@ -199,7 +199,7 @@ namespace {
         const std::string s = "f@";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(boost::string_view(), TokenType::string);
+        Token token = Token(boost::string_view(), 0, 0, TokenType::string);
     };
 
     TEST_FIXTURE(WhenNextCharacterIsAttribute, verifyConsume)
@@ -230,7 +230,7 @@ namespace {
         const std::string s = "f:";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(boost::string_view(), TokenType::string);
+        Token token = Token(boost::string_view(), 0, 0, TokenType::string);
     };
 
     TEST_FIXTURE(WhenNextCharacterIsColon, verifyConsume)
@@ -261,7 +261,7 @@ namespace {
         const std::string s = "f{";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(boost::string_view(), TokenType::string);
+        Token token = Token(boost::string_view(), 0, 0, TokenType::string);
     };
 
     TEST_FIXTURE(WhenNextCharacterIsLeftBrace, verifyConsume)
@@ -292,7 +292,7 @@ namespace {
         const std::string s = "f}";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(boost::string_view(), TokenType::string);
+        Token token = Token(boost::string_view(), 0, 0, TokenType::string);
     };
 
     TEST_FIXTURE(WhenNextCharacterIsRightBrace, verifyConsume)
@@ -323,7 +323,7 @@ namespace {
         const std::string s = "f[";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(boost::string_view(), TokenType::string);
+        Token token = Token(boost::string_view(), 0, 0, TokenType::string);
     };
 
     TEST_FIXTURE(WhenNextCharacterIsLeftBracket, verifyConsume)
@@ -354,7 +354,7 @@ namespace {
         const std::string s = "f]";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(boost::string_view(), TokenType::string);
+        Token token = Token(boost::string_view(), 0, 0, TokenType::string);
     };
 
     TEST_FIXTURE(WhenNextCharacterIsRightBracket, verifyConsume)
@@ -385,7 +385,7 @@ namespace {
         const std::string s = "f=";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(boost::string_view(), TokenType::string);
+        Token token = Token(boost::string_view(), 0, 0, TokenType::string);
     };
 
     TEST_FIXTURE(WhenNextCharacterIsEqual, verifyConsume)
@@ -416,7 +416,7 @@ namespace {
         const std::string s = "f.";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(boost::string_view(), TokenType::string);
+        Token token = Token(boost::string_view(), 0, 0, TokenType::string);
     };
 
     TEST_FIXTURE(WhenNextCharacterIsDot, verifyConsume)
@@ -447,7 +447,7 @@ namespace {
         const std::string s = "f ";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(boost::string_view(), TokenType::string);
+        Token token = Token(boost::string_view(), 0, 0, TokenType::string);
     };
 
     TEST_FIXTURE(WhenNextCharacterIsSpace, verifyConsumeSpace)
@@ -474,7 +474,7 @@ namespace {
         const std::string s = "f\t";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(boost::string_view(), TokenType::string);
+        Token token = Token(boost::string_view(), 0, 0, TokenType::string);
     };
 
     TEST_FIXTURE(WhenNextCharacterIsTab, verifyConsumeSpace)
@@ -501,7 +501,7 @@ namespace {
         const std::string s = "f\r";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(boost::string_view(), TokenType::string);
+        Token token = Token(boost::string_view(), 0, 0, TokenType::string);
     };
 
     TEST_FIXTURE(WhenNextCharacterIsReturn, verifyConsumeSpace)
@@ -528,7 +528,7 @@ namespace {
         const std::string s = "f\n";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(boost::string_view(), TokenType::string);
+        Token token = Token(boost::string_view(), 0, 0, TokenType::string);
     };
 
     TEST_FIXTURE(WhenNextCharacterIsNewLine, verifyConsumeSpace)

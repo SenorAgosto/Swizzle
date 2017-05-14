@@ -35,13 +35,13 @@ namespace swizzle { namespace lexer { namespace states {
 
             if(c == '\\')
             {
-                token.expand(source);
+                token.expand();
                 fileInfo.advanceBy(c);
 
                 return TokenizerState::EscapedCharInStringLiteral;
             }
 
-            token.expand(source);
+            token.expand();
             fileInfo.advanceBy(c);
 
             return TokenizerState::StringLiteral;

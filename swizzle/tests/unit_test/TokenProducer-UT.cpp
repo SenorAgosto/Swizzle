@@ -39,7 +39,7 @@ namespace {
 
     TEST_FIXTURE(TokenProducerFixture, verifyCallback)
     {
-        Token token("test", TokenType::string);
+        Token token("test", 0, 4, TokenType::string);
         info = producer.produceToken(token, info);
 
         CHECK_EQUAL(1U, info.start().line());
@@ -60,7 +60,7 @@ namespace {
 
     TEST_FIXTURE(TokenProducerFixture, verifyCallbackOnKeyword)
     {
-        Token token("import", TokenType::string);
+        Token token("import", 0, 6, TokenType::string);
         producer.produceToken(token, info);
 
         REQUIRE CHECK_EQUAL(1U, tokens.size());
@@ -70,7 +70,7 @@ namespace {
 
     TEST_FIXTURE(TokenProducerFixture, verifyCallbackOnEmptyToken)
     {
-        Token token("", TokenType::string);
+        Token token("", 0, 0, TokenType::string);
         producer.produceToken(token, info);
 
         REQUIRE CHECK_EQUAL(0U, tokens.size());

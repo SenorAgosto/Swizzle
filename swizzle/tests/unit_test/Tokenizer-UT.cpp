@@ -40,9 +40,7 @@ namespace {
         std::deque<TokenInfo> tokens;
         CreateTokenCallback callback = CreateTokenCallback(tokens);
 
-        Token token = Token(boost::string_view(), 0, 0, TokenType::numeric_literal);
         FileInfo info = FileInfo("testfile");
-
         Tokenizer<CreateTokenCallback> tokenizer = Tokenizer<CreateTokenCallback>("messages.swizzle", callback);
     };
 
@@ -54,6 +52,8 @@ namespace {
     {
         const std::string s = "// this is a comment";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::string);
     };
 
     TEST_FIXTURE(InputIsAComment, verifyConsume)
@@ -68,8 +68,9 @@ namespace {
         tokenizer.flush();
 
         REQUIRE CHECK_EQUAL(1U, tokens.size());
+
         CHECK_EQUAL(TokenType::comment, tokens[0].token().type());
-        CHECK_EQUAL(" this is a comment", tokens[0].token().to_string());
+        CHECK_EQUAL("// this is a comment", tokens[0].token().to_string());
 
         CHECK_EQUAL(1U, tokens[0].fileInfo().start().line());
         CHECK_EQUAL(1U, tokens[0].fileInfo().start().column());
@@ -81,6 +82,8 @@ namespace {
     {
         const std::string s = "// this is a multi-line \\\ncomment";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::string);
     };
 
     TEST_FIXTURE(InputIsAMultiLineComment, verifyConsume)
@@ -96,7 +99,7 @@ namespace {
 
         REQUIRE CHECK_EQUAL(1U, tokens.size());
         CHECK_EQUAL(TokenType::multiline_comment, tokens[0].token().type());
-        CHECK_EQUAL(" this is a multi-line \\\ncomment", tokens[0].token().to_string());
+        CHECK_EQUAL("// this is a multi-line \\\ncomment", tokens[0].token().to_string());
 
         CHECK_EQUAL(1U, tokens[0].fileInfo().start().line());
         CHECK_EQUAL(1U, tokens[0].fileInfo().start().column());
@@ -108,6 +111,8 @@ namespace {
     {
         const std::string s = "import Type;";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::string);
     };
 
     TEST_FIXTURE(InputIsImportStatement, verifyConsume)

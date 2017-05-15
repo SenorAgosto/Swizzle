@@ -27,6 +27,8 @@ namespace swizzle { namespace lexer { namespace states {
             const char c = source.at(position);
             if(c == '"')
             {
+                token.expand();
+
                 fileInfo = this->produceToken(token, fileInfo);
                 token = ResetToken(source, position);
 
@@ -36,14 +38,10 @@ namespace swizzle { namespace lexer { namespace states {
             if(c == '\\')
             {
                 token.expand();
-                fileInfo.advanceBy(c);
-
                 return TokenizerState::EscapedCharInStringLiteral;
             }
 
             token.expand();
-            fileInfo.advanceBy(c);
-
             return TokenizerState::StringLiteral;
         }
     };

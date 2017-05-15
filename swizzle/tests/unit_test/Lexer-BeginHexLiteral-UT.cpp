@@ -40,9 +40,7 @@ namespace {
         std::deque<TokenInfo> tokens;
         CreateTokenCallback callback = CreateTokenCallback(tokens);
 
-        Token token = Token(boost::string_view(), 0, 0, TokenType::hex_literal);
         FileInfo info = FileInfo("testfile");
-
         states::BeginHexLiteralState<CreateTokenCallback> state = states::BeginHexLiteralState<CreateTokenCallback>(callback);
 
         std::size_t position = 0;
@@ -56,6 +54,8 @@ namespace {
     {
         const std::string s = "1";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsNumber, verifyConsume)
@@ -70,6 +70,8 @@ namespace {
     {
         const std::string s = "x";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsX, verifyConsume)
@@ -84,6 +86,8 @@ namespace {
     {
         const std::string s = " ";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsSpace, verifyConsume)
@@ -98,6 +102,8 @@ namespace {
     {
         const std::string s = "\t";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsTab, verifyConsume)
@@ -112,6 +118,8 @@ namespace {
     {
         const std::string s = "\r";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsReturn, verifyConsume)
@@ -126,6 +134,8 @@ namespace {
     {
         const std::string s = "\n";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsNewLine, verifyConsume)
@@ -140,6 +150,8 @@ namespace {
     {
         const std::string s = "]";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsRightBracket, verifyConsume)
@@ -157,6 +169,8 @@ namespace {
     {
         const std::string s = "}";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsRightBrace, verifyConsume)
@@ -174,6 +188,8 @@ namespace {
     {
         const std::string s = ".";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsDot, verifyConsume)
@@ -191,6 +207,8 @@ namespace {
     {
         const std::string s = ";";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsSemiColon, verifyConsume)
@@ -208,6 +226,8 @@ namespace {
     {
         const std::string s = ",";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsComma, verifyConsume)
@@ -225,6 +245,8 @@ namespace {
     {
         const std::string s = "[";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsInvalid, verifyConsume)

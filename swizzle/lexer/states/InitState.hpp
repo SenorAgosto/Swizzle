@@ -31,25 +31,19 @@ namespace swizzle { namespace lexer { namespace states {
 
             if(c == '/')
             {
-                token = ResetToken(source, position + 1, TokenType::comment);
-                fileInfo.incrementColumn();
-
+                token = ResetToken(source, position, TokenType::comment);
                 return TokenizerState::FirstSlash;
             }
 
             if(c == '"')
             {
-                token = ResetToken(source, position + 1, TokenType::string_literal);
-                fileInfo.incrementColumn();
-
+                token = ResetToken(source, position, TokenType::string_literal);
                 return TokenizerState::StringLiteral;
             }
 
             if(c == '\'')
             {
-                token = ResetToken(source, position + 1, TokenType::char_literal);
-                fileInfo.incrementColumn();
-
+                token = ResetToken(source, position, TokenType::char_literal);
                 return TokenizerState::CharLiteral;
             }
 

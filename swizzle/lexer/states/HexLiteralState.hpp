@@ -50,7 +50,7 @@ namespace swizzle { namespace lexer { namespace states {
                 token = ResetToken(source, position, CharToTokenType(c));
 
                 fileInfo = this->produceToken(token, fileInfo);
-                token = ResetToken(source, position);
+                token = ResetToken(source, position + 1);
 
                 return TokenizerState::Init;
             }

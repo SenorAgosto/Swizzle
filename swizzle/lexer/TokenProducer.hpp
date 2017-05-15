@@ -1,6 +1,7 @@
 #pragma once
 
 #include <swizzle/IsKeyword.hpp>
+#include <swizzle/IsType.hpp>
 
 #include <swizzle/lexer/FileInfo.hpp>
 #include <swizzle/lexer/LineInfo.hpp>
@@ -27,6 +28,11 @@ namespace swizzle { namespace lexer {
             if(token.empty())
             {
                 return newInfo;
+            }
+
+            if(IsType(token.value()))
+            {
+                token.type(TokenType::type);
             }
 
             if(IsKeyword(token.value()))

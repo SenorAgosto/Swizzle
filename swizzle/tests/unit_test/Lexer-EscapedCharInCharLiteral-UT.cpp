@@ -41,9 +41,7 @@ namespace {
         std::deque<TokenInfo> tokens;
         CreateTokenCallback callback = CreateTokenCallback(tokens);
 
-        Token token = Token(boost::string_view(""), TokenType::char_literal);
         FileInfo info = FileInfo("testfile");
-
         states::EscapedCharInCharLiteralState<CreateTokenCallback> state = states::EscapedCharInCharLiteralState<CreateTokenCallback>(callback);
 
         std::size_t position = 0;
@@ -57,6 +55,8 @@ namespace {
     {
         const std::string s = "'";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::char_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsSingleQuote, verifyConsume)
@@ -72,6 +72,8 @@ namespace {
     {
         const std::string s = "0";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::char_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsZero, verifyConsume)
@@ -87,6 +89,8 @@ namespace {
     {
         const std::string s = "a";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::char_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsA, verifyConsume)
@@ -102,6 +106,8 @@ namespace {
     {
         const std::string s = "n";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::char_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsNewLine, verifyConsume)
@@ -117,6 +123,8 @@ namespace {
     {
         const std::string s = "r";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::char_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsReturn, verifyConsume)
@@ -132,6 +140,8 @@ namespace {
     {
         const std::string s = " ";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::char_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsInvalid, verifyConsume)

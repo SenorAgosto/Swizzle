@@ -37,12 +37,12 @@ namespace {
         std::deque<TokenInfo>& tokens_;
     };
 
-    struct InitFixture
+    struct InitStateFixture
     {
         std::deque<TokenInfo> tokens;
         CreateTokenCallback callback = CreateTokenCallback(tokens);
 
-        Token token = Token(boost::string_view(""), TokenType::numeric_literal);
+        Token token = Token(boost::string_view(), 0, 0, TokenType::numeric_literal);
         FileInfo info = FileInfo("testfile");
 
         states::InitState<CreateTokenCallback> state = states::InitState<CreateTokenCallback>(callback);
@@ -50,11 +50,11 @@ namespace {
         std::size_t position = 0;
     };
 
-    TEST_FIXTURE(InitFixture, verifyConstruction)
+    TEST_FIXTURE(InitStateFixture, verifyConstruction)
     {
     }
 
-    struct WhenNextCharIs1 : public InitFixture
+    struct WhenNextCharIs1 : public InitStateFixture
     {
         const std::string s = "1";
         const boost::string_view sv = boost::string_view(s);
@@ -73,7 +73,7 @@ namespace {
         CHECK_EQUAL(0U, tokens.size());
     }
 
-    struct WhenNextCharIs0 : public InitFixture
+    struct WhenNextCharIs0 : public InitStateFixture
     {
         const std::string s = "0";
         const boost::string_view sv = boost::string_view(s);
@@ -92,7 +92,7 @@ namespace {
         CHECK_EQUAL(0U, tokens.size());
     }
 
-    struct WhenNextCharIsSingleQuote : public InitFixture
+    struct WhenNextCharIsSingleQuote : public InitStateFixture
     {
         const std::string s = "'";
         const boost::string_view sv = boost::string_view(s);
@@ -106,12 +106,12 @@ namespace {
 
         CHECK_EQUAL(TokenizerState::CharLiteral, tokenState);
         CHECK_EQUAL(TokenType::char_literal, token.type());
-        CHECK_EQUAL("", token.to_string());
+        CHECK_EQUAL("'", token.to_string());
 
         CHECK_EQUAL(0U, tokens.size());
     }
 
-    struct WhenNextCharIsDoubleQuote : public InitFixture
+    struct WhenNextCharIsDoubleQuote : public InitStateFixture
     {
         const std::string s = "\"";
         const boost::string_view sv = boost::string_view(s);
@@ -125,12 +125,12 @@ namespace {
 
         CHECK_EQUAL(TokenizerState::StringLiteral, tokenState);
         CHECK_EQUAL(TokenType::string_literal, token.type());
-        CHECK_EQUAL("", token.to_string());
+        CHECK_EQUAL("\"", token.to_string());
 
         CHECK_EQUAL(0U, tokens.size());
     }
 
-    struct WhenNextCharIsSpace : public InitFixture
+    struct WhenNextCharIsSpace : public InitStateFixture
     {
         const std::string s = " ";
         const boost::string_view sv = boost::string_view(s);
@@ -149,7 +149,7 @@ namespace {
         CHECK_EQUAL(0U, tokens.size());
     }
 
-    struct WhenNextCharIsTab : public InitFixture
+    struct WhenNextCharIsTab : public InitStateFixture
     {
         const std::string s = "\t";
         const boost::string_view sv = boost::string_view(s);
@@ -168,7 +168,7 @@ namespace {
         CHECK_EQUAL(0U, tokens.size());
     }
 
-    struct WhenNextCharIsReturn : public InitFixture
+    struct WhenNextCharIsReturn : public InitStateFixture
     {
         const std::string s = "\r";
         const boost::string_view sv = boost::string_view(s);
@@ -187,7 +187,7 @@ namespace {
         CHECK_EQUAL(0U, tokens.size());
     }
 
-    struct WhenNextCharIsNewLine : public InitFixture
+    struct WhenNextCharIsNewLine : public InitStateFixture
     {
         const std::string s = "\n";
         const boost::string_view sv = boost::string_view(s);
@@ -206,7 +206,7 @@ namespace {
         CHECK_EQUAL(0U, tokens.size());
     }
 
-    struct WhenNextCharIsLeftBracket : public InitFixture
+    struct WhenNextCharIsLeftBracket : public InitStateFixture
     {
         const std::string s = "[";
         const boost::string_view sv = boost::string_view(s);
@@ -225,7 +225,7 @@ namespace {
         CHECK_EQUAL("[", tokens[0].token().to_string());
     }
 
-    struct WhenNextCharIsRightBracket : public InitFixture
+    struct WhenNextCharIsRightBracket : public InitStateFixture
     {
         const std::string s = "]";
         const boost::string_view sv = boost::string_view(s);
@@ -244,7 +244,7 @@ namespace {
         CHECK_EQUAL("]", tokens[0].token().to_string());
     }
 
-    struct WhenNextCharIsLeftBrace : public InitFixture
+    struct WhenNextCharIsLeftBrace : public InitStateFixture
     {
         const std::string s = "{";
         const boost::string_view sv = boost::string_view(s);
@@ -263,7 +263,7 @@ namespace {
         CHECK_EQUAL("{", tokens[0].token().to_string());
     }
 
-    struct WhenNextCharIsRightBrace : public InitFixture
+    struct WhenNextCharIsRightBrace : public InitStateFixture
     {
         const std::string s = "}";
         const boost::string_view sv = boost::string_view(s);
@@ -282,7 +282,7 @@ namespace {
         CHECK_EQUAL("}", tokens[0].token().to_string());
     }
 
-    struct WhenNextCharIsDot : public InitFixture
+    struct WhenNextCharIsDot : public InitStateFixture
     {
         const std::string s = ".";
         const boost::string_view sv = boost::string_view(s);
@@ -301,7 +301,7 @@ namespace {
         CHECK_EQUAL(".", tokens[0].token().to_string());
     }
 
-    struct WhenNextCharIsEqual : public InitFixture
+    struct WhenNextCharIsEqual : public InitStateFixture
     {
         const std::string s = "=";
         const boost::string_view sv = boost::string_view(s);
@@ -320,7 +320,7 @@ namespace {
         CHECK_EQUAL("=", tokens[0].token().to_string());
     }
 
-    struct WhenNextCharIsAt : public InitFixture
+    struct WhenNextCharIsAt : public InitStateFixture
     {
         const std::string s = "@";
         const boost::string_view sv = boost::string_view(s);
@@ -339,7 +339,26 @@ namespace {
         CHECK_EQUAL("@", tokens[0].token().to_string());
     }
 
-    struct WhenNextCharIsColon : public InitFixture
+    struct WhenNextCharIsComma : public InitStateFixture
+    {
+        const std::string s = ",";
+        const boost::string_view sv = boost::string_view(s);
+    };
+
+    TEST_FIXTURE(WhenNextCharIsComma, verifyConsume)
+    {
+        CHECK_EQUAL(0U, tokens.size());
+
+        auto tokenState = state.consume(sv, position, info, token);
+
+        CHECK_EQUAL(TokenizerState::Init, tokenState);
+
+        REQUIRE CHECK_EQUAL(1U, tokens.size());
+        CHECK_EQUAL(TokenType::comma, tokens[0].token().type());
+        CHECK_EQUAL(",", tokens[0].token().to_string());
+    }
+
+    struct WhenNextCharIsColon : public InitStateFixture
     {
         const std::string s = ":";
         const boost::string_view sv = boost::string_view(s);
@@ -358,7 +377,7 @@ namespace {
         CHECK_EQUAL(":", tokens[0].token().to_string());
     }
 
-    struct WhenNextCharIsSemiColon : public InitFixture
+    struct WhenNextCharIsSemiColon : public InitStateFixture
     {
         const std::string s = ";";
         const boost::string_view sv = boost::string_view(s);
@@ -377,7 +396,7 @@ namespace {
         CHECK_EQUAL(";", tokens[0].token().to_string());
     }
 
-    struct WhenNextCharIsSlash : public InitFixture
+    struct WhenNextCharIsSlash : public InitStateFixture
     {
         const std::string s = "/";
         const boost::string_view sv = boost::string_view(s);
@@ -393,7 +412,7 @@ namespace {
         CHECK_EQUAL(0U, tokens.size());
     }
 
-    struct WhenNextCharIsAlpha : public InitFixture
+    struct WhenNextCharIsAlpha : public InitStateFixture
     {
         const std::string s = "abc";
         const boost::string_view sv = boost::string_view(s);

@@ -40,9 +40,7 @@ namespace {
         std::deque<TokenInfo> tokens;
         CreateTokenCallback callback = CreateTokenCallback(tokens);
 
-        Token token = Token(boost::string_view("a"), TokenType::char_literal);
         FileInfo info = FileInfo("testfile");
-
         states::EndCharLiteralState<CreateTokenCallback> state = states::EndCharLiteralState<CreateTokenCallback>(callback);
 
         std::size_t position = 0;
@@ -54,19 +52,19 @@ namespace {
 
     struct WhenNextCharIsSingleQuote : public EndCharLiteralFixture
     {
-        const std::string s = "'";
+        const std::string s = "a'";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 1, TokenType::char_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsSingleQuote, verifyConsume)
     {
-        auto tokenState = state.consume(sv, position++, info, token);
-
-        CHECK_EQUAL(TokenizerState::Init, tokenState);
-        CHECK_EQUAL(TokenType::string, token.type());
-        CHECK_EQUAL("'", token.to_string());
+        // consume '
+        auto tokenState = state.consume(sv, ++position, info, token);
 
         REQUIRE CHECK_EQUAL(1U, tokens.size());
+
         CHECK_EQUAL(TokenType::char_literal, tokens[0].token().type());
         CHECK_EQUAL("a", tokens[0].token().to_string());
     }
@@ -75,6 +73,8 @@ namespace {
     {
         const std::string s = " ";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::char_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsInvalid, verifyConsume)

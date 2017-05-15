@@ -51,7 +51,7 @@ namespace {
         const std::string s = "bl\n";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(boost::string_view(), TokenType::comment);
+        Token token = Token(sv, 0, 0, TokenType::comment);
     };
 
     TEST_FIXTURE(CommentFixture, verifyConstruction)
@@ -67,30 +67,25 @@ namespace {
         CHECK_EQUAL(1U, info.end().line());
         CHECK_EQUAL(1U, info.end().column());
 
+        // consume b
         auto tokenState = state.consume(sv, position++, info, token);
 
         CHECK_EQUAL(TokenizerState::Comment, tokenState);
         CHECK_EQUAL(TokenType::comment, token.type());
         CHECK_EQUAL("b", token.to_string());
 
+        // consume l
         tokenState = state.consume(sv, position++, info, token);
 
         CHECK_EQUAL(TokenizerState::Comment, tokenState);
         CHECK_EQUAL(TokenType::comment, token.type());
         CHECK_EQUAL("bl", token.to_string());
 
+        // consume \n
         tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::Init, tokenState);
-        CHECK_EQUAL(TokenType::string, token.type());
-        CHECK(token.empty());
+        REQUIRE CHECK_EQUAL(1U, tokens.size());
 
-        CHECK_EQUAL(1U, info.start().line());
-        CHECK_EQUAL(3U, info.start().column());
-        CHECK_EQUAL(2U, info.end().line());
-        CHECK_EQUAL(1U, info.end().column());
-
-        CHECK_EQUAL(1U, tokens.size());
         CHECK_EQUAL(TokenType::comment, tokens[0].token().type());
         CHECK_EQUAL("bl", tokens[0].token().to_string());
 
@@ -105,7 +100,7 @@ namespace {
         const std::string s = "b\\";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(boost::string_view(), TokenType::comment);
+        Token token = Token(sv, 0, 0, TokenType::comment);
     };
 
     TEST_FIXTURE(MultilineCommentFixture, verifyConsumeTransitionsToMultilineComment)

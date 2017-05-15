@@ -41,9 +41,7 @@ namespace {
         std::deque<TokenInfo> tokens;
         CreateTokenCallback callback = CreateTokenCallback(tokens);
 
-        Token token = Token(boost::string_view(), TokenType::hex_literal);
         FileInfo info = FileInfo("testfile");
-
         states::HexLiteralState<CreateTokenCallback> state = states::HexLiteralState<CreateTokenCallback>(callback);
 
         std::size_t position = 0;
@@ -57,6 +55,8 @@ namespace {
     {
         const std::string s = "0";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIs0, verifyConsumer)
@@ -72,6 +72,8 @@ namespace {
     {
         const std::string s = "1";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIs1, verifyConsumer)
@@ -87,6 +89,8 @@ namespace {
     {
         const std::string s = "2";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIs2, verifyConsumer)
@@ -102,6 +106,8 @@ namespace {
     {
         const std::string s = "3";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIs3, verifyConsumer)
@@ -117,6 +123,8 @@ namespace {
     {
         const std::string s = "4";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIs4, verifyConsumer)
@@ -132,6 +140,8 @@ namespace {
     {
         const std::string s = "5";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIs5, verifyConsumer)
@@ -147,6 +157,8 @@ namespace {
     {
         const std::string s = "6";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIs6, verifyConsumer)
@@ -162,6 +174,8 @@ namespace {
     {
         const std::string s = "7";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIs7, verifyConsumer)
@@ -177,6 +191,8 @@ namespace {
     {
         const std::string s = "8";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIs8, verifyConsumer)
@@ -192,6 +208,8 @@ namespace {
     {
         const std::string s = "9";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIs9, verifyConsumer)
@@ -207,6 +225,8 @@ namespace {
     {
         const std::string s = "aA";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsA, verifyConsumer)
@@ -228,6 +248,8 @@ namespace {
     {
         const std::string s = "bB";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsB, verifyConsumer)
@@ -249,6 +271,8 @@ namespace {
     {
         const std::string s = "cC";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsC, verifyConsumer)
@@ -270,6 +294,8 @@ namespace {
     {
         const std::string s = "dD";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsD, verifyConsumer)
@@ -291,6 +317,8 @@ namespace {
     {
         const std::string s = "eE";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsE, verifyConsumer)
@@ -312,6 +340,8 @@ namespace {
     {
         const std::string s = "fF";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsF, verifyConsumer)
@@ -333,6 +363,8 @@ namespace {
     {
         const std::string s = "g";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsNonHex, verifyConsumer)
@@ -344,6 +376,8 @@ namespace {
     {
         const std::string s = "f ";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsSpace, verifyConsumer)
@@ -367,6 +401,8 @@ namespace {
     {
         const std::string s = "f]";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsRightBracket, verifyConsumer)
@@ -394,6 +430,8 @@ namespace {
     {
         const std::string s = "}";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsRightBrace, verifyConsume)
@@ -405,6 +443,8 @@ namespace {
     {
         const std::string s = ".";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsDot, verifyConsume)
@@ -416,6 +456,8 @@ namespace {
     {
         const std::string s = "f;";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsSemiColon, verifyConsumer)
@@ -443,6 +485,8 @@ namespace {
     {
         const std::string s = "f,";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::hex_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsComma, verifyConsumer)

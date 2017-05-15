@@ -18,14 +18,12 @@ namespace swizzle { namespace lexer { namespace states {
         {
         }
 
-        TokenizerState consume(const boost::string_view& source, const std::size_t position, FileInfo& fileInfo, Token& token) override
+        TokenizerState consume(const boost::string_view& source, const std::size_t position, FileInfo&, Token& token) override
         {
             const char c = source.at(position);
             if(c == '/')
             {
-                token = ResetToken(source, position + 1, TokenType::comment);
-                fileInfo.incrementColumn();
-                
+                token.expand();
                 return TokenizerState::Comment;
             }
 

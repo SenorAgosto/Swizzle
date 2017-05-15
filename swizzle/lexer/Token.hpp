@@ -12,22 +12,24 @@ namespace swizzle { namespace lexer {
     {
     public:
         Token();
-        Token(const boost::string_view& value, const TokenType type);
+        Token(const boost::string_view& value, const std::size_t position, const std::size_t length, const TokenType type);
 
         void type(const TokenType type) { type_ = type; }
         TokenType type() const { return type_; }
 
-        void expand(const boost::string_view& source, const std::size_t count = 1);
-
+        // extend the token to the right by @count bytes
+        void expand(const std::size_t count = 1) { length_ += count; }
         bool empty() const;
 
-        const boost::string_view& value() const { return value_; }
-        std::string to_string() const { return value_.to_string(); }
-        
-        void clear();
-        
+        boost::string_view value() const { return value_.substr(position_, length_); }
+        std::string to_string() const { return value_.substr(position_, length_).to_string(); }
+
     private:
         boost::string_view value_;
+
+        std::size_t position_;
+        std::size_t length_;
+
         TokenType type_;
     };
 }}

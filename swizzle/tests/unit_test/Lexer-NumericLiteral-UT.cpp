@@ -40,9 +40,7 @@ namespace {
         std::deque<TokenInfo> tokens;
         CreateTokenCallback callback = CreateTokenCallback(tokens);
 
-        Token token = Token(boost::string_view(), TokenType::numeric_literal);
         FileInfo info = FileInfo("testfile");
-
         states::NumericLiteralState<CreateTokenCallback> state = states::NumericLiteralState<CreateTokenCallback>(callback);
 
         std::size_t position = 0;
@@ -52,6 +50,8 @@ namespace {
     {
         const std::string s;
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
     };
 
     TEST_FIXTURE(WhenStringIsEmpty, verifyConstruction)
@@ -62,6 +62,8 @@ namespace {
     {
         const std::string s = "00";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIs0, verifyConsume)
@@ -87,6 +89,8 @@ namespace {
     {
         const std::string s = "01";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIs1, verifyConsume)
@@ -112,6 +116,8 @@ namespace {
     {
         const std::string s = "02";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIs2, verifyConsume)
@@ -137,6 +143,8 @@ namespace {
     {
         const std::string s = "03";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIs3, verifyConsume)
@@ -162,6 +170,8 @@ namespace {
     {
         const std::string s = "04";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIs4, verifyConsume)
@@ -187,6 +197,8 @@ namespace {
     {
         const std::string s = "05";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIs5, verifyConsume)
@@ -212,6 +224,8 @@ namespace {
     {
         const std::string s = "06";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIs6, verifyConsume)
@@ -237,6 +251,8 @@ namespace {
     {
         const std::string s = "07";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIs7, verifyConsume)
@@ -262,6 +278,8 @@ namespace {
     {
         const std::string s = "08";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIs8, verifyConsume)
@@ -287,6 +305,8 @@ namespace {
     {
         const std::string s = "09";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIs9, verifyConsume)
@@ -312,6 +332,8 @@ namespace {
     {
         const std::string s = "0 ";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsSpace, verifyConsume)
@@ -329,14 +351,22 @@ namespace {
         CHECK_EQUAL(TokenizerState::Init, tokenState);
 
         REQUIRE CHECK_EQUAL(1U, tokens.size());
+
         CHECK_EQUAL("0", tokens[0].token().to_string());
         CHECK_EQUAL(TokenType::numeric_literal, tokens[0].token().type());
+
+        CHECK_EQUAL(1U, tokens[0].fileInfo().start().line());
+        CHECK_EQUAL(1U, tokens[0].fileInfo().start().column());
+        CHECK_EQUAL(1U, tokens[0].fileInfo().end().line());
+        CHECK_EQUAL(2U, tokens[0].fileInfo().end().column());
     }
 
     struct WhenNextCharIsEqual : public NumericLiteralFixture
     {
         const std::string s = "0=";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsEqual, verifyConsume)
@@ -356,6 +386,8 @@ namespace {
     {
         const std::string s = "0[";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsLeftBracket, verifyConsume)
@@ -375,6 +407,8 @@ namespace {
     {
         const std::string s = "0]";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsRightBracket, verifyConsume)
@@ -396,14 +430,26 @@ namespace {
         CHECK_EQUAL("0", tokens[0].token().to_string());
         CHECK_EQUAL(TokenType::numeric_literal, tokens[0].token().type());
 
+        CHECK_EQUAL(1U, tokens[0].fileInfo().start().line());
+        CHECK_EQUAL(1U, tokens[0].fileInfo().start().column());
+        CHECK_EQUAL(1U, tokens[0].fileInfo().end().line());
+        CHECK_EQUAL(2U, tokens[0].fileInfo().end().column());
+
         CHECK_EQUAL("]", tokens[1].token().to_string());
         CHECK_EQUAL(TokenType::r_bracket, tokens[1].token().type());
+
+        CHECK_EQUAL(1U, tokens[1].fileInfo().start().line());
+        CHECK_EQUAL(2U, tokens[1].fileInfo().start().column());
+        CHECK_EQUAL(1U, tokens[1].fileInfo().end().line());
+        CHECK_EQUAL(3U, tokens[1].fileInfo().end().column());
     }
 
     struct WhenNextCharIsLeftBrace : public NumericLiteralFixture
     {
         const std::string s = "0{";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsLeftBrace, verifyConsume)
@@ -423,6 +469,8 @@ namespace {
     {
         const std::string s = "0}";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsRightBrace, verifyConsume)
@@ -444,14 +492,26 @@ namespace {
         CHECK_EQUAL("0", tokens[0].token().to_string());
         CHECK_EQUAL(TokenType::numeric_literal, tokens[0].token().type());
 
+        CHECK_EQUAL(1U, tokens[0].fileInfo().start().line());
+        CHECK_EQUAL(1U, tokens[0].fileInfo().start().column());
+        CHECK_EQUAL(1U, tokens[0].fileInfo().end().line());
+        CHECK_EQUAL(2U, tokens[0].fileInfo().end().column());
+
         CHECK_EQUAL("}", tokens[1].token().to_string());
         CHECK_EQUAL(TokenType::r_brace, tokens[1].token().type());
+
+        CHECK_EQUAL(1U, tokens[1].fileInfo().start().line());
+        CHECK_EQUAL(2U, tokens[1].fileInfo().start().column());
+        CHECK_EQUAL(1U, tokens[1].fileInfo().end().line());
+        CHECK_EQUAL(3U, tokens[1].fileInfo().end().column());
     }
 
     struct WhenNextCharIsColon : public NumericLiteralFixture
     {
         const std::string s = "0:";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsColon, verifyConsume)
@@ -471,6 +531,8 @@ namespace {
     {
         const std::string s = "0;";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsSemiColon, verifyConsume)
@@ -492,14 +554,26 @@ namespace {
         CHECK_EQUAL("0", tokens[0].token().to_string());
         CHECK_EQUAL(TokenType::numeric_literal, tokens[0].token().type());
 
+        CHECK_EQUAL(1U, tokens[0].fileInfo().start().line());
+        CHECK_EQUAL(1U, tokens[0].fileInfo().start().column());
+        CHECK_EQUAL(1U, tokens[0].fileInfo().end().line());
+        CHECK_EQUAL(2U, tokens[0].fileInfo().end().column());
+
         CHECK_EQUAL(";", tokens[1].token().to_string());
         CHECK_EQUAL(TokenType::end_statement, tokens[1].token().type());
+
+        CHECK_EQUAL(1U, tokens[1].fileInfo().start().line());
+        CHECK_EQUAL(2U, tokens[1].fileInfo().start().column());
+        CHECK_EQUAL(1U, tokens[1].fileInfo().end().line());
+        CHECK_EQUAL(3U, tokens[1].fileInfo().end().column());
     }
 
     struct WhenNextCharIsDot : public NumericLiteralFixture
     {
         const std::string s = "0.";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsDot, verifyConsume)
@@ -521,14 +595,26 @@ namespace {
         CHECK_EQUAL("0", tokens[0].token().to_string());
         CHECK_EQUAL(TokenType::numeric_literal, tokens[0].token().type());
 
+        CHECK_EQUAL(1U, tokens[0].fileInfo().start().line());
+        CHECK_EQUAL(1U, tokens[0].fileInfo().start().column());
+        CHECK_EQUAL(1U, tokens[0].fileInfo().end().line());
+        CHECK_EQUAL(2U, tokens[0].fileInfo().end().column());
+
         CHECK_EQUAL(".", tokens[1].token().to_string());
         CHECK_EQUAL(TokenType::dot, tokens[1].token().type());
+
+        CHECK_EQUAL(1U, tokens[1].fileInfo().start().line());
+        CHECK_EQUAL(2U, tokens[1].fileInfo().start().column());
+        CHECK_EQUAL(1U, tokens[1].fileInfo().end().line());
+        CHECK_EQUAL(3U, tokens[1].fileInfo().end().column());
     }
 
     struct WhenNextCharIsComma : public NumericLiteralFixture
     {
         const std::string s = "0,";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsComma, verifyConsume)
@@ -550,14 +636,26 @@ namespace {
         CHECK_EQUAL("0", tokens[0].token().to_string());
         CHECK_EQUAL(TokenType::numeric_literal, tokens[0].token().type());
 
+        CHECK_EQUAL(1U, tokens[0].fileInfo().start().line());
+        CHECK_EQUAL(1U, tokens[0].fileInfo().start().column());
+        CHECK_EQUAL(1U, tokens[0].fileInfo().end().line());
+        CHECK_EQUAL(2U, tokens[0].fileInfo().end().column());
+
         CHECK_EQUAL(",", tokens[1].token().to_string());
         CHECK_EQUAL(TokenType::comma, tokens[1].token().type());
+
+        CHECK_EQUAL(1U, tokens[1].fileInfo().start().line());
+        CHECK_EQUAL(2U, tokens[1].fileInfo().start().column());
+        CHECK_EQUAL(1U, tokens[1].fileInfo().end().line());
+        CHECK_EQUAL(3U, tokens[1].fileInfo().end().column());
     }
 
     struct WhenNextCharIsDoubleQuote : public NumericLiteralFixture
     {
         const std::string s = "0\"";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsDoubleQuote, verifyConsume)
@@ -577,6 +675,8 @@ namespace {
     {
         const std::string s = "0a";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsAlpha, verifyConsume)

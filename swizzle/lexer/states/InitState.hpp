@@ -27,70 +27,53 @@ namespace swizzle { namespace lexer { namespace states {
         TokenizerState consume(const boost::string_view& source, const std::size_t position, FileInfo& fileInfo, Token& token) override
         {
             const char c = source.at(position);
-            fileInfo.advanceBy(c);
 
             if(c == '/')
             {
-                token = ResetToken(source, position + 1, TokenType::comment);
-                fileInfo.incrementColumn();
-
+                token = ResetToken(source, position, TokenType::comment);
                 return TokenizerState::FirstSlash;
             }
 
             if(c == '"')
             {
-                token = ResetToken(source, position + 1, TokenType::string_literal);
-                fileInfo.incrementColumn();
-
+                token = ResetToken(source, position, TokenType::string_literal);
                 return TokenizerState::StringLiteral;
             }
 
             if(c == '\'')
             {
-                token = ResetToken(source, position + 1, TokenType::char_literal);
-                fileInfo.incrementColumn();
-
+                token = ResetToken(source, position, TokenType::char_literal);
                 return TokenizerState::CharLiteral;
             }
 
             // 0x01
             if(c == '0')
             {
-                token.expand(source);
-                token.type(TokenType::hex_literal);
-
+                token = ResetToken(source, position, TokenType::hex_literal);
                 return TokenizerState::BeginHexLiteral;
             }
 
             // 1-9
             if(std::isdigit(c))
             {
-                token.expand(source);
-                token.type(TokenType::numeric_literal);
-
+                token = ResetToken(source, position, TokenType::numeric_literal);
                 return TokenizerState::NumericLiteral;
             }
 
             static const std::string whitespace(" \t\r\n");
             if(whitespace.find_first_of(c) != std::string::npos)
             {
-                token.expand(source);
-                token.type(TokenType::whitespace);
-
+                token = ResetToken(source, position, TokenType::whitespace);
                 return TokenizerState::Init;
             }
 
-            static const std::string tokenProducers("@=[]{}.:;");
+            static const std::string tokenProducers("@=[]{}.:;,");
             if(tokenProducers.find_first_of(c) != std::string::npos)
             {
-                token.expand(source);
-                token.type(CharToTokenType(c));
-
+                token = ResetToken(source, position, CharToTokenType(c));
                 fileInfo = this->produceToken(token, fileInfo);
 
-                token = Token();
-                fileInfo.advanceTo(fileInfo);
-
+                token = ResetToken(source, position + 1);
                 return TokenizerState::Init;
             }
 

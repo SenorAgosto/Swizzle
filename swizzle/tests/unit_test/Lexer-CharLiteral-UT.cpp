@@ -40,7 +40,6 @@ namespace {
         std::deque<TokenInfo> tokens;
         CreateTokenCallback callback = CreateTokenCallback(tokens);
 
-        Token token = Token(boost::string_view(), TokenType::char_literal);
         FileInfo info = FileInfo("testfile");
 
         states::CharLiteralState<CreateTokenCallback> state = states::CharLiteralState<CreateTokenCallback>(callback);
@@ -56,6 +55,8 @@ namespace {
     {
         const std::string s = "\\";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::char_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsBackslash, verifyConsume)
@@ -64,13 +65,15 @@ namespace {
 
         CHECK_EQUAL(TokenizerState::EscapedCharInCharLiteral, tokenState);
         CHECK_EQUAL(TokenType::char_literal, token.type());
-        CHECK(token.empty());
+        CHECK_EQUAL("\\", token.to_string());
     }
 
     struct WhenNextCharIsNotBackslash : public CharLiteralFixture
     {
         const std::string s = "a";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::char_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsNotBackslash, verifyConsume)

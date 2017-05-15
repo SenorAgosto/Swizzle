@@ -41,9 +41,7 @@ namespace {
         std::deque<TokenInfo> tokens;
         CreateTokenCallback callback = CreateTokenCallback(tokens);
 
-        Token token = Token(boost::string_view(""), TokenType::string_literal);
         FileInfo info = FileInfo("testfile");
-
         states::StringLiteralState<CreateTokenCallback> state = states::StringLiteralState<CreateTokenCallback>(callback);
 
         std::size_t position = 0;
@@ -57,6 +55,8 @@ namespace {
     {
         const std::string s = "a";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::string_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsAlpha, verifyConsume)
@@ -76,6 +76,8 @@ namespace {
     {
         const std::string s = "4";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::string_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsNumber, verifyConsume)
@@ -95,6 +97,8 @@ namespace {
     {
         const std::string s = "\\";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::string_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsBackslash, verifyConsume)
@@ -114,6 +118,8 @@ namespace {
     {
         const std::string s = "\"";
         const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::string_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsDoubleQuote, verifyConsume)
@@ -123,6 +129,12 @@ namespace {
         auto tokenState = state.consume(sv, position++, info, token);
 
         CHECK_EQUAL(TokenizerState::Init, tokenState);
+
         REQUIRE CHECK_EQUAL(1U, tokens.size());
+
+        CHECK_EQUAL(1U, tokens[0].fileInfo().start().line());
+        CHECK_EQUAL(1U, tokens[0].fileInfo().start().column());
+        CHECK_EQUAL(1U, tokens[0].fileInfo().end().line());
+        CHECK_EQUAL(2U, tokens[0].fileInfo().end().column());
     }
 }

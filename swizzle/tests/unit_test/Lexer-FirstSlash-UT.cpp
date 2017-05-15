@@ -52,7 +52,7 @@ namespace {
         const std::string s = "/ this is a comment";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(boost::string_view(), TokenType::comment);
+        Token token = Token(sv, 0, 0, TokenType::comment);
     };
 
     TEST_FIXTURE(CommentFixture, verifyConstruction)
@@ -67,7 +67,7 @@ namespace {
 
         CHECK_EQUAL(TokenizerState::Comment, tokenState);
         CHECK_EQUAL(TokenType::comment, token.type());
-        CHECK(token.empty());
+        CHECK_EQUAL("/", token.to_string());
 
         CHECK_EQUAL(0U, tokens.size());
     }
@@ -78,7 +78,7 @@ namespace {
         const std::string s = "syntax error";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(boost::string_view(), TokenType::comment);
+        Token token = Token(boost::string_view(), 0, 0, TokenType::comment);
     };
 
     TEST_FIXTURE(SyntaxErrorFixture, verifyConsumeThrowsOnSyntaxError)

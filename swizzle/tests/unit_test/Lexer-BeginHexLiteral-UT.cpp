@@ -63,6 +63,7 @@ namespace {
         auto tokenState = state.consume(sv, position++, info, token);
 
         CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
+        CHECK_EQUAL(TokenType::numeric_literal, token.type());
         CHECK_EQUAL("1", token.to_string());
     }
 
@@ -79,6 +80,7 @@ namespace {
         auto tokenState = state.consume(sv, position++, info, token);
 
         CHECK_EQUAL(TokenizerState::HexLiteral, tokenState);
+        CHECK_EQUAL(TokenType::hex_literal, token.type());
         CHECK_EQUAL("x", token.to_string());
     }
 

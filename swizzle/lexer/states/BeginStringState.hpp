@@ -67,7 +67,9 @@ namespace swizzle { namespace lexer { namespace states {
             if(whitespace.find_first_of(c) != std::string::npos)
             {
                 fileInfo = this->produceToken(token, fileInfo);
+
                 token = ResetToken(source, position, TokenType::whitespace);
+                fileInfo.advanceBy(c);  // because InitState also resets token, and this token will be gone, manually increment
 
                 return TokenizerState::Init;
             }

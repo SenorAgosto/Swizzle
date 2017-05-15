@@ -106,7 +106,7 @@ namespace {
 
         CHECK_EQUAL(TokenizerState::CharLiteral, tokenState);
         CHECK_EQUAL(TokenType::char_literal, token.type());
-        CHECK_EQUAL("", token.to_string());
+        CHECK_EQUAL("'", token.to_string());
 
         CHECK_EQUAL(0U, tokens.size());
     }
@@ -125,7 +125,7 @@ namespace {
 
         CHECK_EQUAL(TokenizerState::StringLiteral, tokenState);
         CHECK_EQUAL(TokenType::string_literal, token.type());
-        CHECK_EQUAL("", token.to_string());
+        CHECK_EQUAL("\"", token.to_string());
 
         CHECK_EQUAL(0U, tokens.size());
     }

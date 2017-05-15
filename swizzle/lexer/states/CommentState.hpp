@@ -28,7 +28,6 @@ namespace swizzle { namespace lexer { namespace states {
             {
                 token.expand();
                 token.type(TokenType::multiline_comment);
-                fileInfo.advanceBy(c);
 
                 return TokenizerState::MultilineComment;
             }
@@ -36,16 +35,12 @@ namespace swizzle { namespace lexer { namespace states {
             if(c == '\n')
             {
                 fileInfo = this->produceToken(token, fileInfo);
-                fileInfo.advanceBy(c);
-
                 token = ResetToken(source, position);
 
                 return TokenizerState::Init;
             }
 
             token.expand();
-            fileInfo.advanceBy(c);
-
             return TokenizerState::Comment;
         }
     };

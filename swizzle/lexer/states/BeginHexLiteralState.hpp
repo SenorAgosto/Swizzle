@@ -30,7 +30,9 @@ namespace swizzle { namespace lexer { namespace states {
 
             if(std::isdigit(c))
             {
+                token.type(TokenType::numeric_literal);
                 token.expand();
+
                 return TokenizerState::NumericLiteral;
             }
 
@@ -45,6 +47,8 @@ namespace swizzle { namespace lexer { namespace states {
             static const std::string whitespace(" \t\r\n");
             if(whitespace.find_first_of(c) != std::string::npos)
             {
+                token.type(TokenType::numeric_literal);
+
                 fileInfo = this->produceToken(token, fileInfo);
                 token = ResetToken(source, position, TokenType::whitespace);
 
@@ -54,6 +58,8 @@ namespace swizzle { namespace lexer { namespace states {
             static const std::string tokenProducers("]}.;,");
             if(tokenProducers.find_first_of(c) != std::string::npos)
             {
+                token.type(CharToTokenType(c));
+
                 fileInfo = this->produceToken(token, fileInfo);
                 token = ResetToken(source, position, CharToTokenType(c));
 

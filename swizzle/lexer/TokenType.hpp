@@ -14,8 +14,8 @@ namespace swizzle { namespace lexer {
         hex_literal,            // 0x0a
 
         attribute,              // @attribute
-        keyword,                // import | namespace | using | struct | enum | variable_block |
-                                // u8 | i8 | u16 | i16 | u32 | i32 | u64 | i64 | bitfield | const
+        keyword,                // import | namespace | using | struct | enum | const |
+        type,                   // variable_block | u8 | i8 | u16 | i16 | u32 | i32 | u64 | i64 | bitfield
 
         l_brace,                // {
         r_brace,                // }

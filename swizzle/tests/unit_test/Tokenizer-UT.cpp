@@ -247,6 +247,78 @@ namespace {
         CHECK_EQUAL(23U, tokens[8].fileInfo().end().column());
     }
 
+    struct InputIsNamespaceDeclaration : public TokenizerFixture
+    {
+        const std::string s = "namespace foo ;\n";
+        const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::string);
+    };
+
+    TEST_FIXTURE(InputIsNamespaceDeclaration, verifyConsume)
+    {
+        CHECK_EQUAL(0U, tokens.size());
+
+        for(std::size_t position = 0, end = sv.length(); position < end; ++position)
+        {
+            tokenizer.consume(sv, position);
+        }
+
+        tokenizer.flush();
+
+        REQUIRE CHECK_EQUAL(3U, tokens.size());
+
+        CHECK_EQUAL(TokenType::keyword, tokens[0].token().type());
+        CHECK_EQUAL("namespace", tokens[0].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[1].token().type());
+        CHECK_EQUAL("foo", tokens[1].token().to_string());
+
+        CHECK_EQUAL(TokenType::end_statement, tokens[2].token().type());
+        CHECK_EQUAL(";", tokens[2].token().to_string());
+    }
+
+    struct InputIsChainedNamespaceDeclaration : public TokenizerFixture
+    {
+        const std::string s = "namespace foo::bar\t;\n";
+        const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::string);
+    };
+
+    TEST_FIXTURE(InputIsChainedNamespaceDeclaration, verifyConsume)
+    {
+        CHECK_EQUAL(0U, tokens.size());
+
+        for(std::size_t position = 0, end = sv.length(); position < end; ++position)
+        {
+            tokenizer.consume(sv, position);
+        }
+
+        tokenizer.flush();
+
+        REQUIRE CHECK_EQUAL(6U, tokens.size());
+
+        CHECK_EQUAL(TokenType::keyword, tokens[0].token().type());
+        CHECK_EQUAL("namespace", tokens[0].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[1].token().type());
+        CHECK_EQUAL("foo", tokens[1].token().to_string());
+
+        CHECK_EQUAL(TokenType::colon, tokens[2].token().type());
+        CHECK_EQUAL(":", tokens[2].token().to_string());
+
+        CHECK_EQUAL(TokenType::colon, tokens[3].token().type());
+        CHECK_EQUAL(":", tokens[3].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[4].token().type());
+        CHECK_EQUAL("bar", tokens[4].token().to_string());
+
+        CHECK_EQUAL(TokenType::end_statement, tokens[5].token().type());
+        CHECK_EQUAL(";", tokens[5].token().to_string());
+
+    }
+
     struct InputIsEnum : public TokenizerFixture
     {
         const std::string s = "enum Test {\n\tfield1,\n\tfield2,\n\tfield3,\n}";
@@ -271,14 +343,34 @@ namespace {
         CHECK_EQUAL(TokenType::keyword, tokens[0].token().type());
         CHECK_EQUAL("enum", tokens[0].token().to_string());
 
+        CHECK_EQUAL(1U, tokens[0].fileInfo().start().line());
+        CHECK_EQUAL(1U, tokens[0].fileInfo().start().column());
+        CHECK_EQUAL(1U, tokens[0].fileInfo().end().line());
+        CHECK_EQUAL(5U, tokens[0].fileInfo().end().column());
+
         CHECK_EQUAL(TokenType::string, tokens[1].token().type());
         CHECK_EQUAL("Test", tokens[1].token().to_string());
+
+        CHECK_EQUAL(1U, tokens[1].fileInfo().start().line());
+        CHECK_EQUAL(6U, tokens[1].fileInfo().start().column());
+        CHECK_EQUAL(1U, tokens[1].fileInfo().end().line());
+        CHECK_EQUAL(10U, tokens[1].fileInfo().end().column());
 
         CHECK_EQUAL(TokenType::l_brace, tokens[2].token().type());
         CHECK_EQUAL("{", tokens[2].token().to_string());
 
+        CHECK_EQUAL(1U, tokens[2].fileInfo().start().line());
+        CHECK_EQUAL(11U, tokens[2].fileInfo().start().column());
+        CHECK_EQUAL(1U, tokens[2].fileInfo().end().line());
+        CHECK_EQUAL(12U, tokens[2].fileInfo().end().column());
+
         CHECK_EQUAL(TokenType::string, tokens[3].token().type());
         CHECK_EQUAL("field1", tokens[3].token().to_string());
+
+        CHECK_EQUAL(2U, tokens[3].fileInfo().start().line());
+        CHECK_EQUAL(2U, tokens[3].fileInfo().start().column());
+        CHECK_EQUAL(2U, tokens[3].fileInfo().end().line());
+        CHECK_EQUAL(8U, tokens[3].fileInfo().end().column());
 
         CHECK_EQUAL(TokenType::comma, tokens[4].token().type());
         CHECK_EQUAL(",", tokens[4].token().to_string());

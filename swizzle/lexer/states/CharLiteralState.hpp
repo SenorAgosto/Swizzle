@@ -20,12 +20,11 @@ namespace swizzle { namespace lexer { namespace states {
             const char c = source.at(position);
             if(c == '\\')
             {
+                token.expand();
                 return TokenizerState::EscapedCharInCharLiteral;
             }
 
-            token.expand(1);
-            fileInfo.advanceBy(c);
-
+            token.expand();
             return TokenizerState::EndCharLiteral;
         }
     };

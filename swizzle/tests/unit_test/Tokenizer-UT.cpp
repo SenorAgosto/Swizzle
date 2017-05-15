@@ -321,6 +321,8 @@ namespace {
 
     struct InputIsEnum : public TokenizerFixture
     {
+        // NOTE: this will be a syntax error on parse as underlying type ": <type>" is required
+        // after an enum declaration.
         const std::string s = "enum Test {\n\tfield1,\n\tfield2,\n\tfield3,\n}";
         const boost::string_view sv = boost::string_view(s);
 
@@ -389,5 +391,75 @@ namespace {
 
         CHECK_EQUAL(TokenType::r_brace, tokens[9].token().type());
         CHECK_EQUAL("}", tokens[9].token().to_string());
+    }
+
+    struct InputIsEnumWithUnderlyingTypeAndDefaultValues : public TokenizerFixture
+    {
+        const std::string s = "enum Test : u8 {\n\tfield1 = 1,\n\tfield2 = 0x02,\n\tfield3,\n}";
+        const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::string);
+    };
+
+    TEST_FIXTURE(InputIsEnumWithUnderlyingTypeAndDefaultValues, verifyConsume)
+    {
+        CHECK_EQUAL(0U, tokens.size());
+
+        for(std::size_t position = 0, end = sv.length(); position < end; ++position)
+        {
+            tokenizer.consume(sv, position);
+        }
+
+        tokenizer.flush();
+
+        REQUIRE CHECK_EQUAL(16U, tokens.size());
+
+        CHECK_EQUAL(TokenType::keyword, tokens[0].token().type());
+        CHECK_EQUAL("enum", tokens[0].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[1].token().type());
+        CHECK_EQUAL("Test", tokens[1].token().to_string());
+
+        CHECK_EQUAL(TokenType::colon, tokens[2].token().type());
+        CHECK_EQUAL(":", tokens[2].token().to_string());
+
+        CHECK_EQUAL(TokenType::type, tokens[3].token().type());
+        CHECK_EQUAL("u8", tokens[3].token().to_string());
+
+        CHECK_EQUAL(TokenType::l_brace, tokens[4].token().type());
+        CHECK_EQUAL("{", tokens[4].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[5].token().type());
+        CHECK_EQUAL("field1", tokens[5].token().to_string());
+
+        CHECK_EQUAL(TokenType::equal, tokens[6].token().type());
+        CHECK_EQUAL("=", tokens[6].token().to_string());
+
+        CHECK_EQUAL(TokenType::numeric_literal, tokens[7].token().type());
+        CHECK_EQUAL("1", tokens[7].token().to_string());
+
+        CHECK_EQUAL(TokenType::comma, tokens[8].token().type());
+        CHECK_EQUAL(",", tokens[8].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[9].token().type());
+        CHECK_EQUAL("field2", tokens[9].token().to_string());
+
+        CHECK_EQUAL(TokenType::equal, tokens[10].token().type());
+        CHECK_EQUAL("=", tokens[10].token().to_string());
+
+        CHECK_EQUAL(TokenType::hex_literal, tokens[11].token().type());
+        CHECK_EQUAL("0x02", tokens[11].token().to_string());
+
+        CHECK_EQUAL(TokenType::comma, tokens[12].token().type());
+        CHECK_EQUAL(",", tokens[12].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[13].token().type());
+        CHECK_EQUAL("field3", tokens[13].token().to_string());
+
+        CHECK_EQUAL(TokenType::comma, tokens[14].token().type());
+        CHECK_EQUAL(",", tokens[14].token().to_string());
+
+        CHECK_EQUAL(TokenType::r_brace, tokens[15].token().type());
+        CHECK_EQUAL("}", tokens[15].token().to_string());
     }
 }

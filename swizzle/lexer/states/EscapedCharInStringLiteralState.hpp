@@ -27,8 +27,6 @@ namespace swizzle { namespace lexer { namespace states {
                (c == 'n'))
             {
                 token.expand(1);
-                fileInfo.advanceBy(c);
-
                 return TokenizerState::StringLiteral;
             }
 

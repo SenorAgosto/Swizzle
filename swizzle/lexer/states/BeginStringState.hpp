@@ -51,7 +51,7 @@ namespace swizzle { namespace lexer { namespace states {
                 return TokenizerState::CharLiteral;
             }
 
-            static const std::string tokenProducers("@=[]{}.;:");
+            static const std::string tokenProducers("@=[]{}.;:,");
             if(tokenProducers.find_first_of(c) != std::string::npos)
             {
                 fileInfo = this->produceToken(token, fileInfo);

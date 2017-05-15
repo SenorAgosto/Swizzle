@@ -339,6 +339,25 @@ namespace {
         CHECK_EQUAL("@", tokens[0].token().to_string());
     }
 
+    struct WhenNextCharIsComma : public InitStateFixture
+    {
+        const std::string s = ",";
+        const boost::string_view sv = boost::string_view(s);
+    };
+
+    TEST_FIXTURE(WhenNextCharIsComma, verifyConsume)
+    {
+        CHECK_EQUAL(0U, tokens.size());
+
+        auto tokenState = state.consume(sv, position, info, token);
+
+        CHECK_EQUAL(TokenizerState::Init, tokenState);
+
+        REQUIRE CHECK_EQUAL(1U, tokens.size());
+        CHECK_EQUAL(TokenType::comma, tokens[0].token().type());
+        CHECK_EQUAL(",", tokens[0].token().to_string());
+    }
+
     struct WhenNextCharIsColon : public InitStateFixture
     {
         const std::string s = ":";

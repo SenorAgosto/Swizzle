@@ -11,6 +11,8 @@ namespace swizzle { namespace lexer {
         case TokenType::string_literal:         return os << "TokenType::string_literal";
         case TokenType::char_literal:           return os << "TokenType::char_literal";
         case TokenType::numeric_literal:        return os << "TokenType::numeric_literal";
+        case TokenType::hex_literal:            return os << "TokenType::hex_literal";
+        
         case TokenType::attribute:              return os << "TokenType::attribute";
         case TokenType::keyword:                return os << "TokenType::keyword";
         case TokenType::type:                   return os << "TokenType::type";

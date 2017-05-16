@@ -635,7 +635,7 @@ namespace {
         Token token = Token(sv, 0, 0, TokenType::string);
     };
 
-    TEST_FIXTURE(InputIsStruct, )
+    TEST_FIXTURE(InputIsStruct, verifyConsume)
     {
         CHECK_EQUAL(0U, tokens.size());
 
@@ -651,46 +651,121 @@ namespace {
         CHECK_EQUAL(TokenType::keyword, tokens[0].token().type());
         CHECK_EQUAL("struct", tokens[0].token().to_string());
 
+        CHECK_EQUAL(1U, tokens[0].fileInfo().start().line());
+        CHECK_EQUAL(1U, tokens[0].fileInfo().start().column());
+        CHECK_EQUAL(1U, tokens[0].fileInfo().end().line());
+        CHECK_EQUAL(7U, tokens[0].fileInfo().end().column());
+
         CHECK_EQUAL(TokenType::string, tokens[1].token().type());
         CHECK_EQUAL("MessageBlock", tokens[1].token().to_string());
+
+        CHECK_EQUAL(1U, tokens[1].fileInfo().start().line());
+        CHECK_EQUAL(8U, tokens[1].fileInfo().start().column());
+        CHECK_EQUAL(1U, tokens[1].fileInfo().end().line());
+        CHECK_EQUAL(20U, tokens[1].fileInfo().end().column());
 
         CHECK_EQUAL(TokenType::l_brace, tokens[2].token().type());
         CHECK_EQUAL("{", tokens[2].token().to_string());
 
+        CHECK_EQUAL(1U, tokens[2].fileInfo().start().line());
+        CHECK_EQUAL(21U, tokens[2].fileInfo().start().column());
+        CHECK_EQUAL(1U, tokens[2].fileInfo().end().line());
+        CHECK_EQUAL(22U, tokens[2].fileInfo().end().column());
+
         CHECK_EQUAL(TokenType::type, tokens[3].token().type());
         CHECK_EQUAL("u16", tokens[3].token().to_string());
+
+        CHECK_EQUAL(2U, tokens[3].fileInfo().start().line());
+        CHECK_EQUAL(2U, tokens[3].fileInfo().start().column());
+        CHECK_EQUAL(2U, tokens[3].fileInfo().end().line());
+        CHECK_EQUAL(5U, tokens[3].fileInfo().end().column());
 
         CHECK_EQUAL(TokenType::string, tokens[4].token().type());
         CHECK_EQUAL("length", tokens[4].token().to_string());
 
+        CHECK_EQUAL(2U, tokens[4].fileInfo().start().line());
+        CHECK_EQUAL(6U, tokens[4].fileInfo().start().column());
+        CHECK_EQUAL(2U, tokens[4].fileInfo().end().line());
+        CHECK_EQUAL(12U, tokens[4].fileInfo().end().column());
+
         CHECK_EQUAL(TokenType::equal, tokens[5].token().type());
         CHECK_EQUAL("=", tokens[5].token().to_string());
+
+        CHECK_EQUAL(2U, tokens[5].fileInfo().start().line());
+        CHECK_EQUAL(13U, tokens[5].fileInfo().start().column());
+        CHECK_EQUAL(2U, tokens[5].fileInfo().end().line());
+        CHECK_EQUAL(14U, tokens[5].fileInfo().end().column());
 
         CHECK_EQUAL(TokenType::numeric_literal, tokens[6].token().type());
         CHECK_EQUAL("10", tokens[6].token().to_string());
 
+        CHECK_EQUAL(2U, tokens[6].fileInfo().start().line());
+        CHECK_EQUAL(15U, tokens[6].fileInfo().start().column());
+        CHECK_EQUAL(2U, tokens[6].fileInfo().end().line());
+        CHECK_EQUAL(17U, tokens[6].fileInfo().end().column());
+
         CHECK_EQUAL(TokenType::end_statement, tokens[7].token().type());
         CHECK_EQUAL(";", tokens[7].token().to_string());
+
+        CHECK_EQUAL(2U, tokens[7].fileInfo().start().line());
+        CHECK_EQUAL(17U, tokens[7].fileInfo().start().column());
+        CHECK_EQUAL(2U, tokens[7].fileInfo().end().line());
+        CHECK_EQUAL(18U, tokens[7].fileInfo().end().column());
 
         CHECK_EQUAL(TokenType::type, tokens[8].token().type());
         CHECK_EQUAL("u8", tokens[8].token().to_string());
 
+        CHECK_EQUAL(3U, tokens[8].fileInfo().start().line());
+        CHECK_EQUAL(2U, tokens[8].fileInfo().start().column());
+        CHECK_EQUAL(3U, tokens[8].fileInfo().end().line());
+        CHECK_EQUAL(4U, tokens[8].fileInfo().end().column());
+
         CHECK_EQUAL(TokenType::string, tokens[9].token().type());
         CHECK_EQUAL("messageType", tokens[9].token().to_string());
+
+        CHECK_EQUAL(3U, tokens[9].fileInfo().start().line());
+        CHECK_EQUAL(5U, tokens[9].fileInfo().start().column());
+        CHECK_EQUAL(3U, tokens[9].fileInfo().end().line());
+        CHECK_EQUAL(16U, tokens[9].fileInfo().end().column());
 
         CHECK_EQUAL(TokenType::equal, tokens[10].token().type());
         CHECK_EQUAL("=", tokens[10].token().to_string());
 
+        CHECK_EQUAL(3U, tokens[10].fileInfo().start().line());
+        CHECK_EQUAL(17U, tokens[10].fileInfo().start().column());
+        CHECK_EQUAL(3U, tokens[10].fileInfo().end().line());
+        CHECK_EQUAL(18U, tokens[10].fileInfo().end().column());
+
         CHECK_EQUAL(TokenType::char_literal, tokens[11].token().type());
         CHECK_EQUAL("'c'", tokens[11].token().to_string());
+
+        CHECK_EQUAL(3U, tokens[11].fileInfo().start().line());
+        CHECK_EQUAL(19U, tokens[11].fileInfo().start().column());
+        CHECK_EQUAL(3U, tokens[11].fileInfo().end().line());
+        CHECK_EQUAL(22U, tokens[11].fileInfo().end().column());
 
         CHECK_EQUAL(TokenType::end_statement, tokens[12].token().type());
         CHECK_EQUAL(";", tokens[12].token().to_string());
 
+        CHECK_EQUAL(3U, tokens[12].fileInfo().start().line());
+        CHECK_EQUAL(22U, tokens[12].fileInfo().start().column());
+        CHECK_EQUAL(3U, tokens[12].fileInfo().end().line());
+        CHECK_EQUAL(23U, tokens[12].fileInfo().end().column());
+
         CHECK_EQUAL(TokenType::comment, tokens[13].token().type());
         CHECK_EQUAL("// default to c", tokens[13].token().to_string());
 
+        CHECK_EQUAL(3U, tokens[13].fileInfo().start().line());
+        CHECK_EQUAL(24U, tokens[13].fileInfo().start().column());
+        CHECK_EQUAL(3U, tokens[13].fileInfo().end().line());
+        CHECK_EQUAL(39U, tokens[13].fileInfo().end().column());
+
         CHECK_EQUAL(TokenType::r_brace, tokens[14].token().type());
         CHECK_EQUAL("}", tokens[14].token().to_string());
+
+        CHECK_EQUAL(4U, tokens[14].fileInfo().start().line());
+        CHECK_EQUAL(1U, tokens[14].fileInfo().start().column());
+        CHECK_EQUAL(4U, tokens[14].fileInfo().end().line());
+        CHECK_EQUAL(2U, tokens[14].fileInfo().end().column());
     }
 }

@@ -66,7 +66,7 @@ namespace {
         REQUIRE CHECK_EQUAL(1U, tokens.size());
 
         CHECK_EQUAL(TokenType::char_literal, tokens[0].token().type());
-        CHECK_EQUAL("a", tokens[0].token().to_string());
+        CHECK_EQUAL("a'", tokens[0].token().to_string());
     }
 
     struct WhenNextCharIsInvalid : public EndCharLiteralFixture

@@ -547,4 +547,79 @@ namespace {
         CHECK_EQUAL(TokenType::r_brace, tokens[20].token().type());
         CHECK_EQUAL("}", tokens[20].token().to_string());
     }
+
+    struct InputIsUsingStatement : public TokenizerFixture
+    {
+        const std::string s = "    \t\n\t\t  using Byte = u8;";
+        const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::string);
+    };
+
+    TEST_FIXTURE(InputIsUsingStatement, verifyConsume)
+    {
+        CHECK_EQUAL(0U, tokens.size());
+
+        for(std::size_t position = 0, end = sv.length(); position < end; ++position)
+        {
+            tokenizer.consume(sv, position);
+        }
+
+        tokenizer.flush();
+
+        REQUIRE CHECK_EQUAL(5U, tokens.size());
+
+        CHECK_EQUAL(TokenType::keyword, tokens[0].token().type());
+        CHECK_EQUAL("using", tokens[0].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[1].token().type());
+        CHECK_EQUAL("Byte", tokens[1].token().to_string());
+
+        CHECK_EQUAL(TokenType::equal, tokens[2].token().type());
+        CHECK_EQUAL("=", tokens[2].token().to_string());
+
+        CHECK_EQUAL(TokenType::type, tokens[3].token().type());
+        CHECK_EQUAL("u8", tokens[3].token().to_string());
+
+        CHECK_EQUAL(TokenType::end_statement, tokens[4].token().type());
+        CHECK_EQUAL(";", tokens[4].token().to_string());
+    }
+
+    struct InputIsUsingStatementWithUserDefinedType : public TokenizerFixture
+    {
+        const std::string s = "    \t\n\t\t  using Byte = MyByte;";
+        const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::string);
+    };
+
+    TEST_FIXTURE(InputIsUsingStatementWithUserDefinedType, verifyConsume)
+    {
+        CHECK_EQUAL(0U, tokens.size());
+
+        for(std::size_t position = 0, end = sv.length(); position < end; ++position)
+        {
+            tokenizer.consume(sv, position);
+        }
+
+        tokenizer.flush();
+
+        REQUIRE CHECK_EQUAL(5U, tokens.size());
+
+        CHECK_EQUAL(TokenType::keyword, tokens[0].token().type());
+        CHECK_EQUAL("using", tokens[0].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[1].token().type());
+        CHECK_EQUAL("Byte", tokens[1].token().to_string());
+
+        CHECK_EQUAL(TokenType::equal, tokens[2].token().type());
+        CHECK_EQUAL("=", tokens[2].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[3].token().type());
+        CHECK_EQUAL("MyByte", tokens[3].token().to_string());
+
+        CHECK_EQUAL(TokenType::end_statement, tokens[4].token().type());
+        CHECK_EQUAL(";", tokens[4].token().to_string());
+    }
+
 }

@@ -622,4 +622,75 @@ namespace {
         CHECK_EQUAL(";", tokens[4].token().to_string());
     }
 
+    // Simple struct with default values and inline comments
+    struct InputIsStruct : public TokenizerFixture
+    {
+        const std::string s =
+            "struct MessageBlock {" "\n"
+            "\t" "u16 length = 10;" "\n"
+            "\t" "u8 messageType = 'c'; // default to c" "\n"
+            "}" "\n";
+
+        const boost::string_view sv = boost::string_view(s);
+        Token token = Token(sv, 0, 0, TokenType::string);
+    };
+
+    TEST_FIXTURE(InputIsStruct, )
+    {
+        CHECK_EQUAL(0U, tokens.size());
+
+        for(std::size_t position = 0, end = sv.length(); position < end; ++position)
+        {
+            tokenizer.consume(sv, position);
+        }
+
+        tokenizer.flush();
+
+        REQUIRE CHECK_EQUAL(15U, tokens.size());
+
+        CHECK_EQUAL(TokenType::keyword, tokens[0].token().type());
+        CHECK_EQUAL("struct", tokens[0].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[1].token().type());
+        CHECK_EQUAL("MessageBlock", tokens[1].token().to_string());
+
+        CHECK_EQUAL(TokenType::l_brace, tokens[2].token().type());
+        CHECK_EQUAL("{", tokens[2].token().to_string());
+
+        CHECK_EQUAL(TokenType::type, tokens[3].token().type());
+        CHECK_EQUAL("u16", tokens[3].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[4].token().type());
+        CHECK_EQUAL("length", tokens[4].token().to_string());
+
+        CHECK_EQUAL(TokenType::equal, tokens[5].token().type());
+        CHECK_EQUAL("=", tokens[5].token().to_string());
+
+        CHECK_EQUAL(TokenType::numeric_literal, tokens[6].token().type());
+        CHECK_EQUAL("10", tokens[6].token().to_string());
+
+        CHECK_EQUAL(TokenType::end_statement, tokens[7].token().type());
+        CHECK_EQUAL(";", tokens[7].token().to_string());
+
+        CHECK_EQUAL(TokenType::type, tokens[8].token().type());
+        CHECK_EQUAL("u8", tokens[8].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[9].token().type());
+        CHECK_EQUAL("messageType", tokens[9].token().to_string());
+
+        CHECK_EQUAL(TokenType::equal, tokens[10].token().type());
+        CHECK_EQUAL("=", tokens[10].token().to_string());
+
+        CHECK_EQUAL(TokenType::char_literal, tokens[11].token().type());
+        CHECK_EQUAL("'c'", tokens[11].token().to_string());
+
+        CHECK_EQUAL(TokenType::end_statement, tokens[12].token().type());
+        CHECK_EQUAL(";", tokens[12].token().to_string());
+
+        CHECK_EQUAL(TokenType::comment, tokens[13].token().type());
+        CHECK_EQUAL("// default to c", tokens[13].token().to_string());
+
+        CHECK_EQUAL(TokenType::r_brace, tokens[14].token().type());
+        CHECK_EQUAL("}", tokens[14].token().to_string());
+    }
 }

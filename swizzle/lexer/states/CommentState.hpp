@@ -35,7 +35,9 @@ namespace swizzle { namespace lexer { namespace states {
             if(c == '\n')
             {
                 fileInfo = this->produceToken(token, fileInfo);
+
                 token = ResetToken(source, position);
+                fileInfo.incrementLine();   // manually increment line count
 
                 return TokenizerState::Init;
             }

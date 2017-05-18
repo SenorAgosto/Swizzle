@@ -7,6 +7,7 @@ namespace {
 
     TEST(verifyIsKeyword)
     {
+        CHECK(IsKeyword("case"));
         CHECK(IsKeyword("const"));
         CHECK(IsKeyword("enum"));
         CHECK(IsKeyword("import"));

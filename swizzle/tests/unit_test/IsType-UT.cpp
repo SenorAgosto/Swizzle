@@ -7,6 +7,7 @@ namespace {
 
     TEST(verifyIsType)
     {
+        CHECK(!IsType("case"));
         CHECK(!IsType("const"));
         CHECK(!IsType("enum"));
         CHECK(!IsType("import"));

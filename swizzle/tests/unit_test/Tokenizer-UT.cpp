@@ -811,7 +811,6 @@ namespace {
         Token token = Token(sv, 0, 0, TokenType::string);
     };
 
-
     TEST_FIXTURE(InputIsStructWithAttributes, verifyConsume)
     {
         CHECK_EQUAL(0U, tokens.size());
@@ -898,5 +897,161 @@ namespace {
         CHECK_EQUAL(1U, tokens[22].fileInfo().start().column());
         CHECK_EQUAL(8U, tokens[22].fileInfo().end().line());
         CHECK_EQUAL(2U, tokens[22].fileInfo().end().column());
+    }
+
+    struct InputIsStructWithArrayAndVectorMember : public TokenizerFixture
+    {
+        const std::string s =
+            "struct Message {"          "\n"
+            "\t" "u8[10] fixed ;"       "\n"       // array
+            "\t" "u8 size;"             "\n"
+            "\t" "u8[size] varstring;"  "\n"
+            "}"                         "\n";
+
+
+        const boost::string_view sv = boost::string_view(s);
+        Token token = Token(sv, 0, 0, TokenType::string);
+    };
+
+    TEST_FIXTURE(InputIsStructWithArrayAndVectorMember, verifyConsume)
+    {
+        CHECK_EQUAL(0U, tokens.size());
+
+        for(std::size_t position = 0, end = sv.length(); position < end; ++position)
+        {
+            tokenizer.consume(sv, position);
+        }
+
+        tokenizer.flush();
+
+        REQUIRE CHECK_EQUAL(19U, tokens.size());
+
+        CHECK_EQUAL(TokenType::keyword, tokens[0].token().type());
+        CHECK_EQUAL("struct", tokens[0].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[1].token().type());
+        CHECK_EQUAL("Message", tokens[1].token().to_string());
+
+        CHECK_EQUAL(TokenType::l_brace, tokens[2].token().type());
+        CHECK_EQUAL("{", tokens[2].token().to_string());
+
+        CHECK_EQUAL(TokenType::type, tokens[3].token().type());
+        CHECK_EQUAL("u8", tokens[3].token().to_string());
+
+        CHECK_EQUAL(TokenType::l_bracket, tokens[4].token().type());
+        CHECK_EQUAL("[", tokens[4].token().to_string());
+
+        CHECK_EQUAL(TokenType::numeric_literal, tokens[5].token().type());
+        CHECK_EQUAL("10", tokens[5].token().to_string());
+
+        CHECK_EQUAL(TokenType::r_bracket, tokens[6].token().type());
+        CHECK_EQUAL("]", tokens[6].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[7].token().type());
+        CHECK_EQUAL("fixed", tokens[7].token().to_string());
+
+        CHECK_EQUAL(TokenType::end_statement, tokens[8].token().type());
+        CHECK_EQUAL(";", tokens[8].token().to_string());
+
+        CHECK_EQUAL(TokenType::type, tokens[9].token().type());
+        CHECK_EQUAL("u8", tokens[9].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[10].token().type());
+        CHECK_EQUAL("size", tokens[10].token().to_string());
+
+        CHECK_EQUAL(TokenType::end_statement, tokens[11].token().type());
+        CHECK_EQUAL(";", tokens[11].token().to_string());
+
+        CHECK_EQUAL(TokenType::type, tokens[12].token().type());
+        CHECK_EQUAL("u8", tokens[12].token().to_string());
+
+        CHECK_EQUAL(TokenType::l_bracket, tokens[13].token().type());
+        CHECK_EQUAL("[", tokens[13].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[14].token().type());
+        CHECK_EQUAL("size", tokens[14].token().to_string());
+
+        CHECK_EQUAL(TokenType::r_bracket, tokens[15].token().type());
+        CHECK_EQUAL("]", tokens[15].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[16].token().type());
+        CHECK_EQUAL("varstring", tokens[16].token().to_string());
+
+        CHECK_EQUAL(TokenType::end_statement, tokens[17].token().type());
+        CHECK_EQUAL(";", tokens[17].token().to_string());
+
+        CHECK_EQUAL(TokenType::r_brace, tokens[18].token().type());
+        CHECK_EQUAL("}", tokens[18].token().to_string());
+    }
+
+    struct InputIsStructWithVectorSizedByNestedField : public TokenizerFixture
+    {
+        const std::string s =
+            "struct Message {"                  "\n"
+            "\t" "Info info;"                   "\n"
+            "\t" "u8[info.size] varstring;"     "\n"
+            "}"                                 "\n";
+
+        const boost::string_view sv = boost::string_view(s);
+        Token token = Token(sv, 0, 0, TokenType::string);
+    };
+
+    TEST_FIXTURE(InputIsStructWithVectorSizedByNestedField, verifyConsume)
+    {
+        CHECK_EQUAL(0U, tokens.size());
+
+        for(std::size_t position = 0, end = sv.length(); position < end; ++position)
+        {
+            tokenizer.consume(sv, position);
+        }
+
+        tokenizer.flush();
+
+        REQUIRE CHECK_EQUAL(15U, tokens.size());
+
+        CHECK_EQUAL(TokenType::keyword, tokens[0].token().type());
+        CHECK_EQUAL("struct", tokens[0].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[1].token().type());
+        CHECK_EQUAL("Message", tokens[1].token().to_string());
+
+        CHECK_EQUAL(TokenType::l_brace, tokens[2].token().type());
+        CHECK_EQUAL("{", tokens[2].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[3].token().type());
+        CHECK_EQUAL("Info", tokens[3].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[4].token().type());
+        CHECK_EQUAL("info", tokens[4].token().to_string());
+
+        CHECK_EQUAL(TokenType::end_statement, tokens[5].token().type());
+        CHECK_EQUAL(";", tokens[5].token().to_string());
+
+        CHECK_EQUAL(TokenType::type, tokens[6].token().type());
+        CHECK_EQUAL("u8", tokens[6].token().to_string());
+
+        CHECK_EQUAL(TokenType::l_bracket, tokens[7].token().type());
+        CHECK_EQUAL("[", tokens[7].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[8].token().type());
+        CHECK_EQUAL("info", tokens[8].token().to_string());
+
+        CHECK_EQUAL(TokenType::dot, tokens[9].token().type());
+        CHECK_EQUAL(".", tokens[9].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[10].token().type());
+        CHECK_EQUAL("size", tokens[10].token().to_string());
+
+        CHECK_EQUAL(TokenType::r_bracket, tokens[11].token().type());
+        CHECK_EQUAL("]", tokens[11].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[12].token().type());
+        CHECK_EQUAL("varstring", tokens[12].token().to_string());
+
+        CHECK_EQUAL(TokenType::end_statement, tokens[13].token().type());
+        CHECK_EQUAL(";", tokens[13].token().to_string());
+
+        CHECK_EQUAL(TokenType::r_brace, tokens[14].token().type());
+        CHECK_EQUAL("}", tokens[14].token().to_string());
     }
 }

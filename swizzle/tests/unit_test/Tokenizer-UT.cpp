@@ -572,17 +572,42 @@ namespace {
         CHECK_EQUAL(TokenType::keyword, tokens[0].token().type());
         CHECK_EQUAL("using", tokens[0].token().to_string());
 
+        CHECK_EQUAL(2U, tokens[0].fileInfo().start().line());
+        CHECK_EQUAL(5U, tokens[0].fileInfo().start().column());
+        CHECK_EQUAL(2U, tokens[0].fileInfo().end().line());
+        CHECK_EQUAL(10U, tokens[0].fileInfo().end().column());
+
         CHECK_EQUAL(TokenType::string, tokens[1].token().type());
         CHECK_EQUAL("Byte", tokens[1].token().to_string());
+
+        CHECK_EQUAL(2U, tokens[1].fileInfo().start().line());
+        CHECK_EQUAL(11U, tokens[1].fileInfo().start().column());
+        CHECK_EQUAL(2U, tokens[1].fileInfo().end().line());
+        CHECK_EQUAL(15U, tokens[1].fileInfo().end().column());
 
         CHECK_EQUAL(TokenType::equal, tokens[2].token().type());
         CHECK_EQUAL("=", tokens[2].token().to_string());
 
+        CHECK_EQUAL(2U, tokens[2].fileInfo().start().line());
+        CHECK_EQUAL(16U, tokens[2].fileInfo().start().column());
+        CHECK_EQUAL(2U, tokens[2].fileInfo().end().line());
+        CHECK_EQUAL(17U, tokens[2].fileInfo().end().column());
+
         CHECK_EQUAL(TokenType::type, tokens[3].token().type());
         CHECK_EQUAL("u8", tokens[3].token().to_string());
 
+        CHECK_EQUAL(2U, tokens[3].fileInfo().start().line());
+        CHECK_EQUAL(18U, tokens[3].fileInfo().start().column());
+        CHECK_EQUAL(2U, tokens[3].fileInfo().end().line());
+        CHECK_EQUAL(20U, tokens[3].fileInfo().end().column());
+
         CHECK_EQUAL(TokenType::end_statement, tokens[4].token().type());
         CHECK_EQUAL(";", tokens[4].token().to_string());
+
+        CHECK_EQUAL(2U, tokens[4].fileInfo().start().line());
+        CHECK_EQUAL(20U, tokens[4].fileInfo().start().column());
+        CHECK_EQUAL(2U, tokens[4].fileInfo().end().line());
+        CHECK_EQUAL(21U, tokens[4].fileInfo().end().column());
     }
 
     struct InputIsUsingStatementWithUserDefinedType : public TokenizerFixture

@@ -793,4 +793,110 @@ namespace {
         CHECK_EQUAL(4U, tokens[14].fileInfo().end().line());
         CHECK_EQUAL(2U, tokens[14].fileInfo().end().column());
     }
+
+    struct InputIsStructWithAttributes : public TokenizerFixture
+    {
+        const std::string s =
+            "@input" "\n"
+            "struct Message {" "\n"
+            "\t" "fix::Side side;" "\n"
+            "\t" "fix::Price price;" "\n\n"
+            "\t" "@big_endian \t " "\n"
+            "\t" "u16 flags;" "\n"
+            "}"
+            "\n";
+
+
+        const boost::string_view sv = boost::string_view(s);
+        Token token = Token(sv, 0, 0, TokenType::string);
+    };
+
+
+    TEST_FIXTURE(InputIsStructWithAttributes, verifyConsume)
+    {
+        CHECK_EQUAL(0U, tokens.size());
+
+        for(std::size_t position = 0, end = sv.length(); position < end; ++position)
+        {
+            tokenizer.consume(sv, position);
+        }
+
+        tokenizer.flush();
+
+        REQUIRE CHECK_EQUAL(23U, tokens.size());
+
+        CHECK_EQUAL(TokenType::attribute, tokens[0].token().type());
+        CHECK_EQUAL("@", tokens[0].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[1].token().type());
+        CHECK_EQUAL("input", tokens[1].token().to_string());
+
+        CHECK_EQUAL(TokenType::keyword, tokens[2].token().type());
+        CHECK_EQUAL("struct", tokens[2].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[3].token().type());
+        CHECK_EQUAL("Message", tokens[3].token().to_string());
+
+        CHECK_EQUAL(TokenType::l_brace, tokens[4].token().type());
+        CHECK_EQUAL("{", tokens[4].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[5].token().type());
+        CHECK_EQUAL("fix", tokens[5].token().to_string());
+
+        CHECK_EQUAL(TokenType::colon, tokens[6].token().type());
+        CHECK_EQUAL(":", tokens[6].token().to_string());
+
+        CHECK_EQUAL(TokenType::colon, tokens[7].token().type());
+        CHECK_EQUAL(":", tokens[7].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[8].token().type());
+        CHECK_EQUAL("Side", tokens[8].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[9].token().type());
+        CHECK_EQUAL("side", tokens[9].token().to_string());
+
+        CHECK_EQUAL(TokenType::end_statement, tokens[10].token().type());
+        CHECK_EQUAL(";", tokens[10].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[11].token().type());
+        CHECK_EQUAL("fix", tokens[11].token().to_string());
+
+        CHECK_EQUAL(TokenType::colon, tokens[12].token().type());
+        CHECK_EQUAL(":", tokens[12].token().to_string());
+
+        CHECK_EQUAL(TokenType::colon, tokens[13].token().type());
+        CHECK_EQUAL(":", tokens[13].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[14].token().type());
+        CHECK_EQUAL("Price", tokens[14].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[15].token().type());
+        CHECK_EQUAL("price", tokens[15].token().to_string());
+
+        CHECK_EQUAL(TokenType::end_statement, tokens[16].token().type());
+        CHECK_EQUAL(";", tokens[16].token().to_string());
+
+        CHECK_EQUAL(TokenType::attribute, tokens[17].token().type());
+        CHECK_EQUAL("@", tokens[17].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[18].token().type());
+        CHECK_EQUAL("big_endian", tokens[18].token().to_string());
+
+        CHECK_EQUAL(TokenType::type, tokens[19].token().type());
+        CHECK_EQUAL("u16", tokens[19].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[20].token().type());
+        CHECK_EQUAL("flags", tokens[20].token().to_string());
+
+        CHECK_EQUAL(TokenType::end_statement, tokens[21].token().type());
+        CHECK_EQUAL(";", tokens[21].token().to_string());
+
+        CHECK_EQUAL(TokenType::r_brace, tokens[22].token().type());
+        CHECK_EQUAL("}", tokens[22].token().to_string());
+
+        CHECK_EQUAL(8U, tokens[22].fileInfo().start().line());
+        CHECK_EQUAL(1U, tokens[22].fileInfo().start().column());
+        CHECK_EQUAL(8U, tokens[22].fileInfo().end().line());
+        CHECK_EQUAL(2U, tokens[22].fileInfo().end().column());
+    }
 }

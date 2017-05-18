@@ -524,7 +524,17 @@ namespace {
         CHECK_EQUAL(TokenType::numeric_literal, token.type());
         CHECK_EQUAL("0", token.to_string());
 
-        CHECK_THROW(state.consume(sv, position++, info, token), swizzle::TokenizerError);
+        tokenState = state.consume(sv, position++, info, token);
+
+        CHECK_EQUAL(TokenizerState::Init, tokenState);
+
+        REQUIRE CHECK_EQUAL(2U, tokens.size());
+
+        CHECK_EQUAL(TokenType::numeric_literal, tokens[0].token().type());
+        CHECK_EQUAL("0", tokens[0].token().to_string());
+
+        CHECK_EQUAL(TokenType::colon, tokens[1].token().type());
+        CHECK_EQUAL(":", tokens[1].token().to_string());
     }
 
     struct WhenNextCharIsSemiColon : public NumericLiteralFixture

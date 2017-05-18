@@ -90,8 +90,8 @@ struct <name> {
 	const <type_name> <field_name> = <literal>;		// a constant literal should be validated against type
 
 	variable_block : <field_name> {					// variable length block containing a 
-		<type_name>,								// type defined by value in <field_name>
-		<type_name>,
-		<type_name>,
+		case <value>: <type_name>,								// type defined by value in <field_name>
+		case <value>: <type_name>,
+		case <value>: <type_name>,
 	}
 }

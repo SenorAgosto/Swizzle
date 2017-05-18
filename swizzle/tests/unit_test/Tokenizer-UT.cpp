@@ -1054,4 +1054,56 @@ namespace {
         CHECK_EQUAL(TokenType::r_brace, tokens[14].token().type());
         CHECK_EQUAL("}", tokens[14].token().to_string());
     }
+
+    struct InputIsStructWithFieldLabel : public TokenizerFixture
+    {
+        const std::string s =
+            "struct Message {"                  "\n"
+            "\t" "115:\tInfo info;"             "\n"
+            "}"                                 "\n";
+
+        const boost::string_view sv = boost::string_view(s);
+        Token token = Token(sv, 0, 0, TokenType::string);
+    };
+
+    TEST_FIXTURE(InputIsStructWithFieldLabel, verifyConsume)
+    {
+        CHECK_EQUAL(0U, tokens.size());
+
+        for(std::size_t position = 0, end = sv.length(); position < end; ++position)
+        {
+            tokenizer.consume(sv, position);
+        }
+
+        tokenizer.flush();
+
+        REQUIRE CHECK_EQUAL(9U, tokens.size());
+
+        CHECK_EQUAL(TokenType::keyword, tokens[0].token().type());
+        CHECK_EQUAL("struct", tokens[0].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[1].token().type());
+        CHECK_EQUAL("Message", tokens[1].token().to_string());
+
+        CHECK_EQUAL(TokenType::l_brace, tokens[2].token().type());
+        CHECK_EQUAL("{", tokens[2].token().to_string());
+
+        CHECK_EQUAL(TokenType::numeric_literal, tokens[3].token().type());
+        CHECK_EQUAL("115", tokens[3].token().to_string());
+
+        CHECK_EQUAL(TokenType::colon, tokens[4].token().type());
+        CHECK_EQUAL(":", tokens[4].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[5].token().type());
+        CHECK_EQUAL("Info", tokens[5].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[6].token().type());
+        CHECK_EQUAL("info", tokens[6].token().to_string());
+
+        CHECK_EQUAL(TokenType::end_statement, tokens[7].token().type());
+        CHECK_EQUAL(";", tokens[7].token().to_string());
+
+        CHECK_EQUAL(TokenType::r_brace, tokens[8].token().type());
+        CHECK_EQUAL("}", tokens[8].token().to_string());
+    }
 }

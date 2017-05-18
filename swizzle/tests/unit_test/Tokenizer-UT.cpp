@@ -1106,4 +1106,63 @@ namespace {
         CHECK_EQUAL(TokenType::r_brace, tokens[8].token().type());
         CHECK_EQUAL("}", tokens[8].token().to_string());
     }
+
+    struct InputIsStructWithKeyValueAttribute : public TokenizerFixture
+    {
+        const std::string s =
+            "struct Message {"                  "\n"
+            "\t" "@max=100"                     "\n"
+            "\t" "u8 size;"                     "\n"
+            "}"                                 "\n";
+
+        const boost::string_view sv = boost::string_view(s);
+        Token token = Token(sv, 0, 0, TokenType::string);
+    };
+
+    TEST_FIXTURE(InputIsStructWithKeyValueAttribute, verifyConsume)
+    {
+        CHECK_EQUAL(0U, tokens.size());
+
+        for(std::size_t position = 0, end = sv.length(); position < end; ++position)
+        {
+            tokenizer.consume(sv, position);
+        }
+
+        tokenizer.flush();
+
+        REQUIRE CHECK_EQUAL(11U, tokens.size());
+
+        CHECK_EQUAL(TokenType::keyword, tokens[0].token().type());
+        CHECK_EQUAL("struct", tokens[0].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[1].token().type());
+        CHECK_EQUAL("Message", tokens[1].token().to_string());
+
+        CHECK_EQUAL(TokenType::l_brace, tokens[2].token().type());
+        CHECK_EQUAL("{", tokens[2].token().to_string());
+
+        CHECK_EQUAL(TokenType::attribute, tokens[3].token().type());
+        CHECK_EQUAL("@", tokens[3].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[4].token().type());
+        CHECK_EQUAL("max", tokens[4].token().to_string());
+
+        CHECK_EQUAL(TokenType::equal, tokens[5].token().type());
+        CHECK_EQUAL("=", tokens[5].token().to_string());
+
+        CHECK_EQUAL(TokenType::numeric_literal, tokens[6].token().type());
+        CHECK_EQUAL("100", tokens[6].token().to_string());
+
+        CHECK_EQUAL(TokenType::type, tokens[7].token().type());
+        CHECK_EQUAL("u8", tokens[7].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[8].token().type());
+        CHECK_EQUAL("size", tokens[8].token().to_string());
+
+        CHECK_EQUAL(TokenType::end_statement, tokens[9].token().type());
+        CHECK_EQUAL(";", tokens[9].token().to_string());
+
+        CHECK_EQUAL(TokenType::r_brace, tokens[10].token().type());
+        CHECK_EQUAL("}", tokens[10].token().to_string());
+    }
 }

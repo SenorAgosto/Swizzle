@@ -18,6 +18,8 @@ namespace swizzle { namespace lexer {
         EndCharLiteral,
         EscapedCharInStringLiteral,
         BeginString,
+        Attribute,
+        AttributeBlock,
     };
 
     std::ostream& operator<<(std::ostream& os, const TokenizerState state);

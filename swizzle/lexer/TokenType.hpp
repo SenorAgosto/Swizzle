@@ -14,7 +14,6 @@ namespace swizzle { namespace lexer {
         hex_literal,            // 0x0a
 
         attribute,              // @attribute
-        attribute_value,        // @attribute=value
         attribute_block,        // @attribute{block}
 
         keyword,                // import | namespace | using | struct | enum | const |

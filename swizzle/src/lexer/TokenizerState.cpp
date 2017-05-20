@@ -19,6 +19,9 @@ namespace swizzle { namespace lexer {
         case TokenizerState::EndCharLiteral:                return os << "TokenizerState::EndCharLiteral";
         case TokenizerState::EscapedCharInStringLiteral:    return os << "TokenizerState::EscapedCharInStringLiteral";
         case TokenizerState::BeginString:                   return os << "TokenizerState::BeginString";
+        case TokenizerState::Attribute:                     return os << "TokenizerState::Attribute";
+        case TokenizerState::AttributeBlock:                return os << "TokenizerState::AttributeBlock";
+
         default:                                            return os << "Unknown TokenizerState value";
         };
     }

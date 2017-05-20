@@ -822,81 +822,75 @@ namespace {
 
         tokenizer.flush();
 
-        REQUIRE CHECK_EQUAL(23U, tokens.size());
+        REQUIRE CHECK_EQUAL(21U, tokens.size());
 
         CHECK_EQUAL(TokenType::attribute, tokens[0].token().type());
-        CHECK_EQUAL("@", tokens[0].token().to_string());
+        CHECK_EQUAL("@input", tokens[0].token().to_string());
 
-        CHECK_EQUAL(TokenType::string, tokens[1].token().type());
-        CHECK_EQUAL("input", tokens[1].token().to_string());
+        CHECK_EQUAL(TokenType::keyword, tokens[1].token().type());
+        CHECK_EQUAL("struct", tokens[1].token().to_string());
 
-        CHECK_EQUAL(TokenType::keyword, tokens[2].token().type());
-        CHECK_EQUAL("struct", tokens[2].token().to_string());
+        CHECK_EQUAL(TokenType::string, tokens[2].token().type());
+        CHECK_EQUAL("Message", tokens[2].token().to_string());
 
-        CHECK_EQUAL(TokenType::string, tokens[3].token().type());
-        CHECK_EQUAL("Message", tokens[3].token().to_string());
+        CHECK_EQUAL(TokenType::l_brace, tokens[3].token().type());
+        CHECK_EQUAL("{", tokens[3].token().to_string());
 
-        CHECK_EQUAL(TokenType::l_brace, tokens[4].token().type());
-        CHECK_EQUAL("{", tokens[4].token().to_string());
+        CHECK_EQUAL(TokenType::string, tokens[4].token().type());
+        CHECK_EQUAL("fix", tokens[4].token().to_string());
 
-        CHECK_EQUAL(TokenType::string, tokens[5].token().type());
-        CHECK_EQUAL("fix", tokens[5].token().to_string());
+        CHECK_EQUAL(TokenType::colon, tokens[5].token().type());
+        CHECK_EQUAL(":", tokens[5].token().to_string());
 
         CHECK_EQUAL(TokenType::colon, tokens[6].token().type());
         CHECK_EQUAL(":", tokens[6].token().to_string());
 
-        CHECK_EQUAL(TokenType::colon, tokens[7].token().type());
-        CHECK_EQUAL(":", tokens[7].token().to_string());
+        CHECK_EQUAL(TokenType::string, tokens[7].token().type());
+        CHECK_EQUAL("Side", tokens[7].token().to_string());
 
         CHECK_EQUAL(TokenType::string, tokens[8].token().type());
-        CHECK_EQUAL("Side", tokens[8].token().to_string());
+        CHECK_EQUAL("side", tokens[8].token().to_string());
 
-        CHECK_EQUAL(TokenType::string, tokens[9].token().type());
-        CHECK_EQUAL("side", tokens[9].token().to_string());
+        CHECK_EQUAL(TokenType::end_statement, tokens[9].token().type());
+        CHECK_EQUAL(";", tokens[9].token().to_string());
 
-        CHECK_EQUAL(TokenType::end_statement, tokens[10].token().type());
-        CHECK_EQUAL(";", tokens[10].token().to_string());
+        CHECK_EQUAL(TokenType::string, tokens[10].token().type());
+        CHECK_EQUAL("fix", tokens[10].token().to_string());
 
-        CHECK_EQUAL(TokenType::string, tokens[11].token().type());
-        CHECK_EQUAL("fix", tokens[11].token().to_string());
+        CHECK_EQUAL(TokenType::colon, tokens[11].token().type());
+        CHECK_EQUAL(":", tokens[11].token().to_string());
 
         CHECK_EQUAL(TokenType::colon, tokens[12].token().type());
         CHECK_EQUAL(":", tokens[12].token().to_string());
 
-        CHECK_EQUAL(TokenType::colon, tokens[13].token().type());
-        CHECK_EQUAL(":", tokens[13].token().to_string());
+        CHECK_EQUAL(TokenType::string, tokens[13].token().type());
+        CHECK_EQUAL("Price", tokens[13].token().to_string());
 
         CHECK_EQUAL(TokenType::string, tokens[14].token().type());
-        CHECK_EQUAL("Price", tokens[14].token().to_string());
+        CHECK_EQUAL("price", tokens[14].token().to_string());
 
-        CHECK_EQUAL(TokenType::string, tokens[15].token().type());
-        CHECK_EQUAL("price", tokens[15].token().to_string());
+        CHECK_EQUAL(TokenType::end_statement, tokens[15].token().type());
+        CHECK_EQUAL(";", tokens[15].token().to_string());
 
-        CHECK_EQUAL(TokenType::end_statement, tokens[16].token().type());
-        CHECK_EQUAL(";", tokens[16].token().to_string());
+        CHECK_EQUAL(TokenType::attribute, tokens[16].token().type());
+        CHECK_EQUAL("@big_endian", tokens[16].token().to_string());
 
-        CHECK_EQUAL(TokenType::attribute, tokens[17].token().type());
-        CHECK_EQUAL("@", tokens[17].token().to_string());
+        CHECK_EQUAL(TokenType::type, tokens[17].token().type());
+        CHECK_EQUAL("u16", tokens[17].token().to_string());
 
         CHECK_EQUAL(TokenType::string, tokens[18].token().type());
-        CHECK_EQUAL("big_endian", tokens[18].token().to_string());
+        CHECK_EQUAL("flags", tokens[18].token().to_string());
 
-        CHECK_EQUAL(TokenType::type, tokens[19].token().type());
-        CHECK_EQUAL("u16", tokens[19].token().to_string());
+        CHECK_EQUAL(TokenType::end_statement, tokens[19].token().type());
+        CHECK_EQUAL(";", tokens[19].token().to_string());
 
-        CHECK_EQUAL(TokenType::string, tokens[20].token().type());
-        CHECK_EQUAL("flags", tokens[20].token().to_string());
+        CHECK_EQUAL(TokenType::r_brace, tokens[20].token().type());
+        CHECK_EQUAL("}", tokens[20].token().to_string());
 
-        CHECK_EQUAL(TokenType::end_statement, tokens[21].token().type());
-        CHECK_EQUAL(";", tokens[21].token().to_string());
-
-        CHECK_EQUAL(TokenType::r_brace, tokens[22].token().type());
-        CHECK_EQUAL("}", tokens[22].token().to_string());
-
-        CHECK_EQUAL(8U, tokens[22].fileInfo().start().line());
-        CHECK_EQUAL(1U, tokens[22].fileInfo().start().column());
-        CHECK_EQUAL(8U, tokens[22].fileInfo().end().line());
-        CHECK_EQUAL(2U, tokens[22].fileInfo().end().column());
+        CHECK_EQUAL(8U, tokens[20].fileInfo().start().line());
+        CHECK_EQUAL(1U, tokens[20].fileInfo().start().column());
+        CHECK_EQUAL(8U, tokens[20].fileInfo().end().line());
+        CHECK_EQUAL(2U, tokens[20].fileInfo().end().column());
     }
 
     struct InputIsStructWithArrayAndVectorMember : public TokenizerFixture
@@ -1130,7 +1124,7 @@ namespace {
 
         tokenizer.flush();
 
-        REQUIRE CHECK_EQUAL(11U, tokens.size());
+        REQUIRE CHECK_EQUAL(10U, tokens.size());
 
         CHECK_EQUAL(TokenType::keyword, tokens[0].token().type());
         CHECK_EQUAL("struct", tokens[0].token().to_string());
@@ -1142,28 +1136,78 @@ namespace {
         CHECK_EQUAL("{", tokens[2].token().to_string());
 
         CHECK_EQUAL(TokenType::attribute, tokens[3].token().type());
-        CHECK_EQUAL("@", tokens[3].token().to_string());
+        CHECK_EQUAL("@max", tokens[3].token().to_string());
 
-        CHECK_EQUAL(TokenType::string, tokens[4].token().type());
-        CHECK_EQUAL("max", tokens[4].token().to_string());
+        CHECK_EQUAL(TokenType::equal, tokens[4].token().type());
+        CHECK_EQUAL("=", tokens[4].token().to_string());
 
-        CHECK_EQUAL(TokenType::equal, tokens[5].token().type());
-        CHECK_EQUAL("=", tokens[5].token().to_string());
+        CHECK_EQUAL(TokenType::numeric_literal, tokens[5].token().type());
+        CHECK_EQUAL("100", tokens[5].token().to_string());
 
-        CHECK_EQUAL(TokenType::numeric_literal, tokens[6].token().type());
-        CHECK_EQUAL("100", tokens[6].token().to_string());
+        CHECK_EQUAL(TokenType::type, tokens[6].token().type());
+        CHECK_EQUAL("u8", tokens[6].token().to_string());
 
-        CHECK_EQUAL(TokenType::type, tokens[7].token().type());
-        CHECK_EQUAL("u8", tokens[7].token().to_string());
+        CHECK_EQUAL(TokenType::string, tokens[7].token().type());
+        CHECK_EQUAL("size", tokens[7].token().to_string());
 
-        CHECK_EQUAL(TokenType::string, tokens[8].token().type());
-        CHECK_EQUAL("size", tokens[8].token().to_string());
+        CHECK_EQUAL(TokenType::end_statement, tokens[8].token().type());
+        CHECK_EQUAL(";", tokens[8].token().to_string());
 
-        CHECK_EQUAL(TokenType::end_statement, tokens[9].token().type());
-        CHECK_EQUAL(";", tokens[9].token().to_string());
+        CHECK_EQUAL(TokenType::r_brace, tokens[9].token().type());
+        CHECK_EQUAL("}", tokens[9].token().to_string());
+    }
 
-        CHECK_EQUAL(TokenType::r_brace, tokens[10].token().type());
-        CHECK_EQUAL("}", tokens[10].token().to_string());
+    struct InputIsStructWithBlockAttribute : public TokenizerFixture
+    {
+        const std::string s =
+            "struct Message {"                      "\n"
+            "\t" "@attribute{size != 0}"            "\n"
+            "\t" "u8 size;"                         "\n"
+            "}"                                     "\n";
+
+        const boost::string_view sv = boost::string_view(s);
+        Token token = Token(sv, 0, 0, TokenType::string);
+    };
+
+    TEST_FIXTURE(InputIsStructWithBlockAttribute, verifyConsume)
+    {
+        CHECK_EQUAL(0U, tokens.size());
+
+        for(std::size_t position = 0, end = sv.length(); position < end; ++position)
+        {
+            tokenizer.consume(sv, position);
+        }
+
+        tokenizer.flush();
+
+        REQUIRE CHECK_EQUAL(9U, tokens.size());
+
+        CHECK_EQUAL(TokenType::keyword, tokens[0].token().type());
+        CHECK_EQUAL("struct", tokens[0].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[1].token().type());
+        CHECK_EQUAL("Message", tokens[1].token().to_string());
+
+        CHECK_EQUAL(TokenType::l_brace, tokens[2].token().type());
+        CHECK_EQUAL("{", tokens[2].token().to_string());
+
+        CHECK_EQUAL(TokenType::attribute, tokens[3].token().type());
+        CHECK_EQUAL("@attribute", tokens[3].token().to_string());
+
+        CHECK_EQUAL(TokenType::attribute_block, tokens[4].token().type());
+        CHECK_EQUAL("{size != 0}", tokens[4].token().to_string());
+
+        CHECK_EQUAL(TokenType::type, tokens[5].token().type());
+        CHECK_EQUAL("u8", tokens[5].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[6].token().type());
+        CHECK_EQUAL("size", tokens[6].token().to_string());
+
+        CHECK_EQUAL(TokenType::end_statement, tokens[7].token().type());
+        CHECK_EQUAL(";", tokens[7].token().to_string());
+
+        CHECK_EQUAL(TokenType::r_brace, tokens[8].token().type());
+        CHECK_EQUAL("}", tokens[8].token().to_string());
     }
 
     struct InputIsStructWithNumericConstant : public TokenizerFixture

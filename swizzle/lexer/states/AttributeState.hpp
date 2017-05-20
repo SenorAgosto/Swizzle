@@ -30,12 +30,10 @@ namespace swizzle { namespace lexer { namespace states {
 
             if(c == '=')
             {
-                this->produceToken(token, fileInfo);
-
+                fileInfo = this->produceToken(token, fileInfo);
                 token = ResetToken(source, position, TokenType::equal);
-                fileInfo.incrementColumn();
 
-                this->produceToken(token, fileInfo);
+                fileInfo = this->produceToken(token, fileInfo);
                 token = ResetToken(source, position + 1, TokenType::string);
 
                 return TokenizerState::Init;
@@ -43,14 +41,12 @@ namespace swizzle { namespace lexer { namespace states {
 
             if(c == '{')
             {
-                this->produceToken(token, fileInfo);
-
+                fileInfo = this->produceToken(token, fileInfo);
                 token = ResetToken(source, position, TokenType::l_brace);
-                fileInfo.incrementColumn();
 
-                this->produceToken(token, fileInfo);
-
+                fileInfo = this->produceToken(token, fileInfo);
                 token = ResetToken(source, position + 1, TokenType::attribute_block);
+
                 return TokenizerState::AttributeBlock;
             }
 
@@ -63,8 +59,10 @@ namespace swizzle { namespace lexer { namespace states {
             static const std::string whitespace(" \t\r\n");
             if(whitespace.find_first_of(c) != std::string::npos)
             {
-                this->produceToken(token, fileInfo);
+                fileInfo = this->produceToken(token, fileInfo);
+
                 token = ResetToken(source, position, TokenType::string);
+                fileInfo.advanceBy(c);
 
                 return TokenizerState::Init;
             }

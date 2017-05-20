@@ -1,5 +1,7 @@
 #pragma once 
 
+#include <swizzle/lexer/states/AttributeState.hpp>
+#include <swizzle/lexer/states/AttributeBlockState.hpp>
 #include <swizzle/lexer/states/BeginHexLiteralState.hpp>
 #include <swizzle/lexer/states/BeginStringState.hpp>
 #include <swizzle/lexer/states/CharLiteralState.hpp>
@@ -42,6 +44,8 @@ namespace swizzle { namespace lexer {
             , endCharLiteral_(callback)
             , escapedCharInString_(callback)
             , beginString_(callback)
+            , attribute_(callback)
+            , attributeBlock_(callback)
         {
         }
 
@@ -62,6 +66,8 @@ namespace swizzle { namespace lexer {
             case TokenizerState::EndCharLiteral:                return endCharLiteral_.consume(source, position, fileInfo, token);
             case TokenizerState::EscapedCharInStringLiteral:    return escapedCharInString_.consume(source, position, fileInfo, token);
             case TokenizerState::BeginString:                   return beginString_.consume(source, position, fileInfo, token);
+            case TokenizerState::Attribute:                     return attribute_.consume(source, position, fileInfo, token);
+            case TokenizerState::AttributeBlock:                return attributeBlock_.consume(source, position, fileInfo, token);
 
             default:    break;
             };
@@ -83,5 +89,7 @@ namespace swizzle { namespace lexer {
         states::EndCharLiteralState<CreateTokenCallback> endCharLiteral_;
         states::EscapedCharInStringLiteralState<CreateTokenCallback> escapedCharInString_;
         states::BeginStringState<CreateTokenCallback> beginString_;
+        states::AttributeState<CreateTokenCallback> attribute_;
+        states::AttributeBlockState<CreateTokenCallback> attributeBlock_;
     };
 }}

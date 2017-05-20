@@ -36,7 +36,7 @@ namespace swizzle { namespace lexer { namespace states {
                 fileInfo.incrementColumn();
 
                 this->produceToken(token, fileInfo);
-                token = ResetToken(source, position + 1, TokenType::attribute_value);
+                token = ResetToken(source, position + 1, TokenType::string);
 
                 return TokenizerState::Init;
             }

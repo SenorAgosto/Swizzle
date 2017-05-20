@@ -332,11 +332,11 @@ namespace {
 
         auto tokenState = state.consume(sv, position, info, token);
 
-        CHECK_EQUAL(TokenizerState::Init, tokenState);
-
-        REQUIRE CHECK_EQUAL(1U, tokens.size());
-        CHECK_EQUAL(TokenType::attribute, tokens[0].token().type());
-        CHECK_EQUAL("@", tokens[0].token().to_string());
+        CHECK_EQUAL(TokenizerState::Attribute, tokenState);
+        CHECK_EQUAL(TokenType::attribute, token.type());
+        CHECK_EQUAL("@", token.to_string());
+        
+        CHECK_EQUAL(0U, tokens.size());
     }
 
     struct WhenNextCharIsComma : public InitStateFixture

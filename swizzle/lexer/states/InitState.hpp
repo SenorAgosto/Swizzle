@@ -60,6 +60,12 @@ namespace swizzle { namespace lexer { namespace states {
                 return TokenizerState::NumericLiteral;
             }
 
+            if(c == '@')
+            {
+                token = ResetToken(source, position, TokenType::attribute);
+                return TokenizerState::Attribute;
+            }
+
             static const std::string whitespace(" \t\r\n");
             if(whitespace.find_first_of(c) != std::string::npos)
             {
@@ -69,7 +75,7 @@ namespace swizzle { namespace lexer { namespace states {
                 return TokenizerState::Init;
             }
 
-            static const std::string tokenProducers("@=[]{}.:;,");
+            static const std::string tokenProducers("=[]{}.:;,");
             if(tokenProducers.find_first_of(c) != std::string::npos)
             {
                 token = ResetToken(source, position, CharToTokenType(c));

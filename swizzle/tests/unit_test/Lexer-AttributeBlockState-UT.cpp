@@ -68,13 +68,10 @@ namespace {
         tokenState = state.consume(sv, position++, info, token);
         CHECK_EQUAL(TokenizerState::Init, tokenState);
 
-        REQUIRE CHECK_EQUAL(2U, tokens.size());
+        REQUIRE CHECK_EQUAL(1U, tokens.size());
 
         CHECK_EQUAL(TokenType::attribute_block, tokens[0].token().type());
-        CHECK_EQUAL("a", tokens[0].token().to_string());
-
-        CHECK_EQUAL(TokenType::r_brace, tokens[1].token().type());
-        CHECK_EQUAL("}", tokens[1].token().to_string());
+        CHECK_EQUAL("a}", tokens[0].token().to_string());
     }
 
     struct WhenNextCharIsAlpha : public AttributeStateFixture

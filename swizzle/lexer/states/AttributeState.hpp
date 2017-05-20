@@ -42,10 +42,7 @@ namespace swizzle { namespace lexer { namespace states {
             if(c == '{')
             {
                 fileInfo = this->produceToken(token, fileInfo);
-                token = ResetToken(source, position, TokenType::l_brace);
-
-                fileInfo = this->produceToken(token, fileInfo);
-                token = ResetToken(source, position + 1, TokenType::attribute_block);
+                token = ResetToken(source, position, TokenType::attribute_block);
 
                 return TokenizerState::AttributeBlock;
             }

@@ -138,7 +138,7 @@ namespace {
 
         // consume {
         tokenState = state.consume(sv, position++, info, token);
-        CHECK_EQUAL(TokenizerState::AttributeValue, tokenState);
+        CHECK_EQUAL(TokenizerState::Init, tokenState);
 
         REQUIRE CHECK_EQUAL(2U, tokens.size());
 

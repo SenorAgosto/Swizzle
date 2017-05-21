@@ -1413,67 +1413,177 @@ namespace {
         CHECK_EQUAL(TokenType::keyword, tokens[0].token().type());
         CHECK_EQUAL("struct", tokens[0].token().to_string());
 
+        CHECK_EQUAL(1U, tokens[0].fileInfo().start().line());
+        CHECK_EQUAL(1U, tokens[0].fileInfo().start().column());
+        CHECK_EQUAL(1U, tokens[0].fileInfo().end().line());
+        CHECK_EQUAL(7U, tokens[0].fileInfo().end().column());
+
         CHECK_EQUAL(TokenType::string, tokens[1].token().type());
         CHECK_EQUAL("Message", tokens[1].token().to_string());
+
+        CHECK_EQUAL(1U, tokens[1].fileInfo().start().line());
+        CHECK_EQUAL(8U, tokens[1].fileInfo().start().column());
+        CHECK_EQUAL(1U, tokens[1].fileInfo().end().line());
+        CHECK_EQUAL(15U, tokens[1].fileInfo().end().column());
 
         CHECK_EQUAL(TokenType::l_brace, tokens[2].token().type());
         CHECK_EQUAL("{", tokens[2].token().to_string());
 
+        CHECK_EQUAL(1U, tokens[2].fileInfo().start().line());
+        CHECK_EQUAL(16U, tokens[2].fileInfo().start().column());
+        CHECK_EQUAL(1U, tokens[2].fileInfo().end().line());
+        CHECK_EQUAL(17U, tokens[2].fileInfo().end().column());
+
         CHECK_EQUAL(TokenType::type, tokens[3].token().type());
         CHECK_EQUAL("u8", tokens[3].token().to_string());
+
+        CHECK_EQUAL(2U, tokens[3].fileInfo().start().line());
+        CHECK_EQUAL(2U, tokens[3].fileInfo().start().column());
+        CHECK_EQUAL(2U, tokens[3].fileInfo().end().line());
+        CHECK_EQUAL(4U, tokens[3].fileInfo().end().column());
 
         CHECK_EQUAL(TokenType::string, tokens[4].token().type());
         CHECK_EQUAL("msgType", tokens[4].token().to_string());
 
+        CHECK_EQUAL(2U, tokens[4].fileInfo().start().line());
+        CHECK_EQUAL(5U, tokens[4].fileInfo().start().column());
+        CHECK_EQUAL(2U, tokens[4].fileInfo().end().line());
+        CHECK_EQUAL(12U, tokens[4].fileInfo().end().column());
+
         CHECK_EQUAL(TokenType::end_statement, tokens[5].token().type());
         CHECK_EQUAL(";", tokens[5].token().to_string());
+
+        CHECK_EQUAL(2U, tokens[5].fileInfo().start().line());
+        CHECK_EQUAL(12U, tokens[5].fileInfo().start().column());
+        CHECK_EQUAL(2U, tokens[5].fileInfo().end().line());
+        CHECK_EQUAL(13U, tokens[5].fileInfo().end().column());
 
         CHECK_EQUAL(TokenType::type, tokens[6].token().type());
         CHECK_EQUAL("variable_block", tokens[6].token().to_string());
 
+        CHECK_EQUAL(4U, tokens[6].fileInfo().start().line());
+        CHECK_EQUAL(2U, tokens[6].fileInfo().start().column());
+        CHECK_EQUAL(4U, tokens[6].fileInfo().end().line());
+        CHECK_EQUAL(16U, tokens[6].fileInfo().end().column());
+
         CHECK_EQUAL(TokenType::colon, tokens[7].token().type());
         CHECK_EQUAL(":", tokens[7].token().to_string());
+
+        CHECK_EQUAL(4U, tokens[7].fileInfo().start().line());
+        CHECK_EQUAL(17U, tokens[7].fileInfo().start().column());
+        CHECK_EQUAL(4U, tokens[7].fileInfo().end().line());
+        CHECK_EQUAL(18U, tokens[7].fileInfo().end().column());
 
         CHECK_EQUAL(TokenType::string, tokens[8].token().type());
         CHECK_EQUAL("msgType", tokens[8].token().to_string());
 
+        CHECK_EQUAL(4U, tokens[8].fileInfo().start().line());
+        CHECK_EQUAL(19U, tokens[8].fileInfo().start().column());
+        CHECK_EQUAL(4U, tokens[8].fileInfo().end().line());
+        CHECK_EQUAL(26U, tokens[8].fileInfo().end().column());
+
         CHECK_EQUAL(TokenType::l_brace, tokens[9].token().type());
         CHECK_EQUAL("{", tokens[9].token().to_string());
+
+        CHECK_EQUAL(4U, tokens[9].fileInfo().start().line());
+        CHECK_EQUAL(27U, tokens[9].fileInfo().start().column());
+        CHECK_EQUAL(4U, tokens[9].fileInfo().end().line());
+        CHECK_EQUAL(28U, tokens[9].fileInfo().end().column());
 
         CHECK_EQUAL(TokenType::keyword, tokens[10].token().type());
         CHECK_EQUAL("case", tokens[10].token().to_string());
 
+        CHECK_EQUAL(5U, tokens[10].fileInfo().start().line());
+        CHECK_EQUAL(2U, tokens[10].fileInfo().start().column());
+        CHECK_EQUAL(5U, tokens[10].fileInfo().end().line());
+        CHECK_EQUAL(6U, tokens[10].fileInfo().end().column());
+
         CHECK_EQUAL(TokenType::char_literal, tokens[11].token().type());
         CHECK_EQUAL("'A'", tokens[11].token().to_string());
+
+        CHECK_EQUAL(5U, tokens[11].fileInfo().start().line());
+        CHECK_EQUAL(7U, tokens[11].fileInfo().start().column());
+        CHECK_EQUAL(5U, tokens[11].fileInfo().end().line());
+        CHECK_EQUAL(10U, tokens[11].fileInfo().end().column());
 
         CHECK_EQUAL(TokenType::colon, tokens[12].token().type());
         CHECK_EQUAL(":", tokens[12].token().to_string());
 
+        CHECK_EQUAL(5U, tokens[12].fileInfo().start().line());
+        CHECK_EQUAL(10U, tokens[12].fileInfo().start().column());
+        CHECK_EQUAL(5U, tokens[12].fileInfo().end().line());
+        CHECK_EQUAL(11U, tokens[12].fileInfo().end().column());
+
         CHECK_EQUAL(TokenType::string, tokens[13].token().type());
         CHECK_EQUAL("MsgA", tokens[13].token().to_string());
+
+        CHECK_EQUAL(5U, tokens[13].fileInfo().start().line());
+        CHECK_EQUAL(12U, tokens[13].fileInfo().start().column());
+        CHECK_EQUAL(5U, tokens[13].fileInfo().end().line());
+        CHECK_EQUAL(16U, tokens[13].fileInfo().end().column());
 
         CHECK_EQUAL(TokenType::comma, tokens[14].token().type());
         CHECK_EQUAL(",", tokens[14].token().to_string());
 
+        CHECK_EQUAL(5U, tokens[14].fileInfo().start().line());
+        CHECK_EQUAL(16U, tokens[14].fileInfo().start().column());
+        CHECK_EQUAL(5U, tokens[14].fileInfo().end().line());
+        CHECK_EQUAL(17U, tokens[14].fileInfo().end().column());
+
         CHECK_EQUAL(TokenType::keyword, tokens[15].token().type());
         CHECK_EQUAL("case", tokens[15].token().to_string());
+
+        CHECK_EQUAL(6U, tokens[15].fileInfo().start().line());
+        CHECK_EQUAL(2U, tokens[15].fileInfo().start().column());
+        CHECK_EQUAL(6U, tokens[15].fileInfo().end().line());
+        CHECK_EQUAL(6U, tokens[15].fileInfo().end().column());
 
         CHECK_EQUAL(TokenType::char_literal, tokens[16].token().type());
         CHECK_EQUAL("'B'", tokens[16].token().to_string());
 
+        CHECK_EQUAL(6U, tokens[16].fileInfo().start().line());
+        CHECK_EQUAL(7U, tokens[16].fileInfo().start().column());
+        CHECK_EQUAL(6U, tokens[16].fileInfo().end().line());
+        CHECK_EQUAL(10U, tokens[16].fileInfo().end().column());
+
         CHECK_EQUAL(TokenType::colon, tokens[17].token().type());
         CHECK_EQUAL(":", tokens[17].token().to_string());
+
+        CHECK_EQUAL(6U, tokens[17].fileInfo().start().line());
+        CHECK_EQUAL(10U, tokens[17].fileInfo().start().column());
+        CHECK_EQUAL(6U, tokens[17].fileInfo().end().line());
+        CHECK_EQUAL(11U, tokens[17].fileInfo().end().column());
 
         CHECK_EQUAL(TokenType::string, tokens[18].token().type());
         CHECK_EQUAL("MsgB", tokens[18].token().to_string());
 
+        CHECK_EQUAL(6U, tokens[18].fileInfo().start().line());
+        CHECK_EQUAL(12U, tokens[18].fileInfo().start().column());
+        CHECK_EQUAL(6U, tokens[18].fileInfo().end().line());
+        CHECK_EQUAL(16U, tokens[18].fileInfo().end().column());
+
         CHECK_EQUAL(TokenType::comma, tokens[19].token().type());
         CHECK_EQUAL(",", tokens[19].token().to_string());
+
+        CHECK_EQUAL(6U, tokens[19].fileInfo().start().line());
+        CHECK_EQUAL(16U, tokens[19].fileInfo().start().column());
+        CHECK_EQUAL(6U, tokens[19].fileInfo().end().line());
+        CHECK_EQUAL(17U, tokens[19].fileInfo().end().column());
 
         CHECK_EQUAL(TokenType::r_brace, tokens[20].token().type());
         CHECK_EQUAL("}", tokens[20].token().to_string());
 
+        CHECK_EQUAL(7U, tokens[20].fileInfo().start().line());
+        CHECK_EQUAL(2U, tokens[20].fileInfo().start().column());
+        CHECK_EQUAL(7U, tokens[20].fileInfo().end().line());
+        CHECK_EQUAL(3U, tokens[20].fileInfo().end().column());
+
         CHECK_EQUAL(TokenType::r_brace, tokens[21].token().type());
         CHECK_EQUAL("}", tokens[21].token().to_string());
+
+        CHECK_EQUAL(8U, tokens[21].fileInfo().start().line());
+        CHECK_EQUAL(1U, tokens[21].fileInfo().start().column());
+        CHECK_EQUAL(8U, tokens[21].fileInfo().end().line());
+        CHECK_EQUAL(2U, tokens[21].fileInfo().end().column());
     }
 }

@@ -1185,29 +1185,74 @@ namespace {
         CHECK_EQUAL(TokenType::keyword, tokens[0].token().type());
         CHECK_EQUAL("struct", tokens[0].token().to_string());
 
+        CHECK_EQUAL(1U, tokens[0].fileInfo().start().line());
+        CHECK_EQUAL(1U, tokens[0].fileInfo().start().column());
+        CHECK_EQUAL(1U, tokens[0].fileInfo().end().line());
+        CHECK_EQUAL(7U, tokens[0].fileInfo().end().column());
+
         CHECK_EQUAL(TokenType::string, tokens[1].token().type());
         CHECK_EQUAL("Message", tokens[1].token().to_string());
+
+        CHECK_EQUAL(1U, tokens[1].fileInfo().start().line());
+        CHECK_EQUAL(8U, tokens[1].fileInfo().start().column());
+        CHECK_EQUAL(1U, tokens[1].fileInfo().end().line());
+        CHECK_EQUAL(15U, tokens[1].fileInfo().end().column());
 
         CHECK_EQUAL(TokenType::l_brace, tokens[2].token().type());
         CHECK_EQUAL("{", tokens[2].token().to_string());
 
+        CHECK_EQUAL(1U, tokens[2].fileInfo().start().line());
+        CHECK_EQUAL(16U, tokens[2].fileInfo().start().column());
+        CHECK_EQUAL(1U, tokens[2].fileInfo().end().line());
+        CHECK_EQUAL(17U, tokens[2].fileInfo().end().column());
+
         CHECK_EQUAL(TokenType::attribute, tokens[3].token().type());
         CHECK_EQUAL("@attribute", tokens[3].token().to_string());
+
+        CHECK_EQUAL(2U, tokens[3].fileInfo().start().line());
+        CHECK_EQUAL(2U, tokens[3].fileInfo().start().column());
+        CHECK_EQUAL(2U, tokens[3].fileInfo().end().line());
+        CHECK_EQUAL(12U, tokens[3].fileInfo().end().column());
 
         CHECK_EQUAL(TokenType::attribute_block, tokens[4].token().type());
         CHECK_EQUAL("{size != 0}", tokens[4].token().to_string());
 
+        CHECK_EQUAL(2U, tokens[4].fileInfo().start().line());
+        CHECK_EQUAL(12U, tokens[4].fileInfo().start().column());
+        CHECK_EQUAL(2U, tokens[4].fileInfo().end().line());
+        CHECK_EQUAL(23U, tokens[4].fileInfo().end().column());
+
         CHECK_EQUAL(TokenType::type, tokens[5].token().type());
         CHECK_EQUAL("u8", tokens[5].token().to_string());
+
+        CHECK_EQUAL(3U, tokens[5].fileInfo().start().line());
+        CHECK_EQUAL(2U, tokens[5].fileInfo().start().column());
+        CHECK_EQUAL(3U, tokens[5].fileInfo().end().line());
+        CHECK_EQUAL(4U, tokens[5].fileInfo().end().column());
 
         CHECK_EQUAL(TokenType::string, tokens[6].token().type());
         CHECK_EQUAL("size", tokens[6].token().to_string());
 
+        CHECK_EQUAL(3U, tokens[6].fileInfo().start().line());
+        CHECK_EQUAL(5U, tokens[6].fileInfo().start().column());
+        CHECK_EQUAL(3U, tokens[6].fileInfo().end().line());
+        CHECK_EQUAL(9U, tokens[6].fileInfo().end().column());
+
         CHECK_EQUAL(TokenType::end_statement, tokens[7].token().type());
         CHECK_EQUAL(";", tokens[7].token().to_string());
 
+        CHECK_EQUAL(3U, tokens[7].fileInfo().start().line());
+        CHECK_EQUAL(9U, tokens[7].fileInfo().start().column());
+        CHECK_EQUAL(3U, tokens[7].fileInfo().end().line());
+        CHECK_EQUAL(10U, tokens[7].fileInfo().end().column());
+
         CHECK_EQUAL(TokenType::r_brace, tokens[8].token().type());
         CHECK_EQUAL("}", tokens[8].token().to_string());
+
+        CHECK_EQUAL(4U, tokens[8].fileInfo().start().line());
+        CHECK_EQUAL(1U, tokens[8].fileInfo().start().column());
+        CHECK_EQUAL(4U, tokens[8].fileInfo().end().line());
+        CHECK_EQUAL(2U, tokens[8].fileInfo().end().column());
     }
 
     struct InputIsStructWithNumericConstant : public TokenizerFixture

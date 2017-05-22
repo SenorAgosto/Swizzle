@@ -48,12 +48,17 @@ This is an informal description of the Swizzle DSL for describing messages on th
     // multi-line \
        comment 
 
+    import <type_name>;	// type in the same namespace
     import <namespace>::<type_name>;  // must be declared before namespace
 
     namespace <namespace>;  // e.g. exegy::fix
+    namespace <namespace>::<namespace>;    // nested namespaces
 
     enum <name> : <underlying_type> { 
-        value = <literal>,		// literal should be validated against declared type.
+        value,                          // defaults start value to 0
+        value = <hex_literal>,		// literal should be validated against declared type.
+        value = <char_literal>,
+        Value = <numeric_literal>,
     } 
 
     bitfield <name> : <underlying_type> {
@@ -61,16 +66,18 @@ This is an informal description of the Swizzle DSL for describing messages on th
         <field_name> : <numeric_literal>..<numeric_literal>,  // field is field from the first numeric literal to the next
     }
 
+    using <type_name> = <namespace>::<namespace>::<type_name>;
     using <type_name> = <type_name>;  // type_name on left hand side must be new valid alias and type_name 
 				      // on right hand side must already be defined or be built-in.
 
     struct <name> {
-        <type_name> <field_name>;			// normal field
+        <type_name> <field_name>;  // normal field
+        <namespace>::<namespace>::<type_name> <field_name>;			// namespace’d type
         <type_name>[<numeric_literal>] <field_name>;	// array of type
         <type_name>[<size_field>] <field_name>;		// vector of type sized by <size_field>
         <type_name>[<field>.<size_field>] <field_name>;	// vector of type sized by <size_field> embedded in another field
 
-        <field_label>: <type_name> <field_name>;  // optionally labeled field 
+        <numeric_literal>: <type_name> <field_name>;  // optionally labeled field 
 	
         @<attribute>
         <type_name> <field_name>;  // field with flag attribute
@@ -86,7 +93,10 @@ This is an informal description of the Swizzle DSL for describing messages on th
         variable_block : <field_name> {	  // variable length block containing a 
             case <value>: <type_name>,	  // type defined by value in <field_name>
             case <value>: <type_name>,
-            case <value>: <type_name>,
+        }
+
+        variable_block : <field_name>.<field_name> {    // nest field name
+            case <value>: <namespace>::<namespace>::<type_name>,    // must be a user defined type, not built in
         }
     }
 

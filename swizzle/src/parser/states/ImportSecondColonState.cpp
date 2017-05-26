@@ -7,7 +7,7 @@
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState ImportSecondColonState::consume(const lexer::TokenInfo& token, ast::AbstractSyntaxTree& ast, NodeStack& nodeStack, TokenStack& tokenStack)
+    ParserState ImportSecondColonState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack& tokenStack)
     {
         // TODO: implement
         return ParserState::Init;

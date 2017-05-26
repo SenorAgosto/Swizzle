@@ -6,6 +6,6 @@ namespace swizzle { namespace parser { namespace states {
     class UsingFirstColonState : public ParserStateInterface
     {
     public:
-        ParserState consume(const lexer::TokenInfo& token, ast::AbstractSyntaxTree& ast, NodeStack& nodeStack, TokenStack& tokenStack) override;
+        ParserState consume(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack& tokenStack) override;
     };
 }}}

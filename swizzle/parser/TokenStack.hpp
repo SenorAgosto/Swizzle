@@ -1,8 +1,8 @@
 #pragma once 
 #include <swizzle/lexer/TokenInfo.hpp>
-#include <deque>
+#include <stack>
 
 namespace swizzle { namespace parser {
 
-    using TokenStack = std::deque<lexer::TokenInfo>;
+    using TokenStack = std::stack<lexer::TokenInfo>;
 }}

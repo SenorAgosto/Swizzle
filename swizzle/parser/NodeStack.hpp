@@ -1,8 +1,8 @@
 #pragma once 
 #include <swizzle/ast/Node.hpp>
-#include <deque>
+#include <stack>
 
 namespace swizzle { namespace parser {
 
-    using NodeStack = std::deque<ast::Node::smartptr>;
+    using NodeStack = std::stack<ast::Node::smartptr>;
 }}

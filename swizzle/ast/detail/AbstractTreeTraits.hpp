@@ -11,7 +11,9 @@ namespace swizzle { namespace ast { namespace detail {
     {
         using VertexVisitor = AbstractTreeVertexVisitorInterface;
         using EdgeVisitor = AbstractTreeEdgeVisitorInterface;
-        using TreeVisitor = AbstractTreeVisitorInterface;
+
+        using GraphVisitor = AbstractTreeVisitorInterface;
+        using TreeVisitor = GraphVisitor;
 
         using ReferenceCountBase = UsingIntrusivePtrIn::details::SingleThreadedReferenceCountBase;
     };

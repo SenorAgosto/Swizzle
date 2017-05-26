@@ -1,7 +1,5 @@
 #pragma once 
-
-namespace swizzle { namespace ast { namespace edges {
-}}}
+#include <swizzle/ast/Edge.hpp>
 
 namespace swizzle { namespace ast {
 

@@ -1,14 +1,11 @@
-#pragma once 
-#include <swizzle/ast/detail/AbstractTreeTraits.hpp>
+#pragma once
+
 #include <ObjectGraph/Vertex.hpp>
+#include <swizzle/ast/detail/AbstractTreeTraits.hpp>
+
+#include <deque>
 
 namespace swizzle { namespace ast {
 
-    class Node : public ObjectGraph::VertexImpl<detail::AbstractTreeTraits>
-    {
-    public:
-
-    private:
-
-    };
+    using Vertex = ObjectGraph::VertexImpl<detail::AbstractTreeTraits>;
 }}

@@ -1,6 +1,5 @@
 #include <swizzle/parser/states/InitState.hpp>
 
-#include <swizzle/ast/AbstractSyntaxTree.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
 #include <swizzle/parser/NodeStack.hpp>
 #include <swizzle/parser/TokenStack.hpp>

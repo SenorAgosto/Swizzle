@@ -1,11 +1,13 @@
 #pragma once 
 #include <UsingIntrusivePtrIn/details/SingleThreadedReferenceCountBase.hpp>
 
-namespace swizzle { namespace ast { namespace detail {
-
+namespace swizzle { namespace ast {
     class AbstractTreeVertexVisitorInterface;
     class AbstractTreeEdgeVisitorInterface;
     class AbstractTreeVisitorInterface;
+}}
+
+namespace swizzle { namespace ast { namespace detail {
 
     struct AbstractTreeTraits
     {

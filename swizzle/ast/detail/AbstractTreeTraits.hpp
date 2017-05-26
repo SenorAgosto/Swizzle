@@ -7,7 +7,7 @@ namespace swizzle { namespace ast { namespace detail {
     class AbstractTreeEdgeVisitorInterface;
     class AbstractTreeVisitorInterface;
 
-    struct SwizzleAbstractTreeTraits
+    struct AbstractTreeTraits
     {
         using VertexVisitor = AbstractTreeVertexVisitorInterface;
         using EdgeVisitor = AbstractTreeEdgeVisitorInterface;

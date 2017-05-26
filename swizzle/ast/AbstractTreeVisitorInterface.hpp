@@ -1,6 +1,10 @@
 #pragma once 
 
 namespace swizzle { namespace ast {
+    class AbstractSyntaxTree;
+}}
+
+namespace swizzle { namespace ast {
 
     class AbstractTreeVisitorInterface
     {

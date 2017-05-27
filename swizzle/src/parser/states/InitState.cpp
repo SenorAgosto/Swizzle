@@ -41,7 +41,7 @@ namespace swizzle { namespace parser { namespace states {
 
         if((type == lexer::TokenType::keyword) && ("namespace" == value))
         {
-            return ParserState::StartNamspace;
+            return ParserState::StartNamespace;
         }
 
 

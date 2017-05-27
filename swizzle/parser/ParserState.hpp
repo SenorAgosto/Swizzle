@@ -6,7 +6,7 @@ namespace swizzle { namespace parser {
 
     enum class ParserState : std::uint8_t {
         Init,
-        StartNamspace,
+        StartNamespace,
         NamespaceValue,
         NamespaceFirstColon,
         TranslationUnit,

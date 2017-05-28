@@ -10,7 +10,7 @@ namespace swizzle { namespace parser {
         case ParserState::StartNamespace: return os << "ParserState::StartNamespace";
         case ParserState::NamespaceValue: return os << "ParserState::NamespaceValue";
         case ParserState::NamespaceFirstColon: return os << "ParserState::NamespaceFirstColon";
-        case ParserState::TranslationUnit: return os << "ParserState::TranslationUnit";
+        case ParserState::TranslationUnitMain: return os << "ParserState::TranslationUnitMain";
         case ParserState::StartImport: return os << "ParserState::StartImport";
         case ParserState::ImportValue: return os << "ParserState::ImportValue";
         case ParserState::ImportFirstColon: return os << "ParserState::ImportFirstColon";

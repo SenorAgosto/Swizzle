@@ -9,7 +9,7 @@ namespace swizzle { namespace parser {
         StartNamespace,
         NamespaceValue,
         NamespaceFirstColon,
-        TranslationUnit,
+        TranslationUnitMain,
         StartImport,
         ImportValue,
         ImportFirstColon,

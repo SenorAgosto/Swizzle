@@ -33,7 +33,7 @@ namespace swizzle { namespace parser { namespace states {
                 const auto nameSpace = detail::createNamespace(tokenStack);
                 OnNamespace(nameSpace);
 
-                return ParserState::TranslationUnit;
+                return ParserState::TranslationUnitMain;
             }
 
             throw SyntaxError("Expected : or ; but found '" + token.token().to_string() + "'", token);

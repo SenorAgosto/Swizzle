@@ -5,7 +5,6 @@
 #include <swizzle/ast/AbstractTreeVisitorInterface.hpp>
 
 #include <swizzle/ast/AbstractSyntaxTree.hpp>
-#include <swizzle/ast/detail/VertexVisitChildren.hpp>
 #include <swizzle/ast/Node.hpp>
 #include <swizzle/ast/nodes/Comment.hpp>
 #include <swizzle/ast/nodes/Import.hpp>

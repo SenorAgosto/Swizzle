@@ -3,7 +3,7 @@
 
 namespace swizzle { namespace parser { namespace states {
 
-    class TranslationUnitState : public ParserStateInterface
+    class TranslationUnitMainState : public ParserStateInterface
     {
     public:
         ParserState consume(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack& tokenStack) override;

@@ -105,7 +105,7 @@ namespace {
         CHECK_EQUAL(ParserState::StartUsing, parserState);
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
-        REQUIRE CHECK_EQUAL(0U, tokenStack.size());
+        REQUIRE CHECK_EQUAL(1U, tokenStack.size());
     }
 
     struct WhenNextTokenIsEnumKeyword : public TranslationUnitMainStateFixture

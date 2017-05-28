@@ -5,11 +5,13 @@
 namespace swizzle { namespace parser { namespace detail {
 
     template<class Node, typename... Args>
-    void appendNode(NodeStack& nodeStack, Args&&... args)
+    ast::Node::smartptr appendNode(NodeStack& nodeStack, Args&&... args)
     {
         ast::Node::smartptr node = new Node(std::forward<Args>(args)...);
 
         auto& top = dynamic_cast<ast::Node&>(*nodeStack.top());
         top.append(node);
+
+        return node;
     }
 }}}

@@ -8,7 +8,6 @@ namespace swizzle { namespace types {
     {
     public:
         EnumValue();
-        EnumValue(const lexer::TokenInfo& underlying, const lexer::TokenInfo& value);
         EnumValue(const EnumValueType& value);
 
         const EnumValueType& value() const;

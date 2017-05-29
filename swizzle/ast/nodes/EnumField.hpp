@@ -22,6 +22,8 @@ namespace swizzle { namespace ast { namespace nodes {
         void value(const types::EnumValueType& value);
         const types::EnumValueType& value() const;
 
+        void incrementValue();
+
     private:
         const lexer::TokenInfo name_;
         const lexer::TokenInfo underlying_;

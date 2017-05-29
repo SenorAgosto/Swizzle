@@ -39,4 +39,8 @@ namespace swizzle { namespace ast { namespace nodes {
         return value_.value();
     }
 
+    void EnumField::incrementValue()
+    {
+        value_.increment();
+    }
 }}}

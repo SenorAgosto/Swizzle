@@ -24,12 +24,12 @@ namespace swizzle { namespace ast { namespace nodes {
         return name_;
     }
 
-    void Enum::underlying(const boost::string_view& value)
+    void Enum::underlying(const lexer::TokenInfo& value)
     {
         underlyingType_ = value;
     }
 
-    const boost::string_view& Enum::underlying() const
+    const lexer::TokenInfo& Enum::underlying() const
     {
         return underlyingType_;
     }

@@ -2,7 +2,7 @@
 #include <swizzle/ast/Node.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
 
-#include <boost/utility/string_view.hpp>
+#include <string>
 
 namespace swizzle { namespace ast { namespace nodes {
 
@@ -16,14 +16,15 @@ namespace swizzle { namespace ast { namespace nodes {
 
         std::string name() const;
 
-        void underlying(const boost::string_view& value);
-        const boost::string_view& underlying() const;
+        void underlying(const lexer::TokenInfo& value);
+        const lexer::TokenInfo& underlying() const;
 
     private:
         const lexer::TokenInfo info_;
+
         lexer::TokenInfo underlyingInfo_;
+        lexer::TokenInfo underlyingType_;
 
         const std::string name_;
-        boost::string_view underlyingType_;
     };
 }}}

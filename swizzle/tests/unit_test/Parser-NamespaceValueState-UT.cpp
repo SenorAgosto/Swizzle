@@ -5,6 +5,7 @@
 #include <swizzle/ast/AbstractTreeVisitorInterface.hpp>
 
 #include <swizzle/ast/AbstractSyntaxTree.hpp>
+#include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/states/NamespaceValueState.hpp>
 
 #include <swizzle/Exceptions.hpp>
@@ -52,8 +53,10 @@ namespace {
         states::NamespaceValueState<OnNamespaceCallback> state = states::NamespaceValueState<OnNamespaceCallback>(callback);
 
         AbstractSyntaxTree ast;
+
         NodeStack nodeStack;
         TokenStack tokenStack;
+        ParserStateContext context;
     };
 
     TEST_FIXTURE(NamespaceValueStateFixture, verifyConstruction)
@@ -73,7 +76,7 @@ namespace {
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack);
+        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::NamespaceFirstColon, parserState);
 
@@ -105,7 +108,7 @@ namespace {
         CHECK_EQUAL(0U, invoked);
         CHECK_EQUAL("", nameSpace);
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack);
+        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
 
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
@@ -146,7 +149,7 @@ namespace {
         CHECK_EQUAL(0U, invoked);
         CHECK_EQUAL("", nameSpace);
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack);
+        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
 
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
@@ -166,7 +169,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsEndStatementAndTokenStackIsEmpty, verifyConsume)
     {
         CHECK_EQUAL(0U, tokenStack.size());
-        CHECK_THROW(state.consume(info, nodeStack, tokenStack), swizzle::ParserError);
+        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::ParserError);
     }
 
     struct WhenNextTokenIsInvalid : public NamespaceValueStateFixture
@@ -179,6 +182,6 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsInvalid, verifyConsume)
     {
-        CHECK_THROW(state.consume(info, nodeStack, tokenStack), swizzle::SyntaxError);
+        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::SyntaxError);
     }
 }

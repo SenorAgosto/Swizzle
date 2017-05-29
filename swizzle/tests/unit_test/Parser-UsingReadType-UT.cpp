@@ -8,6 +8,7 @@
 #include <swizzle/ast/Node.hpp>
 #include <swizzle/ast/nodes/Comment.hpp>
 #include <swizzle/ast/nodes/TypeAlias.hpp>
+#include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/detail/AppendNode.hpp>
 #include <swizzle/parser/states/UsingTypeReadState.hpp>
 
@@ -33,8 +34,10 @@ namespace {
         states::UsingTypeReadState state;
 
         AbstractSyntaxTree ast;
+
         NodeStack nodeStack;
         TokenStack tokenStack;
+        ParserStateContext context;
     };
 
     TEST_FIXTURE(UsingTypeReadStateFixture, verifyConstruction)
@@ -54,7 +57,7 @@ namespace {
         CHECK_EQUAL(2U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack);
+        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::UsingFirstColon, parserState);
 
@@ -84,7 +87,7 @@ namespace {
         CHECK_EQUAL(2U, nodeStack.size());
         CHECK_EQUAL(3U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack);
+        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
@@ -102,7 +105,7 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsInvalid, verifyConsume)
     {
-        CHECK_THROW(state.consume(info, nodeStack, tokenStack), swizzle::SyntaxError);
+        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::SyntaxError);
     }
 
     struct WhenTopOfNodeStackIsNotTypeAlias : public UsingTypeReadStateFixture
@@ -123,6 +126,6 @@ namespace {
 
     TEST_FIXTURE(WhenTopOfNodeStackIsNotTypeAlias, verifyConsume)
     {
-        CHECK_THROW(state.consume(info, nodeStack, tokenStack), swizzle::ParserError);
+        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::ParserError);
     }
 }

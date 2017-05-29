@@ -8,11 +8,15 @@ namespace swizzle { namespace lexer {
 }}
 
 namespace swizzle { namespace parser {
+    struct ParserStateContext;
+}}
+
+namespace swizzle { namespace parser {
 
     class ParserStateInterface
     {
     public:
         virtual ~ParserStateInterface(){}
-        virtual ParserState consume(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack& tokenStack) = 0;
+        virtual ParserState consume(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack& tokenStack, ParserStateContext& context) = 0;
     };
 }}

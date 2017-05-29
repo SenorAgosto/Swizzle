@@ -61,7 +61,7 @@ namespace {
 
         CHECK_EQUAL(ParserState::EnumName, parserState);
 
-        REQUIRE CHECK_EQUAL(1U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
     }
 

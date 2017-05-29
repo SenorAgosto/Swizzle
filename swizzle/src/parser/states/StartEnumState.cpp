@@ -22,7 +22,9 @@ namespace swizzle { namespace parser { namespace states {
 
         if(type == lexer::TokenType::string)
         {
-            detail::appendNode<ast::nodes::Enum>(nodeStack, token, context.CurrentNamespace);
+            const auto node = detail::appendNode<ast::nodes::Enum>(nodeStack, token, context.CurrentNamespace);
+            nodeStack.push(node);
+            
             return ParserState::EnumName;
         }
 

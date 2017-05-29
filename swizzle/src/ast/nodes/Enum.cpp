@@ -14,8 +14,23 @@ namespace swizzle { namespace ast { namespace nodes {
         return info_;
     }
 
+    const lexer::TokenInfo& Enum::underlyingTypeInfo() const
+    {
+        return underlyingInfo_;
+    }
+
     std::string Enum::name() const
     {
         return name_;
+    }
+
+    void Enum::underlying(const boost::string_view& value)
+    {
+        underlyingType_ = value;
+    }
+
+    const boost::string_view& Enum::underlying() const
+    {
+        return underlyingType_;
     }
 }}}

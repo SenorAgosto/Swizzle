@@ -5,6 +5,10 @@
 
 namespace swizzle { namespace lexer {
 
+    FileInfo::FileInfo()
+    {
+    }
+    
     FileInfo::FileInfo(const std::string& filename)
         : filename_(filename)
     {

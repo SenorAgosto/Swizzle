@@ -14,6 +14,7 @@ namespace swizzle { namespace lexer {
     class FileInfo
     {
     public:
+        FileInfo();
         FileInfo(const std::string& filename);
         FileInfo(const std::string& filename, const LineInfo& start);
         FileInfo(const std::string& filename, const LineInfo& start, const LineInfo& end);

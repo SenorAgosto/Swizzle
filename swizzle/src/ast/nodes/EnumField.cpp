@@ -6,8 +6,6 @@ namespace swizzle { namespace ast { namespace nodes {
     EnumField::EnumField(const lexer::TokenInfo& name, const lexer::TokenInfo& underlyingType)
         : name_(name)
         , underlying_(underlyingType)
-        , value_(0)
-        , isNegative_(false)
     {
     }
 
@@ -31,13 +29,14 @@ namespace swizzle { namespace ast { namespace nodes {
         return valueInfo_;
     }
 
-    bool EnumField::isNegative() const
+    void EnumField::value(const types::EnumValueType& value)
     {
-        return isNegative_;
+        value_ = value;
     }
 
-    std::size_t EnumField::value() const
+    const types::EnumValueType& EnumField::value() const
     {
-        return value_;
+        return value_.value();
     }
+
 }}}

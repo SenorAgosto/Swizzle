@@ -1,6 +1,8 @@
 #pragma once
 #include <swizzle/ast/Node.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
+#include <swizzle/types/EnumValue.hpp>
+#include <swizzle/types/EnumValueType.hpp>
 
 #include <cstddef>
 
@@ -17,8 +19,8 @@ namespace swizzle { namespace ast { namespace nodes {
         void valueInfo(const lexer::TokenInfo& val);
         const lexer::TokenInfo& valueInfo() const;
 
-        bool isNegative() const;
-        std::size_t value() const;
+        void value(const types::EnumValueType& value);
+        const types::EnumValueType& value() const;
 
     private:
         const lexer::TokenInfo name_;
@@ -26,7 +28,6 @@ namespace swizzle { namespace ast { namespace nodes {
 
         lexer::TokenInfo valueInfo_;
 
-        std::size_t value_;
-        bool isNegative_;
+        types::EnumValue value_;
     };
 }}}

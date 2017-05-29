@@ -11,4 +11,9 @@ namespace swizzle { namespace ast {
     {
         children_.push_back(node);
     }
+
+    bool Node::empty() const
+    {
+        return children_.empty();
+    }
 }}

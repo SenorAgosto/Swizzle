@@ -10,6 +10,8 @@ namespace swizzle { namespace ast {
         const std::deque<Node::smartptr>& children() const;
         void append(Node::smartptr node);
 
+        bool empty() const;
+        
     private:
         std::deque<Node::smartptr> children_;
     };

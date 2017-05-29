@@ -31,7 +31,7 @@ namespace swizzle { namespace parser { namespace states {
                 if(detail::nodeStackTopIs<ast::nodes::Enum>(nodeStack))
                 {
                     auto& top = static_cast<ast::nodes::Enum&>(*nodeStack.top());
-                    top.underlying(value);
+                    top.underlying(token);
                 }
                 else
                 {

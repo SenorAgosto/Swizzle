@@ -1,5 +1,5 @@
 #include <swizzle/ast/nodes/Enum.hpp>
-#include <swizzle/ast/AbstractTreeVertexVisitorInterface.hpp>
+#include <swizzle/ast/VisitorInterface.hpp>
 
 namespace swizzle { namespace ast { namespace nodes {
 
@@ -38,5 +38,15 @@ namespace swizzle { namespace ast { namespace nodes {
     const lexer::TokenInfo& Enum::underlying() const
     {
         return underlyingType_;
+    }
+
+    void Enum::accept(VisitorInterface& visitor)
+    {
+        visitor(*this);
+
+        for(auto& child : children())
+        {
+            child->accept(visitor);
+        }
     }
 }}}

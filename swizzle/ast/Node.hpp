@@ -1,17 +1,30 @@
 #pragma once
-#include <swizzle/ast/Vertex.hpp>
+#include <UsingIntrusivePtrIn/UsingIntrusivePtrIn.hpp>
+#include <UsingIntrusivePtrIn/details/SingleThreadedReferenceCountBase.hpp>
+
+#include <boost/intrusive_ptr.hpp>
 #include <deque>
 
 namespace swizzle { namespace ast {
+    class VisitorInterface;
+}}
 
-    class Node : public Vertex
+namespace swizzle { namespace ast {
+
+    class Node : public UsingIntrusivePtrIn::UsingIntrusivePtrIn<Node, UsingIntrusivePtrIn::details::SingleThreadedReferenceCountBase>
     {
     public:
+        using smartptr = boost::intrusive_ptr<Node>;
+
+        virtual ~Node(){}
+
         const std::deque<Node::smartptr>& children() const;
         void append(Node::smartptr node);
 
         bool empty() const;
-        
+
+        void accept(VisitorInterface& visitor);
+
     private:
         std::deque<Node::smartptr> children_;
     };

@@ -1,5 +1,5 @@
 #include <swizzle/ast/nodes/EnumField.hpp>
-#include <swizzle/ast/AbstractTreeVertexVisitorInterface.hpp>
+#include <swizzle/ast/VisitorInterface.hpp>
 
 namespace swizzle { namespace ast { namespace nodes {
 
@@ -42,5 +42,15 @@ namespace swizzle { namespace ast { namespace nodes {
     void EnumField::incrementValue()
     {
         value_.increment();
+    }
+
+    void EnumField::accept(VisitorInterface& visitor)
+    {
+        visitor(*this);
+
+        for(auto& child : children())
+        {
+            child->accept(visitor);
+        }
     }
 }}}

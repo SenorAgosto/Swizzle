@@ -14,22 +14,25 @@
 
 #include <swizzle/Exceptions.hpp>
 
-#include <array>
-#include <boost/filesystem.hpp>
-#include <iostream>
+#include <boost/variant/apply_visitor.hpp>
+#include <boost/variant/static_visitor.hpp>
+#include <cstdint>
 
 namespace {
 
     using namespace swizzle::ast;
     using namespace swizzle::lexer;
     using namespace swizzle::parser;
+    using namespace swizzle::types;
 
     struct TranslationUnitMainStateFixture
     {
         TranslationUnitMainStateFixture()
         {
             nodeStack.push(ast.root());
-            context.CurrentEnumValue = 100; // something non-zero so we can ensure this is reset
+
+            EnumValueType val = std::uint64_t(100);
+            context.CurrentEnumValue = val; // something non-zero so we can ensure this is reset
         }
 
         states::TranslationUnitMainState state;
@@ -124,13 +127,13 @@ namespace {
     {
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
-        CHECK_EQUAL(100U, context.CurrentEnumValue);
+        CHECK_EQUAL(100U, boost::get<std::uint64_t>(context.CurrentEnumValue.value())); // I wanted to use visitor here, but got stuck on ambigous calls error
 
         const auto parserState = state.consume(info, nodeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StartEnum, parserState);
-        CHECK_EQUAL(0U, context.CurrentEnumValue);
 
+        CHECK_EQUAL(0U, boost::get<std::uint64_t>(context.CurrentEnumValue.value()));
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
         REQUIRE CHECK_EQUAL(1U, tokenStack.size());
     }

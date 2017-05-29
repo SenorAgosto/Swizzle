@@ -3,15 +3,21 @@
 
 namespace swizzle { namespace ast { namespace nodes {
 
-    Enum::Enum(const lexer::TokenInfo& info, const std::string& containingNamespace)
-        : info_(info)
-        , name_(containingNamespace + "::" + info_.token().to_string())
+    Enum::Enum(const lexer::TokenInfo& enumInfo, const lexer::TokenInfo& name, const std::string& containingNamespace)
+        : enumInfo_(enumInfo)
+        , nameInfo_(name)
+        , name_(containingNamespace + "::" + nameInfo_.token().to_string())
     {
     }
 
-    const lexer::TokenInfo& Enum::info() const
+    const lexer::TokenInfo& Enum::enumInfo() const
     {
-        return info_;
+        return enumInfo_;
+    }
+
+    const lexer::TokenInfo& Enum::nameInfo() const
+    {
+        return nameInfo_;
     }
 
     const lexer::TokenInfo& Enum::underlyingTypeInfo() const

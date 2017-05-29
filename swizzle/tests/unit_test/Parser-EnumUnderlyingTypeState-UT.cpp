@@ -25,7 +25,10 @@ namespace {
         {
             nodeStack.push(ast.root());
 
-            const auto node = swizzle::parser::detail::appendNode<nodes::Enum>(nodeStack, TokenInfo(Token("my_enum", 0, 7, TokenType::string), FileInfo("test.swizzle")), "my_namespace");
+            const auto enumField = TokenInfo(Token("enum", 0, 4, TokenType::keyword), FileInfo("test.swizzle"));
+            const auto field = TokenInfo(Token("my_enum", 0, 7, TokenType::string), FileInfo("test.swizzle"));
+
+            const auto node = swizzle::parser::detail::appendNode<nodes::Enum>(nodeStack, enumField, field, "my_namespace");
             nodeStack.push(node);
         }
 

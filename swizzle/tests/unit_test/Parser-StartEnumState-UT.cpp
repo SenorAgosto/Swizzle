@@ -29,6 +29,9 @@ namespace {
         StartEnumStateFixture()
         {
             nodeStack.push(ast.root());
+
+            const auto enumInfo = TokenInfo(Token("enum", 0, 3, TokenType::keyword), FileInfo("test.swizzle"));
+            tokenStack.push(enumInfo);
         }
 
         states::StartEnumState state;
@@ -55,7 +58,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsString, verifyConsume)
     {
         CHECK_EQUAL(1U, nodeStack.size());
-        CHECK_EQUAL(0U, tokenStack.size());
+        CHECK_EQUAL(1U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, tokenStack, context);
 

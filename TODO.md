@@ -5,3 +5,4 @@
 - add nodes to AST when processing import statements
 - add nodes to AST when processing namespace statements
 - add support for - (negative) in numeric literal values
+- once safe_numerics is accepted to boost, adapt it to improve validation of literal values.

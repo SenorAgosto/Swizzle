@@ -22,20 +22,17 @@ namespace {
     class OnNamespaceCallback
     {
     public:
-        OnNamespaceCallback(std::size_t& invoked, std::string& ns)
-            : namespace_(ns)
-            , invoked_(invoked)
+        OnNamespaceCallback(std::size_t& invoked)
+            : invoked_(invoked)
         {
         }
 
         void operator()(const std::string& ns)
         {
-            namespace_ = ns;
             invoked_++;
         }
 
     private:
-        std::string& namespace_;
         std::size_t& invoked_;
     };
 
@@ -46,10 +43,9 @@ namespace {
             nodeStack.push(ast.root());
         }
 
-        std::string nameSpace;
         std::size_t invoked = 0;
 
-        OnNamespaceCallback callback = OnNamespaceCallback(invoked, nameSpace);
+        OnNamespaceCallback callback = OnNamespaceCallback(invoked);
         states::NamespaceValueState<OnNamespaceCallback> state = states::NamespaceValueState<OnNamespaceCallback>(callback);
 
         AbstractSyntaxTree ast;
@@ -106,7 +102,7 @@ namespace {
         CHECK_EQUAL(1U, tokenStack.size());
 
         CHECK_EQUAL(0U, invoked);
-        CHECK_EQUAL("", nameSpace);
+        CHECK_EQUAL("", context.CurrentNamespace);
 
         const auto parserState = state.consume(info, nodeStack, tokenStack, context);
 
@@ -114,7 +110,7 @@ namespace {
         CHECK_EQUAL(0U, tokenStack.size());
 
         CHECK_EQUAL(1U, invoked);
-        CHECK_EQUAL("MyNamespace", nameSpace);
+        CHECK_EQUAL("MyNamespace", context.CurrentNamespace);
     }
 
     struct WhenNextTokenIsEndStatementAndFileHasPath : public NamespaceValueStateFixture
@@ -147,7 +143,7 @@ namespace {
         CHECK_EQUAL(3U, tokenStack.size());
 
         CHECK_EQUAL(0U, invoked);
-        CHECK_EQUAL("", nameSpace);
+        CHECK_EQUAL("", context.CurrentNamespace);
 
         const auto parserState = state.consume(info, nodeStack, tokenStack, context);
 
@@ -155,7 +151,7 @@ namespace {
         CHECK_EQUAL(0U, tokenStack.size());
 
         CHECK_EQUAL(1U, invoked);
-        CHECK_EQUAL("foo::bar::MyNamespace", nameSpace);
+        CHECK_EQUAL("foo::bar::MyNamespace", context.CurrentNamespace);
     }
 
     struct WhenNextTokenIsEndStatementAndTokenStackIsEmpty : public NamespaceValueStateFixture

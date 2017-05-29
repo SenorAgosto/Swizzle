@@ -19,7 +19,7 @@ namespace swizzle { namespace parser { namespace states {
         {
         }
 
-        ParserState consume(const lexer::TokenInfo& token, NodeStack&, TokenStack& tokenStack, ParserStateContext&) override
+        ParserState consume(const lexer::TokenInfo& token, NodeStack&, TokenStack& tokenStack, ParserStateContext& context) override
         {
             const auto type = token.token().type();
 
@@ -31,6 +31,8 @@ namespace swizzle { namespace parser { namespace states {
             if(type == lexer::TokenType::end_statement)
             {
                 const auto nameSpace = detail::createNamespace(tokenStack);
+                context.CurrentNamespace = nameSpace;
+
                 OnNamespace(nameSpace);
 
                 return ParserState::TranslationUnitMain;

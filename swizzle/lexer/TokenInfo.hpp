@@ -9,6 +9,7 @@ namespace swizzle { namespace lexer {
     class TokenInfo
     {
     public:
+        TokenInfo();
         TokenInfo(const Token& token, const FileInfo& info);
         
         const FileInfo& fileInfo() const { return fileInfo_; }

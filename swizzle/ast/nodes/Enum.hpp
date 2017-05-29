@@ -9,9 +9,10 @@ namespace swizzle { namespace ast { namespace nodes {
     class Enum : public Node
     {
     public:
-        Enum(const lexer::TokenInfo& info, const std::string& containingNamespace);
+        Enum(const lexer::TokenInfo& enumInfo, const lexer::TokenInfo& name, const std::string& containingNamespace);
 
-        const lexer::TokenInfo& info() const;
+        const lexer::TokenInfo& enumInfo() const;
+        const lexer::TokenInfo& nameInfo() const;
         const lexer::TokenInfo& underlyingTypeInfo() const;
 
         std::string name() const;
@@ -20,7 +21,8 @@ namespace swizzle { namespace ast { namespace nodes {
         const lexer::TokenInfo& underlying() const;
 
     private:
-        const lexer::TokenInfo info_;
+        const lexer::TokenInfo enumInfo_;   // enum keyword
+        const lexer::TokenInfo nameInfo_;   // enum name
 
         lexer::TokenInfo underlyingInfo_;
         lexer::TokenInfo underlyingType_;

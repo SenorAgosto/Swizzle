@@ -16,14 +16,22 @@
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState StartEnumState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack&, ParserStateContext& context)
+    ParserState StartEnumState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack& tokenStack, ParserStateContext& context)
     {
         const auto type = token.token().type();
 
         if(type == lexer::TokenType::string)
         {
-            const auto node = detail::appendNode<ast::nodes::Enum>(nodeStack, token, context.CurrentNamespace);
+            if(tokenStack.empty())
+            {
+                throw ParserError("Token Stack unexpectedly empty.");
+            }
+
+            const auto& info = tokenStack.top();
+            const auto node = detail::appendNode<ast::nodes::Enum>(nodeStack, info, token, context.CurrentNamespace);
+
             nodeStack.push(node);
+            tokenStack.pop();
             
             return ParserState::EnumName;
         }

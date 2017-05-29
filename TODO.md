@@ -4,3 +4,4 @@
 - add state for attribute handling, this will be needed to handle block attributes correctly. 
 - add nodes to AST when processing import statements
 - add nodes to AST when processing namespace statements
+- move namespace value to ParserStateContext

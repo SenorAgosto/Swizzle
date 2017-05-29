@@ -19,6 +19,7 @@ namespace {
     using namespace swizzle::ast;
     using namespace swizzle::lexer;
     using namespace swizzle::parser;
+    using namespace swizzle::types;
 
     struct EnumFieldStateFixture
     {
@@ -102,6 +103,38 @@ namespace {
     };
 
     TEST_FIXTURE(WhenNextTokenIsInvalid, verifyConsume)
+    {
+        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::SyntaxError);
+    }
+
+    struct WhenNextTokenIsCommaButTopOfStackIsNotFieldEnum : public EnumFieldStateFixture
+    {
+        WhenNextTokenIsCommaButTopOfStackIsNotFieldEnum()
+        {
+            nodeStack.pop();
+        }
+
+        const Token token = Token(",", 0, 1, TokenType::comma);
+        const FileInfo fileInfo = FileInfo("test.swizzle");
+
+        const TokenInfo info = TokenInfo(token, fileInfo);
+    };
+
+    TEST_FIXTURE(WhenNextTokenIsCommaButTopOfStackIsNotFieldEnum, verifyConsume)
+    {
+        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::ParserError);
+    }
+
+    struct WhenNextTokenIsCommaButValueWillOverflowEnumType : public WhenNextTokenIsComma
+    {
+        WhenNextTokenIsCommaButValueWillOverflowEnumType()
+        {
+            EnumValueType val = std::numeric_limits<std::uint8_t>::max();
+            context.CurrentEnumValue = val;
+        }
+    };
+
+    TEST_FIXTURE(WhenNextTokenIsCommaButValueWillOverflowEnumType, verifyConsumer)
     {
         CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::SyntaxError);
     }

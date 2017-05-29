@@ -31,7 +31,7 @@ namespace swizzle { namespace types {
             template<class T>
             void operator()(T& i) const
             {
-                if(i == std::numeric_limits<std::uint8_t>::max())
+                if(i >= std::numeric_limits<std::uint8_t>::max())
                 {
                     throw std::out_of_range("incrementing value would overflow value type: uint8_t");
                 }

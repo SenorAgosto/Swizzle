@@ -5,6 +5,7 @@
 
 #include <swizzle/lexer/TokenInfo.hpp>
 #include <swizzle/parser/NodeStack.hpp>
+#include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/TokenStack.hpp>
 
 #include <swizzle/ast/AbstractTreeEdgeVisitorInterface.hpp>
@@ -16,7 +17,7 @@
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState StartUsingState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack& tokenStack)
+    ParserState StartUsingState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack& tokenStack, ParserStateContext&)
     {
         const auto type = token.token().type();
 

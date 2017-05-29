@@ -23,7 +23,7 @@ namespace swizzle { namespace parser { namespace states {
         {
         }
 
-        ParserState consume(const lexer::TokenInfo& token, NodeStack&, TokenStack& tokenStack) override
+        ParserState consume(const lexer::TokenInfo& token, NodeStack&, TokenStack& tokenStack, ParserStateContext&) override
         {
             const auto type = token.token().type();
 

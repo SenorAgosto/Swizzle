@@ -15,7 +15,7 @@ namespace swizzle { namespace ast { namespace nodes {
         const boost::filesystem::path& path() const;
         
     private:
-        lexer::TokenInfo info_;
-        boost::filesystem::path importPath_;
+        const lexer::TokenInfo info_;
+        const boost::filesystem::path importPath_;
     };
 }}}

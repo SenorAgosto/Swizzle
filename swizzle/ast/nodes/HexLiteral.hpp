@@ -12,6 +12,6 @@ namespace swizzle { namespace ast { namespace nodes {
         const lexer::TokenInfo& info() const;
 
     private:
-        lexer::TokenInfo info_;
+        const lexer::TokenInfo info_;
     };
 }}}

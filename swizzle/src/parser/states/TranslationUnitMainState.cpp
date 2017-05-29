@@ -114,11 +114,13 @@ namespace swizzle { namespace parser { namespace states {
 
             if(value == "bitfield")
             {
+                tokenStack.push(token);
                 return ParserState::StartBitfield;
             }
 
             if(value == "struct")
             {
+                tokenStack.push(token);
                 return ParserState::StartStruct;
             }
         }

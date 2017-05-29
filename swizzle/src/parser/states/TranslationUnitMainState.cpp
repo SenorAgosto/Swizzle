@@ -25,7 +25,7 @@
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState TranslationUnitMainState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack& tokenStack, ParserStateContext&)
+    ParserState TranslationUnitMainState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack& tokenStack, ParserStateContext& context)
     {
         const auto type = token.token().type();
 
@@ -107,6 +107,8 @@ namespace swizzle { namespace parser { namespace states {
             if(value == "enum")
             {
                 tokenStack.push(token);
+                context.CurrentEnumValue = 0;
+
                 return ParserState::StartEnum;
             }
 

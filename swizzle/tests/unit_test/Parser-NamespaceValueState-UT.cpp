@@ -27,7 +27,7 @@ namespace {
         {
         }
 
-        void operator()(const std::string& ns)
+        void operator()(const std::string&)
         {
             invoked_++;
         }

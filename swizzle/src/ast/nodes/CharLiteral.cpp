@@ -1,5 +1,5 @@
 #include <swizzle/ast/nodes/CharLiteral.hpp>
-#include <swizzle/ast/AbstractTreeVertexVisitorInterface.hpp>
+#include <swizzle/ast/VisitorInterface.hpp>
 
 namespace swizzle { namespace ast { namespace nodes {
 
@@ -11,5 +11,15 @@ namespace swizzle { namespace ast { namespace nodes {
     const lexer::TokenInfo& CharLiteral::info() const
     {
         return info_;
+    }
+
+    void CharLiteral::accept(VisitorInterface& visitor)
+    {
+        visitor(*this);
+
+        for(auto& child : children())
+        {
+            child->accept(visitor);
+        }
     }
 }}}

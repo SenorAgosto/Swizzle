@@ -1,17 +1,13 @@
 #include <swizzle/parser/states/StartEnumState.hpp>
 
 #include <swizzle/Exceptions.hpp>
+#include <swizzle/ast/nodes/Enum.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
+#include <swizzle/parser/detail/AppendNode.hpp>
 #include <swizzle/parser/NodeStack.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/TokenStack.hpp>
 
-#include <swizzle/ast/AbstractTreeEdgeVisitorInterface.hpp>
-#include <swizzle/ast/AbstractTreeVertexVisitorInterface.hpp>
-#include <swizzle/ast/AbstractTreeVisitorInterface.hpp>
-#include <swizzle/ast/nodes/Enum.hpp>
-
-#include <swizzle/parser/detail/AppendNode.hpp>
 #include <sstream>
 
 namespace swizzle { namespace parser { namespace states {

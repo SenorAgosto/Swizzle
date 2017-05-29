@@ -1,16 +1,14 @@
 #include <swizzle/parser/states/InitState.hpp>
 
 #include <swizzle/Exceptions.hpp>
+#include <swizzle/ast/nodes/Comment.hpp>
+#include <swizzle/ast/nodes/MultilineComment.hpp>
 #include <swizzle/lexer/Token.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
 #include <swizzle/lexer/TokenType.hpp>
 #include <swizzle/parser/NodeStack.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/TokenStack.hpp>
-
-#include <swizzle/ast/AbstractTreeVertexVisitorInterface.hpp>
-#include <swizzle/ast/nodes/Comment.hpp>
-#include <swizzle/ast/nodes/MultilineComment.hpp>
 
 namespace swizzle { namespace parser { namespace states {
 

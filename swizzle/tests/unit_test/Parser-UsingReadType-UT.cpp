@@ -1,18 +1,14 @@
 #include "./platform/UnitTestSupport.hpp"
 
-#include <swizzle/ast/AbstractTreeEdgeVisitorInterface.hpp>
-#include <swizzle/ast/AbstractTreeVertexVisitorInterface.hpp>
-#include <swizzle/ast/AbstractTreeVisitorInterface.hpp>
-
 #include <swizzle/ast/AbstractSyntaxTree.hpp>
 #include <swizzle/ast/Node.hpp>
 #include <swizzle/ast/nodes/Comment.hpp>
 #include <swizzle/ast/nodes/TypeAlias.hpp>
+#include <swizzle/Exceptions.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/detail/AppendNode.hpp>
 #include <swizzle/parser/states/UsingTypeReadState.hpp>
 
-#include <swizzle/Exceptions.hpp>
 #include <boost/utility/string_view.hpp>
 
 namespace {

@@ -1,4 +1,5 @@
 #include <swizzle/ast/Node.hpp>
+#include <swizzle/ast/VisitorInterface.hpp>
 
 namespace swizzle { namespace ast {
 
@@ -15,5 +16,15 @@ namespace swizzle { namespace ast {
     bool Node::empty() const
     {
         return children_.empty();
+    }
+
+    void Node::accept(VisitorInterface& visitor)
+    {
+        visitor(*this);
+
+        for(auto& child : children())
+        {
+            child->accept(visitor);
+        }
     }
 }}

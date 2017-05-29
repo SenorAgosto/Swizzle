@@ -1,4 +1,5 @@
 #include <swizzle/ast/AbstractSyntaxTree.hpp>
+#include <swizzle/ast/VisitorInterface.hpp>
 
 namespace swizzle { namespace ast {
 
@@ -10,5 +11,10 @@ namespace swizzle { namespace ast {
     Node::smartptr AbstractSyntaxTree::root()
     {
         return root_;
+    }
+
+    void AbstractSyntaxTree::accept(VisitorInterface& visitor)
+    {
+        root_->accept(visitor);
     }
 }}

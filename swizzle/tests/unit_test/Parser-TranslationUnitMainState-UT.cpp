@@ -29,6 +29,7 @@ namespace {
         TranslationUnitMainStateFixture()
         {
             nodeStack.push(ast.root());
+            context.CurrentEnumValue = 100; // something non-zero so we can ensure this is reset
         }
 
         states::TranslationUnitMainState state;
@@ -123,10 +124,12 @@ namespace {
     {
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
+        CHECK_EQUAL(100U, context.CurrentEnumValue);
 
         const auto parserState = state.consume(info, nodeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StartEnum, parserState);
+        CHECK_EQUAL(0U, context.CurrentEnumValue);
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
         REQUIRE CHECK_EQUAL(1U, tokenStack.size());

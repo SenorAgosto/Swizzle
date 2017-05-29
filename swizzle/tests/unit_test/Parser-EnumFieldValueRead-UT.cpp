@@ -1,9 +1,5 @@
 #include "./platform/UnitTestSupport.hpp"
 
-#include <swizzle/ast/AbstractTreeEdgeVisitorInterface.hpp>
-#include <swizzle/ast/AbstractTreeVertexVisitorInterface.hpp>
-#include <swizzle/ast/AbstractTreeVisitorInterface.hpp>
-
 #include <swizzle/ast/AbstractSyntaxTree.hpp>
 #include <swizzle/ast/Node.hpp>
 #include <swizzle/ast/nodes/Enum.hpp>

@@ -1,14 +1,9 @@
 #include "./platform/UnitTestSupport.hpp"
 
-#include <swizzle/ast/AbstractTreeEdgeVisitorInterface.hpp>
-#include <swizzle/ast/AbstractTreeVertexVisitorInterface.hpp>
-#include <swizzle/ast/AbstractTreeVisitorInterface.hpp>
-
 #include <swizzle/ast/AbstractSyntaxTree.hpp>
+#include <swizzle/Exceptions.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/states/StartNamespaceState.hpp>
-
-#include <swizzle/Exceptions.hpp>
 
 namespace {
 

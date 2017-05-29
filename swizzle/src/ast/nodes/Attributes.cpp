@@ -1,5 +1,5 @@
 #include <swizzle/ast/nodes/Attribute.hpp>
-#include <swizzle/ast/AbstractTreeVertexVisitorInterface.hpp>
+#include <swizzle/ast/VisitorInterface.hpp>
 
 namespace swizzle { namespace ast { namespace nodes {
 
@@ -12,4 +12,15 @@ namespace swizzle { namespace ast { namespace nodes {
     {
         return info_;
     }
+
+    void Attribute::accept(VisitorInterface& visitor)
+    {
+        visitor(*this);
+
+        for(auto& child : children())
+        {
+            child->accept(visitor);
+        }
+    }
+
 }}}

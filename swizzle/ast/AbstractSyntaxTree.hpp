@@ -1,23 +1,19 @@
 #pragma once
-
-#include <ObjectGraph/DirectedGraph.hpp>
-
-#include <swizzle/ast/detail/AbstractTreeTraits.hpp>
-
-#include <swizzle/ast/AbstractTreeEdgeVisitorInterface.hpp>
-#include <swizzle/ast/AbstractTreeVertexVisitorInterface.hpp>
-#include <swizzle/ast/AbstractTreeVisitorInterface.hpp>
-
 #include <swizzle/ast/Node.hpp>
 
 namespace swizzle { namespace ast {
+    class VisitorInterface;
+}}
 
-    class AbstractSyntaxTree : public ObjectGraph::DirectedGraph<detail::AbstractTreeTraits>
+namespace swizzle { namespace ast {
+
+    class AbstractSyntaxTree
     {
     public:
         AbstractSyntaxTree();
 
         Node::smartptr root();
+        void accept(VisitorInterface& visitor);
 
     private:
         Node::smartptr root_;

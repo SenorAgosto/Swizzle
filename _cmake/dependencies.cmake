@@ -4,7 +4,6 @@ include(_cmake/AddLibrary/Dependencies.cmake)
 
 # our project dependencies 
 include(_cmake/dependencies/Boost.cmake)
-include(_cmake/dependencies/ObjectGraph.cmake)
 include(_cmake/dependencies/TBB.cmake)
 include(_cmake/dependencies/UnitTest++.cmake)
 include(_cmake/dependencies/UsingIntrusivePtrIn.cmake)

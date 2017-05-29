@@ -9,18 +9,13 @@
 #include <swizzle/ast/nodes/MultilineComment.hpp>
 #include <swizzle/ast/nodes/NumericLiteral.hpp>
 #include <swizzle/ast/nodes/StringLiteral.hpp>
-
 #include <swizzle/lexer/TokenInfo.hpp>
+#include <swizzle/parser/detail/AppendNode.hpp>
+#include <swizzle/parser/detail/NodeStackTopIs.hpp>
 #include <swizzle/parser/NodeStack.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/TokenStack.hpp>
 
-#include <swizzle/ast/AbstractTreeEdgeVisitorInterface.hpp>
-#include <swizzle/ast/AbstractTreeVertexVisitorInterface.hpp>
-#include <swizzle/ast/AbstractTreeVisitorInterface.hpp>
-
-#include <swizzle/parser/detail/AppendNode.hpp>
-#include <swizzle/parser/detail/NodeStackTopIs.hpp>
 #include <sstream>
 
 namespace swizzle { namespace parser { namespace states {

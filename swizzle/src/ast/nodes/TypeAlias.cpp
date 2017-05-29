@@ -1,5 +1,5 @@
 #include <swizzle/ast/nodes/TypeAlias.hpp>
-#include <swizzle/ast/AbstractTreeVertexVisitorInterface.hpp>
+#include <swizzle/ast/VisitorInterface.hpp>
 
 namespace swizzle { namespace ast { namespace nodes {
 
@@ -30,4 +30,13 @@ namespace swizzle { namespace ast { namespace nodes {
         return existingType_;
     }
 
+    void TypeAlias::accept(VisitorInterface& visitor)
+    {
+        visitor(*this);
+
+        for(auto& child : children())
+        {
+            child->accept(visitor);
+        }
+    }
 }}}

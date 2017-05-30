@@ -58,6 +58,18 @@ namespace {
         CHECK_EQUAL(s, token.to_string());
     }
 
+    TEST(verifyContract)
+    {
+        const std::string s = "100..00";
+        const boost::string_view sv(s);
+
+        Token token(sv, 0, 4, TokenType::float_literal);
+
+        CHECK_EQUAL("100.", token.to_string());
+        token.contract();
+        CHECK_EQUAL("100", token.to_string());
+    }
+
     TEST(verifyEmpty)
     {
         const std::string s = " \t\r \na";

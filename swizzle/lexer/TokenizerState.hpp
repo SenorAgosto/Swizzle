@@ -11,6 +11,7 @@ namespace swizzle { namespace lexer {
         MultilineComment,
         StringLiteral,
         CharLiteral,
+        FloatingPointLiteral,
         NumericLiteral,
         BeginHexLiteral,
         HexLiteral,

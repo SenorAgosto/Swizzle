@@ -19,6 +19,8 @@ namespace swizzle { namespace lexer {
 
         // extend the token to the right by @count bytes
         void expand(const std::size_t count = 1) { length_ += count; }
+        void contract(const std::size_t count = 1) { length_ -= count; }
+
         bool empty() const;
 
         boost::string_view value() const { return value_.substr(position_, length_); }

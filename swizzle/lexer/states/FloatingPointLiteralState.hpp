@@ -14,12 +14,12 @@
 namespace swizzle { namespace lexer { namespace states {
 
     template<class CreateTokenCallback>
-    class NumericLiteralState
+    class FloatingPointLiteralState
         : public TokenizerStateInterface
         , private TokenProducer<CreateTokenCallback>
     {
     public:
-        NumericLiteralState(CreateTokenCallback createToken)
+        FloatingPointLiteralState(CreateTokenCallback createToken)
             : TokenProducer<CreateTokenCallback>(createToken)
         {
         }
@@ -30,16 +30,30 @@ namespace swizzle { namespace lexer { namespace states {
 
             if(c == '.')
             {
-                token.expand();
-                token.type(TokenType::float_literal);
+                // if the last digit of the token is ., then this is a range
+                if(token.value().back() == '.')
+                {
+                    token.contract();   // remove trailing .
+                    token.type(TokenType::numeric_literal);
 
-                return TokenizerState::FloatingPointLiteral;
+                    fileInfo = this->produceToken(token, fileInfo);
+
+                    token = ResetToken(source, position - 1, TokenType::dot);
+                    fileInfo = this->produceToken(token, fileInfo);
+
+                    token = ResetToken(source, position, TokenType::dot);
+                    fileInfo = this->produceToken(token, fileInfo);
+
+                    return TokenizerState::Init;
+                }
+
+                throw TokenizerError("Floating point values can only have one decimal point");
             }
 
             if(std::isdigit(c))
             {
                 token.expand();
-                return TokenizerState::NumericLiteral;
+                return TokenizerState::FloatingPointLiteral;
             }
 
             static const std::string whitespace(" \t\r\n");

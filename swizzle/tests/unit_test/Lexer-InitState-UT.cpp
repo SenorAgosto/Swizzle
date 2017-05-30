@@ -92,6 +92,25 @@ namespace {
         CHECK_EQUAL(0U, tokens.size());
     }
 
+    struct WhenNextCharIsNegative : public InitStateFixture
+    {
+        const std::string s = "-";
+        const boost::string_view sv = boost::string_view(s);
+    };
+
+    TEST_FIXTURE(WhenNextCharIsNegative, verifyConsume)
+    {
+        CHECK_EQUAL(0U, tokens.size());
+
+        auto tokenState = state.consume(sv, position, info, token);
+
+        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
+        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL("-", token.to_string());
+
+        CHECK_EQUAL(0U, tokens.size());
+    }
+
     struct WhenNextCharIsSingleQuote : public InitStateFixture
     {
         const std::string s = "'";

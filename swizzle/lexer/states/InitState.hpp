@@ -54,7 +54,7 @@ namespace swizzle { namespace lexer { namespace states {
             }
 
             // 1-9
-            if(std::isdigit(c))
+            if(std::isdigit(c) || (c == '-'))
             {
                 token = ResetToken(source, position, TokenType::numeric_literal);
                 return TokenizerState::NumericLiteral;

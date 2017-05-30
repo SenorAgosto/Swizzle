@@ -1106,6 +1106,7 @@ namespace {
         const std::string s =
             "struct Message {"                  "\n"
             "\t" "@max=100"                     "\n"
+            "\t" "@min=-100"                    "\n"
             "\t" "u8 size;"                     "\n"
             "}"                                 "\n";
 
@@ -1124,7 +1125,7 @@ namespace {
 
         tokenizer.flush();
 
-        REQUIRE CHECK_EQUAL(10U, tokens.size());
+        REQUIRE CHECK_EQUAL(13U, tokens.size());
 
         CHECK_EQUAL(TokenType::keyword, tokens[0].token().type());
         CHECK_EQUAL("struct", tokens[0].token().to_string());
@@ -1144,17 +1145,26 @@ namespace {
         CHECK_EQUAL(TokenType::numeric_literal, tokens[5].token().type());
         CHECK_EQUAL("100", tokens[5].token().to_string());
 
-        CHECK_EQUAL(TokenType::type, tokens[6].token().type());
-        CHECK_EQUAL("u8", tokens[6].token().to_string());
+        CHECK_EQUAL(TokenType::attribute, tokens[6].token().type());
+        CHECK_EQUAL("@min", tokens[6].token().to_string());
 
-        CHECK_EQUAL(TokenType::string, tokens[7].token().type());
-        CHECK_EQUAL("size", tokens[7].token().to_string());
+        CHECK_EQUAL(TokenType::equal, tokens[7].token().type());
+        CHECK_EQUAL("=", tokens[7].token().to_string());
 
-        CHECK_EQUAL(TokenType::end_statement, tokens[8].token().type());
-        CHECK_EQUAL(";", tokens[8].token().to_string());
+        CHECK_EQUAL(TokenType::numeric_literal, tokens[8].token().type());
+        CHECK_EQUAL("-100", tokens[8].token().to_string());
 
-        CHECK_EQUAL(TokenType::r_brace, tokens[9].token().type());
-        CHECK_EQUAL("}", tokens[9].token().to_string());
+        CHECK_EQUAL(TokenType::type, tokens[9].token().type());
+        CHECK_EQUAL("u8", tokens[9].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[10].token().type());
+        CHECK_EQUAL("size", tokens[10].token().to_string());
+
+        CHECK_EQUAL(TokenType::end_statement, tokens[11].token().type());
+        CHECK_EQUAL(";", tokens[11].token().to_string());
+
+        CHECK_EQUAL(TokenType::r_brace, tokens[12].token().type());
+        CHECK_EQUAL("}", tokens[12].token().to_string());
     }
 
     struct InputIsStructWithBlockAttribute : public TokenizerFixture
@@ -1260,6 +1270,7 @@ namespace {
         const std::string s =
             "struct Message {"                  "\n"
             "\t" "const u8 maxSize = 100;"      "\n"
+            "\t" "const i8 minSize = -20;"      "\n"
             "}"                                 "\n";
 
         const boost::string_view sv = boost::string_view(s);
@@ -1277,7 +1288,7 @@ namespace {
 
         tokenizer.flush();
 
-        REQUIRE CHECK_EQUAL(10U, tokens.size());
+        REQUIRE CHECK_EQUAL(16U, tokens.size());
 
         CHECK_EQUAL(TokenType::keyword, tokens[0].token().type());
         CHECK_EQUAL("struct", tokens[0].token().to_string());
@@ -1306,8 +1317,26 @@ namespace {
         CHECK_EQUAL(TokenType::end_statement, tokens[8].token().type());
         CHECK_EQUAL(";", tokens[8].token().to_string());
 
-        CHECK_EQUAL(TokenType::r_brace, tokens[9].token().type());
-        CHECK_EQUAL("}", tokens[9].token().to_string());
+        CHECK_EQUAL(TokenType::keyword, tokens[9].token().type());
+        CHECK_EQUAL("const", tokens[9].token().to_string());
+
+        CHECK_EQUAL(TokenType::type, tokens[10].token().type());
+        CHECK_EQUAL("i8", tokens[10].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[11].token().type());
+        CHECK_EQUAL("minSize", tokens[11].token().to_string());
+
+        CHECK_EQUAL(TokenType::equal, tokens[12].token().type());
+        CHECK_EQUAL("=", tokens[12].token().to_string());
+
+        CHECK_EQUAL(TokenType::numeric_literal, tokens[13].token().type());
+        CHECK_EQUAL("-20", tokens[13].token().to_string());
+
+        CHECK_EQUAL(TokenType::end_statement, tokens[14].token().type());
+        CHECK_EQUAL(";", tokens[14].token().to_string());
+
+        CHECK_EQUAL(TokenType::r_brace, tokens[15].token().type());
+        CHECK_EQUAL("}", tokens[15].token().to_string());
     }
 
     struct InputIsStructWithCharConstant : public TokenizerFixture

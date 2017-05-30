@@ -2,6 +2,7 @@
 
 namespace swizzle { namespace ast { namespace nodes {
     class Attribute;
+    class AttributeBlock;
     class CharLiteral;
     class Comment;
     class Enum;
@@ -23,6 +24,7 @@ namespace swizzle { namespace ast {
         virtual void operator()(Node& node) = 0;
 
         virtual void operator()(nodes::Attribute& node) = 0;
+        virtual void operator()(nodes::AttributeBlock& node) = 0;
         virtual void operator()(nodes::CharLiteral& node) = 0;
         virtual void operator()(nodes::Comment& node) = 0;
         virtual void operator()(nodes::Enum& node) = 0;

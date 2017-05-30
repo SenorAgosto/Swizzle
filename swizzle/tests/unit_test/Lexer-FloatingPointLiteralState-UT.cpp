@@ -1,5 +1,5 @@
 #include "./platform/UnitTestSupport.hpp"
-#include <swizzle/lexer/states/NumericLiteralState.hpp>
+#include <swizzle/lexer/states/FloatingPointLiteralState.hpp>
 
 #include <swizzle/lexer/Token.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
@@ -35,18 +35,18 @@ namespace {
         std::deque<TokenInfo>& tokens_;
     };
 
-    struct NumericLiteralFixture
+    struct FloatingPointLiteralFixture
     {
         std::deque<TokenInfo> tokens;
         CreateTokenCallback callback = CreateTokenCallback(tokens);
 
         FileInfo info = FileInfo("testfile");
-        states::NumericLiteralState<CreateTokenCallback> state = states::NumericLiteralState<CreateTokenCallback>(callback);
+        states::FloatingPointLiteralState<CreateTokenCallback> state = states::FloatingPointLiteralState<CreateTokenCallback>(callback);
 
         std::size_t position = 0;
     };
 
-    struct WhenStringIsEmpty : public NumericLiteralFixture
+    struct WhenStringIsEmpty : public FloatingPointLiteralFixture
     {
         const std::string s;
         const boost::string_view sv = boost::string_view(s);
@@ -58,12 +58,12 @@ namespace {
     {
     }
 
-    struct WhenNextCharIs0 : public NumericLiteralFixture
+    struct WhenNextCharIs0 : public FloatingPointLiteralFixture
     {
         const std::string s = "00";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
+        Token token = Token(sv, 0, 0, TokenType::float_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIs0, verifyConsume)
@@ -72,25 +72,25 @@ namespace {
 
         auto tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
         CHECK_EQUAL("0", token.to_string());
 
         tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
         CHECK_EQUAL("00", token.to_string());
 
         REQUIRE CHECK_EQUAL(0U, tokens.size());
     }
 
-    struct WhenNextCharIs1 : public NumericLiteralFixture
+    struct WhenNextCharIs1 : public FloatingPointLiteralFixture
     {
         const std::string s = "01";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
+        Token token = Token(sv, 0, 0, TokenType::float_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIs1, verifyConsume)
@@ -99,25 +99,25 @@ namespace {
 
         auto tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
         CHECK_EQUAL("0", token.to_string());
 
         tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
         CHECK_EQUAL("01", token.to_string());
 
         REQUIRE CHECK_EQUAL(0U, tokens.size());
     }
 
-    struct WhenNextCharIs2 : public NumericLiteralFixture
+    struct WhenNextCharIs2 : public FloatingPointLiteralFixture
     {
         const std::string s = "02";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
+        Token token = Token(sv, 0, 0, TokenType::float_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIs2, verifyConsume)
@@ -126,25 +126,25 @@ namespace {
 
         auto tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
         CHECK_EQUAL("0", token.to_string());
 
         tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
         CHECK_EQUAL("02", token.to_string());
 
         REQUIRE CHECK_EQUAL(0U, tokens.size());
     }
 
-    struct WhenNextCharIs3 : public NumericLiteralFixture
+    struct WhenNextCharIs3 : public FloatingPointLiteralFixture
     {
         const std::string s = "03";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
+        Token token = Token(sv, 0, 0, TokenType::float_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIs3, verifyConsume)
@@ -153,25 +153,25 @@ namespace {
 
         auto tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
         CHECK_EQUAL("0", token.to_string());
 
         tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
         CHECK_EQUAL("03", token.to_string());
 
         REQUIRE CHECK_EQUAL(0U, tokens.size());
     }
 
-    struct WhenNextCharIs4 : public NumericLiteralFixture
+    struct WhenNextCharIs4 : public FloatingPointLiteralFixture
     {
         const std::string s = "04";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
+        Token token = Token(sv, 0, 0, TokenType::float_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIs4, verifyConsume)
@@ -180,25 +180,25 @@ namespace {
 
         auto tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
         CHECK_EQUAL("0", token.to_string());
 
         tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
         CHECK_EQUAL("04", token.to_string());
 
         REQUIRE CHECK_EQUAL(0U, tokens.size());
     }
 
-    struct WhenNextCharIs5 : public NumericLiteralFixture
+    struct WhenNextCharIs5 : public FloatingPointLiteralFixture
     {
         const std::string s = "05";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
+        Token token = Token(sv, 0, 0, TokenType::float_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIs5, verifyConsume)
@@ -207,25 +207,25 @@ namespace {
 
         auto tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
         CHECK_EQUAL("0", token.to_string());
 
         tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
         CHECK_EQUAL("05", token.to_string());
 
         REQUIRE CHECK_EQUAL(0U, tokens.size());
     }
 
-    struct WhenNextCharIs6 : public NumericLiteralFixture
+    struct WhenNextCharIs6 : public FloatingPointLiteralFixture
     {
         const std::string s = "06";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
+        Token token = Token(sv, 0, 0, TokenType::float_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIs6, verifyConsume)
@@ -234,25 +234,25 @@ namespace {
 
         auto tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
         CHECK_EQUAL("0", token.to_string());
 
         tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
         CHECK_EQUAL("06", token.to_string());
 
         REQUIRE CHECK_EQUAL(0U, tokens.size());
     }
 
-    struct WhenNextCharIs7 : public NumericLiteralFixture
+    struct WhenNextCharIs7 : public FloatingPointLiteralFixture
     {
         const std::string s = "07";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
+        Token token = Token(sv, 0, 0, TokenType::float_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIs7, verifyConsume)
@@ -261,25 +261,25 @@ namespace {
 
         auto tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
         CHECK_EQUAL("0", token.to_string());
 
         tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
         CHECK_EQUAL("07", token.to_string());
 
         REQUIRE CHECK_EQUAL(0U, tokens.size());
     }
 
-    struct WhenNextCharIs8 : public NumericLiteralFixture
+    struct WhenNextCharIs8 : public FloatingPointLiteralFixture
     {
         const std::string s = "08";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
+        Token token = Token(sv, 0, 0, TokenType::float_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIs8, verifyConsume)
@@ -288,25 +288,25 @@ namespace {
 
         auto tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
         CHECK_EQUAL("0", token.to_string());
 
         tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
         CHECK_EQUAL("08", token.to_string());
 
         REQUIRE CHECK_EQUAL(0U, tokens.size());
     }
 
-    struct WhenNextCharIs9 : public NumericLiteralFixture
+    struct WhenNextCharIs9 : public FloatingPointLiteralFixture
     {
         const std::string s = "09";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
+        Token token = Token(sv, 0, 0, TokenType::float_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIs9, verifyConsume)
@@ -315,25 +315,25 @@ namespace {
 
         auto tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
         CHECK_EQUAL("0", token.to_string());
 
         tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
         CHECK_EQUAL("09", token.to_string());
 
         REQUIRE CHECK_EQUAL(0U, tokens.size());
     }
 
-    struct WhenNextCharIsSpace : public NumericLiteralFixture
+    struct WhenNextCharIsSpace : public FloatingPointLiteralFixture
     {
         const std::string s = "0 ";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
+        Token token = Token(sv, 0, 0, TokenType::float_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsSpace, verifyConsume)
@@ -342,8 +342,8 @@ namespace {
 
         auto tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
         CHECK_EQUAL("0", token.to_string());
 
         tokenState = state.consume(sv, position++, info, token);
@@ -353,7 +353,7 @@ namespace {
         REQUIRE CHECK_EQUAL(1U, tokens.size());
 
         CHECK_EQUAL("0", tokens[0].token().to_string());
-        CHECK_EQUAL(TokenType::numeric_literal, tokens[0].token().type());
+        CHECK_EQUAL(TokenType::float_literal, tokens[0].token().type());
 
         CHECK_EQUAL(1U, tokens[0].fileInfo().start().line());
         CHECK_EQUAL(1U, tokens[0].fileInfo().start().column());
@@ -361,12 +361,12 @@ namespace {
         CHECK_EQUAL(2U, tokens[0].fileInfo().end().column());
     }
 
-    struct WhenNextCharIsEqual : public NumericLiteralFixture
+    struct WhenNextCharIsEqual : public FloatingPointLiteralFixture
     {
         const std::string s = "0=";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
+        Token token = Token(sv, 0, 0, TokenType::float_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsEqual, verifyConsume)
@@ -375,19 +375,19 @@ namespace {
 
         auto tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
         CHECK_EQUAL("0", token.to_string());
 
         CHECK_THROW(state.consume(sv, position++, info, token), swizzle::TokenizerError);
     }
 
-    struct WhenNextCharIsLeftBracket : public NumericLiteralFixture
+    struct WhenNextCharIsLeftBracket : public FloatingPointLiteralFixture
     {
         const std::string s = "0[";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
+        Token token = Token(sv, 0, 0, TokenType::float_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsLeftBracket, verifyConsume)
@@ -396,19 +396,19 @@ namespace {
 
         auto tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
         CHECK_EQUAL("0", token.to_string());
 
         CHECK_THROW(state.consume(sv, position++, info, token), swizzle::TokenizerError);
     }
 
-    struct WhenNextCharIsRightBracket : public NumericLiteralFixture
+    struct WhenNextCharIsRightBracket : public FloatingPointLiteralFixture
     {
         const std::string s = "0]";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
+        Token token = Token(sv, 0, 0, TokenType::float_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsRightBracket, verifyConsume)
@@ -417,8 +417,8 @@ namespace {
 
         auto tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
         CHECK_EQUAL("0", token.to_string());
 
         tokenState = state.consume(sv, position++, info, token);
@@ -428,7 +428,7 @@ namespace {
         REQUIRE CHECK_EQUAL(2U, tokens.size());
 
         CHECK_EQUAL("0", tokens[0].token().to_string());
-        CHECK_EQUAL(TokenType::numeric_literal, tokens[0].token().type());
+        CHECK_EQUAL(TokenType::float_literal, tokens[0].token().type());
 
         CHECK_EQUAL(1U, tokens[0].fileInfo().start().line());
         CHECK_EQUAL(1U, tokens[0].fileInfo().start().column());
@@ -444,12 +444,12 @@ namespace {
         CHECK_EQUAL(3U, tokens[1].fileInfo().end().column());
     }
 
-    struct WhenNextCharIsLeftBrace : public NumericLiteralFixture
+    struct WhenNextCharIsLeftBrace : public FloatingPointLiteralFixture
     {
         const std::string s = "0{";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
+        Token token = Token(sv, 0, 0, TokenType::float_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsLeftBrace, verifyConsume)
@@ -458,19 +458,19 @@ namespace {
 
         auto tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
         CHECK_EQUAL("0", token.to_string());
 
         CHECK_THROW(state.consume(sv, position++, info, token), swizzle::TokenizerError);
     }
 
-    struct WhenNextCharIsRightBrace : public NumericLiteralFixture
+    struct WhenNextCharIsRightBrace : public FloatingPointLiteralFixture
     {
         const std::string s = "0}";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
+        Token token = Token(sv, 0, 0, TokenType::float_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsRightBrace, verifyConsume)
@@ -479,8 +479,8 @@ namespace {
 
         auto tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
         CHECK_EQUAL("0", token.to_string());
 
         tokenState = state.consume(sv, position++, info, token);
@@ -490,7 +490,7 @@ namespace {
         REQUIRE CHECK_EQUAL(2U, tokens.size());
 
         CHECK_EQUAL("0", tokens[0].token().to_string());
-        CHECK_EQUAL(TokenType::numeric_literal, tokens[0].token().type());
+        CHECK_EQUAL(TokenType::float_literal, tokens[0].token().type());
 
         CHECK_EQUAL(1U, tokens[0].fileInfo().start().line());
         CHECK_EQUAL(1U, tokens[0].fileInfo().start().column());
@@ -506,12 +506,12 @@ namespace {
         CHECK_EQUAL(3U, tokens[1].fileInfo().end().column());
     }
 
-    struct WhenNextCharIsColon : public NumericLiteralFixture
+    struct WhenNextCharIsColon : public FloatingPointLiteralFixture
     {
         const std::string s = "0:";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
+        Token token = Token(sv, 0, 0, TokenType::float_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsColon, verifyConsume)
@@ -520,8 +520,8 @@ namespace {
 
         auto tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
         CHECK_EQUAL("0", token.to_string());
 
         tokenState = state.consume(sv, position++, info, token);
@@ -530,19 +530,19 @@ namespace {
 
         REQUIRE CHECK_EQUAL(2U, tokens.size());
 
-        CHECK_EQUAL(TokenType::numeric_literal, tokens[0].token().type());
+        CHECK_EQUAL(TokenType::float_literal, tokens[0].token().type());
         CHECK_EQUAL("0", tokens[0].token().to_string());
 
         CHECK_EQUAL(TokenType::colon, tokens[1].token().type());
         CHECK_EQUAL(":", tokens[1].token().to_string());
     }
 
-    struct WhenNextCharIsSemiColon : public NumericLiteralFixture
+    struct WhenNextCharIsSemiColon : public FloatingPointLiteralFixture
     {
         const std::string s = "0;";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
+        Token token = Token(sv, 0, 0, TokenType::float_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsSemiColon, verifyConsume)
@@ -551,8 +551,8 @@ namespace {
 
         auto tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
         CHECK_EQUAL("0", token.to_string());
 
         tokenState = state.consume(sv, position++, info, token);
@@ -562,7 +562,7 @@ namespace {
         REQUIRE CHECK_EQUAL(2U, tokens.size());
 
         CHECK_EQUAL("0", tokens[0].token().to_string());
-        CHECK_EQUAL(TokenType::numeric_literal, tokens[0].token().type());
+        CHECK_EQUAL(TokenType::float_literal, tokens[0].token().type());
 
         CHECK_EQUAL(1U, tokens[0].fileInfo().start().line());
         CHECK_EQUAL(1U, tokens[0].fileInfo().start().column());
@@ -578,12 +578,12 @@ namespace {
         CHECK_EQUAL(3U, tokens[1].fileInfo().end().column());
     }
 
-    struct WhenNextCharIsDot : public NumericLiteralFixture
+    struct WhenNextCharIsDot : public FloatingPointLiteralFixture
     {
         const std::string s = "0.";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
+        Token token = Token(sv, 0, 0, TokenType::float_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsDot, verifyConsume)
@@ -592,25 +592,19 @@ namespace {
 
         auto tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
-        CHECK_EQUAL("0", token.to_string());
-
-        tokenState = state.consume(sv, position++, info, token);
-
         CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
         CHECK_EQUAL(TokenType::float_literal, token.type());
-        CHECK_EQUAL("0.", token.to_string());
+        CHECK_EQUAL("0", token.to_string());
 
-        REQUIRE CHECK_EQUAL(0U, tokens.size());
+        CHECK_THROW(state.consume(sv, position++, info, token), swizzle::TokenizerError);
     }
 
-    struct WhenNextCharIsComma : public NumericLiteralFixture
+    struct WhenNextCharIsComma : public FloatingPointLiteralFixture
     {
         const std::string s = "0,";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
+        Token token = Token(sv, 0, 0, TokenType::float_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsComma, verifyConsume)
@@ -619,8 +613,8 @@ namespace {
 
         auto tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
         CHECK_EQUAL("0", token.to_string());
 
         tokenState = state.consume(sv, position++, info, token);
@@ -630,7 +624,7 @@ namespace {
         REQUIRE CHECK_EQUAL(2U, tokens.size());
 
         CHECK_EQUAL("0", tokens[0].token().to_string());
-        CHECK_EQUAL(TokenType::numeric_literal, tokens[0].token().type());
+        CHECK_EQUAL(TokenType::float_literal, tokens[0].token().type());
 
         CHECK_EQUAL(1U, tokens[0].fileInfo().start().line());
         CHECK_EQUAL(1U, tokens[0].fileInfo().start().column());
@@ -646,12 +640,12 @@ namespace {
         CHECK_EQUAL(3U, tokens[1].fileInfo().end().column());
     }
 
-    struct WhenNextCharIsDoubleQuote : public NumericLiteralFixture
+    struct WhenNextCharIsDoubleQuote : public FloatingPointLiteralFixture
     {
         const std::string s = "0\"";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
+        Token token = Token(sv, 0, 0, TokenType::float_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsDoubleQuote, verifyConsume)
@@ -660,19 +654,19 @@ namespace {
 
         auto tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
         CHECK_EQUAL("0", token.to_string());
 
         CHECK_THROW(state.consume(sv, position++, info, token), swizzle::TokenizerError);
     }
 
-    struct WhenNextCharIsAlpha : public NumericLiteralFixture
+    struct WhenNextCharIsAlpha : public FloatingPointLiteralFixture
     {
         const std::string s = "0a";
         const boost::string_view sv = boost::string_view(s);
 
-        Token token = Token(sv, 0, 0, TokenType::numeric_literal);
+        Token token = Token(sv, 0, 0, TokenType::float_literal);
     };
 
     TEST_FIXTURE(WhenNextCharIsAlpha, verifyConsume)
@@ -681,8 +675,8 @@ namespace {
 
         auto tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::NumericLiteral, tokenState);
-        CHECK_EQUAL(TokenType::numeric_literal, token.type());
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
         CHECK_EQUAL("0", token.to_string());
 
         CHECK_THROW(state.consume(sv, position++, info, token), swizzle::TokenizerError);

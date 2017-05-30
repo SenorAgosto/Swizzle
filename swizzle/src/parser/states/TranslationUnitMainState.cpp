@@ -3,6 +3,7 @@
 #include <swizzle/Exceptions.hpp>
 
 #include <swizzle/ast/nodes/Attribute.hpp>
+#include <swizzle/ast/nodes/AttributeBlock.hpp>
 #include <swizzle/ast/nodes/CharLiteral.hpp>
 #include <swizzle/ast/nodes/Comment.hpp>
 #include <swizzle/ast/nodes/HexLiteral.hpp>
@@ -58,7 +59,7 @@ namespace swizzle { namespace parser { namespace states {
 
         if(type == lexer::TokenType::attribute_block)
         {
-            detail::appendNode<ast::nodes::Attribute>(nodeStack, token);
+            detail::appendNode<ast::nodes::AttributeBlock>(nodeStack, token);
             nodeStack.pop();
 
             return ParserState::TranslationUnitMain;

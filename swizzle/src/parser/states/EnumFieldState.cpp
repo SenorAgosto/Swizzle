@@ -8,10 +8,6 @@
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/TokenStack.hpp>
 
-#include <stdexcept>
-#include <sstream>
-
-
 namespace swizzle { namespace parser { namespace states {
 
     ParserState EnumFieldState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack&, ParserStateContext& context)
@@ -48,9 +44,6 @@ namespace swizzle { namespace parser { namespace states {
             throw ParserError("Internal parser error, top of node stack is not ast::nodes::EnumField");
         }
 
-        std::stringstream ss;
-        ss << type;
-
-        throw SyntaxError("Expected ',' or '=', found " + ss.str() + " (" + token.token().to_string() + ")", token);
+        throw SyntaxError("Expected ',' or '='", token);
     }
 }}}

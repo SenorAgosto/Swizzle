@@ -6,8 +6,6 @@
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/TokenStack.hpp>
 
-#include <sstream>
-
 namespace swizzle { namespace parser { namespace states {
 
     ParserState UsingSecondColonState::consume(const lexer::TokenInfo& token, NodeStack&, TokenStack&, ParserStateContext&)
@@ -19,9 +17,6 @@ namespace swizzle { namespace parser { namespace states {
             return ParserState::UsingTypeRead;
         }
 
-        std::stringstream ss;
-        ss << type;
-
-        throw SyntaxError("Expected ':', found " + ss.str() + " (" + token.token().to_string() + ")", token);
+        throw SyntaxError("Expected ':'", token);
     }
 }}}

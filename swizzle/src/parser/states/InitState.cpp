@@ -44,6 +44,6 @@ namespace swizzle { namespace parser { namespace states {
         }
 
 
-        throw SyntaxError("Expected comment, import statement, or namespace declaration, found: '" + value.to_string() + "'", token);
+        throw SyntaxError("Expected comment, import statement, or namespace declaration", token);
     }
 }}}

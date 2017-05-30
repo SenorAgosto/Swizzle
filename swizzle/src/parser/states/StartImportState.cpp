@@ -17,6 +17,6 @@ namespace swizzle { namespace parser { namespace states {
             return ParserState::ImportValue;
         }
 
-        throw SyntaxError("Expected namespace or type name to import, found: '" + token.token().to_string() + "'", token);
+        throw SyntaxError("Expected namespace or type name to import", token);
     }
 }}}

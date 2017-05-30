@@ -8,8 +8,6 @@
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/TokenStack.hpp>
 
-#include <sstream>
-
 namespace swizzle { namespace parser { namespace states {
 
     ParserState EnumColonReadState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack&, ParserStateContext&)
@@ -42,9 +40,6 @@ namespace swizzle { namespace parser { namespace states {
             }
         }
 
-        std::stringstream ss;
-        ss << type;
-
-        throw SyntaxError("Expecting enum underlying type, found " + ss.str() + " (" + value.to_string() + ")", token);
+        throw SyntaxError("Expecting enum underlying type", token);
     }
 }}}

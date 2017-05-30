@@ -18,6 +18,6 @@ namespace swizzle { namespace parser { namespace states {
             return ParserState::NamespaceValue;
         }
 
-        throw SyntaxError("Expecting namespace name, found '" + token.token().to_string() + "'", token);
+        throw SyntaxError("Expecting namespace name", token);
     }
 }}}

@@ -19,7 +19,7 @@ namespace swizzle { namespace ast { namespace nodes {
         void existingType(const lexer::TokenInfo& info);
         const lexer::TokenInfo& existingType() const;
 
-        void accept(VisitorInterface& visitor);
+        void accept(VisitorInterface& visitor) override;
         
     private:
         const lexer::TokenInfo info_;

@@ -17,13 +17,12 @@ namespace swizzle { namespace ast {
         using smartptr = boost::intrusive_ptr<Node>;
 
         virtual ~Node(){}
+        virtual void accept(VisitorInterface& visitor);
 
         const std::deque<Node::smartptr>& children() const;
         void append(Node::smartptr node);
 
         bool empty() const;
-
-        void accept(VisitorInterface& visitor);
 
     private:
         std::deque<Node::smartptr> children_;

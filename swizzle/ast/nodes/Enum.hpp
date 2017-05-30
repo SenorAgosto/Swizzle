@@ -24,7 +24,7 @@ namespace swizzle { namespace ast { namespace nodes {
         void underlying(const lexer::TokenInfo& value);
         const lexer::TokenInfo& underlying() const;
 
-        void accept(VisitorInterface& visitor);
+        void accept(VisitorInterface& visitor) override;
 
     private:
         const lexer::TokenInfo enumInfo_;   // enum keyword

@@ -11,6 +11,7 @@ namespace swizzle { namespace lexer {
         string_literal,         // "string literal"
         char_literal,           // 'c'
         numeric_literal,        // 42
+        float_literal,          // 42.4
         hex_literal,            // 0x0a
 
         attribute,              // @attribute

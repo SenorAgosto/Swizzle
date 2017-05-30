@@ -319,6 +319,84 @@ namespace {
 
     }
 
+    struct InputIsFloatingPoint : public TokenizerFixture
+    {
+        const std::string s = "42.24";
+        const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::string);
+    };
+
+    TEST_FIXTURE(InputIsFloatingPoint, verifyConsume)
+    {
+        CHECK_EQUAL(0U, tokens.size());
+
+        for(std::size_t position = 0, end = sv.length(); position < end; ++position)
+        {
+            tokenizer.consume(sv, position);
+        }
+
+        tokenizer.flush();
+
+        REQUIRE CHECK_EQUAL(1U, tokens.size());
+        CHECK_EQUAL(TokenType::float_literal, tokens[0].token().type());
+        CHECK_EQUAL("42.24", tokens[0].token().to_string());
+    }
+
+    struct InputIsRange : public TokenizerFixture
+    {
+        const std::string s = "42..24";
+        const boost::string_view sv = boost::string_view(s);
+
+        Token token = Token(sv, 0, 0, TokenType::string);
+    };
+
+    TEST_FIXTURE(InputIsRange, verifyConsume)
+    {
+        CHECK_EQUAL(0U, tokens.size());
+
+        for(std::size_t position = 0, end = sv.length(); position < end; ++position)
+        {
+            tokenizer.consume(sv, position);
+        }
+
+        tokenizer.flush();
+
+        REQUIRE CHECK_EQUAL(4U, tokens.size());
+
+        CHECK_EQUAL(TokenType::numeric_literal, tokens[0].token().type());
+        CHECK_EQUAL("42", tokens[0].token().to_string());
+
+        CHECK_EQUAL(1U, tokens[0].fileInfo().start().line());
+        CHECK_EQUAL(1U, tokens[0].fileInfo().start().column());
+        CHECK_EQUAL(1U, tokens[0].fileInfo().end().line());
+        CHECK_EQUAL(3U, tokens[0].fileInfo().end().column());
+
+        CHECK_EQUAL(TokenType::dot, tokens[1].token().type());
+        CHECK_EQUAL(".", tokens[1].token().to_string());
+
+        CHECK_EQUAL(1U, tokens[1].fileInfo().start().line());
+        CHECK_EQUAL(3U, tokens[1].fileInfo().start().column());
+        CHECK_EQUAL(1U, tokens[1].fileInfo().end().line());
+        CHECK_EQUAL(4U, tokens[1].fileInfo().end().column());
+
+        CHECK_EQUAL(TokenType::dot, tokens[2].token().type());
+        CHECK_EQUAL(".", tokens[2].token().to_string());
+
+        CHECK_EQUAL(1U, tokens[2].fileInfo().start().line());
+        CHECK_EQUAL(4U, tokens[2].fileInfo().start().column());
+        CHECK_EQUAL(1U, tokens[2].fileInfo().end().line());
+        CHECK_EQUAL(5U, tokens[2].fileInfo().end().column());
+
+        CHECK_EQUAL(TokenType::numeric_literal, tokens[3].token().type());
+        CHECK_EQUAL("24", tokens[3].token().to_string());
+
+        CHECK_EQUAL(1U, tokens[3].fileInfo().start().line());
+        CHECK_EQUAL(5U, tokens[3].fileInfo().start().column());
+        CHECK_EQUAL(1U, tokens[3].fileInfo().end().line());
+        CHECK_EQUAL(7U, tokens[3].fileInfo().end().column());
+    }
+
     struct InputIsEnum : public TokenizerFixture
     {
         // NOTE: this will be a syntax error on parse as underlying type ": <type>" is required

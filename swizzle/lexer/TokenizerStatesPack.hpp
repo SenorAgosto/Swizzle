@@ -10,6 +10,7 @@
 #include <swizzle/lexer/states/EscapedCharInCharLiteralState.hpp>
 #include <swizzle/lexer/states/EscapedCharInStringLiteralState.hpp>
 #include <swizzle/lexer/states/FirstSlashState.hpp>
+#include <swizzle/lexer/states/FloatingPointLiteralState.hpp>
 #include <swizzle/lexer/states/HexLiteralState.hpp>
 #include <swizzle/lexer/states/InitState.hpp>
 #include <swizzle/lexer/states/MultilineCommentState.hpp>
@@ -37,6 +38,7 @@ namespace swizzle { namespace lexer {
             , multilineComment_(callback)
             , stringLiteral_(callback)
             , charLiteral_(callback)
+            , floatingPointLiteral_(callback)
             , numericLiteral_(callback)
             , beginHexLiteral_(callback)
             , hexLiteral_(callback)
@@ -59,6 +61,7 @@ namespace swizzle { namespace lexer {
             case TokenizerState::MultilineComment:              return multilineComment_.consume(source, position, fileInfo, token);
             case TokenizerState::StringLiteral:                 return stringLiteral_.consume(source, position, fileInfo, token);
             case TokenizerState::CharLiteral:                   return charLiteral_.consume(source, position, fileInfo, token);
+            case TokenizerState::FloatingPointLiteral:          return floatingPointLiteral_.consume(source, position, fileInfo, token);
             case TokenizerState::NumericLiteral:                return numericLiteral_.consume(source, position, fileInfo, token);
             case TokenizerState::BeginHexLiteral:               return beginHexLiteral_.consume(source, position, fileInfo, token);
             case TokenizerState::HexLiteral:                    return hexLiteral_.consume(source, position, fileInfo, token);
@@ -82,6 +85,7 @@ namespace swizzle { namespace lexer {
         states::MultilineCommentState<CreateTokenCallback> multilineComment_;
         states::StringLiteralState<CreateTokenCallback> stringLiteral_;
         states::CharLiteralState<CreateTokenCallback> charLiteral_;
+        states::FloatingPointLiteralState<CreateTokenCallback> floatingPointLiteral_;
         states::NumericLiteralState<CreateTokenCallback> numericLiteral_;
         states::BeginHexLiteralState<CreateTokenCallback> beginHexLiteral_;
         states::HexLiteralState<CreateTokenCallback> hexLiteral_;

@@ -598,25 +598,13 @@ namespace {
 
         tokenState = state.consume(sv, position++, info, token);
 
-        CHECK_EQUAL(TokenizerState::Init, tokenState);
+        CHECK_EQUAL(TokenizerState::FloatingPointLiteral, tokenState);
+        CHECK_EQUAL(TokenType::float_literal, token.type());
+        CHECK_EQUAL("0.", token.to_string());
 
-        REQUIRE CHECK_EQUAL(2U, tokens.size());
+        REQUIRE CHECK_EQUAL(0U, tokens.size());
 
-        CHECK_EQUAL("0", tokens[0].token().to_string());
-        CHECK_EQUAL(TokenType::numeric_literal, tokens[0].token().type());
 
-        CHECK_EQUAL(1U, tokens[0].fileInfo().start().line());
-        CHECK_EQUAL(1U, tokens[0].fileInfo().start().column());
-        CHECK_EQUAL(1U, tokens[0].fileInfo().end().line());
-        CHECK_EQUAL(2U, tokens[0].fileInfo().end().column());
-
-        CHECK_EQUAL(".", tokens[1].token().to_string());
-        CHECK_EQUAL(TokenType::dot, tokens[1].token().type());
-
-        CHECK_EQUAL(1U, tokens[1].fileInfo().start().line());
-        CHECK_EQUAL(2U, tokens[1].fileInfo().start().column());
-        CHECK_EQUAL(1U, tokens[1].fileInfo().end().line());
-        CHECK_EQUAL(3U, tokens[1].fileInfo().end().column());
     }
 
     struct WhenNextCharIsComma : public NumericLiteralFixture

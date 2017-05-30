@@ -7,6 +7,7 @@ namespace swizzle { namespace lexer {
     class FileInfo;
     class TokenInfo;
     enum class TokenizerState : std::uint8_t;
+    enum class TokenType : std::uint8_t;
 }}
 
 namespace swizzle { namespace parser {
@@ -42,9 +43,9 @@ namespace swizzle {
     class SyntaxError : public ParserError
     {
     public:
-        SyntaxError(const std::string& error, const lexer::TokenInfo& token);
+        SyntaxError(const std::string& error, const lexer::TokenInfo& found);
     };
-    
+
     class UnknownParserState : public ParserError
     {
     public:

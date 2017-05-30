@@ -17,8 +17,6 @@
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/TokenStack.hpp>
 
-#include <sstream>
-
 namespace swizzle { namespace parser { namespace states {
 
     ParserState TranslationUnitMainState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack& tokenStack, ParserStateContext& context)
@@ -121,10 +119,6 @@ namespace swizzle { namespace parser { namespace states {
             }
         }
 
-        std::stringstream ss;
-        ss << type;
-
-        throw SyntaxError("Unexpected token type encountered: " + ss.str() + " (" + value.to_string() + ")", token);
-
+        throw SyntaxError("Unexpected token type encountered", token);
     }
 }}}

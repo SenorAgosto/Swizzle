@@ -8,8 +8,6 @@
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/TokenStack.hpp>
 
-#include <sstream>
-
 namespace swizzle { namespace parser { namespace states {
 
     ParserState StartEnumState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack& tokenStack, ParserStateContext& context)
@@ -32,9 +30,6 @@ namespace swizzle { namespace parser { namespace states {
             return ParserState::EnumName;
         }
 
-        std::stringstream ss;
-        ss << type;
-
-        throw SyntaxError("Expected enum name, found " + ss.str() + " (" + token.token().to_string() + ")", token);
+        throw SyntaxError("Expected enum name", token);
     }
 }}}

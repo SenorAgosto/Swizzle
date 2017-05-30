@@ -10,8 +10,6 @@
 #include <swizzle/parser/TokenStack.hpp>
 #include <swizzle/types/SetValue.hpp>
 
-#include <sstream>
-
 namespace swizzle { namespace parser { namespace states {
 
     ParserState EnumFieldEqualReadState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack&, ParserStateContext& context)
@@ -55,9 +53,6 @@ namespace swizzle { namespace parser { namespace states {
             return ParserState::EnumFieldValueRead;
         }
 
-        std::stringstream ss;
-        ss << type;
-
-        throw SyntaxError("Expected literal value, found " + ss.str() + " (" + token.token().to_string() + ")", token);
+        throw SyntaxError("Expected literal value", token);
     }
 }}}

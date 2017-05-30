@@ -6,3 +6,5 @@
 - add nodes to AST when processing namespace statements
 - add support for - (negative) in numeric literal values
 - once safe_numerics is accepted to boost, adapt it to improve validation of literal values.
+- implement an AST validator as tree automata. It will validate relationships only, i.e. attribute block needs to be appended to an attribute node, EnumField are only under Enum, etc. This will be one of the "standard" plugins available for users, it will be distributed with the tool.
+- implement a print AST plugin, it will be a "standard" plugin distributed with the tool.

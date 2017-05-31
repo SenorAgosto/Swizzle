@@ -1185,7 +1185,7 @@ namespace {
             "struct Message {"                  "\n"
             "\t" "@max=100"                     "\n"
             "\t" "@min=-100"                    "\n"
-            "\t" "u8 size;"                     "\n"
+            "\t" "i8 size;"                     "\n"
             "}"                                 "\n";
 
         const boost::string_view sv = boost::string_view(s);
@@ -1233,7 +1233,7 @@ namespace {
         CHECK_EQUAL("-100", tokens[8].token().to_string());
 
         CHECK_EQUAL(TokenType::type, tokens[9].token().type());
-        CHECK_EQUAL("u8", tokens[9].token().to_string());
+        CHECK_EQUAL("i8", tokens[9].token().to_string());
 
         CHECK_EQUAL(TokenType::string, tokens[10].token().type());
         CHECK_EQUAL("size", tokens[10].token().to_string());
@@ -1343,19 +1343,20 @@ namespace {
         CHECK_EQUAL(2U, tokens[8].fileInfo().end().column());
     }
 
-    struct InputIsStructWithNumericConstant : public TokenizerFixture
+    struct InputIsStructWithNumericConstants : public TokenizerFixture
     {
         const std::string s =
             "struct Message {"                  "\n"
             "\t" "const u8 maxSize = 100;"      "\n"
             "\t" "const i8 minSize = -20;"      "\n"
+            "\t" "const f32 f = -1.87;"         "\n"
             "}"                                 "\n";
 
         const boost::string_view sv = boost::string_view(s);
         Token token = Token(sv, 0, 0, TokenType::string);
     };
 
-    TEST_FIXTURE(InputIsStructWithNumericConstant, verifyConsume)
+    TEST_FIXTURE(InputIsStructWithNumericConstants, verifyConsume)
     {
         CHECK_EQUAL(0U, tokens.size());
 
@@ -1366,7 +1367,7 @@ namespace {
 
         tokenizer.flush();
 
-        REQUIRE CHECK_EQUAL(16U, tokens.size());
+        REQUIRE CHECK_EQUAL(22U, tokens.size());
 
         CHECK_EQUAL(TokenType::keyword, tokens[0].token().type());
         CHECK_EQUAL("struct", tokens[0].token().to_string());
@@ -1413,8 +1414,26 @@ namespace {
         CHECK_EQUAL(TokenType::end_statement, tokens[14].token().type());
         CHECK_EQUAL(";", tokens[14].token().to_string());
 
-        CHECK_EQUAL(TokenType::r_brace, tokens[15].token().type());
-        CHECK_EQUAL("}", tokens[15].token().to_string());
+        CHECK_EQUAL(TokenType::keyword, tokens[15].token().type());
+        CHECK_EQUAL("const", tokens[15].token().to_string());
+
+        CHECK_EQUAL(TokenType::type, tokens[16].token().type());
+        CHECK_EQUAL("f32", tokens[16].token().to_string());
+
+        CHECK_EQUAL(TokenType::string, tokens[17].token().type());
+        CHECK_EQUAL("f", tokens[17].token().to_string());
+
+        CHECK_EQUAL(TokenType::equal, tokens[18].token().type());
+        CHECK_EQUAL("=", tokens[18].token().to_string());
+
+        CHECK_EQUAL(TokenType::float_literal, tokens[19].token().type());
+        CHECK_EQUAL("-1.87", tokens[19].token().to_string());
+
+        CHECK_EQUAL(TokenType::end_statement, tokens[20].token().type());
+        CHECK_EQUAL(";", tokens[20].token().to_string());
+
+        CHECK_EQUAL(TokenType::r_brace, tokens[21].token().type());
+        CHECK_EQUAL("}", tokens[21].token().to_string());
     }
 
     struct InputIsStructWithCharConstant : public TokenizerFixture

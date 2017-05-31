@@ -3,7 +3,7 @@
 
 namespace swizzle {
 
-    static const std::regex keywords("u8|i8|u16|i16|u32|i32|u64|i64|bitfield|variable_block", std::regex::optimize);
+    static const std::regex keywords("u8|i8|u16|i16|u32|i32|u64|i64|bitfield|f32|f64|variable_block", std::regex::optimize);
 
     bool IsType(const boost::string_view& token)
     {

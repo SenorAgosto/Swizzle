@@ -25,6 +25,8 @@ namespace {
         CHECK(IsType("i32"));
         CHECK(IsType("u64"));
         CHECK(IsType("i64"));
+        CHECK(IsType("f32"));
+        CHECK(IsType("f64"));
         CHECK(IsType("variable_block"));
     }
 }

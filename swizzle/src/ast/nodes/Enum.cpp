@@ -20,11 +20,6 @@ namespace swizzle { namespace ast { namespace nodes {
         return nameInfo_;
     }
 
-    const lexer::TokenInfo& Enum::underlyingTypeInfo() const
-    {
-        return underlyingInfo_;
-    }
-
     std::string Enum::name() const
     {
         return name_;

@@ -71,4 +71,17 @@ namespace {
     {
         CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::SyntaxError);
     }
+
+    struct WhenNextTokenIsStringButTokenStackIsEmpty : public WhenNextTokenIsString
+    {
+        WhenNextTokenIsStringButTokenStackIsEmpty()
+        {
+            tokenStack.pop();
+        }
+    };
+
+    TEST_FIXTURE(WhenNextTokenIsStringButTokenStackIsEmpty, verifyConsume)
+    {
+        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::ParserError);
+    }
 }

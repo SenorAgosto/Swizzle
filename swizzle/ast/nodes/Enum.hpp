@@ -17,7 +17,6 @@ namespace swizzle { namespace ast { namespace nodes {
 
         const lexer::TokenInfo& enumInfo() const;
         const lexer::TokenInfo& nameInfo() const;
-        const lexer::TokenInfo& underlyingTypeInfo() const;
 
         std::string name() const;
 

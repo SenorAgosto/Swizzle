@@ -109,6 +109,8 @@ namespace swizzle { namespace parser { namespace states {
             if(value == "bitfield")
             {
                 tokenStack.push(token);
+                context.CurrentBitfieldBit = 0;
+                
                 return ParserState::StartBitfield;
             }
 

@@ -1,7 +1,7 @@
 #include <swizzle/parser/states/BitfieldColonReadState.hpp>
 
 #include <swizzle/Exceptions.hpp>
-#include <swizzle/IsIntegerType.hpp>
+#include <swizzle/IsUnsignedIntegerType.hpp>
 #include <swizzle/ast/nodes/Bitfield.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
 #include <swizzle/parser/detail/NodeStackTopIs.hpp>
@@ -17,9 +17,9 @@ namespace swizzle { namespace parser { namespace states {
 
         if(type == lexer::TokenType::type)
         {
-            if(!IsIntegerType(token.token().value()))
+            if(!IsUnsignedIntegerType(token.token().value()))
             {
-                throw SyntaxError("Underlying type must be integer type", token);
+                throw SyntaxError("Underlying type must be unsigned integer type", token);
             }
 
             if(detail::nodeStackTopIs<ast::nodes::Bitfield>(nodeStack))

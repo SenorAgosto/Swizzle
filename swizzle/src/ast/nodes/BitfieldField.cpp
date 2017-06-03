@@ -47,6 +47,8 @@ namespace swizzle { namespace ast { namespace nodes {
         BitfieldField::BitfieldField(const lexer::TokenInfo& name, const lexer::TokenInfo& underlyingType)
             : name_(name)
             , underlying_(underlyingType)
+            , beginBit_(0)
+            , endBit_(0)
         {
         }
 

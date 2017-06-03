@@ -19,6 +19,7 @@ namespace {
         StructNameStateFixture()
         {
             nodeStack.push(ast.root());
+            context.MemberIsConst = true;
         }
 
         states::StructNameState state;
@@ -46,11 +47,13 @@ namespace {
     {
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
+        CHECK(context.MemberIsConst);
 
         const auto parserState = state.consume(info, nodeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructStartScope, parserState);
 
+        CHECK(!context.MemberIsConst);
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
     }

@@ -22,10 +22,10 @@ namespace swizzle { namespace ast { namespace nodes {
         const lexer::TokenInfo& name() const;
         const lexer::TokenInfo& underlying() const;
 
-        void beginBit(const lexer::TokenInfo& token, const std::size_t bit, parser::ParserStateContext& context);
+        void beginBit(const lexer::TokenInfo& token, parser::ParserStateContext& context);
         std::size_t beginBit() const;
 
-        void endBit(const lexer::TokenInfo& token, const std::size_t bit, parser::ParserStateContext& context);
+        void endBit(const lexer::TokenInfo& token, parser::ParserStateContext& context);
         std::size_t endBit() const;
 
         void accept(VisitorInterface& visitor) override;

@@ -71,15 +71,7 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsI8, verifyConsume)
     {
-        CHECK_EQUAL(2U, nodeStack.size());
-        CHECK_EQUAL(0U, tokenStack.size());
-
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
-
-        CHECK_EQUAL(ParserState::BitfieldUnderlyingType, parserState);
-
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
-        REQUIRE CHECK_EQUAL(0U, tokenStack.size());
+        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::SyntaxError);
     }
 
     struct WhenNextTokenIsU16 : public BitfieldColonReadStateFixture
@@ -113,15 +105,7 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsI16, verifyConsume)
     {
-        CHECK_EQUAL(2U, nodeStack.size());
-        CHECK_EQUAL(0U, tokenStack.size());
-
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
-
-        CHECK_EQUAL(ParserState::BitfieldUnderlyingType, parserState);
-
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
-        REQUIRE CHECK_EQUAL(0U, tokenStack.size());
+        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::SyntaxError);
     }
 
     struct WhenNextTokenIsU32 : public BitfieldColonReadStateFixture
@@ -155,15 +139,7 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsI32, verifyConsume)
     {
-        CHECK_EQUAL(2U, nodeStack.size());
-        CHECK_EQUAL(0U, tokenStack.size());
-
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
-
-        CHECK_EQUAL(ParserState::BitfieldUnderlyingType, parserState);
-
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
-        REQUIRE CHECK_EQUAL(0U, tokenStack.size());
+        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::SyntaxError);
     }
 
     struct WhenNextTokenIsU64 : public BitfieldColonReadStateFixture
@@ -197,15 +173,7 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsI64, verifyConsume)
     {
-        CHECK_EQUAL(2U, nodeStack.size());
-        CHECK_EQUAL(0U, tokenStack.size());
-
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
-
-        CHECK_EQUAL(ParserState::BitfieldUnderlyingType, parserState);
-
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
-        REQUIRE CHECK_EQUAL(0U, tokenStack.size());
+        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::SyntaxError);
     }
 
     struct WhenNextTokenIsInvalid : public BitfieldColonReadStateFixture

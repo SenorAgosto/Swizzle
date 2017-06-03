@@ -15,9 +15,9 @@ namespace {
     using namespace swizzle::lexer;
     using namespace swizzle::parser;
 
-    struct StartEnumStateFixture
+    struct StartBitfieldStateFixture
     {
-        StartEnumStateFixture()
+        StartBitfieldStateFixture()
         {
             nodeStack.push(ast.root());
 
@@ -34,12 +34,12 @@ namespace {
         ParserStateContext context;
     };
 
-    TEST_FIXTURE(StartEnumStateFixture, verifyConstruction)
+    TEST_FIXTURE(StartBitfieldStateFixture, verifyConstruction)
     {
     }
 
 
-    struct WhenNextTokenIsString : public StartEnumStateFixture
+    struct WhenNextTokenIsString : public StartBitfieldStateFixture
     {
         const Token token = Token("MyBitfield", 0, 10, TokenType::string);
         const FileInfo fileInfo = FileInfo("test.swizzle");
@@ -60,7 +60,7 @@ namespace {
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
     }
 
-    struct WhenNextTokenIsInvalid : public StartEnumStateFixture
+    struct WhenNextTokenIsInvalid : public StartBitfieldStateFixture
     {
         const Token token = Token(":", 0, 1, TokenType::colon);
         const FileInfo fileInfo = FileInfo("test.swizzle");

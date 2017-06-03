@@ -238,4 +238,18 @@ namespace {
     {
         CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::ParserError);
     }
+
+    struct WhenNextTokenIsNotIntegerType : public EnumColonReadStateFixture
+    {
+        const Token token = Token("f64", 0, 3, TokenType::type);
+        const FileInfo fileInfo = FileInfo("test.swizzle");
+
+        const TokenInfo info = TokenInfo(token, fileInfo);
+    };
+
+    TEST_FIXTURE(WhenNextTokenIsNotIntegerType, verifyConsume)
+    {
+        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::SyntaxError);
+    }
+
 }

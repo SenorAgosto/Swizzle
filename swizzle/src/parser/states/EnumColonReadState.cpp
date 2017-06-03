@@ -1,6 +1,7 @@
 #include <swizzle/parser/states/EnumColonReadState.hpp>
 
 #include <swizzle/Exceptions.hpp>
+#include <swizzle/IsIntegerType.hpp>
 #include <swizzle/ast/nodes/Enum.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
 #include <swizzle/parser/detail/NodeStackTopIs.hpp>
@@ -17,27 +18,22 @@ namespace swizzle { namespace parser { namespace states {
 
         if(type == lexer::TokenType::type)
         {
-            if((value == "u8") ||
-               (value == "i8") ||
-               (value == "u16") ||
-               (value == "i16") ||
-               (value == "u32") ||
-               (value == "i32") ||
-               (value == "u64") ||
-               (value == "i64"))
+            if(!IsIntegerType(token.token().value()))
             {
-                if(detail::nodeStackTopIs<ast::nodes::Enum>(nodeStack))
-                {
-                    auto& top = static_cast<ast::nodes::Enum&>(*nodeStack.top());
-                    top.underlying(token);
-                }
-                else
-                {
-                    throw ParserError("Internal parser error: expected top of node stack to be ast::nodes::Enum");
-                }
-
-                return ParserState::EnumUnderlyingType;
+                throw SyntaxError("Underlying type must be an integer type", token);
             }
+
+            if(detail::nodeStackTopIs<ast::nodes::Enum>(nodeStack))
+            {
+                auto& top = static_cast<ast::nodes::Enum&>(*nodeStack.top());
+                top.underlying(token);
+            }
+            else
+            {
+                throw ParserError("Internal parser error: expected top of node stack to be ast::nodes::Enum");
+            }
+
+            return ParserState::EnumUnderlyingType;
         }
 
         throw SyntaxError("Expecting enum underlying type", token);

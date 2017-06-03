@@ -12,5 +12,7 @@ namespace swizzle { namespace parser {
         std::string CurrentNamespace;
         std::size_t CurrentBitfieldBit = 0;
         types::EnumValue CurrentEnumValue = types::EnumValue(types::EnumValueType(std::uint64_t(0)));
+
+        bool MemberIsConst = false;
     };
 }}

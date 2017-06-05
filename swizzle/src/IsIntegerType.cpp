@@ -1,4 +1,4 @@
-#include <swizzle/IsType.hpp>
+#include <swizzle/IsIntegerType.hpp>
 #include <regex>
 
 namespace swizzle {

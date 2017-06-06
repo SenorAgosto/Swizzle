@@ -29,7 +29,7 @@ namespace swizzle { namespace ast { namespace nodes {
         bool isArray() const;
 
         // @sizeMember must already be a member of the structure
-        void makeVector(const std::string& sizeMember);
+        void makeVector(const lexer::TokenInfo& sizeMember);
         bool isVector() const;
 
         void accept(VisitorInterface& visitor) override;
@@ -37,7 +37,8 @@ namespace swizzle { namespace ast { namespace nodes {
     private:
         lexer::TokenInfo name_;
         std::string type_;
-        std::string vectorOnField_;
+
+        lexer::TokenInfo vectorOnField_;
         std::ptrdiff_t arraySize_;   // this has to be signed so we can detect and report errant negative sizes
         bool isConst_;
     };

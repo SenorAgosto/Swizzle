@@ -192,6 +192,27 @@ namespace {
         // TODO: verify the AST
     }
 
+    struct WhenNextTokenIsLeftBracket : public StructFieldNamespaceOrTypeStateFixture
+    {
+        const Token token = Token("[", 0, 1, TokenType::l_bracket);
+        const FileInfo fileInfo = FileInfo("test.swizzle");
+
+        const TokenInfo info = TokenInfo(token, fileInfo);
+    };
+
+    TEST_FIXTURE(WhenNextTokenIsLeftBracket, verifyConsume)
+    {
+        CHECK_EQUAL(2U, nodeStack.size());
+        CHECK_EQUAL(0U, tokenStack.size());
+
+        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+
+        CHECK_EQUAL(ParserState::StructStartArray, parserState);
+
+        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, tokenStack.size());
+    }
+
     struct WhenNextTokenIsInvalid : public StructFieldNamespaceOrTypeStateFixture
     {
         const Token token = Token(";", 0, 1, TokenType::end_statement);

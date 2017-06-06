@@ -65,7 +65,7 @@ namespace swizzle { namespace ast { namespace nodes {
         return arraySize_ != 0;
     }
 
-    void StructField::makeVector(const std::string& sizeMember)
+    void StructField::makeVector(const lexer::TokenInfo& sizeMember)
     {
         if(isArray())
         {
@@ -77,7 +77,7 @@ namespace swizzle { namespace ast { namespace nodes {
 
     bool StructField::isVector() const
     {
-        return !vectorOnField_.empty();
+        return !vectorOnField_.token().value().empty();
     }
 
     void StructField::accept(VisitorInterface& visitor)

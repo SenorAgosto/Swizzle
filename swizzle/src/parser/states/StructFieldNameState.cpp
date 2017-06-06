@@ -1,5 +1,6 @@
 #include <swizzle/parser/states/StructFieldNameState.hpp>
 
+#include <swizzle/Exceptions.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
 #include <swizzle/parser/NodeStack.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
@@ -7,9 +8,15 @@
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState StructFieldNameState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack& tokenStack, ParserStateContext& context)
+    ParserState StructFieldNameState::consume(const lexer::TokenInfo& token, NodeStack&, TokenStack&, ParserStateContext&)
     {
-        // TODO: implement
-        return ParserState::Init;
+        const auto type = token.token().type();
+
+        if(type == lexer::TokenType::end_statement)
+        {
+            return ParserState::StructStartScope;
+        }
+
+        throw SyntaxError("Expected ';'", token);
     }
 }}}

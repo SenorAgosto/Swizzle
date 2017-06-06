@@ -681,6 +681,33 @@ namespace {
         // TODO: check the AST
     }
 
+    struct WhenNextTokenIsMemberName : public StructStartScopeStateFixture
+    {
+        WhenNextTokenIsMemberName()
+        {
+            const auto node = detail::appendNode<nodes::StructField>(nodeStack);
+            nodeStack.push(node);
+        }
+
+        const Token token = Token("field1", 0, 6, TokenType::string);
+        const FileInfo fileInfo = FileInfo("test.swizzle");
+
+        const TokenInfo info = TokenInfo(token, fileInfo);
+    };
+
+    TEST_FIXTURE(WhenNextTokenIsMemberName, verifyConsume)
+    {
+        CHECK_EQUAL(3U, nodeStack.size());
+        CHECK_EQUAL(0U, tokenStack.size());
+
+        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+
+        CHECK_EQUAL(ParserState::StructFieldName, parserState);
+
+        REQUIRE CHECK_EQUAL(3U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, tokenStack.size());
+    }
+
     struct WhenNextTokenIsInvalid : public StructStartScopeStateFixture
     {
         const Token token = Token(";", 0, 1, TokenType::end_statement);

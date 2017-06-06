@@ -142,6 +142,14 @@ namespace swizzle { namespace parser { namespace states {
 
         if(type == lexer::TokenType::string)
         {
+            if(detail::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
+            {
+                auto& top = static_cast<ast::nodes::StructField&>(*nodeStack.top());
+                top.name(token);
+
+                return ParserState::StructFieldName;
+            }
+
             auto node = detail::appendNode<ast::nodes::StructField>(nodeStack);
             nodeStack.push(node);
             tokenStack.push(token);

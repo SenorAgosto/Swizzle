@@ -22,6 +22,11 @@ namespace swizzle { namespace parser { namespace states {
             return ParserState::StructFieldNamespaceFirstColon;
         }
 
+        if(type == lexer::TokenType::l_bracket)
+        {
+            return ParserState::StructStartArray;
+        }
+
         if(type == lexer::TokenType::string)
         {
             if(detail::nodeStackTopIs<ast::nodes::StructField>(nodeStack))

@@ -47,6 +47,7 @@ namespace swizzle { namespace parser {
         StructFieldNamespaceSecondColon,
         StructFieldName,
         StructStartArray,
+        StructArray,
         StructVector,
         StructVectorNestedOnMember,
         StructStartVariableBlock,

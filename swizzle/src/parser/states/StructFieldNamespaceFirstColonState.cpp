@@ -1,5 +1,6 @@
 #include <swizzle/parser/states/StructFieldNamespaceFirstColonState.hpp>
 
+#include <swizzle/Exceptions.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
 #include <swizzle/parser/NodeStack.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
@@ -7,9 +8,15 @@
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState StructFieldNamespaceFirstColonState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack& tokenStack, ParserStateContext& context)
+    ParserState StructFieldNamespaceFirstColonState::consume(const lexer::TokenInfo& token, NodeStack&, TokenStack&, ParserStateContext&)
     {
-        // TODO: implement
-        return ParserState::Init;
+        const auto type = token.token().type();
+
+        if(type == lexer::TokenType::colon)
+        {
+            return ParserState::StructFieldNamespaceSecondColon;
+        }
+
+        throw SyntaxError("Expected ':'", token);
     }
 }}}

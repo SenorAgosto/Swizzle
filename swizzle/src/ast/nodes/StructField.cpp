@@ -47,7 +47,12 @@ namespace swizzle { namespace ast { namespace nodes {
     {
         try
         {
-            arraySize_ = boost::lexical_cast<std::size_t>(token.token().value());
+            arraySize_ = boost::lexical_cast<std::ptrdiff_t>(token.token().value());
+
+            if(arraySize_ < 0)
+            {
+                throw SyntaxError("Expected positive numeric array size", token);
+            }
         }
         catch(const boost::bad_lexical_cast&)
         {

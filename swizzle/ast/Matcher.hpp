@@ -51,6 +51,14 @@ namespace swizzle { namespace ast {
         std::deque<std::shared_ptr<MatchRule>> rules_;
     };
 
+    // NOTED: matcher uses a fluent interface, each of the
+    // supplied types here adds a method (or methods) to the Matcher
+    // interface.
+    //
+    // e.g. auto m = Matche().hasChildOf<swizzle::ast::nodes::Comment>();
+    //
+    // The methods will typically be the lowercase of the fluent type name,
+    // they may or may not take arguments.
     using Matcher = MatcherImpl<
           matchers::fluent::HasChild
         , matchers::fluent::HasChildOf

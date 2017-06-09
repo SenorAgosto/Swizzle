@@ -3,6 +3,8 @@
 #include <swizzle/ast/MatchRule.hpp>
 
 #include <swizzle/ast/matchers/HasChild.hpp>
+#include <swizzle/ast/matchers/HasChildOf.hpp>
+#include <swizzle/ast/matchers/HasChildNotOf.hpp>
 
 #include <deque>
 #include <memory>
@@ -49,5 +51,8 @@ namespace swizzle { namespace ast {
         std::deque<std::shared_ptr<MatchRule>> rules_;
     };
 
-    using Matcher = MatcherImpl<matchers::fluent::HasChild>;
+    using Matcher = MatcherImpl<
+          matchers::fluent::HasChild
+        , matchers::fluent::HasChildOf
+        , matchers::fluent::HasChildNotOf>;
 }}

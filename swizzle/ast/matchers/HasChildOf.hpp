@@ -3,12 +3,21 @@
 
 namespace swizzle { namespace ast { namespace matchers {
 
-    class HasChild : public MatchRule
+    template<class T>
+    class HasChildOf : public MatchRule
     {
     public:
         bool evaluate(Node::smartptr node) override
         {
-            return !node->empty();
+            for(const auto child : node->children())
+            {
+                if(dynamic_cast<T*>(child.get()))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     };
 }}}
@@ -16,17 +25,18 @@ namespace swizzle { namespace ast { namespace matchers {
 namespace swizzle { namespace ast { namespace matchers { namespace fluent {
 
     template<class Matcher>
-    class HasChild
+    class HasChildOf
     {
     public:
-        HasChild(Matcher& matcher)
+        HasChildOf(Matcher& matcher)
             : matcher_(matcher)
         {
         }
 
-        Matcher& hasChild()
+        template<class T>
+        Matcher& hasChildOf()
         {
-            matcher_.template append<swizzle::ast::matchers::HasChild>();
+            matcher_.template append<swizzle::ast::matchers::HasChildOf<T>>();
             return matcher_;
         }
 

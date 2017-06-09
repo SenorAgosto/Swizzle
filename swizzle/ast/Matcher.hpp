@@ -10,7 +10,7 @@
 namespace swizzle { namespace ast {
 
     template<template<class> class... MatchRules>
-    class MatcherImpl : public MatchRules<MatcherImpl<MatchRules>>...
+    class MatcherImpl : public MatchRules<MatcherImpl<MatchRules...>>...
     {
     public:
         MatcherImpl()

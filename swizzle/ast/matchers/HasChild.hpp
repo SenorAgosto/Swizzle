@@ -6,10 +6,7 @@ namespace swizzle { namespace ast { namespace matchers {
     class HasChild : public MatchRule
     {
     public:
-        bool evaluate(Node::smartptr node) override
-        {
-            return !node->empty();
-        }
+        bool evaluate(Node::smartptr node) override;
     };
 }}}
 

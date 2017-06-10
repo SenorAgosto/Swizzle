@@ -5,6 +5,7 @@
 #include <swizzle/ast/matchers/HasChild.hpp>
 #include <swizzle/ast/matchers/HasChildOf.hpp>
 #include <swizzle/ast/matchers/HasChildNotOf.hpp>
+#include <swizzle/ast/matchers/HasFieldNamed.hpp>
 
 #include <deque>
 #include <memory>
@@ -62,5 +63,6 @@ namespace swizzle { namespace ast {
     using Matcher = MatcherImpl<
           matchers::fluent::HasChild
         , matchers::fluent::HasChildOf
-        , matchers::fluent::HasChildNotOf>;
+        , matchers::fluent::HasChildNotOf
+        , matchers::fluent::HasFieldNamed>;
 }}

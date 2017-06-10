@@ -34,15 +34,20 @@ namespace {
 
         void operator()(nodes::Attribute&) override { attribute++; }
         void operator()(nodes::AttributeBlock&) override { attributeBlock++; }
+        void operator()(nodes::Bitfield&) override { bitfield++; }
+        void operator()(nodes::BitfieldField&) override { bitfieldField++; }
         void operator()(nodes::CharLiteral&) override { charLiteral++; }
         void operator()(nodes::Comment&) override { comment++; }
         void operator()(nodes::Enum&) override { enumCount++; }
         void operator()(nodes::EnumField&) override { enumField++; }
+        void operator()(nodes::FieldLabel&) override { fieldLabel++; }
         void operator()(nodes::HexLiteral&) override { hexLiteral++; }
         void operator()(nodes::Import&) override { import++; }
         void operator()(nodes::MultilineComment&) override { multilineComment++; }
         void operator()(nodes::NumericLiteral&) override { numericLiteral++; }
         void operator()(nodes::StringLiteral&) override { stringLiteral++; }
+        void operator()(nodes::Struct&) override { structCount++; }
+        void operator()(nodes::StructField&) override { structField++; }
         void operator()(nodes::TypeAlias&) override { typeAlias++; }
 
     public:
@@ -50,15 +55,20 @@ namespace {
 
         std::size_t attribute = 0;
         std::size_t attributeBlock = 0;
+        std::size_t bitfield = 0;
+        std::size_t bitfieldField = 0;
         std::size_t charLiteral = 0;
         std::size_t comment = 0;
         std::size_t enumCount = 0;
         std::size_t enumField = 0;
+        std::size_t fieldLabel = 0;
         std::size_t hexLiteral = 0;
         std::size_t import = 0;
         std::size_t multilineComment = 0;
         std::size_t numericLiteral = 0;
         std::size_t stringLiteral = 0;
+        std::size_t structCount = 0;
+        std::size_t structField = 0;
         std::size_t typeAlias = 0;
     };
 

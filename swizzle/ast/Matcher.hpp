@@ -21,6 +21,31 @@ namespace swizzle { namespace ast {
         {
         }
 
+        MatcherImpl(const MatcherImpl& other)
+            : MatchRules<MatcherImpl>(*this)...
+            , rules_(other.rules_)
+        {
+        }
+
+        MatcherImpl(MatcherImpl&& other)
+            : MatchRules<MatcherImpl>(*this)...
+            , rules_(std::move(other.rules_))
+        {
+        }
+
+        MatcherImpl& operator=(const MatcherImpl& other)
+        {
+            rules_ = other.rules_;
+            return *this;
+        }
+
+        MatcherImpl& operator=(MatcherImpl&& other)
+        {
+            rules_ = std::move(other.rules_);
+            return *this;
+        }
+
+
         // evaluate AST
         bool operator()(AbstractSyntaxTree& ast)
         {

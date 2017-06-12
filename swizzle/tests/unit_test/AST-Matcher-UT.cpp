@@ -93,6 +93,10 @@ namespace {
             node = detail::appendNode<nodes::StructField>(nodeStack);
             auto& field2 = static_cast<nodes::StructField&>(*node);
             field2.name(TokenInfo(Token("field2", 0, 6, TokenType::string), FileInfo("test.swizzle")));
+
+            node = detail::appendNode<nodes::StructField>(nodeStack);
+            auto& field3 = static_cast<nodes::StructField&>(*node);
+            field3.name(TokenInfo(Token("field3", 0, 6, TokenType::string), FileInfo("test.swizzle")));
         }
 
         const Token token = Token("struct", 0, 6, TokenType::keyword);
@@ -106,14 +110,10 @@ namespace {
 
     TEST_FIXTURE(StructHasMemberNamedFixture, verifyHasMemberNamed)
     {
-        Matcher m = Matcher().hasFieldNamed("field3");
-
+        Matcher m = Matcher().hasFieldNamed("field4");
         CHECK(!m(ast));
 
-        auto node = detail::appendNode<nodes::StructField>(nodeStack);
-        auto& field3 = static_cast<nodes::StructField&>(*node);
-        field3.name(TokenInfo(Token("field3", 0, 6, TokenType::string), FileInfo("test.swizzle")));
-
+        m = Matcher().hasFieldNamed("field3");
         CHECK(m(ast));
     }
 }

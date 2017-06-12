@@ -74,7 +74,7 @@ namespace swizzle { namespace ast {
             return true;
         }
 
-        // append a matche rule
+        // append a match rule
         template<class MatchRule, class... Args>
         void append(Args&&... args)
         {

@@ -34,6 +34,30 @@ namespace {
         Matcher m;
     }
 
+    template<class Matcher>
+    class TestInterface
+    {
+    public:
+        TestInterface(Matcher& matcher)
+            : matcher_(matcher)
+        {
+        }
+
+        Matcher& testInterface()
+        {
+            return matcher_;
+        }
+
+    private:
+        Matcher& matcher_;
+    };
+
+    TEST_FIXTURE(MatcherFixture, verifyExtensibility)
+    {
+        using TestMatcher = ExtensibleMatcher<TestInterface>;
+        auto t = TestMatcher().testInterface();
+    }
+
     TEST_FIXTURE(MatcherFixture, verifyHasChild)
     {
         Matcher m = Matcher().hasChild();

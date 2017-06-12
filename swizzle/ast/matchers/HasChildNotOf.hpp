@@ -1,5 +1,6 @@
 #pragma once
 #include <swizzle/ast/MatchRule.hpp>
+#include <swizzle/ast/MatcherReferenceHolder.hpp>
 
 #include <cstddef>
 #include <numeric>
@@ -38,22 +39,19 @@ namespace swizzle { namespace ast { namespace matchers {
 namespace swizzle { namespace ast { namespace matchers { namespace fluent {
 
     template<class Matcher>
-    class HasChildNotOf
+    class HasChildNotOf : private MatcherReferenceHolder<Matcher>
     {
     public:
         HasChildNotOf(Matcher& matcher)
-            : matcher_(matcher)
+            : MatcherReferenceHolder<Matcher>(matcher)
         {
         }
 
         template<class... T>
         Matcher& hasChildNotOf()
         {
-            matcher_.template append<swizzle::ast::matchers::HasChildNotOf<T...>>();
-            return matcher_;
+            this->matcher().template append<swizzle::ast::matchers::HasChildNotOf<T...>>();
+            return this->matcher();
         }
-
-    private:
-        Matcher& matcher_;
     };
 }}}}

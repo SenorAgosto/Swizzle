@@ -35,21 +35,18 @@ namespace {
     }
 
     template<class Matcher>
-    class TestInterface
+    class TestInterface : private MatcherReferenceHolder<Matcher>
     {
     public:
         TestInterface(Matcher& matcher)
-            : matcher_(matcher)
+            : MatcherReferenceHolder<Matcher>(matcher)
         {
         }
 
         Matcher& testInterface()
         {
-            return matcher_;
+            return this->matcher();
         }
-
-    private:
-        Matcher& matcher_;
     };
 
     TEST_FIXTURE(MatcherFixture, verifyExtensibility)

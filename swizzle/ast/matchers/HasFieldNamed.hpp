@@ -1,5 +1,7 @@
 #pragma once
 #include <swizzle/ast/MatchRule.hpp>
+#include <swizzle/ast/MatcherReferenceHolder.hpp>
+
 #include <string>
 
 namespace swizzle { namespace ast { namespace matchers {
@@ -19,21 +21,18 @@ namespace swizzle { namespace ast { namespace matchers {
 namespace swizzle { namespace ast { namespace matchers { namespace fluent {
 
     template<class Matcher>
-    class HasFieldNamed
+    class HasFieldNamed : private MatcherReferenceHolder<Matcher>
     {
     public:
         HasFieldNamed(Matcher& matcher)
-            : matcher_(matcher)
+            : MatcherReferenceHolder<Matcher>(matcher)
         {
         }
 
         Matcher& hasFieldNamed(const std::string& name)
         {
-            matcher_.template append<swizzle::ast::matchers::HasFieldNamed>(name);
-            return matcher_;
+            this->matcher().template append<swizzle::ast::matchers::HasFieldNamed>(name);
+            return this->matcher();
         }
-
-    private:
-        Matcher& matcher_;
     };
 }}}}

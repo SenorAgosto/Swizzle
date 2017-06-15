@@ -137,4 +137,43 @@ namespace {
         m = Matcher().hasFieldNamed("field3");
         CHECK(m(ast));
     }
+
+    struct IsTypeOfFixture : public MatcherFixture
+    {
+        IsTypeOfFixture()
+        {
+            const auto node = detail::appendNode<nodes::Comment>(nodeStack, info);
+            nodeStack.push(node);
+        }
+
+        const Token token = Token("// comment", 0, 10, TokenType::comment);
+        const FileInfo fileInfo = FileInfo("test.swizzle");
+
+        const TokenInfo info = TokenInfo(token, fileInfo);
+    };
+
+    TEST_FIXTURE(IsTypeOfFixture, verifyIsTypeOf)
+    {
+        Matcher m = Matcher().isTypeOf<nodes::Comment, nodes::MultilineComment>();
+        CHECK(m(nodeStack.top()));
+
+        auto node = detail::appendNode<nodes::MultilineComment>(nodeStack, info);
+        CHECK(m(node));
+
+        node = detail::appendNode<nodes::Struct>(nodeStack, info, TokenInfo(Token("MyStruct", 0, 8, TokenType::string), FileInfo("test.swizzle")), "my_namespace");
+        CHECK(!m(node));
+    }
+
+    struct IsNotTypeOfFixture : public IsTypeOfFixture
+    {
+    };
+
+    TEST_FIXTURE(IsNotTypeOfFixture, verifyIsNotTypeOf)
+    {
+        Matcher m = Matcher().isNotTypeOf<nodes::Struct, nodes::StructField>();
+        CHECK(m(nodeStack.top()));
+
+        auto node = detail::appendNode<nodes::Struct>(nodeStack, info, TokenInfo(Token("MyStruct", 0, 8, TokenType::string), FileInfo("test.swizzle")), "my_namespace");
+        CHECK(!m(node));
+    }
 }

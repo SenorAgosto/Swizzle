@@ -2,9 +2,12 @@
 #include <swizzle/ast/MatchRule.hpp>
 #include <swizzle/ast/MatcherReferenceHolder.hpp>
 
+#include <cstddef>
+#include <numeric>
+
 namespace swizzle { namespace ast { namespace matchers {
 
-    template<class T>
+    template<class... T>
     class HasChildOf : public MatchRule
     {
     public:
@@ -12,9 +15,15 @@ namespace swizzle { namespace ast { namespace matchers {
         {
             for(const auto child : node->children())
             {
-                if(dynamic_cast<T*>(child.get()))
+                static constexpr std::size_t size = sizeof...(T);
+                void* results[size] = { (dynamic_cast<T*>(child.get()))... };
+
+                for(std::size_t i = 0; i < size; ++i)
                 {
-                    return true;
+                    if(results[i])
+                    {
+                        return true;
+                    }
                 }
             }
 
@@ -34,10 +43,10 @@ namespace swizzle { namespace ast { namespace matchers { namespace fluent {
         {
         }
 
-        template<class T>
+        template<class... T>
         Matcher& hasChildOf()
         {
-            this->matcher().template append<swizzle::ast::matchers::HasChildOf<T>>();
+            this->matcher().template append<swizzle::ast::matchers::HasChildOf<T...>>();
             return this->matcher();
         }
     };

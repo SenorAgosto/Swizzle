@@ -6,6 +6,8 @@
 #include <swizzle/ast/matchers/HasChildOf.hpp>
 #include <swizzle/ast/matchers/HasChildNotOf.hpp>
 #include <swizzle/ast/matchers/HasFieldNamed.hpp>
+#include <swizzle/ast/matchers/IsTypeOf.hpp>
+#include <swizzle/ast/matchers/IsNotTypeOf.hpp>
 
 #include <deque>
 #include <memory>
@@ -92,6 +94,8 @@ namespace swizzle { namespace ast {
         , matchers::fluent::HasChildOf
         , matchers::fluent::HasChildNotOf
         , matchers::fluent::HasFieldNamed
+        , matchers::fluent::IsTypeOf
+        , matchers::fluent::IsNotTypeOf
         , UserMatchRules...>;
 
     using Matcher = ExtensibleMatcher<>;

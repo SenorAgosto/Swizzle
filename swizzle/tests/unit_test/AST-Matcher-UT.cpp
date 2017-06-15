@@ -74,10 +74,13 @@ namespace {
 
     TEST_FIXTURE(HasChildOfFixture, verifyHasChildOf)
     {
-        Matcher m = Matcher().hasChildOf<nodes::Comment>();
+        Matcher m = Matcher().hasChildOf<nodes::Comment, nodes::MultilineComment>();
         CHECK(!m(ast));
 
         detail::appendNode<nodes::Comment>(nodeStack, info);
+        CHECK(m(ast));
+
+        detail::appendNode<nodes::MultilineComment>(nodeStack, info);
         CHECK(m(ast));
     }
 

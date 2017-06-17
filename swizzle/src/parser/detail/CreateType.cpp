@@ -2,6 +2,7 @@
 
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/lexer/utils/CalculateColumnDifference.hpp>
+#include <swizzle/parser/utils/StackInvert.hpp>
 
 namespace swizzle { namespace parser { namespace detail {
 
@@ -12,25 +13,20 @@ namespace swizzle { namespace parser { namespace detail {
             throw ParserError("Internal parser error, Token Stack unexpectedly empty.");
         }
 
-        TokenStack reverse;
-        while(!tokenStack.empty())
-        {
-            reverse.push(tokenStack.top());
-            tokenStack.pop();
-        }
+        TokenStack stack = utils::stack::invert(tokenStack);
 
-        lexer::TokenInfo info = reverse.top();
-        reverse.pop();
+        lexer::TokenInfo info = stack.top();
+        stack.pop();
 
-        while(!reverse.empty())
+        while(!stack.empty())
         {
-            const auto& top = reverse.top();
+            const auto& top = stack.top();
 
             const auto diff = lexer::utils::calculateColumnDifference(info, top);
             info.fileInfo().end() = top.fileInfo().end();
             info.token().expand(diff);
 
-            reverse.pop();
+            stack.pop();
         }
 
         return info;

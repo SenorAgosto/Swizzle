@@ -1,5 +1,7 @@
 #include <swizzle/parser/detail/CreateNamespace.hpp>
+
 #include <swizzle/Exceptions.hpp>
+#include <swizzle/parser/utils/StackInvert.hpp>
 
 namespace swizzle { namespace parser { namespace detail {
 
@@ -10,18 +12,13 @@ namespace swizzle { namespace parser { namespace detail {
             throw ParserError("Internal parser error, Token Stack unexpectedly empty.");
         }
 
-        TokenStack reverse;
-        while(!tokenStack.empty())
-        {
-            reverse.push(tokenStack.top());
-            tokenStack.pop();
-        }
-
         std::string nameSpace;
-        while(!reverse.empty())
+        TokenStack stack = utils::stack::invert(tokenStack);
+
+        while(!stack.empty())
         {
-            nameSpace += reverse.top().token().to_string() + "::";
-            reverse.pop();
+            nameSpace += stack.top().token().to_string() + "::";
+            stack.pop();
         }
 
         nameSpace.resize(nameSpace.size() - 2);

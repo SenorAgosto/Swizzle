@@ -1,5 +1,7 @@
 #include <swizzle/parser/detail/CreateImportPath.hpp>
+
 #include <swizzle/Exceptions.hpp>
+#include <swizzle/parser/utils/StackInvert.hpp>
 
 namespace swizzle { namespace parser { namespace detail {
 
@@ -10,18 +12,13 @@ namespace swizzle { namespace parser { namespace detail {
             throw ParserError("Internal parser error, Token Stack unexpectedly empty.");
         }
 
-        TokenStack reverse;
-        while(!tokenStack.empty())
-        {
-            reverse.push(tokenStack.top());
-            tokenStack.pop();
-        }
+        TokenStack stack = utils::stack::invert(tokenStack);
 
         boost::filesystem::path import;
-        while(!reverse.empty())
+        while(!stack.empty())
         {
-            import /= reverse.top().token().to_string();
-            reverse.pop();
+            import /= stack.top().token().to_string();
+            stack.pop();
         }
 
         const auto leaf = import.leaf();

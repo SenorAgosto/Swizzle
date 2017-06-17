@@ -1,4 +1,4 @@
-#include "./platform/UnitTestSupport.hpp"
+#include "./ut_support/UnitTestSupport.hpp"
 #include <swizzle/lexer/LineInfo.hpp>
 
 namespace {

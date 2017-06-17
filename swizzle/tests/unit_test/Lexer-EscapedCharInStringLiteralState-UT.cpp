@@ -1,4 +1,4 @@
-#include "./platform/UnitTestSupport.hpp"
+#include "./ut_support/UnitTestSupport.hpp"
 #include <swizzle/lexer/states/EscapedCharInStringLiteralState.hpp>
 
 #include <swizzle/Exceptions.hpp>

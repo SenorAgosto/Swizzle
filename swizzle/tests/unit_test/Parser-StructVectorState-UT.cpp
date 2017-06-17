@@ -9,7 +9,7 @@
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/parser/detail/AppendNode.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
-#include <swizzle/parser/states/StructFieldNamespaceFirstColonState.hpp>
+#include <swizzle/parser/states/StructVectorState.hpp>
 
 namespace {
 
@@ -17,9 +17,9 @@ namespace {
     using namespace swizzle::lexer;
     using namespace swizzle::parser;
 
-    struct StructFieldNamespaceFirstColonStateFixture
+    struct StructVectorStateFixture
     {
-        StructFieldNamespaceFirstColonStateFixture()
+        StructVectorStateFixture()
         {
             nodeStack.push(ast.root());
 
@@ -28,12 +28,9 @@ namespace {
 
             auto node = detail::appendNode<nodes::Struct>(nodeStack, structKeyword, name, "my_namespace");
             nodeStack.push(node);
-
-            node = detail::appendNode<nodes::StructField>(nodeStack);
-            nodeStack.push(node);
         }
 
-        states::StructFieldNamespaceFirstColonState state;
+        states::StructVectorState state;
 
         AbstractSyntaxTree ast;
 
@@ -42,32 +39,57 @@ namespace {
         ParserStateContext context;
     };
 
-    TEST_FIXTURE(StructFieldNamespaceFirstColonStateFixture, verifyConstruction)
+    TEST_FIXTURE(StructVectorStateFixture, verifyConstruction)
     {
     }
 
-    struct WhenNextTokenIsColon : public StructFieldNamespaceFirstColonStateFixture
+    struct WhenNextTokenIsDot : public StructVectorStateFixture
     {
-        const Token token = Token(":", 0, 1, TokenType::colon);
+        const Token token = Token(".", 0, 1, TokenType::dot);
         const FileInfo fileInfo = FileInfo("test.swizzle");
 
         const TokenInfo info = TokenInfo(token, fileInfo);
     };
 
-    TEST_FIXTURE(WhenNextTokenIsColon, verifyConsume)
+    TEST_FIXTURE(WhenNextTokenIsDot, verifyConsume)
     {
-        CHECK_EQUAL(3U, nodeStack.size());
+        CHECK_EQUAL(2U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, tokenStack, context);
 
-        CHECK_EQUAL(ParserState::StructFieldNamespaceSecondColon, parserState);
+        CHECK_EQUAL(ParserState::StructVectorNestedOnMember, parserState);
 
-        REQUIRE CHECK_EQUAL(3U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
     }
 
-    struct WhenNextTokenIsInvalid : public StructFieldNamespaceFirstColonStateFixture
+    struct WhenNextTokenIsRightBracket : public StructVectorStateFixture
+    {
+        const Token token = Token("]", 0, 1, TokenType::r_bracket);
+        const FileInfo fileInfo = FileInfo("test.swizzle");
+
+        const TokenInfo info = TokenInfo(token, fileInfo);
+    };
+
+    TEST_FIXTURE(WhenNextTokenIsRightBracket, verifyConsume)
+    {
+        // TODO: finish implementing
+        CHECK(false);
+/*        CHECK_EQUAL(2U, nodeStack.size());
+        CHECK_EQUAL(0U, tokenStack.size());
+
+        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+
+        CHECK_EQUAL(ParserState::StructStartScope, parserState);
+
+        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, tokenStack.size());
+*/
+        // TODO: validate AST. type is now vectored, vectored-on member is set
+    }
+
+    struct WhenNextTokenIsInvalid : public StructVectorStateFixture
     {
         const Token token = Token(";", 0, 1, TokenType::end_statement);
         const FileInfo fileInfo = FileInfo("test.swizzle");

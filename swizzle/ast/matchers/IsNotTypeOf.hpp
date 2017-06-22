@@ -1,6 +1,5 @@
 #pragma once
 #include <swizzle/ast/MatchRule.hpp>
-#include <swizzle/ast/MatcherReferenceHolder.hpp>
 
 #include <cstddef>
 #include <numeric>
@@ -36,19 +35,22 @@ namespace swizzle { namespace ast { namespace matchers {
 namespace swizzle { namespace ast { namespace matchers { namespace fluent {
 
     template<class Matcher>
-    class IsNotTypeOf : private MatcherReferenceHolder<Matcher>
+    class IsNotTypeOf
     {
     public:
         IsNotTypeOf(Matcher& matcher)
-            : MatcherReferenceHolder<Matcher>(matcher)
+            : matcher_(matcher)
         {
         }
 
         template<class... T>
         Matcher& isNotTypeOf()
         {
-            this->matcher().template append<swizzle::ast::matchers::IsNotTypeOf<T...>>();
-            return this->matcher();
+            matcher_.template append<swizzle::ast::matchers::IsNotTypeOf<T...>>();
+            return matcher_;
         }
+
+    private:
+        Matcher& matcher_;
     };
 }}}}

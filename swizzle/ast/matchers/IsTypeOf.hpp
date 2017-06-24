@@ -10,7 +10,7 @@ namespace swizzle { namespace ast { namespace matchers {
     class IsTypeOf : public MatchRule
     {
     public:
-        bool evaluate(Node::smartptr node) override
+        bool evaluate(VariableBindingInterface& binder, Node::smartptr node) override
         {
             static constexpr std::size_t size = sizeof...(T);
             void* results[size] = { (dynamic_cast<T*>(node.get()))... };
@@ -19,6 +19,7 @@ namespace swizzle { namespace ast { namespace matchers {
             {
                 if(results[i])
                 {
+                    binder.bind(bindName_, node);
                     return true;
                 }
             }

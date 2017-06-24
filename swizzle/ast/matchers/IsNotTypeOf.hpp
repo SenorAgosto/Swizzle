@@ -10,7 +10,7 @@ namespace swizzle { namespace ast { namespace matchers {
     class IsNotTypeOf : public MatchRule
     {
     public:
-        bool evaluate(Node::smartptr node) override
+        bool evaluate(VariableBindingInterface& binder, Node::smartptr node) override
         {
             static constexpr std::size_t size = sizeof...(T);
             void* results[size] = { (dynamic_cast<T*>(node.get()))... };
@@ -24,6 +24,7 @@ namespace swizzle { namespace ast { namespace matchers {
             // all casts failed, therefore the child node is of a different type
             if(count == 0)
             {
+                binder.bind(bindName_, node);
                 return true;
             }
 

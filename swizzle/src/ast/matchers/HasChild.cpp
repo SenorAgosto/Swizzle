@@ -2,8 +2,14 @@
 
 namespace swizzle { namespace ast { namespace matchers {
 
-    bool HasChild::evaluate(Node::smartptr node)
+    bool HasChild::evaluate(VariableBindingInterface& binder, Node::smartptr node)
     {
-        return !node->empty();
+        if(!node->empty())
+        {
+            binder.bind(bindName_, node);
+            return true;
+        }
+
+        return false;
     }
 }}}

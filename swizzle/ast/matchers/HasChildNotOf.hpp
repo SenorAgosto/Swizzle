@@ -10,7 +10,7 @@ namespace swizzle { namespace ast { namespace matchers {
     class HasChildNotOf : public MatchRule
     {
     public:
-        bool evaluate(Node::smartptr node) override
+        bool evaluate(VariableBindingInterface& binder, Node::smartptr node) override
         {
             for(const auto child : node->children())
             {
@@ -26,6 +26,7 @@ namespace swizzle { namespace ast { namespace matchers {
                 // all casts failed, therefore the child node is of a different type
                 if(count == 0)
                 {
+                    binder.bind(bindName_, node);
                     return true;
                 }
             }

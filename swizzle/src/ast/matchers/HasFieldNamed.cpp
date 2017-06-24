@@ -42,7 +42,7 @@ namespace swizzle { namespace ast { namespace matchers {
     {
     }
 
-    bool HasFieldNamed::evaluate(Node::smartptr node)
+    bool HasFieldNamed::evaluate(VariableBindingInterface& binder, Node::smartptr node)
     {
         FieldVisitor v(name_);
 
@@ -52,6 +52,7 @@ namespace swizzle { namespace ast { namespace matchers {
 
             if(v.found())
             {
+                binder.bind(bindName_, node);
                 return true;
             }
         }

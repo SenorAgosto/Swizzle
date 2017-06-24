@@ -10,7 +10,7 @@ namespace swizzle { namespace ast { namespace matchers {
     public:
         HasFieldNamed(const std::string& name);
 
-        bool evaluate(Node::smartptr node) override;
+        bool evaluate(VariableBindingInterface& binder, Node::smartptr node) override;
 
     private:
         std::string name_;

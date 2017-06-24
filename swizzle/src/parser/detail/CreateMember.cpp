@@ -13,35 +13,12 @@
 
 namespace swizzle { namespace parser { namespace detail {
 
-    lexer::TokenInfo createMember(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack& tokenStack, const ParserStateContext& context)
+    lexer::TokenInfo createMember(const lexer::TokenInfo& token, NodeStack&, TokenStack& tokenStack, const ParserStateContext&)
     {
         if(tokenStack.empty())
         {
             throw SyntaxError("Expected vector size member information on the token stack, token stack was empty", token);
         }
-
-        if(nodeStack.empty())
-        {
-            throw SyntaxError("Node stack empty, expected top of node stack to be ast::nodes::StructField", token);
-        }
-
-        auto isStructField = ast::Matcher().isTypeOf<ast::nodes::StructField>();
-        if(!isStructField(nodeStack.top()))
-        {
-            throw SyntaxError("Expected top of node stack to be ast::nodes::StructField", token);
-        }
-
-        const auto field = nodeStack.top();
-        nodeStack.pop();
-
-        auto isStruct = ast::Matcher().isTypeOf<ast::nodes::Struct>();
-        if(!isStruct(nodeStack.top()))
-        {
-            throw SyntaxError("Expected node below top of node stack to be ast::nodes::Struct", token);
-        }
-
-        const auto structure = nodeStack.top();
-        nodeStack.emplace(std::move(field));
 
         TokenStack stack = utils::stack::invert(tokenStack);
         lexer::TokenInfo info = stack.top();

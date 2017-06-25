@@ -1,5 +1,6 @@
 #include "./ut_support/UnitTestSupport.hpp"
 
+#include <swizzle/Exceptions.hpp>
 #include <swizzle/ast/AbstractSyntaxTree.hpp>
 #include <swizzle/ast/Matcher.hpp>
 #include <swizzle/ast/Node.hpp>
@@ -60,11 +61,13 @@ namespace {
 
     TEST_FIXTURE(MatcherFixture, verifyHasChild)
     {
-        Matcher m = Matcher().hasChild();
+        Matcher m = Matcher().hasChild().bind("parent");
         CHECK(!m(ast));
 
         detail::appendNode<Node>(nodeStack);
         CHECK(m(ast));
+
+        CHECK_EQUAL(ast.root().get(), m.bound("parent").get());
     }
 
     struct HasChildOfFixture : public MatcherFixture

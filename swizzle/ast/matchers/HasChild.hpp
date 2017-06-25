@@ -3,6 +3,7 @@
 
 namespace swizzle { namespace ast { namespace matchers {
 
+    // on match binds save the parent node
     class HasChild : public MatchRule
     {
     public:

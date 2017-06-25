@@ -52,7 +52,7 @@ namespace swizzle { namespace ast { namespace matchers {
 
             if(v.found())
             {
-                binder.bind(bindName_, node);
+                binder.bind(bindName_, child);
                 return true;
             }
         }

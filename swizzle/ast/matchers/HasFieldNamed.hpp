@@ -5,6 +5,7 @@
 
 namespace swizzle { namespace ast { namespace matchers {
 
+    // on a match, bind() will save the matched child node, not the parent
     class HasFieldNamed : public MatchRule
     {
     public:

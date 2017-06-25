@@ -1,6 +1,8 @@
 #pragma once
 #include <swizzle/ast/AbstractSyntaxTree.hpp>
 #include <swizzle/ast/MatchRule.hpp>
+#include <swizzle/ast/Node.hpp>
+#include <swizzle/ast/VariableBindingInterface.hpp>
 
 #include <swizzle/ast/matchers/HasChild.hpp>
 #include <swizzle/ast/matchers/HasChildOf.hpp>
@@ -11,6 +13,8 @@
 
 #include <deque>
 #include <memory>
+#include <string>
+#include <unordered_map>
 
 namespace swizzle { namespace ast {
 
@@ -23,7 +27,9 @@ namespace swizzle { namespace ast {
     // The methods will typically be the lowercase of the fluent type name,
     // they may or may not take arguments.
     template<template<class> class... MatchRules>
-    class MatcherImpl : public MatchRules<MatcherImpl<MatchRules...>>...
+    class MatcherImpl
+        : public MatchRules<MatcherImpl<MatchRules...>>...
+        , public VariableBindingInterface
     {
     public:
         MatcherImpl()
@@ -34,24 +40,30 @@ namespace swizzle { namespace ast {
         MatcherImpl(const MatcherImpl& other)
             : MatchRules<MatcherImpl>(*this)...
             , rules_(other.rules_)
+            , variables_(other.variables_)
         {
         }
 
         MatcherImpl(MatcherImpl&& other)
             : MatchRules<MatcherImpl>(*this)...
             , rules_(std::move(other.rules_))
+            , variables_(std::move(other.variables_))
         {
         }
 
         MatcherImpl& operator=(const MatcherImpl& other)
         {
             rules_ = other.rules_;
+            variables_ = other.variables_;
+
             return *this;
         }
 
         MatcherImpl& operator=(MatcherImpl&& other)
         {
             rules_ = std::move(other.rules_);
+            variables_ = std::move(other.variables_);
+            
             return *this;
         }
 
@@ -67,7 +79,7 @@ namespace swizzle { namespace ast {
         {
             for(auto& rule : rules_)
             {
-                if(!rule->evaluate(node))
+                if(!rule->evaluate(*this, node))
                 {
                     return false;
                 }
@@ -83,8 +95,36 @@ namespace swizzle { namespace ast {
             rules_.emplace_back(std::make_shared<MatchRule>(std::forward<Args>(args)...));
         }
 
+        // if a match occurs save the node in @variables_ as @name
+        MatcherImpl& bind(const std::string& name)
+        {
+            auto& rule = rules_.back();
+            rule->bind_variable(name);
+
+            return *this;
+        }
+
+        // bind @name to @node
+        void bind(const std::string& name, Node::smartptr node) override
+        {
+            variables_[name] = node;
+        }
+
+        // return a node bound to @name, otherwise return null
+        Node::smartptr bound(const std::string& name)
+        {
+            const auto iter = variables_.find(name);
+            if(iter == variables_.cend())
+            {
+                return nullptr;
+            }
+
+            return iter->second;
+        }
+
     private:
         std::deque<std::shared_ptr<MatchRule>> rules_;
+        std::unordered_map<std::string, ast::Node::smartptr> variables_;
     };
 
 

@@ -85,6 +85,7 @@ namespace swizzle { namespace ast {
                 }
             }
 
+            bind(bindName_, node);
             return true;
         }
 
@@ -98,6 +99,12 @@ namespace swizzle { namespace ast {
         // if a match occurs save the node in @variables_ as @name
         MatcherImpl& bind(const std::string& name)
         {
+            if(rules_.empty())
+            {
+                bindName_ = name;
+                return *this;
+            }
+
             auto& rule = rules_.back();
             rule->bind_variable(name);
 
@@ -125,6 +132,7 @@ namespace swizzle { namespace ast {
     private:
         std::deque<std::shared_ptr<MatchRule>> rules_;
         std::unordered_map<std::string, ast::Node::smartptr> variables_;
+        std::string bindName_;
     };
 
 

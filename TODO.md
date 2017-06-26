@@ -8,3 +8,5 @@
 - implement a print AST plugin, it will be a "standard" plugin distributed with the tool.
 - comments will cause enum/struct/bitfields to be non-empty, need the empty logic to be smarter.
 - open all unit tests and review headers to ensure I've included only things we're using. 
+- change SyntaxError exceptions raised in ValidateVectorSizeMember & CreateMember to use 
+	`SyntaxError::SyntaxError(const std::string& error, const std::string& found, const lexer::FileInfo& info)`

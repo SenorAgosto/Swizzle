@@ -77,6 +77,11 @@ namespace swizzle {
     {
     }
 
+    SyntaxError::SyntaxError(const std::string& error, const std::string& found, const lexer::FileInfo& info)
+        : ParserError(constructError("Syntax Error: ", info, error + ", found " + found))
+    {
+    }
+
     UnknownParserState::UnknownParserState(const parser::ParserState state)
         : ParserError(constructError("Unknown Parser State: ", state))
     {

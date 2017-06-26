@@ -44,6 +44,7 @@ namespace swizzle {
     {
     public:
         SyntaxError(const std::string& error, const lexer::TokenInfo& found);
+        SyntaxError(const std::string& error, const std::string& found, const lexer::FileInfo& info);
     };
 
     class UnknownParserState : public ParserError

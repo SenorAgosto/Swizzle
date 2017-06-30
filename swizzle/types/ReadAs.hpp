@@ -9,7 +9,7 @@ namespace swizzle { namespace types {
     {
         std::istringstream is(value.data(), value.length());
 
-        T t;
+        T t = 0;
         is >> t;
 
         return t;

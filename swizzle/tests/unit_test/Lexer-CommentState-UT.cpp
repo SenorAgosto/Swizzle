@@ -82,7 +82,7 @@ namespace {
         CHECK_EQUAL("bl", token.to_string());
 
         // consume \n
-        tokenState = state.consume(sv, position++, info, token);
+        state.consume(sv, position++, info, token);
 
         REQUIRE CHECK_EQUAL(1U, tokens.size());
 

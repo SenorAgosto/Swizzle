@@ -99,7 +99,7 @@ namespace {
         CHECK_EQUAL(0U, invoked);
         CHECK_EQUAL("", context.CurrentNamespace);
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        state.consume(info, nodeStack, tokenStack, context);
 
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
@@ -140,7 +140,7 @@ namespace {
         CHECK_EQUAL(0U, invoked);
         CHECK_EQUAL("", context.CurrentNamespace);
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        state.consume(info, nodeStack, tokenStack, context);
 
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());

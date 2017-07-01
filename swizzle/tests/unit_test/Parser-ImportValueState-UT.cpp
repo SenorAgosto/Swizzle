@@ -105,7 +105,7 @@ namespace {
         CHECK_EQUAL(1U, tokenStack.size());
         CHECK_EQUAL(0U, imports.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        state.consume(info, nodeStack, tokenStack, context);
 
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
@@ -158,7 +158,7 @@ namespace {
         CHECK_EQUAL(3U, tokenStack.size());
         CHECK_EQUAL(0U, imports.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        state.consume(info, nodeStack, tokenStack, context);
 
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());

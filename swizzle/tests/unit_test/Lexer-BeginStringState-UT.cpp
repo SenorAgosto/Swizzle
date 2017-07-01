@@ -210,7 +210,7 @@ namespace {
         CHECK_EQUAL("fld1", token.to_string());
 
         // consume ;
-        tokenState = state.consume(sv, position++, info, token);
+        state.consume(sv, position++, info, token);
 
         REQUIRE CHECK_EQUAL(2U, tokens.size());
 

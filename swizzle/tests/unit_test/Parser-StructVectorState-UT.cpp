@@ -23,10 +23,9 @@ namespace {
         {
             nodeStack.push(ast.root());
 
-            const auto structKeyword = TokenInfo(Token("struct", 0, 6, TokenType::keyword), FileInfo("test.swizzle"));
-            const auto name = TokenInfo(Token("MyStruct", 0, 8, TokenType::string), FileInfo("test.swizzle"));
-
             auto node = detail::appendNode<nodes::Struct>(nodeStack, structKeyword, name, "my_namespace");
+
+            context.TypeCache["my_namespace::MyStruct"] = node;
             nodeStack.push(node);
         }
 
@@ -37,6 +36,13 @@ namespace {
         NodeStack nodeStack;
         TokenStack tokenStack;
         ParserStateContext context;
+
+        const FileInfo fileInfo = FileInfo("test.swizzle");
+        const Token s = Token("struct", 0, 6, TokenType::keyword);
+        const Token n = Token("MyStruct", 0, 8, TokenType::string);
+
+        const TokenInfo structKeyword = TokenInfo(s, fileInfo);
+        const TokenInfo name = TokenInfo(n, fileInfo);
     };
 
     TEST_FIXTURE(StructVectorStateFixture, verifyConstruction)
@@ -66,18 +72,33 @@ namespace {
 
     struct WhenNextTokenIsRightBracket : public StructVectorStateFixture
     {
+        WhenNextTokenIsRightBracket()
+        {
+            context.CurrentNamespace = "my_namespace";
+
+            auto node = detail::appendNode<nodes::StructField>(nodeStack);
+            auto& field = static_cast<nodes::StructField&>(*node);
+            field.name(fieldName);
+            field.type("u8");
+
+            nodeStack.push(node);
+            tokenStack.push(name);
+        }
+
+        const Token field1 = Token("field1", 0, 6, TokenType::string);
+        const Token fieldNameToken = Token("field1", 0, 6, TokenType::string);
         const Token token = Token("]", 0, 1, TokenType::r_bracket);
         const FileInfo fileInfo = FileInfo("test.swizzle");
 
         const TokenInfo info = TokenInfo(token, fileInfo);
+        const TokenInfo name = TokenInfo(field1, fileInfo);
+        const TokenInfo fieldName = TokenInfo(fieldNameToken, fileInfo);
     };
 
     TEST_FIXTURE(WhenNextTokenIsRightBracket, verifyConsume)
     {
-        // TODO: finish implementing
-        CHECK(false);
-/*        CHECK_EQUAL(2U, nodeStack.size());
-        CHECK_EQUAL(0U, tokenStack.size());
+        CHECK_EQUAL(3U, nodeStack.size());
+        CHECK_EQUAL(1U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, tokenStack, context);
 
@@ -85,7 +106,7 @@ namespace {
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
-*/
+
         // TODO: validate AST. type is now vectored, vectored-on member is set
     }
 

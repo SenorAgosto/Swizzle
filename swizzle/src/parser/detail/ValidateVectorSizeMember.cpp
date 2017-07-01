@@ -70,7 +70,7 @@ namespace swizzle { namespace parser { namespace detail {
         auto isStructField = ast::Matcher().isTypeOf<ast::nodes::StructField>();
 
         const TokenList list = utils::stack::to_list(stack);
-        for(auto token : list)
+        for(const auto token : list)
         {
             if(last)
             {

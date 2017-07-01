@@ -31,6 +31,7 @@ namespace swizzle { namespace ast { namespace nodes {
         // @sizeMember must already be a member of the structure
         void makeVector(const lexer::TokenInfo& sizeMember);
         bool isVector() const;
+        const lexer::TokenInfo& vectorSizeMember() const;
 
         void accept(VisitorInterface& visitor) override;
 

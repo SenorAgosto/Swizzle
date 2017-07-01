@@ -61,7 +61,7 @@ namespace {
     TEST_FIXTURE(WhenNextCharIsSingleQuote, verifyConsume)
     {
         // consume '
-        auto tokenState = state.consume(sv, ++position, info, token);
+        state.consume(sv, ++position, info, token);
 
         REQUIRE CHECK_EQUAL(1U, tokens.size());
 

@@ -390,7 +390,7 @@ namespace {
         CHECK_EQUAL(TokenType::hex_literal, token.type());
         CHECK_EQUAL("f", token.to_string());
 
-        tokenState = state.consume(sv, position++, info, token);
+        state.consume(sv, position++, info, token);
 
         REQUIRE CHECK_EQUAL(1U, tokens.size());
         CHECK_EQUAL(TokenType::hex_literal, tokens[0].token().type());
@@ -415,7 +415,7 @@ namespace {
         CHECK_EQUAL(TokenType::hex_literal, token.type());
         CHECK_EQUAL("f", token.to_string());
 
-        tokenState = state.consume(sv, position++, info, token);
+        state.consume(sv, position++, info, token);
 
         REQUIRE CHECK_EQUAL(2U, tokens.size());
 
@@ -470,7 +470,7 @@ namespace {
         CHECK_EQUAL(TokenType::hex_literal, token.type());
         CHECK_EQUAL("f", token.to_string());
 
-        tokenState = state.consume(sv, position++, info, token);
+        state.consume(sv, position++, info, token);
 
         REQUIRE CHECK_EQUAL(2U, tokens.size());
 
@@ -499,7 +499,7 @@ namespace {
         CHECK_EQUAL(TokenType::hex_literal, token.type());
         CHECK_EQUAL("f", token.to_string());
 
-        tokenState = state.consume(sv, position++, info, token);
+        state.consume(sv, position++, info, token);
 
         REQUIRE CHECK_EQUAL(2U, tokens.size());
 

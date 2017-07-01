@@ -80,6 +80,11 @@ namespace swizzle { namespace ast { namespace nodes {
         return !vectorOnField_.token().value().empty();
     }
 
+    const lexer::TokenInfo& StructField::vectorSizeMember() const
+    {
+        return vectorOnField_;
+    }
+
     void StructField::accept(VisitorInterface& visitor)
     {
         visitor(*this);

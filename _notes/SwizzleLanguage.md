@@ -10,6 +10,7 @@ This is an informal description of the Swizzle DSL for describing messages on th
 - struct 
 - enum 
 - const 
+- extern
 
 ## Built-in Types
 
@@ -50,6 +51,11 @@ This is an informal description of the Swizzle DSL for describing messages on th
 
     import <type_name>;	// type in the same namespace
     import <namespace>::<type_name>;  // must be declared before namespace
+
+    // extern is used to declare types which will be used but not defined using swizzle
+    extern <type_name>;
+    extern <namespace>::<type_name>;
+    extern <namespace>::<namespace>::<type_name>; 
 
     namespace <namespace>;  // e.g. exegy::fix
     namespace <namespace>::<namespace>;    // nested namespaces

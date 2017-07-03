@@ -3,7 +3,7 @@
 
 namespace swizzle {
 
-    static const std::regex keywords("const|case|enum|import|namespace|struct|using", std::regex::optimize);
+    static const std::regex keywords("const|case|enum|import|namespace|struct|using|extern", std::regex::optimize);
 
     bool IsKeyword(const boost::string_view& token)
     {

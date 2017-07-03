@@ -10,6 +10,7 @@ namespace {
         CHECK(IsKeyword("case"));
         CHECK(IsKeyword("const"));
         CHECK(IsKeyword("enum"));
+        CHECK(IsKeyword("extern"));
         CHECK(IsKeyword("import"));
         CHECK(IsKeyword("namespace"));
 

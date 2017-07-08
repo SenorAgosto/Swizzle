@@ -13,11 +13,11 @@
 
 namespace swizzle { namespace parser { namespace detail {
 
-    lexer::TokenInfo createMember(const lexer::TokenInfo& token, NodeStack&, TokenStack& tokenStack, const ParserStateContext&)
+    lexer::TokenInfo createMember(const lexer::TokenInfo& token, NodeStack&, TokenStack& tokenStack, const ParserStateContext&, const std::string& onEmptyTokenStack)
     {
         if(tokenStack.empty())
         {
-            throw SyntaxError("Expected vector size member information on the token stack, token stack was empty", token);
+            throw SyntaxError(onEmptyTokenStack, token);
         }
 
         TokenStack stack = utils::stack::invert(tokenStack);

@@ -12,8 +12,8 @@ namespace swizzle { namespace parser {
 
 namespace swizzle { namespace parser { namespace detail {
 
-    // iterate through the token stack, ensure the constructed
-    // member exists in the current struct & are of the correct
+    // iterate through the token stack, ensure the members making
+    // up the vector size argument all exist and are of the correct
     // types.
-    void validateStructMember(const lexer::TokenInfo& token, const NodeStack& nodeStack, const TokenStack& tokenStack, const ParserStateContext& context);
+    void validateVectorSizeMember(const lexer::TokenInfo& token, const NodeStack& nodeStack, const TokenStack& tokenStack, const ParserStateContext& context);
 }}}

@@ -1,5 +1,5 @@
 #include "./ut_support/UnitTestSupport.hpp"
-#include <swizzle/parser/detail/ValidateStructMember.hpp>
+#include <swizzle/parser/detail/ValidateVectorSizeMember.hpp>
 
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/ast/AbstractSyntaxTree.hpp>
@@ -18,7 +18,7 @@ namespace {
     using namespace swizzle::lexer;
     using namespace swizzle::parser;
 
-    struct ValidateStructMemberFixture
+    struct ValidateVectorSizeMemberFixture
     {
         Node::smartptr make_struct(const std::string& nameSpace, const std::string& structName)
         {
@@ -47,7 +47,7 @@ namespace {
         const TokenInfo token = TokenInfo(Token("field3", 0, 6, TokenType::string), FileInfo("test.swizzle"));
     };
 
-    struct WhenTokenStackHasMemberNameFromCurrentStruct : public ValidateStructMemberFixture
+    struct WhenTokenStackHasMemberNameFromCurrentStruct : public ValidateVectorSizeMemberFixture
     {
         WhenTokenStackHasMemberNameFromCurrentStruct()
         {
@@ -72,10 +72,10 @@ namespace {
 
     TEST_FIXTURE(WhenTokenStackHasMemberNameFromCurrentStruct, verifyValidateVectorSizeMember)
     {
-        detail::validateStructMember(token, nodeStack, tokenStack, context);
+        detail::validateVectorSizeMember(token, nodeStack, tokenStack, context);
     }
 
-    struct WhenTokenStackHasMemberNameAndItsNested : public ValidateStructMemberFixture
+    struct WhenTokenStackHasMemberNameAndItsNested : public ValidateVectorSizeMemberFixture
     {
         WhenTokenStackHasMemberNameAndItsNested()
         {
@@ -120,10 +120,10 @@ namespace {
 
     TEST_FIXTURE(WhenTokenStackHasMemberNameAndItsNested, verifyValidateVectorSizeMember)
     {
-        detail::validateStructMember(token, nodeStack, tokenStack, context);
+        detail::validateVectorSizeMember(token, nodeStack, tokenStack, context);
     }
 
-    struct WhenTokenStackHasMemberNameAndItsNestedOneFieldInCurrentNamespace : public ValidateStructMemberFixture
+    struct WhenTokenStackHasMemberNameAndItsNestedOneFieldInCurrentNamespace : public ValidateVectorSizeMemberFixture
     {
         WhenTokenStackHasMemberNameAndItsNestedOneFieldInCurrentNamespace()
         {
@@ -169,10 +169,10 @@ namespace {
 
     TEST_FIXTURE(WhenTokenStackHasMemberNameAndItsNestedOneFieldInCurrentNamespace, verifyValidateVectorSizeMember)
     {
-        detail::validateStructMember(token, nodeStack, tokenStack, context);
+        detail::validateVectorSizeMember(token, nodeStack, tokenStack, context);
     }
 
-    struct WhenTokenStackHasMemberNameAndTypeIsNotInteger : public ValidateStructMemberFixture
+    struct WhenTokenStackHasMemberNameAndTypeIsNotInteger : public ValidateVectorSizeMemberFixture
     {
         WhenTokenStackHasMemberNameAndTypeIsNotInteger()
         {
@@ -193,10 +193,10 @@ namespace {
 
     TEST_FIXTURE(WhenTokenStackHasMemberNameAndTypeIsNotInteger, verifyValidateVectorSizeMemberThrows)
     {
-        CHECK_THROW(detail::validateStructMember(token, nodeStack, tokenStack, context), swizzle::SyntaxError);
+        CHECK_THROW(detail::validateVectorSizeMember(token, nodeStack, tokenStack, context), swizzle::SyntaxError);
     }
 
-    struct WhenTokenStackHasMemberAndTypeIsNotDefinedInTypeCache : public ValidateStructMemberFixture
+    struct WhenTokenStackHasMemberAndTypeIsNotDefinedInTypeCache : public ValidateVectorSizeMemberFixture
     {
         WhenTokenStackHasMemberAndTypeIsNotDefinedInTypeCache()
         {
@@ -217,10 +217,10 @@ namespace {
 
     TEST_FIXTURE(WhenTokenStackHasMemberAndTypeIsNotDefinedInTypeCache, verifyValidateSizeMembersThrows)
     {
-        CHECK_THROW(detail::validateStructMember(token, nodeStack, tokenStack, context), swizzle::SyntaxError);
+        CHECK_THROW(detail::validateVectorSizeMember(token, nodeStack, tokenStack, context), swizzle::SyntaxError);
     }
 
-    struct WhenTokenStackHasMemberAndTheLastEntryIsAStruct : public ValidateStructMemberFixture
+    struct WhenTokenStackHasMemberAndTheLastEntryIsAStruct : public ValidateVectorSizeMemberFixture
     {
         WhenTokenStackHasMemberAndTheLastEntryIsAStruct()
         {
@@ -246,19 +246,19 @@ namespace {
 
     TEST_FIXTURE(WhenTokenStackHasMemberAndTheLastEntryIsAStruct, verifyValidateVectorMemberThrows)
     {
-        CHECK_THROW(detail::validateStructMember(token, nodeStack, tokenStack, context), swizzle::SyntaxError);
+        CHECK_THROW(detail::validateVectorSizeMember(token, nodeStack, tokenStack, context), swizzle::SyntaxError);
     }
 
-    struct WhenTokenStackIsEmpty : public ValidateStructMemberFixture
+    struct WhenTokenStackIsEmpty : public ValidateVectorSizeMemberFixture
     {
     };
 
     TEST_FIXTURE(WhenTokenStackIsEmpty, verifyValidateVectorSizeMemberThrows)
     {
-        CHECK_THROW(detail::validateStructMember(token, nodeStack, tokenStack, context), swizzle::SyntaxError);
+        CHECK_THROW(detail::validateVectorSizeMember(token, nodeStack, tokenStack, context), swizzle::SyntaxError);
     }
 
-    struct WhenNodeStackIsEmpty : public ValidateStructMemberFixture
+    struct WhenNodeStackIsEmpty : public ValidateVectorSizeMemberFixture
     {
         WhenNodeStackIsEmpty()
         {
@@ -268,10 +268,10 @@ namespace {
 
     TEST_FIXTURE(WhenNodeStackIsEmpty, verifyValidateVectorSizeMemberThrows)
     {
-        CHECK_THROW(detail::validateStructMember(token, nodeStack, tokenStack, context), swizzle::SyntaxError);
+        CHECK_THROW(detail::validateVectorSizeMember(token, nodeStack, tokenStack, context), swizzle::SyntaxError);
     }
 
-    struct WhenTopOfNodeStackIsNotStructField : public ValidateStructMemberFixture
+    struct WhenTopOfNodeStackIsNotStructField : public ValidateVectorSizeMemberFixture
     {
         WhenTopOfNodeStackIsNotStructField()
         {
@@ -285,10 +285,10 @@ namespace {
 
     TEST_FIXTURE(WhenTopOfNodeStackIsNotStructField, verifyCreateMemberThrows)
     {
-        CHECK_THROW(detail::validateStructMember(token, nodeStack, tokenStack, context), swizzle::SyntaxError);
+        CHECK_THROW(detail::validateVectorSizeMember(token, nodeStack, tokenStack, context), swizzle::SyntaxError);
     }
 
-    struct WhenSecondItemInNodeStackIsNotStruct : public ValidateStructMemberFixture
+    struct WhenSecondItemInNodeStackIsNotStruct : public ValidateVectorSizeMemberFixture
     {
         WhenSecondItemInNodeStackIsNotStruct()
         {
@@ -306,6 +306,6 @@ namespace {
 
     TEST_FIXTURE(WhenSecondItemInNodeStackIsNotStruct, verifyCreateMemberThrows)
     {
-        CHECK_THROW(detail::validateStructMember(token, nodeStack, tokenStack, context), swizzle::SyntaxError);
+        CHECK_THROW(detail::validateVectorSizeMember(token, nodeStack, tokenStack, context), swizzle::SyntaxError);
     }
 }

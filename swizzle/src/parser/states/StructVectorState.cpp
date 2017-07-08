@@ -26,7 +26,7 @@ namespace swizzle { namespace parser { namespace states {
             if(detail::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
             {
                 detail::validateVectorSizeMember(token, nodeStack, tokenStack, context);
-                const auto member = detail::createMember(token, nodeStack, tokenStack, context);
+                const auto member = detail::createMember(token, nodeStack, tokenStack, context, "Expected vector size member information on the token stack, token stack was empty");
 
                 auto& top = static_cast<ast::nodes::StructField&>(*nodeStack.top());
                 top.makeVector(member);

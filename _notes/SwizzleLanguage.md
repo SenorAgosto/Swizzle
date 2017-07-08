@@ -96,13 +96,13 @@ This is an informal description of the Swizzle DSL for describing messages on th
 
         const <type_name> <field_name> = <literal>;  // a constant literal should be validated against type
 
-        variable_block : <field_name> {	  // variable length block containing a 
-            case <value>: <type_name>,	  // type defined by value in <field_name>
-            case <value>: <type_name>,
+        variable_block : <field_name> {	      // variable length block containing a 
+            case <literal>: <type_name>,	  // type defined by value in <field_name>
+            case <literal>: <type_name>,
         }
 
-        variable_block : <field_name>.<field_name> {    // nest field name
-            case <value>: <namespace>::<namespace>::<type_name>,    // must be a user defined type, not built in
+        variable_block : <field_name>.<field_name> {
+            case <literal>: <namespace>::<namespace>::<type_name>,
         }
     }
 

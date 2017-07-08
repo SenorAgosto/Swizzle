@@ -1,4 +1,4 @@
-#include <swizzle/parser/detail/ValidateStructMember.hpp>
+#include <swizzle/parser/detail/ValidateVectorSizeMember.hpp>
 
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/IsIntegerType.hpp>
@@ -58,7 +58,7 @@ namespace swizzle { namespace parser { namespace detail {
         }
     }
 
-    void validateStructMember(const lexer::TokenInfo& tokenInfo, const NodeStack& nodeStack, const TokenStack& tokenStack, const ParserStateContext& context)
+    void validateVectorSizeMember(const lexer::TokenInfo& tokenInfo, const NodeStack& nodeStack, const TokenStack& tokenStack, const ParserStateContext& context)
     {
         validateTokenStack(tokenStack, tokenInfo.fileInfo());
         auto structure = validateNodeStack(nodeStack, tokenInfo.fileInfo());

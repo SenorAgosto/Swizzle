@@ -11,6 +11,7 @@
 #include <swizzle/ast/nodes/StringLiteral.hpp>
 #include <swizzle/ast/nodes/Struct.hpp>
 #include <swizzle/ast/nodes/StructField.hpp>
+#include <swizzle/ast/nodes/VariableBlock.hpp>
 
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/IsIntegerType.hpp>
@@ -135,6 +136,14 @@ namespace swizzle { namespace parser { namespace states {
                 tokenStack.push(token);
 
                 return ParserState::StructFieldNamespaceOrType;
+            }
+
+            if(value == "variable_block")
+            {
+                auto node = detail::appendNode<ast::nodes::VariableBlock>(nodeStack, token);
+                nodeStack.push(node);
+
+                return ParserState::StructStartVariableBlock;
             }
 
             throw SyntaxError("Unsupported type encountered in struct field", token);

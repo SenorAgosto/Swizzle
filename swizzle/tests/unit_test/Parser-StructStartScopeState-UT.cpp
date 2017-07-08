@@ -635,6 +635,29 @@ namespace {
         CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::SyntaxError);
     }
 
+    struct WhenNextTokenIsVariableBlock : public StructStartScopeStateFixture
+    {
+        const Token token = Token("variable_block", 0, 14, TokenType::type);
+        const FileInfo fileInfo = FileInfo("test.swizzle");
+
+        const TokenInfo info = TokenInfo(token, fileInfo);
+    };
+
+    TEST_FIXTURE(WhenNextTokenIsVariableBlock, verifyConsume)
+    {
+        CHECK_EQUAL(2U, nodeStack.size());
+        CHECK_EQUAL(0U, tokenStack.size());
+
+        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+
+        CHECK_EQUAL(ParserState::StructStartVariableBlock, parserState);
+
+        REQUIRE CHECK_EQUAL(3U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, tokenStack.size());
+
+        // TODO: check the AST
+    }
+
     struct WhenNextTokenIsUserDefinedTypeWithoutNamespace : public StructStartScopeStateFixture
     {
         const Token token = Token("MyType", 0, 6, TokenType::string);

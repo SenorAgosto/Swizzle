@@ -9,6 +9,6 @@ namespace swizzle { namespace parser {
 
 namespace swizzle { namespace parser { namespace detail {
 
-    lexer::TokenInfo createMember(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack& tokenStack, const ParserStateContext& context);
+    lexer::TokenInfo createMember(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack& tokenStack, const ParserStateContext& context, const std::string& onEmptyTokenStack);
 
 }}}

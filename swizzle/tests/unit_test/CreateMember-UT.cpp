@@ -61,7 +61,7 @@ namespace {
         // push one token onto the tokenStack, the name of a field in the current struct which is an integer type.
         tokenStack.push(TokenInfo(Token("field2", 0, 6, TokenType::string), FileInfo("test.swizzle")));
 
-        const auto info = detail::createMember(currentToken, nodeStack, tokenStack, context);
+        const auto info = detail::createMember(currentToken, nodeStack, tokenStack, context, "stack empty");
         CHECK_EQUAL("field2", info.token().to_string());
     }
 
@@ -119,7 +119,7 @@ namespace {
         tokenStack.push(TokenInfo(Token(s, 0, 6, TokenType::string), FileInfo("test.swizzle", LineInfo(1, 1), LineInfo(1, 7))));
         tokenStack.push(TokenInfo(Token(s, 7, 6, TokenType::string), FileInfo("test.swizzle", LineInfo(1, 8), LineInfo(1, 14))));
 
-        const auto info = detail::createMember(currentToken, nodeStack, tokenStack, context);
+        const auto info = detail::createMember(currentToken, nodeStack, tokenStack, context, "stack empty");
         CHECK_EQUAL("field1.field2", info.token().to_string());
     }
 
@@ -134,6 +134,6 @@ namespace {
 
     TEST_FIXTURE(WhenTokenStackIsEmpty, verifyCreateMemberThrows)
     {
-        CHECK_THROW(detail::createMember(token, nodeStack, tokenStack, context), swizzle::SyntaxError);
+        CHECK_THROW(detail::createMember(token, nodeStack, tokenStack, context, "stack empty"), swizzle::SyntaxError);
     }
 }

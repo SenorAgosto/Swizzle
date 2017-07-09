@@ -12,6 +12,7 @@ namespace swizzle { namespace parser {
     struct ParserStateContext
     {
         std::unordered_map<std::string, ast::Node::smartptr> TypeCache; // @key is type name with namespace prefix
+        ast::Node::smartptr CurrentVariableOnFieldType = nullptr;       // the pointer to the field we're variable on, so we can query the type
 
         std::string CurrentNamespace;
         std::size_t CurrentBitfieldBit = 0;

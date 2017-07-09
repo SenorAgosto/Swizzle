@@ -2,47 +2,12 @@
 
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/ast/VisitorInterface.hpp>
+#include <swizzle/parser/detail/ExtractBitValueFromToken.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 
 #include <boost/lexical_cast.hpp>
 
 namespace swizzle { namespace ast { namespace nodes {
-
-        namespace {
-            std::size_t extractBitValueFromToken(const lexer::TokenInfo& underlyingInfo, const lexer::TokenInfo& info)
-            {
-                const auto& underlying = underlyingInfo.token();
-                try
-                {
-                    if(underlying.value() == "u8")
-                    {
-                        return boost::lexical_cast<std::uint8_t>(info.token().value());
-                    }
-
-                    if(underlying.value() == "u16")
-                    {
-                        return boost::lexical_cast<std::uint16_t>(info.token().value());
-                    }
-
-                    if(underlying.value() == "u32")
-                    {
-                        return boost::lexical_cast<std::uint32_t>(info.token().value());
-                    }
-
-                    if(underlying.value() == "u64")
-                    {
-                        return boost::lexical_cast<std::uint64_t>(info.token().value());
-                    }
-                }
-                catch(const boost::bad_lexical_cast&)
-                {
-                    throw SyntaxError("Bitfield bit value exceeds range supported by underlying type (" + underlying.to_string() + ")", info);
-                }
-
-                throw ParserError("Internal parser error, unexpected underlying type found parsing bitfield");
-            }
-
-        }
 
         BitfieldField::BitfieldField(const lexer::TokenInfo& name, const lexer::TokenInfo& underlyingType)
             : name_(name)
@@ -64,7 +29,7 @@ namespace swizzle { namespace ast { namespace nodes {
 
         void BitfieldField::beginBit(const lexer::TokenInfo& token, parser::ParserStateContext& context)
         {
-            const std::size_t bit = extractBitValueFromToken(underlying_, token);
+            const std::size_t bit = parser::detail::extractBitValueFromToken(underlying_.token().value(), token);
 
             if(bit < context.CurrentBitfieldBit)
             {
@@ -88,7 +53,7 @@ namespace swizzle { namespace ast { namespace nodes {
 
         void BitfieldField::endBit(const lexer::TokenInfo& token, parser::ParserStateContext& context)
         {
-            const std::size_t bit = extractBitValueFromToken(underlying_, token);
+            const std::size_t bit = parser::detail::extractBitValueFromToken(underlying_.token().value(), token);
 
             if(bit <= beginBit_)
             {

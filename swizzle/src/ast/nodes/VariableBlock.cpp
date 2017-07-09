@@ -23,6 +23,16 @@ namespace swizzle { namespace ast { namespace nodes {
         return variableOnFieldInfo_;
     }
 
+    void VariableBlock::fieldType(const std::string& type)
+    {
+        fieldType_ = type;
+    }
+
+    const std::string& VariableBlock::fieldType() const
+    {
+        return fieldType_;
+    }
+
     void VariableBlock::accept(VisitorInterface& visitor)
     {
         visitor(*this);

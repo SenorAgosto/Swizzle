@@ -59,7 +59,7 @@ namespace swizzle { namespace parser { namespace detail {
         }
     }
 
-    void validateVariableBlockSizeMember(const lexer::TokenInfo& tokenInfo, const NodeStack& nodeStack, const TokenStack& tokenStack, const ParserStateContext& context)
+    ast::Node::smartptr validateVariableBlockSizeMember(const lexer::TokenInfo& tokenInfo, const NodeStack& nodeStack, const TokenStack& tokenStack, const ParserStateContext& context)
     {
         validateTokenStack(tokenStack, tokenInfo.fileInfo());
         auto structure = validateNodeStack(nodeStack, tokenInfo.fileInfo());
@@ -69,6 +69,7 @@ namespace swizzle { namespace parser { namespace detail {
 
         bool last = false;
         auto isStructField = ast::Matcher().isTypeOf<ast::nodes::StructField>();
+        ast::Node::smartptr fieldNode = nullptr;
 
         const TokenList list = utils::stack::to_list(stack);
         for(const auto token : list)
@@ -81,13 +82,14 @@ namespace swizzle { namespace parser { namespace detail {
             auto matcher = ast::Matcher().isTypeOf<ast::nodes::Struct>().hasFieldNamed(token.token().to_string()).bind("field");
             if(matcher(structure))
             {
-                auto fieldNode = matcher.bound("field");
+                fieldNode = matcher.bound("field");
                 if(isStructField(fieldNode))
                 {
                     auto field = static_cast<ast::nodes::StructField&>(*fieldNode);
                     const auto ts = field.type();
                     auto type = boost::string_view(ts);
 
+                    // type can be integral or string (array or vector)
                     if(IsIntegerType(type))
                     {
                         last = true;
@@ -122,7 +124,9 @@ namespace swizzle { namespace parser { namespace detail {
 
         if(!last)
         {
-            throw SyntaxError("Variable block member invalid, must end in integral type", " non-integer type", tokenInfo.fileInfo());
+            throw SyntaxError("Variable block member invalid, must end in integral or array type", " non-integer type or non-integer array type", tokenInfo.fileInfo());
         }
+
+        return fieldNode;
     }
 }}}

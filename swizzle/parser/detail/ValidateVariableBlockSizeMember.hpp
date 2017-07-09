@@ -15,5 +15,6 @@ namespace swizzle { namespace parser { namespace detail {
     // iterate through the token stack, ensure the members making
     // up the variable block size argument all exist and are of the correct
     // types.
-    void validateVariableBlockSizeMember(const lexer::TokenInfo& token, const NodeStack& nodeStack, const TokenStack& tokenStack, const ParserStateContext& context);
+    // @returns a pointer to the ast::nodes::StructField so the type can be queried
+    ast::Node::smartptr validateVariableBlockSizeMember(const lexer::TokenInfo& token, const NodeStack& nodeStack, const TokenStack& tokenStack, const ParserStateContext& context);
 }}}

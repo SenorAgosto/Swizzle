@@ -20,15 +20,10 @@ namespace swizzle { namespace ast { namespace nodes {
         void variableOnField(const lexer::TokenInfo& variableOnField);
         const lexer::TokenInfo& variableOnField() const;
 
-        void fieldType(const std::string& type);
-        const std::string& fieldType() const;
-
         void accept(VisitorInterface& visitor) override;
 
     private:
         const lexer::TokenInfo variableBlockInfo_;   // variable_block keyword
-
         lexer::TokenInfo variableOnFieldInfo_;       // field we're variable on
-        std::string fieldType_;                      // field's type (int or string)
     };
 }}}

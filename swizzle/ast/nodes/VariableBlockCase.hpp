@@ -7,8 +7,6 @@ namespace swizzle { namespace ast { namespace nodes {
     class VariableBlockCase : public Node
     {
     public:
-        VariableBlockCase();
-
         void value(const lexer::TokenInfo& name);
         const lexer::TokenInfo& value() const;
 

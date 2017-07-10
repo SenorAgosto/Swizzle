@@ -22,7 +22,7 @@ namespace swizzle { namespace parser { namespace states {
 
         if(type == lexer::TokenType::l_brace)
         {
-            detail::validateVariableBlockSizeMember(token, nodeStack, tokenStack, context);
+            context.CurrentVariableOnFieldType = detail::validateVariableBlockSizeMember(token, nodeStack, tokenStack, context);
             const auto member = detail::createMember(token, nodeStack, tokenStack, context, "Expected variable block size member information on the token stack, token stack was empty");
 
             auto& varBlock = static_cast<ast::nodes::VariableBlock&>(*nodeStack.top());

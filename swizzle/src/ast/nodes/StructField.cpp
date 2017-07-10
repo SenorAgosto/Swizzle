@@ -10,6 +10,7 @@ namespace swizzle { namespace ast { namespace nodes {
     StructField::StructField()
         : arraySize_(0)
         , isConst_(false)
+        , isVector_(false)
     {
     }
 
@@ -73,11 +74,12 @@ namespace swizzle { namespace ast { namespace nodes {
         }
 
         vectorOnField_ = sizeMember;
+        isVector_ = true;
     }
 
     bool StructField::isVector() const
     {
-        return !vectorOnField_.token().value().empty();
+        return isVector_;
     }
 
     const lexer::TokenInfo& StructField::vectorSizeMember() const

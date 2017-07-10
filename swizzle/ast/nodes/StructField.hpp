@@ -42,5 +42,6 @@ namespace swizzle { namespace ast { namespace nodes {
         lexer::TokenInfo vectorOnField_;
         std::ptrdiff_t arraySize_;   // this has to be signed so we can detect and report errant negative sizes
         bool isConst_;
+        bool isVector_;
     };
 }}}

@@ -58,6 +58,7 @@ namespace swizzle { namespace parser {
         StructVariableBlockCaseValue,
         StructVariableBlockCaseValueRead,
         StructVariableBlockCaseValueColonRead,
+        StructVariableBlockCaseBlockNameRead,
         StructVariableBlockNamespaceFirstColonRead,
         StructVariableBlockNamespaceSecondColonRead,
     };

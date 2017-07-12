@@ -17,6 +17,6 @@ namespace swizzle { namespace parser { namespace states {
             return ParserState::StartImport;
         }
 
-        throw SyntaxError("Expectd ':' as a part of a namespace", token);
+        throw SyntaxError("Expected ':' as a part of a namespace", token);
     }
 }}}

@@ -14,23 +14,6 @@ namespace {
     using namespace swizzle::lexer;
     using namespace swizzle::parser;
 
-    class OnImportCallback
-    {
-    public:
-        OnImportCallback(std::deque<boost::filesystem::path>& import)
-            : imports_(import)
-        {
-        }
-
-        void operator()(const boost::filesystem::path& importFile)
-        {
-            imports_.push_back(importFile);
-        }
-
-    private:
-        std::deque<boost::filesystem::path>& imports_;
-    };
-
     struct ImportValueStateFixture
     {
         ImportValueStateFixture()
@@ -38,9 +21,7 @@ namespace {
             nodeStack.push(ast.root());
         }
 
-        std::deque<boost::filesystem::path> imports;
-        OnImportCallback callback = OnImportCallback(imports);
-        states::ImportValueState<OnImportCallback> state = states::ImportValueState<OnImportCallback>(callback);
+        states::ImportValueState state;
 
         AbstractSyntaxTree ast;
 
@@ -103,15 +84,13 @@ namespace {
     {
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(1U, tokenStack.size());
-        CHECK_EQUAL(0U, imports.size());
 
         state.consume(info, nodeStack, tokenStack, context);
 
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
-        REQUIRE CHECK_EQUAL(1U, imports.size());
 
-        CHECK_EQUAL("MyType.swizzle", imports[0].string());
+        // TODO: check AST
     }
 
     struct WhenNextTokenIsEndStatementAndFileHasPath : public ImportValueStateFixture
@@ -156,15 +135,13 @@ namespace {
     {
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(3U, tokenStack.size());
-        CHECK_EQUAL(0U, imports.size());
 
         state.consume(info, nodeStack, tokenStack, context);
 
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
-        REQUIRE CHECK_EQUAL(1U, imports.size());
 
-        CHECK_EQUAL("foo/bar/MyType.swizzle", imports[0].string());
+        // TODO: check AST
     }
 
     struct WhenNextTokenIsEndStatementAndImportFileIsDirectory : public ImportValueStateFixture

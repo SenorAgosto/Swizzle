@@ -14,6 +14,9 @@ namespace swizzle { namespace parser {
         case ParserState::StartImport: return os << "ParserState::StartImport";
         case ParserState::ImportValue: return os << "ParserState::ImportValue";
         case ParserState::ImportFirstColon: return os << "ParserState::ImportFirstColon";
+        case ParserState::StartExtern: return os << "ParserState::StartExtern";
+        case ParserState::ExternValue: return os << "ParserState::ExternValue";
+        case ParserState::ExternFirstColon: return os << "ParserState::ExternFirstColon";
         case ParserState::StartUsing: return os << "ParserState::StartUsing";
         case ParserState::UsingName: return os << "ParserState::UsingName";
         case ParserState::UsingReadEqual: return os << "ParserState::UsingReadEqual";

@@ -31,7 +31,7 @@ namespace swizzle { namespace parser { namespace states {
             return ParserState::Init;
         }
 
-        throw SyntaxError("Expected ; or :, found '" + token.token().to_string() + "'", token);
+        throw SyntaxError("Expected ';' or ':'", token);
     }
 
 }}}

@@ -33,16 +33,23 @@ namespace swizzle { namespace parser { namespace states {
         }
 
         const auto& value = token.token().value();
-        if((type == lexer::TokenType::keyword) && ("import" == value))
+        if(type == lexer::TokenType::keyword)
         {
-            return ParserState::StartImport;
-        }
+            if("import" == value)
+            {
+                return ParserState::StartImport;
+            }
 
-        if((type == lexer::TokenType::keyword) && ("namespace" == value))
-        {
-            return ParserState::StartNamespace;
-        }
+            if("extern" == value)
+            {
+                return ParserState::StartExtern;
+            }
 
+            if("namespace" == value)
+            {
+                return ParserState::StartNamespace;
+            }
+        }
 
         throw SyntaxError("Expected comment, import statement, or namespace declaration", token);
     }

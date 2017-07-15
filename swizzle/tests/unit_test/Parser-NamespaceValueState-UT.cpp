@@ -14,23 +14,6 @@ namespace {
     using namespace swizzle::lexer;
     using namespace swizzle::parser;
 
-    class OnNamespaceCallback
-    {
-    public:
-        OnNamespaceCallback(std::size_t& invoked)
-            : invoked_(invoked)
-        {
-        }
-
-        void operator()(const std::string&)
-        {
-            invoked_++;
-        }
-
-    private:
-        std::size_t& invoked_;
-    };
-
     struct NamespaceValueStateFixture
     {
         NamespaceValueStateFixture()
@@ -38,10 +21,7 @@ namespace {
             nodeStack.push(ast.root());
         }
 
-        std::size_t invoked = 0;
-
-        OnNamespaceCallback callback = OnNamespaceCallback(invoked);
-        states::NamespaceValueState<OnNamespaceCallback> state = states::NamespaceValueState<OnNamespaceCallback>(callback);
+        states::NamespaceValueState state;
 
         AbstractSyntaxTree ast;
 
@@ -96,7 +76,6 @@ namespace {
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(1U, tokenStack.size());
 
-        CHECK_EQUAL(0U, invoked);
         CHECK_EQUAL("", context.CurrentNamespace);
 
         state.consume(info, nodeStack, tokenStack, context);
@@ -104,7 +83,6 @@ namespace {
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        CHECK_EQUAL(1U, invoked);
         CHECK_EQUAL("MyNamespace", context.CurrentNamespace);
     }
 
@@ -136,16 +114,12 @@ namespace {
     {
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(3U, tokenStack.size());
-
-        CHECK_EQUAL(0U, invoked);
         CHECK_EQUAL("", context.CurrentNamespace);
 
         state.consume(info, nodeStack, tokenStack, context);
 
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
-
-        CHECK_EQUAL(1U, invoked);
         CHECK_EQUAL("foo::bar::MyNamespace", context.CurrentNamespace);
     }
 

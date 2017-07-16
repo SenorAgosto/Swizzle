@@ -1,6 +1,7 @@
 #include "./ut_support/UnitTestSupport.hpp"
 
 #include <swizzle/ast/AbstractSyntaxTree.hpp>
+#include <swizzle/ast/Matcher.hpp>
 #include <swizzle/ast/Node.hpp>
 #include <swizzle/ast/nodes/Enum.hpp>
 #include <swizzle/ast/nodes/EnumField.hpp>
@@ -61,6 +62,9 @@ namespace {
         CHECK_EQUAL(3U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
+        REQUIRE CHECK_EQUAL(6, context.CurrentEnumValue.value().which());
+        CHECK_EQUAL(0U, boost::get<std::uint64_t>(context.CurrentEnumValue.value()));
+
         const auto parserState = state.consume(info, nodeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::EnumStartScope, parserState);
@@ -68,7 +72,18 @@ namespace {
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        // TODO: check the enum field value
+        REQUIRE CHECK_EQUAL(6, context.CurrentEnumValue.value().which());
+        CHECK_EQUAL(1U, boost::get<std::uint64_t>(context.CurrentEnumValue.value()));   // ensure the current enum value was incremented
+
+        auto matcher = Matcher().getChildrenOf<nodes::EnumField>().bind("fields");
+        REQUIRE CHECK(matcher(nodeStack.top()));
+
+        auto node = matcher.bound("fields_0");
+        const auto& field = dynamic_cast<nodes::EnumField&>(*node);
+        const auto& value = field.value();
+
+        REQUIRE CHECK_EQUAL(6, value.which());
+        CHECK_EQUAL(0U, boost::get<std::uint64_t>(value));
     }
 
     struct WhenNextTokenIsEqual : public EnumFieldStateFixture

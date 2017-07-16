@@ -101,7 +101,15 @@ namespace {
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        // TODO: check the enum field value
+        auto matcher = Matcher().getChildrenOf<nodes::EnumField>().bind("fields");
+        REQUIRE CHECK(matcher(nodeStack.top()));
+
+        auto node = matcher.bound("fields_0");
+        const auto& field = dynamic_cast<nodes::EnumField&>(*node);
+        const auto& value = field.value();
+
+        REQUIRE CHECK_EQUAL(0, value.which());
+        CHECK_EQUAL(44U, boost::get<std::uint8_t>(value));
     }
 
     struct WhenNextTokenIsCharLiteral : public EnumFieldEqualReadStateFixture
@@ -124,7 +132,15 @@ namespace {
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        // TODO: check the enum field value
+        auto matcher = Matcher().getChildrenOf<nodes::EnumField>().bind("fields");
+        REQUIRE CHECK(matcher(nodeStack.top()));
+
+        auto node = matcher.bound("fields_0");
+        const auto& field = dynamic_cast<nodes::EnumField&>(*node);
+        const auto& value = field.value();
+
+        REQUIRE CHECK_EQUAL(0, value.which());
+        CHECK_EQUAL(97U, boost::get<std::uint8_t>(value));
     }
 
     struct WhenNextTokenIsInvalid : public EnumFieldEqualReadStateFixture

@@ -22,6 +22,8 @@ This is an informal description of the Swizzle DSL for describing messages on th
 - i32
 - u64
 - i64
+- f32
+- f64
 - bitfield
 - variable_block
 

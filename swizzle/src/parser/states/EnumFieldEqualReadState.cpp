@@ -9,6 +9,7 @@
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/TokenStack.hpp>
 #include <swizzle/types/SetValue.hpp>
+#include <swizzle/types/SetValueFromChar.hpp>
 
 namespace swizzle { namespace parser { namespace states {
 
@@ -32,10 +33,19 @@ namespace swizzle { namespace parser { namespace states {
         const auto& top = static_cast<ast::nodes::Enum&>(*nodeStack.top());
         const auto underlying = top.underlying();
 
-        if((type == lexer::TokenType::hex_literal) ||
-           (type == lexer::TokenType::numeric_literal))
+        if(type == lexer::TokenType::hex_literal)
         {
-            enumField.value(types::setValue(underlying.token().value(), token.token().value()));
+            static const bool isHex = true;
+            enumField.value(types::setValue<isHex>(underlying.token().value(), token.token().value()));
+            context.CurrentEnumValue = enumField.value();
+
+            return ParserState::EnumFieldValueRead;
+        }
+
+        if(type == lexer::TokenType::numeric_literal)
+        {
+            static const bool isNotHex = false;
+            enumField.value(types::setValue<isNotHex>(underlying.token().value(), token.token().value()));
             context.CurrentEnumValue = enumField.value();
 
             return ParserState::EnumFieldValueRead;
@@ -47,7 +57,7 @@ namespace swizzle { namespace parser { namespace states {
             trimValue.remove_prefix(1); // remove leading '
             trimValue.remove_suffix(1); // remove trailing '
 
-            enumField.value(types::setValue(underlying.token().value(), trimValue));
+            enumField.value(types::setValueFromChar(underlying.token().value(), trimValue));
             context.CurrentEnumValue = enumField.value();
             
             return ParserState::EnumFieldValueRead;

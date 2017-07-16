@@ -4,6 +4,7 @@
 #include <swizzle/ast/Node.hpp>
 #include <swizzle/ast/VariableBindingInterface.hpp>
 
+#include <swizzle/ast/matchers/GetChildrenOf.hpp>
 #include <swizzle/ast/matchers/HasChild.hpp>
 #include <swizzle/ast/matchers/HasChildOf.hpp>
 #include <swizzle/ast/matchers/HasChildNotOf.hpp>
@@ -138,7 +139,8 @@ namespace swizzle { namespace ast {
 
     template<template<class> class... UserMatchRules>
     using ExtensibleMatcher = MatcherImpl<
-          matchers::fluent::HasChild
+          matchers::fluent::GetChildrenOf
+        , matchers::fluent::HasChild
         , matchers::fluent::HasChildOf
         , matchers::fluent::HasChildNotOf
         , matchers::fluent::HasFieldNamed

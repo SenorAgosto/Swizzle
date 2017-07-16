@@ -1,10 +1,15 @@
 #include "./ut_support/UnitTestSupport.hpp"
 
 #include <swizzle/ast/AbstractSyntaxTree.hpp>
+#include <swizzle/ast/Matcher.hpp>
 #include <swizzle/ast/Node.hpp>
 #include <swizzle/ast/nodes/Bitfield.hpp>
+#include <swizzle/ast/nodes/BitfieldField.hpp>
+#include <swizzle/ast/nodes/Comment.hpp>
+#include <swizzle/ast/nodes/MultilineComment.hpp>
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/parser/detail/AppendNode.hpp>
+#include <swizzle/parser/detail/NodeStackTopIs.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/states/BitfieldStartScopeState.hpp>
 
@@ -50,8 +55,11 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsComment, verifyConsume)
     {
+        auto matcher = Matcher().hasChildOf<nodes::Comment>();
+
         CHECK_EQUAL(2U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
+        CHECK(!matcher(nodeStack.top()));
 
         const auto parserState = state.consume(info, nodeStack, tokenStack, context);
 
@@ -59,8 +67,7 @@ namespace {
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
-
-        // TODO: validate ast
+        CHECK(matcher(nodeStack.top()));
     }
 
     struct WhenNextTokenIsMultilineComment : public BitfieldStartScopeStateFixture
@@ -73,8 +80,11 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsMultilineComment, verifyConsume)
     {
+        auto matcher = Matcher().hasChildOf<nodes::MultilineComment>();
+
         CHECK_EQUAL(2U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
+        CHECK(!matcher(nodeStack.top()));
 
         const auto parserState = state.consume(info, nodeStack, tokenStack, context);
 
@@ -82,8 +92,7 @@ namespace {
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
-
-        // TODO: validate ast
+        CHECK(matcher(nodeStack.top()));
     }
 
     struct WhenNextTokenIsFieldName : public BitfieldStartScopeStateFixture
@@ -99,12 +108,17 @@ namespace {
         CHECK_EQUAL(2U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
+        REQUIRE CHECK(detail::nodeStackTopIs<nodes::Bitfield>(nodeStack));
+        auto matcher = Matcher().hasChildOf<nodes::BitfieldField>();
+        CHECK(!matcher(nodeStack.top()));       // nodeStack.top() is bitfield
+
         const auto parserState = state.consume(info, nodeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::BitfieldField, parserState);
 
         REQUIRE CHECK_EQUAL(3U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
+        CHECK(detail::nodeStackTopIs<nodes::BitfieldField>(nodeStack));
     }
 
     struct WhenNextTokenIsRightBrace : public BitfieldStartScopeStateFixture

@@ -5,6 +5,7 @@
 #include <swizzle/ast/nodes/BitfieldField.hpp>
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/parser/detail/AppendNode.hpp>
+#include <swizzle/parser/detail/NodeStackTopIs.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/states/BitfieldFieldColonReadState.hpp>
 
@@ -60,7 +61,10 @@ namespace {
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        // TODO: check the ast & start bit value
+        REQUIRE CHECK(detail::nodeStackTopIs<nodes::BitfieldField>(nodeStack));
+
+        auto& field = static_cast<nodes::BitfieldField&>(*nodeStack.top());
+        CHECK_EQUAL(0U, field.beginBit());
     }
 
     struct WhenNextTokenIsInvalid : public BitfieldFieldColonReadStateFixture

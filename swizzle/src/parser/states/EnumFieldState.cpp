@@ -28,7 +28,6 @@ namespace swizzle { namespace parser { namespace states {
                     auto& top = static_cast<ast::nodes::EnumField&>(*nodeStack.top());
 
                     top.value(context.CurrentEnumValue.value());
-                    top.incrementValue();
                     context.CurrentEnumValue.increment();
 
                     nodeStack.pop();

@@ -27,6 +27,7 @@ namespace swizzle { namespace ast { namespace nodes {
 
         void makeArray(const lexer::TokenInfo& token);
         bool isArray() const;
+        std::ptrdiff_t arraySize() const;
 
         // @sizeMember must already be a member of the structure
         void makeVector(const lexer::TokenInfo& sizeMember);

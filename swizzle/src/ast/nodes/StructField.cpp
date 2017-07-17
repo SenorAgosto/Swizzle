@@ -66,6 +66,11 @@ namespace swizzle { namespace ast { namespace nodes {
         return arraySize_ != 0;
     }
 
+    std::ptrdiff_t StructField::arraySize() const
+    {
+        return arraySize_;
+    }
+
     void StructField::makeVector(const lexer::TokenInfo& sizeMember)
     {
         if(isArray())

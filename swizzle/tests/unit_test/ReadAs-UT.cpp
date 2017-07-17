@@ -32,7 +32,7 @@ namespace {
         boost::string_view sv("0x0f");
         std::int8_t i = readAsU8<isHex>(sv);
 
-        CHECK_EQUAL(15U, i);
+        CHECK_EQUAL(15, i);
     }
 
     TEST(verifyReadToI8)
@@ -40,7 +40,7 @@ namespace {
         boost::string_view sv("125");
         std::int8_t i = readAsU8<isNotHex>(sv);
 
-        CHECK_EQUAL(125U, i);
+        CHECK_EQUAL(125, i);
 
     }
 

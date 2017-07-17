@@ -1,11 +1,18 @@
 #include "./ut_support/UnitTestSupport.hpp"
 
 #include <swizzle/ast/AbstractSyntaxTree.hpp>
+#include <swizzle/ast/Matcher.hpp>
 #include <swizzle/ast/Node.hpp>
+#include <swizzle/ast/nodes/Attribute.hpp>
+#include <swizzle/ast/nodes/AttributeBlock.hpp>
+#include <swizzle/ast/nodes/CharLiteral.hpp>
 #include <swizzle/ast/nodes/Comment.hpp>
+#include <swizzle/ast/nodes/HexLiteral.hpp>
 #include <swizzle/ast/nodes/Import.hpp>
 #include <swizzle/ast/nodes/MultilineComment.hpp>
+#include <swizzle/ast/nodes/StringLiteral.hpp>
 #include <swizzle/Exceptions.hpp>
+#include <swizzle/parser/detail/NodeStackTopIs.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/states/TranslationUnitMainState.hpp>
 
@@ -52,8 +59,11 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsComment, verifyConsume)
     {
+        auto matcher = Matcher().hasChildOf<nodes::Comment>();
+
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
+        CHECK(!matcher(nodeStack.top()));
 
         const auto parserState = state.consume(info, nodeStack, tokenStack, context);
 
@@ -61,13 +71,12 @@ namespace {
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
-
-        // TODO: validate a comment was added to the AST
+        CHECK(matcher(nodeStack.top()));
     }
 
     struct WhenNextTokenIsMultilineComment : public TranslationUnitMainStateFixture
     {
-        const Token token = Token("// comment \\\n\t comment2", 0, 23, TokenType::comment);
+        const Token token = Token("// comment \\\n\t comment2", 0, 23, TokenType::multiline_comment);
         const FileInfo fileInfo = FileInfo("test.swizzle");
 
         const TokenInfo info = TokenInfo(token, fileInfo);
@@ -75,8 +84,11 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsMultilineComment, verifyConsume)
     {
+        auto matcher = Matcher().hasChildOf<nodes::MultilineComment>();
+
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
+        CHECK(!matcher(nodeStack.top()));
 
         const auto parserState = state.consume(info, nodeStack, tokenStack, context);
 
@@ -84,8 +96,7 @@ namespace {
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
-
-        // TODO: validate a comment was added to the AST
+        CHECK(matcher(nodeStack.top()));
     }
 
     struct WhenNextTokenIsUsingKeyword : public TranslationUnitMainStateFixture
@@ -193,8 +204,7 @@ namespace {
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
-
-        // TODO: validate a comment was added to the AST
+        CHECK(detail::nodeStackTopIs<nodes::Attribute>(nodeStack));
     }
 
     struct WhenNextTokenIsAttributeBlock : public TranslationUnitMainStateFixture
@@ -224,7 +234,14 @@ namespace {
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        // TODO: validate a comment was added to the AST
+        auto attributeMatcher = Matcher().getChildrenOf<nodes::Attribute>().bind("attribute");
+        auto matcher = Matcher().hasChildOf<nodes::AttributeBlock>();
+
+        REQUIRE CHECK(attributeMatcher(nodeStack.top()));
+
+        const auto attributeNode = attributeMatcher.bound("attribute_0");
+        REQUIRE CHECK(attributeNode);
+        CHECK(matcher(attributeNode));
     }
 
     struct WhenNextTokenIsHexLiteralAfterAttribute : public TranslationUnitMainStateFixture
@@ -254,7 +271,20 @@ namespace {
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        // TODO: check the AST is correct
+        auto attributeMatcher = Matcher().getChildrenOf<nodes::Attribute>().bind("attribute");
+        auto matcher = Matcher().getChildrenOf<nodes::HexLiteral>().bind("hex");
+
+        REQUIRE CHECK(attributeMatcher(nodeStack.top()));
+
+        const auto attributeNode = attributeMatcher.bound("attribute_0");
+        REQUIRE CHECK(attributeNode);
+        REQUIRE CHECK(matcher(attributeNode));
+
+        const auto hexLiteralNode = matcher.bound("hex_0");
+        REQUIRE CHECK(hexLiteralNode);
+
+        const auto& hex = static_cast<nodes::HexLiteral&>(*hexLiteralNode);
+        CHECK_EQUAL("0x01", hex.info().token().value());
     }
 
     struct WhenNextTokenIsCharLiteralAfterAttribute : public TranslationUnitMainStateFixture
@@ -284,14 +314,27 @@ namespace {
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        // TODO: check the AST is correct
+        auto attributeMatcher = Matcher().getChildrenOf<nodes::Attribute>().bind("attribute");
+        auto matcher = Matcher().getChildrenOf<nodes::CharLiteral>().bind("char");
+
+        REQUIRE CHECK(attributeMatcher(nodeStack.top()));
+
+        const auto attributeNode = attributeMatcher.bound("attribute_0");
+        REQUIRE CHECK(attributeNode);
+        REQUIRE CHECK(matcher(attributeNode));
+
+        const auto hexLiteralNode = matcher.bound("char_0");
+        REQUIRE CHECK(hexLiteralNode);
+
+        const auto& hex = static_cast<nodes::CharLiteral&>(*hexLiteralNode);
+        CHECK_EQUAL("'a'", hex.info().token().value());
     }
 
     struct WhenNextTokenIsStringLiteralAfterAttribute : public TranslationUnitMainStateFixture
     {
         std::array<TokenInfo, 2> tokens = {{
               TokenInfo(Token("@validate", 0, 9, TokenType::attribute), FileInfo("test.swizzle"))
-            , TokenInfo(Token("\"string\"", 0, 3, TokenType::string_literal), FileInfo("test.swizzle"))
+            , TokenInfo(Token("\"string\"", 0, 8, TokenType::string_literal), FileInfo("test.swizzle"))
         }};
     };
 
@@ -314,7 +357,20 @@ namespace {
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        // TODO: check the AST is correct
+        auto attributeMatcher = Matcher().getChildrenOf<nodes::Attribute>().bind("attribute");
+        auto matcher = Matcher().getChildrenOf<nodes::StringLiteral>().bind("string");
+
+        REQUIRE CHECK(attributeMatcher(nodeStack.top()));
+
+        const auto attributeNode = attributeMatcher.bound("attribute_0");
+        REQUIRE CHECK(attributeNode);
+        REQUIRE CHECK(matcher(attributeNode));
+
+        const auto hexLiteralNode = matcher.bound("string_0");
+        REQUIRE CHECK(hexLiteralNode);
+
+        const auto& hex = static_cast<nodes::StringLiteral&>(*hexLiteralNode);
+        CHECK_EQUAL("\"string\"", hex.info().token().value());
     }
 
     struct WhenNextTokenIsCommentAfterAnAttribute : public TranslationUnitMainStateFixture

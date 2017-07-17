@@ -68,8 +68,6 @@ namespace {
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
-
-        // TODO: check the enum field value
     }
 
     struct WhenNextTokenIsInvalid : public EnumFieldValueReadStateFixture

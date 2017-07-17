@@ -1,5 +1,6 @@
 #include <swizzle/parser/states/StructFieldNamespaceOrTypeState.hpp>
 
+#include <swizzle/ast/nodes/FieldLabel.hpp>
 #include <swizzle/ast/nodes/StructField.hpp>
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/IsIntegerType.hpp>
@@ -31,7 +32,9 @@ namespace swizzle { namespace parser { namespace states {
         {
             if(detail::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
             {
-                auto& top = static_cast<ast::nodes::StructField&>(*nodeStack.top());
+                auto sf = nodeStack.top();
+                auto& top = static_cast<ast::nodes::StructField&>(*sf);
+
                 const auto t = detail::createType(tokenStack);
                 const auto& value = t.token().value();
 
@@ -41,6 +44,13 @@ namespace swizzle { namespace parser { namespace states {
                     top.name(token);
 
                     nodeStack.pop();
+
+                    if(detail::nodeStackTopIs<ast::nodes::FieldLabel>(nodeStack))
+                    {
+                        sf->append(nodeStack.top());
+                        nodeStack.pop();
+                    }
+
                     return ParserState::StructFieldName;
                 }
 
@@ -50,6 +60,13 @@ namespace swizzle { namespace parser { namespace states {
                     top.name(token);
 
                     nodeStack.pop();
+
+                    if(detail::nodeStackTopIs<ast::nodes::FieldLabel>(nodeStack))
+                    {
+                        sf->append(nodeStack.top());
+                        nodeStack.pop();
+                    }
+
                     return ParserState::StructFieldName;
                 }
 
@@ -60,6 +77,13 @@ namespace swizzle { namespace parser { namespace states {
                     top.name(token);
 
                     nodeStack.pop();
+
+                    if(detail::nodeStackTopIs<ast::nodes::FieldLabel>(nodeStack))
+                    {
+                        sf->append(nodeStack.top());
+                        nodeStack.pop();
+                    }
+
                     return ParserState::StructFieldName;
                 }
 

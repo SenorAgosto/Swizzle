@@ -8,6 +8,7 @@
 
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/parser/detail/AppendNode.hpp>
+#include <swizzle/parser/detail/NodeStackTopIs.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/states/StructVariableBlockCaseValueState.hpp>
 
@@ -81,7 +82,10 @@ namespace {
         REQUIRE CHECK_EQUAL(3U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        // TODO: validate AST
+        REQUIRE CHECK(detail::nodeStackTopIs<nodes::VariableBlockCase>(nodeStack));
+        auto& blockCase = static_cast<nodes::VariableBlockCase&>(*nodeStack.top());
+
+        CHECK_EQUAL("0x01", blockCase.value().token().value());
     }
 
     struct WhenNextTokenIsNumericLiteral : public IntMemberFixture
@@ -101,7 +105,10 @@ namespace {
         REQUIRE CHECK_EQUAL(3U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        // TODO: validate AST
+        REQUIRE CHECK(detail::nodeStackTopIs<nodes::VariableBlockCase>(nodeStack));
+        auto& blockCase = static_cast<nodes::VariableBlockCase&>(*nodeStack.top());
+
+        CHECK_EQUAL("100", blockCase.value().token().value());
     }
 
     struct WhenNextTokenIsCharLiteral : public IntMemberFixture
@@ -121,7 +128,10 @@ namespace {
         REQUIRE CHECK_EQUAL(3U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        // TODO: validate AST
+        REQUIRE CHECK(detail::nodeStackTopIs<nodes::VariableBlockCase>(nodeStack));
+        auto& blockCase = static_cast<nodes::VariableBlockCase&>(*nodeStack.top());
+
+        CHECK_EQUAL("'a'", blockCase.value().token().value());
     }
 
     struct StringMemberFixture : public StructVariableBlockCaseValueStateFixture
@@ -163,7 +173,10 @@ namespace {
         REQUIRE CHECK_EQUAL(3U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        // TODO: validate AST
+        REQUIRE CHECK(detail::nodeStackTopIs<nodes::VariableBlockCase>(nodeStack));
+        auto& blockCase = static_cast<nodes::VariableBlockCase&>(*nodeStack.top());
+
+        CHECK_EQUAL("AS", blockCase.value().token().value());
     }
 
     struct WhenNextTokenIsStringLiteralButMemberIsInteger : public IntMemberFixture

@@ -1,10 +1,15 @@
 #include "./ut_support/UnitTestSupport.hpp"
 
 #include <swizzle/ast/AbstractSyntaxTree.hpp>
+#include <swizzle/ast/Matcher.hpp>
 #include <swizzle/ast/Node.hpp>
+#include <swizzle/ast/nodes/Comment.hpp>
 #include <swizzle/ast/nodes/Enum.hpp>
+#include <swizzle/ast/nodes/EnumField.hpp>
+#include <swizzle/ast/nodes/MultilineComment.hpp>
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/parser/detail/AppendNode.hpp>
+#include <swizzle/parser/detail/NodeStackTopIs.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/states/EnumStartScopeState.hpp>
 
@@ -50,8 +55,11 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsComment, verifyConsume)
     {
+        auto matcher = Matcher().hasChildOf<nodes::Comment>().bind("comment");
+
         CHECK_EQUAL(2U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
+        CHECK(!matcher(nodeStack.top()));
 
         const auto parserState = state.consume(info, nodeStack, tokenStack, context);
 
@@ -60,7 +68,8 @@ namespace {
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        // TODO: validate ast
+        REQUIRE CHECK(matcher(nodeStack.top()));
+        REQUIRE CHECK(matcher.bound("comment"));
     }
 
     struct WhenNextTokenIsMultilineComment : public EnumStartScopeStateFixture
@@ -73,8 +82,11 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsMultilineComment, verifyConsume)
     {
+        auto matcher = Matcher().hasChildOf<nodes::MultilineComment>().bind("comment");
+
         CHECK_EQUAL(2U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
+        CHECK(!matcher(nodeStack.top()));
 
         const auto parserState = state.consume(info, nodeStack, tokenStack, context);
 
@@ -83,7 +95,8 @@ namespace {
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        // TODO: validate ast
+        REQUIRE CHECK(matcher(nodeStack.top()));
+        REQUIRE CHECK(matcher.bound("comment"));
     }
 
     struct WhenNextTokenIsFieldName : public EnumStartScopeStateFixture
@@ -105,6 +118,8 @@ namespace {
 
         REQUIRE CHECK_EQUAL(3U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
+
+        CHECK(detail::nodeStackTopIs<nodes::EnumField>(nodeStack));
     }
 
     struct WhenNextTokenIsRightBrace : public EnumStartScopeStateFixture

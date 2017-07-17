@@ -27,6 +27,7 @@ namespace swizzle { namespace parser { namespace states {
                 const auto& field = static_cast<ast::nodes::StructField&>(*context.CurrentVariableOnFieldType);
                 if(!field.isArray() && !field.isVector())
                 {
+                    // TODO: ensure the value fits the underlying type.
                     return ParserState::StructVariableBlockCaseValueRead;
                 }
 

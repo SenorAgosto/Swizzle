@@ -42,6 +42,7 @@ namespace swizzle { namespace parser { namespace states {
                 throw SyntaxError("Expected variable block cases", " empty variable block", token.fileInfo());
             }
 
+            nodeStack.pop();
             return ParserState::StructStartScope;
         }
 

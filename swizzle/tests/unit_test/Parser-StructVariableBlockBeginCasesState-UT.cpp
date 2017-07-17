@@ -1,6 +1,7 @@
 #include "./ut_support/UnitTestSupport.hpp"
 
 #include <swizzle/ast/AbstractSyntaxTree.hpp>
+#include <swizzle/ast/Matcher.hpp>
 #include <swizzle/ast/Node.hpp>
 #include <swizzle/ast/nodes/Comment.hpp>
 #include <swizzle/ast/nodes/MultilineComment.hpp>
@@ -45,8 +46,11 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsComment, verifyConsume)
     {
+        auto matcher = Matcher().hasChildOf<nodes::Comment>();
+
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
+        CHECK(!matcher(nodeStack.top()));
 
         const auto parserState = state.consume(token, nodeStack, tokenStack, context);
 
@@ -54,8 +58,7 @@ namespace {
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
-
-        // TODO: validate AST
+        CHECK(matcher(nodeStack.top()));
     }
 
     struct WhenNextTokenIsMultilineComment : public StructVariableBlockBeginCasesStateFixture
@@ -65,8 +68,11 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsMultilineComment, verifyConsume)
     {
+        auto matcher = Matcher().hasChildOf<nodes::MultilineComment>();
+
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
+        CHECK(!matcher(nodeStack.top()));
 
         const auto parserState = state.consume(token, nodeStack, tokenStack, context);
 
@@ -74,8 +80,7 @@ namespace {
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
-
-        // TODO: validate AST
+        CHECK(matcher(nodeStack.top()));
     }
 
     struct WhenNextTokenIsCase : public StructVariableBlockBeginCasesStateFixture
@@ -85,8 +90,11 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsCase, verifyConsume)
     {
+        auto matcher = Matcher().hasChildOf<nodes::VariableBlockCase>();
+
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
+        CHECK(!matcher(nodeStack.top()));
 
         const auto parserState = state.consume(token, nodeStack, tokenStack, context);
 
@@ -94,8 +102,7 @@ namespace {
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
-
-        // TODO: validate AST
+        CHECK(matcher(nodeStack.top()));
     }
 
     struct WhenNextTokenIsRightBrace : public StructVariableBlockBeginCasesStateFixture
@@ -122,10 +129,8 @@ namespace {
 
         CHECK_EQUAL(ParserState::StructStartScope, parserState);
 
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(1U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
-
-        // TODO: validate AST
     }
 
     struct WhenNextTokenIsRightBraceAndVariableBlockIsEmpty : public StructVariableBlockBeginCasesStateFixture

@@ -44,6 +44,7 @@ namespace swizzle { namespace parser { namespace states {
                 throw SyntaxError("Expected field declaration, found duplicitous field label", token);
             }
 
+            // we want to attach this to the field
             nodeStack.push(new ast::nodes::FieldLabel(token));
             return ParserState::StructFieldLabel;
         }

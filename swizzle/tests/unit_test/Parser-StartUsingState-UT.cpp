@@ -1,6 +1,7 @@
 #include "./ut_support/UnitTestSupport.hpp"
 
 #include <swizzle/ast/AbstractSyntaxTree.hpp>
+#include <swizzle/ast/Matcher.hpp>
 #include <swizzle/ast/Node.hpp>
 #include <swizzle/ast/nodes/TypeAlias.hpp>
 #include <swizzle/Exceptions.hpp>
@@ -47,8 +48,11 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsString, verifyConsume)
     {
+        auto matcher = Matcher().isTypeOf<nodes::TypeAlias>();
+
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(1U, tokenStack.size());
+        CHECK(!matcher(nodeStack.top()));
 
         const auto parserState = state.consume(info, nodeStack, tokenStack, context);
 
@@ -56,8 +60,7 @@ namespace {
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
-
-        // TODO: validate a comment was added to the AST
+        CHECK(matcher(nodeStack.top()));
     }
 
     struct WhenNextTokenIsInvalid : public StartUsingStateFixture

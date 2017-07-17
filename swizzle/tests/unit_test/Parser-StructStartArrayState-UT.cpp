@@ -8,6 +8,7 @@
 
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/parser/detail/AppendNode.hpp>
+#include <swizzle/parser/detail/NodeStackTopIs.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/states/StructStartArrayState.hpp>
 
@@ -66,7 +67,11 @@ namespace {
         REQUIRE CHECK_EQUAL(3U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        // TODO: check ast, field should be array type of size 10
+        REQUIRE CHECK(detail::nodeStackTopIs<nodes::StructField>(nodeStack));
+        const auto& field = static_cast<nodes::StructField&>(*nodeStack.top());
+
+        CHECK(field.isArray());
+        CHECK_EQUAL(10, field.arraySize());
     }
 
     struct WhenNextTokenIsNegativeNumericLiteral : public StructStartArrayStateFixture

@@ -1,6 +1,7 @@
 #include "./ut_support/UnitTestSupport.hpp"
 
 #include <swizzle/ast/AbstractSyntaxTree.hpp>
+#include <swizzle/ast/Matcher.hpp>
 #include <swizzle/ast/Node.hpp>
 #include <swizzle/ast/nodes/Attribute.hpp>
 #include <swizzle/ast/nodes/Struct.hpp>
@@ -107,7 +108,15 @@ namespace {
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        // TODO: validate AST. type is now vectored, vectored-on member is set
+        auto matcher = Matcher().getChildrenOf<nodes::StructField>().bind("field");
+        REQUIRE CHECK(matcher(nodeStack.top()));
+
+        const auto fieldNode = matcher.bound("field_0");
+        REQUIRE CHECK(fieldNode);
+
+        const auto& field = static_cast<nodes::StructField&>(*fieldNode);
+        CHECK(field.isVector());
+        CHECK_EQUAL("field1", field.vectorSizeMember().token().value());
     }
 
     struct WhenNextTokenIsInvalid : public StructVectorStateFixture

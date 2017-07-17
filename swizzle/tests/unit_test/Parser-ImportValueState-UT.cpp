@@ -1,6 +1,8 @@
 #include "./ut_support/UnitTestSupport.hpp"
 
 #include <swizzle/ast/AbstractSyntaxTree.hpp>
+#include <swizzle/ast/Matcher.hpp>
+#include <swizzle/ast/nodes/Import.hpp>
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/states/ImportValueState.hpp>
@@ -90,7 +92,8 @@ namespace {
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        // TODO: check AST
+        auto matcher = Matcher().hasChildOf<nodes::Import>();
+        CHECK(matcher(nodeStack.top()));
     }
 
     struct WhenNextTokenIsEndStatementAndFileHasPath : public ImportValueStateFixture
@@ -141,7 +144,8 @@ namespace {
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        // TODO: check AST
+        auto matcher = Matcher().hasChildOf<nodes::Import>();
+        CHECK(matcher(nodeStack.top()));
     }
 
     struct WhenNextTokenIsEndStatementAndImportFileIsDirectory : public ImportValueStateFixture

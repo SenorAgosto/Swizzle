@@ -1,6 +1,8 @@
 #include "./ut_support/UnitTestSupport.hpp"
 
 #include <swizzle/ast/AbstractSyntaxTree.hpp>
+#include <swizzle/ast/Matcher.hpp>
+#include <swizzle/ast/nodes/Extern.hpp>
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/states/ExternValueState.hpp>
@@ -78,7 +80,8 @@ namespace {
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        // TODO: check AST
+        auto matcher = Matcher().hasChildOf<nodes::Extern>();
+        CHECK(matcher(nodeStack.top()));
     }
 
     struct WhenNextTokenIsEndStatementAndTokenStackIsEmpty : public ExternValueStateFixture

@@ -1,12 +1,15 @@
 #include "./ut_support/UnitTestSupport.hpp"
 
 #include <swizzle/ast/AbstractSyntaxTree.hpp>
+#include <swizzle/ast/Matcher.hpp>
 #include <swizzle/ast/Node.hpp>
 #include <swizzle/ast/nodes/Struct.hpp>
+#include <swizzle/ast/nodes/VariableBlock.hpp>
 #include <swizzle/ast/nodes/VariableBlockCase.hpp>
 
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/parser/detail/AppendNode.hpp>
+#include <swizzle/parser/detail/NodeStackTopIs.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/states/StructVariableBlockCaseBlockNameReadState.hpp>
 
@@ -83,10 +86,17 @@ namespace {
 
         CHECK_EQUAL(ParserState::StructVariableBlockBeginCases, parserState);
 
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(1U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        // TODO: check AST
+        auto cases = Matcher().getChildrenOf<nodes::VariableBlockCase>().bind("cases");
+        CHECK(cases(nodeStack.top()));
+
+        const auto caseNode = cases.bound("cases_0");
+        REQUIRE CHECK(caseNode);
+
+        const auto& case0 = static_cast<nodes::VariableBlockCase&>(*caseNode);
+        CHECK_EQUAL("my_namespace::other::MyStruct", case0.type().token().value());
     }
 
     struct WhenNextTokenIsCommaButNodeStackIsNotVariableBlockCase : public StructVariableBlockCaseBlockNameReadStateFixture

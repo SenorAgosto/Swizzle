@@ -4,11 +4,13 @@
 #include <swizzle/ast/Matcher.hpp>
 #include <swizzle/ast/Node.hpp>
 #include <swizzle/ast/nodes/Attribute.hpp>
+#include <swizzle/ast/nodes/FieldLabel.hpp>
 #include <swizzle/ast/nodes/Struct.hpp>
 #include <swizzle/ast/nodes/StructField.hpp>
 
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/parser/detail/AppendNode.hpp>
+#include <swizzle/parser/detail/NodeStackTopIs.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/states/StructFieldNamespaceOrTypeState.hpp>
 
@@ -107,6 +109,62 @@ namespace {
         CHECK_EQUAL("u8", field.type());
     }
 
+    struct WhenNextTokenIsStringAndTypeIsU8AndThereIsAFieldLabel : public StructFieldNamespaceOrTypeStateFixture
+    {
+        WhenNextTokenIsStringAndTypeIsU8AndThereIsAFieldLabel()
+        {
+            auto structNode = nodeStack.top();
+            nodeStack.push(new nodes::FieldLabel(TokenInfo(Token("123", 0, 3, TokenType::numeric_literal), FileInfo("test.swizzle"))));
+
+            auto node = new nodes::StructField();
+            structNode->append(node);
+            nodeStack.push(node);
+
+            const Token t = Token("u8", 0, 2, TokenType::type);
+            const FileInfo f = FileInfo("test.swizzle");
+
+            tokenStack.push(TokenInfo(t, f));
+        }
+
+        const Token token = Token("field1", 0, 6, TokenType::string);
+        const FileInfo fileInfo = FileInfo("test.swizzle");
+
+        const TokenInfo info = TokenInfo(token, fileInfo);
+    };
+
+    TEST_FIXTURE(WhenNextTokenIsStringAndTypeIsU8AndThereIsAFieldLabel, verifyConsume)
+    {
+        CHECK_EQUAL(4U, nodeStack.size());
+        CHECK_EQUAL(1U, tokenStack.size());
+
+        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+
+        CHECK_EQUAL(ParserState::StructFieldName, parserState);
+
+        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, tokenStack.size());
+        REQUIRE CHECK(detail::nodeStackTopIs<nodes::Struct>(nodeStack));
+
+        auto matcher = Matcher().getChildrenOf<nodes::StructField>().bind("field");
+        REQUIRE CHECK(matcher(nodeStack.top()));
+
+        const auto sf = matcher.bound("field_0");
+        REQUIRE CHECK(sf);
+
+        const auto& field = static_cast<nodes::StructField&>(*sf);
+        CHECK_EQUAL("field1", field.name().token().value());
+        CHECK_EQUAL("u8", field.type());
+
+        auto labelMatcher = Matcher().getChildrenOf<nodes::FieldLabel>().bind("label");
+        REQUIRE CHECK(labelMatcher(sf));
+
+        const auto labelNode = labelMatcher.bound("label_0");
+        REQUIRE CHECK(labelNode);
+
+        const auto& label = static_cast<nodes::FieldLabel&>(*labelNode);
+        CHECK_EQUAL("123", label.info().token().value());
+    }
+
     struct WhenNextTokenIsStringAndTypeIsU8AndTopOfStackIsNotStructField : public StructFieldNamespaceOrTypeStateFixture
     {
         const Token token = Token("field1", 0, 6, TokenType::string);
@@ -173,6 +231,73 @@ namespace {
         CHECK_EQUAL("foo::bar::MyType", field.type());
     }
 
+    struct WhenNextTokenIsStringAndTypeIsUserTypeWithNamespaceWithFieldLabel : public StructFieldNamespaceOrTypeStateFixture
+    {
+        WhenNextTokenIsStringAndTypeIsUserTypeWithNamespaceWithFieldLabel()
+        {
+            auto structNode = nodeStack.top();
+
+            nodeStack.push(new nodes::FieldLabel(TokenInfo(Token("123", 0, 3, TokenType::numeric_literal), FileInfo("test.swizzle"))));
+
+            auto node = new nodes::StructField();
+            structNode->append(node);
+            nodeStack.push(node);
+
+            const std::string s = "foo::bar::MyType";
+
+            const Token t1 = Token(s, 0, 3, TokenType::string);
+            const FileInfo f1 = FileInfo("test.swizzle", LineInfo(1U, 1U), LineInfo(1U, 4U));
+            tokenStack.push(TokenInfo(t1, f1));
+
+            const Token t2 = Token(s, 5, 3, TokenType::string);
+            const FileInfo f2 = FileInfo("test.swizzle", LineInfo(1U, 6U), LineInfo(1U, 9U));
+            tokenStack.push(TokenInfo(t2, f2));
+
+            const Token t3 = Token(s, 10, 6, TokenType::string);
+            const FileInfo f3 = FileInfo("test.swizzle", LineInfo(1U, 11U), LineInfo(1U, 17U));
+            tokenStack.push(TokenInfo(t3, f3));
+
+            context.TypeCache["foo::bar::MyType"] = new Node();
+        }
+
+        const Token token = Token("field1", 0, 6, TokenType::string);
+        const FileInfo fileInfo = FileInfo("test.swizzle");
+
+        const TokenInfo info = TokenInfo(token, fileInfo);
+    };
+
+    TEST_FIXTURE(WhenNextTokenIsStringAndTypeIsUserTypeWithNamespaceWithFieldLabel, verifyConsume)
+    {
+        CHECK_EQUAL(4U, nodeStack.size());
+        CHECK_EQUAL(3U, tokenStack.size());
+
+        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+
+        CHECK_EQUAL(ParserState::StructFieldName, parserState);
+
+        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, tokenStack.size());
+
+        auto matcher = Matcher().getChildrenOf<nodes::StructField>().bind("field");
+        REQUIRE CHECK(matcher(nodeStack.top()));
+
+        const auto sf = matcher.bound("field_0");
+        REQUIRE CHECK(sf);
+
+        const auto& field = static_cast<nodes::StructField&>(*sf);
+        CHECK_EQUAL("field1", field.name().token().value());
+        CHECK_EQUAL("foo::bar::MyType", field.type());
+
+        auto labelMatcher = Matcher().getChildrenOf<nodes::FieldLabel>().bind("label");
+        REQUIRE CHECK(labelMatcher(sf));
+
+        const auto labelNode = labelMatcher.bound("label_0");
+        REQUIRE CHECK(labelNode);
+
+        const auto& label = static_cast<nodes::FieldLabel&>(*labelNode);
+        CHECK_EQUAL("123", label.info().token().value());
+    }
+
     struct WhenNextTokenIsStringAndTypeIsUserTypeWithoutNamespace : public StructFieldNamespaceOrTypeStateFixture
     {
         WhenNextTokenIsStringAndTypeIsUserTypeWithoutNamespace()
@@ -215,6 +340,63 @@ namespace {
         const auto& field = static_cast<nodes::StructField&>(*sf);
         CHECK_EQUAL("field1", field.name().token().value());
         CHECK_EQUAL("foo::bar::MyType", field.type());
+    }
+
+    struct WhenNextTokenIsStringAndTypeIsUserTypeWithoutNamespaceWithFieldLabel : public StructFieldNamespaceOrTypeStateFixture
+    {
+        WhenNextTokenIsStringAndTypeIsUserTypeWithoutNamespaceWithFieldLabel()
+        {
+            auto structNode = nodeStack.top();
+            nodeStack.push(new nodes::FieldLabel(TokenInfo(Token("123", 0, 3, TokenType::numeric_literal), FileInfo("test.swizzle"))));
+
+            auto node = new nodes::StructField();
+            structNode->append(node);
+            nodeStack.push(node);
+
+            const Token t3 = Token("MyType", 0, 6, TokenType::string);
+            const FileInfo f3 = FileInfo("test.swizzle", LineInfo(1U, 11U), LineInfo(1U, 17U));
+            tokenStack.push(TokenInfo(t3, f3));
+
+            context.CurrentNamespace = "foo::bar";
+            context.TypeCache["foo::bar::MyType"] = new Node();
+        }
+
+        const Token token = Token("field1", 0, 6, TokenType::string);
+        const FileInfo fileInfo = FileInfo("test.swizzle");
+
+        const TokenInfo info = TokenInfo(token, fileInfo);
+    };
+
+    TEST_FIXTURE(WhenNextTokenIsStringAndTypeIsUserTypeWithoutNamespaceWithFieldLabel, verifyConsume)
+    {
+        CHECK_EQUAL(4U, nodeStack.size());
+        CHECK_EQUAL(1U, tokenStack.size());
+
+        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+
+        CHECK_EQUAL(ParserState::StructFieldName, parserState);
+
+        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, tokenStack.size());
+
+        auto matcher = Matcher().getChildrenOf<nodes::StructField>().bind("field");
+        REQUIRE CHECK(matcher(nodeStack.top()));
+
+        const auto sf = matcher.bound("field_0");
+        REQUIRE CHECK(sf);
+
+        const auto& field = static_cast<nodes::StructField&>(*sf);
+        CHECK_EQUAL("field1", field.name().token().value());
+        CHECK_EQUAL("foo::bar::MyType", field.type());
+
+        auto labelMatcher = Matcher().getChildrenOf<nodes::FieldLabel>().bind("label");
+        REQUIRE CHECK(labelMatcher(sf));
+
+        const auto labelNode = labelMatcher.bound("label_0");
+        REQUIRE CHECK(labelNode);
+
+        const auto& label = static_cast<nodes::FieldLabel&>(*labelNode);
+        CHECK_EQUAL("123", label.info().token().value());
     }
 
     struct WhenNextTokenIsLeftBracket : public StructFieldNamespaceOrTypeStateFixture

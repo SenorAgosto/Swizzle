@@ -1,10 +1,12 @@
 #include "./ut_support/UnitTestSupport.hpp"
 
 #include <swizzle/ast/AbstractSyntaxTree.hpp>
+#include <swizzle/ast/Matcher.hpp>
 #include <swizzle/ast/Node.hpp>
 #include <swizzle/ast/nodes/Comment.hpp>
 #include <swizzle/ast/nodes/Import.hpp>
 #include <swizzle/ast/nodes/MultilineComment.hpp>
+#include <swizzle/ast/nodes/Struct.hpp>
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/states/StartStructState.hpp>
@@ -23,6 +25,8 @@ namespace {
 
             const auto structInfo = TokenInfo(Token("struct", 0, 6, TokenType::keyword), FileInfo("test.swizzle"));
             tokenStack.push(structInfo);
+
+            context.CurrentNamespace = "my_namespace";
         }
 
         states::StartStructState state;
@@ -38,7 +42,6 @@ namespace {
     {
     }
 
-
     struct WhenNextTokenIsString : public StartStructStateFixture
     {
         const Token token = Token("MyStruct", 0, 8, TokenType::string);
@@ -49,8 +52,11 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsString, verifyConsume)
     {
+        auto matcher = Matcher().isTypeOf<nodes::Struct>().bind("struct");
+
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(1U, tokenStack.size());
+        CHECK(!matcher(nodeStack.top()));
 
         const auto parserState = state.consume(info, nodeStack, tokenStack, context);
 
@@ -58,8 +64,13 @@ namespace {
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
+        REQUIRE CHECK(matcher(nodeStack.top()));
 
-        // TODO: verify AST
+        const auto& s =  matcher.bound("struct");
+        const auto& node = static_cast<nodes::Struct&>(*s);
+
+        CHECK_EQUAL("struct", node.info().token().value());
+        CHECK_EQUAL("my_namespace::MyStruct", node.name());
     }
 
     struct WhenNextTokenIsInvalid : public StartStructStateFixture

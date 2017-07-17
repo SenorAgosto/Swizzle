@@ -1,6 +1,7 @@
 #include "./ut_support/UnitTestSupport.hpp"
 
 #include <swizzle/ast/AbstractSyntaxTree.hpp>
+#include <swizzle/ast/Matcher.hpp>
 #include <swizzle/ast/Node.hpp>
 #include <swizzle/ast/nodes/Attribute.hpp>
 #include <swizzle/ast/nodes/Struct.hpp>
@@ -95,7 +96,15 @@ namespace {
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        // TODO: verify the AST
+        auto matcher = Matcher().getChildrenOf<nodes::StructField>().bind("field");
+        REQUIRE CHECK(matcher(nodeStack.top()));
+
+        const auto sf = matcher.bound("field_0");
+        REQUIRE CHECK(sf);
+
+        const auto& field = static_cast<nodes::StructField&>(*sf);
+        CHECK_EQUAL("field1", field.name().token().value());
+        CHECK_EQUAL("u8", field.type());
     }
 
     struct WhenNextTokenIsStringAndTypeIsU8AndTopOfStackIsNotStructField : public StructFieldNamespaceOrTypeStateFixture
@@ -153,7 +162,15 @@ namespace {
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        // TODO: verify the AST
+        auto matcher = Matcher().getChildrenOf<nodes::StructField>().bind("field");
+        REQUIRE CHECK(matcher(nodeStack.top()));
+
+        const auto sf = matcher.bound("field_0");
+        REQUIRE CHECK(sf);
+
+        const auto& field = static_cast<nodes::StructField&>(*sf);
+        CHECK_EQUAL("field1", field.name().token().value());
+        CHECK_EQUAL("foo::bar::MyType", field.type());
     }
 
     struct WhenNextTokenIsStringAndTypeIsUserTypeWithoutNamespace : public StructFieldNamespaceOrTypeStateFixture
@@ -189,7 +206,15 @@ namespace {
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        // TODO: verify the AST
+        auto matcher = Matcher().getChildrenOf<nodes::StructField>().bind("field");
+        REQUIRE CHECK(matcher(nodeStack.top()));
+
+        const auto sf = matcher.bound("field_0");
+        REQUIRE CHECK(sf);
+
+        const auto& field = static_cast<nodes::StructField&>(*sf);
+        CHECK_EQUAL("field1", field.name().token().value());
+        CHECK_EQUAL("foo::bar::MyType", field.type());
     }
 
     struct WhenNextTokenIsLeftBracket : public StructFieldNamespaceOrTypeStateFixture

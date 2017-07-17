@@ -37,14 +37,14 @@ namespace swizzle { namespace parser { namespace states {
             {
                 auto& blockCase = static_cast<ast::nodes::VariableBlockCase&>(*nodeStack.top());
                 blockCase.type(structType);
-            }
-            else
-            {
-                throw ParserError("Internal parser error, top of node stack was not ast::nodes::VariableBlockCase");
+
+                nodeStack.pop();
+                utils::clear(tokenStack);
+
+                return ParserState::StructVariableBlockBeginCases;
             }
 
-            utils::clear(tokenStack);
-            return ParserState::StructVariableBlockBeginCases;
+            throw ParserError("Internal parser error, top of node stack was not ast::nodes::VariableBlockCase");
         }
 
         throw SyntaxError("Expected ':' or ','", token);

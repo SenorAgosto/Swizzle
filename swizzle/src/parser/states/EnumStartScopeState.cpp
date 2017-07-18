@@ -1,6 +1,7 @@
 #include <swizzle/parser/states/EnumStartScopeState.hpp>
 
 #include <swizzle/Exceptions.hpp>
+#include <swizzle/ast/Matcher.hpp>
 #include <swizzle/ast/nodes/Comment.hpp>
 #include <swizzle/ast/nodes/Enum.hpp>
 #include <swizzle/ast/nodes/EnumField.hpp>
@@ -48,14 +49,14 @@ namespace swizzle { namespace parser { namespace states {
         {
             if(detail::nodeStackTopIs<ast::nodes::Enum>(nodeStack))
             {
-                auto& top = static_cast<ast::nodes::Enum&>(*nodeStack.top());
-                if(top.empty())
+                auto hasNonCommentChildren = ast::Matcher().hasChildNotOf<ast::nodes::Comment, ast::nodes::MultilineComment>();
+                if(!hasNonCommentChildren(nodeStack.top()))
                 {
-                    throw SyntaxError("Enum must have fields, no fields declared in '" + top.name() + "'", token);
+                    auto& top = static_cast<ast::nodes::Enum&>(*nodeStack.top());
+                    throw SyntaxError("Enum must have fields", "no fields declared in '" + top.name() + "'", token.fileInfo());
                 }
 
                 nodeStack.pop();
-
                 return ParserState::TranslationUnitMain;
             }
 

@@ -11,6 +11,7 @@
 #include <swizzle/ast/nodes/HexLiteral.hpp>
 #include <swizzle/ast/nodes/Import.hpp>
 #include <swizzle/ast/nodes/MultilineComment.hpp>
+#include <swizzle/ast/nodes/Namespace.hpp>
 #include <swizzle/ast/nodes/NumericLiteral.hpp>
 #include <swizzle/ast/nodes/StringLiteral.hpp>
 #include <swizzle/ast/nodes/TypeAlias.hpp>
@@ -44,6 +45,7 @@ namespace {
         void operator()(nodes::HexLiteral&) override { hexLiteral++; }
         void operator()(nodes::Import&) override { import++; }
         void operator()(nodes::MultilineComment&) override { multilineComment++; }
+        void operator()(nodes::Namespace&) override { nameSpace++; }
         void operator()(nodes::NumericLiteral&) override { numericLiteral++; }
         void operator()(nodes::StringLiteral&) override { stringLiteral++; }
         void operator()(nodes::Struct&) override { structCount++; }
@@ -65,6 +67,7 @@ namespace {
         std::size_t hexLiteral = 0;
         std::size_t import = 0;
         std::size_t multilineComment = 0;
+        std::size_t nameSpace = 0;
         std::size_t numericLiteral = 0;
         std::size_t stringLiteral = 0;
         std::size_t structCount = 0;

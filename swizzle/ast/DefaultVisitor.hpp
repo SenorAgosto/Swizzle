@@ -28,5 +28,7 @@ namespace swizzle { namespace ast {
         void operator()(nodes::Struct&) override {}
         void operator()(nodes::StructField&) override {}
         void operator()(nodes::TypeAlias&) override {}
+        void operator()(nodes::VariableBlock&) override {}
+        void operator()(nodes::VariableBlockCase&) override {}
     };
 }}

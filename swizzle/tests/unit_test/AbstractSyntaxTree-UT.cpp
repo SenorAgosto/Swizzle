@@ -15,9 +15,12 @@
 #include <swizzle/ast/nodes/NumericLiteral.hpp>
 #include <swizzle/ast/nodes/StringLiteral.hpp>
 #include <swizzle/ast/nodes/TypeAlias.hpp>
+#include <swizzle/ast/nodes/VariableBlock.hpp>
+#include <swizzle/ast/nodes/VariableBlockCase.hpp>
+
 #include <swizzle/lexer/TokenType.hpp>
-#include <swizzle/parser/NodeStack.hpp>
 #include <swizzle/parser/detail/AppendNode.hpp>
+#include <swizzle/parser/NodeStack.hpp>
 
 #include <cstddef>
 
@@ -51,6 +54,8 @@ namespace {
         void operator()(nodes::Struct&) override { structCount++; }
         void operator()(nodes::StructField&) override { structField++; }
         void operator()(nodes::TypeAlias&) override { typeAlias++; }
+        void operator()(nodes::VariableBlock&) override { varBlock++; }
+        void operator()(nodes::VariableBlockCase&) override { varBlockCase++; }
 
     public:
         std::size_t root = 0;
@@ -73,6 +78,8 @@ namespace {
         std::size_t structCount = 0;
         std::size_t structField = 0;
         std::size_t typeAlias = 0;
+        std::size_t varBlock = 0;
+        std::size_t varBlockCase = 0;
     };
 
     struct AbstractSyntaxTreeFixture

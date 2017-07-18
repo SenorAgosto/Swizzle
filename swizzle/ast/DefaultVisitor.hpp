@@ -22,6 +22,7 @@ namespace swizzle { namespace ast {
         void operator()(nodes::HexLiteral&) override {}
         void operator()(nodes::Import&) override {}
         void operator()(nodes::MultilineComment&) override {}
+        void operator()(nodes::Namespace&) override {}
         void operator()(nodes::NumericLiteral&) override {}
         void operator()(nodes::StringLiteral&) override {}
         void operator()(nodes::Struct&) override {}

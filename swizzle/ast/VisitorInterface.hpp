@@ -13,6 +13,7 @@ namespace swizzle { namespace ast { namespace nodes {
     class HexLiteral;
     class Import;
     class MultilineComment;
+    class Namespace;
     class NumericLiteral;
     class StringLiteral;
     class Struct;
@@ -40,6 +41,7 @@ namespace swizzle { namespace ast {
         virtual void operator()(nodes::HexLiteral& node) = 0;
         virtual void operator()(nodes::Import& node) = 0;
         virtual void operator()(nodes::MultilineComment& node) = 0;
+        virtual void operator()(nodes::Namespace& node) = 0;
         virtual void operator()(nodes::NumericLiteral& node) = 0;
         virtual void operator()(nodes::StringLiteral& node) = 0;
         virtual void operator()(nodes::Struct& node) = 0;

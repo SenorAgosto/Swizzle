@@ -90,19 +90,21 @@ namespace {
     {
         WhenNextTokenIsEndStatementAndFileHasPath()
         {
-            const Token t1 = Token("foo", 0, 3, TokenType::string);
-            const FileInfo fi1 = FileInfo("test.swizzle");
+            const Token t1 = Token(s, 0, 3, TokenType::string);
+            const FileInfo fi1 = FileInfo("test.swizzle", LineInfo(1, 1), LineInfo(1, 4));
 
-            const Token t2 = Token("bar", 0, 3, TokenType::string);
-            const FileInfo fi2 = FileInfo("test.swizzle");
+            const Token t2 = Token(s, 5, 3, TokenType::string);
+            const FileInfo fi2 = FileInfo("test.swizzle", LineInfo(1, 6), LineInfo(1, 9));
 
-            const Token t3 = Token("MyNamespace", 0, 11, TokenType::string);
-            const FileInfo fi3 = FileInfo("test.swizzle");
+            const Token t3 = Token(s, 10, 11, TokenType::string);
+            const FileInfo fi3 = FileInfo("test.swizzle", LineInfo(1, 11), LineInfo(1, 22));
 
             tokenStack.push(TokenInfo(t1, fi1));
             tokenStack.push(TokenInfo(t2, fi2));
             tokenStack.push(TokenInfo(t3, fi3));
         }
+
+        std::string s = "foo::bar::MyNamespace";
 
         const Token token = Token(";", 0, 1, TokenType::end_statement);
         const FileInfo fileInfo = FileInfo("test.swizzle");

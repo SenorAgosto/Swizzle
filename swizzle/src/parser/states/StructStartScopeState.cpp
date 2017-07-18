@@ -1,5 +1,6 @@
 #include <swizzle/parser/states/StructStartScopeState.hpp>
 
+#include <swizzle/ast/Matcher.hpp>
 #include <swizzle/ast/nodes/Attribute.hpp>
 #include <swizzle/ast/nodes/AttributeBlock.hpp>
 #include <swizzle/ast/nodes/CharLiteral.hpp>
@@ -181,11 +182,15 @@ namespace swizzle { namespace parser { namespace states {
         {
             if(detail::nodeStackTopIs<ast::nodes::Struct>(nodeStack))
             {
-                const auto& top = static_cast<ast::nodes::Struct&>(*nodeStack.top());
-                if(top.empty())
+                auto hasNonCommentChildren = ast::Matcher().hasChildNotOf<ast::nodes::Comment, ast::nodes::MultilineComment>();
+                if(!hasNonCommentChildren(nodeStack.top()))
                 {
-                    throw SyntaxError("Enum must have fields, no fields declared in '" + top.name() + "'", token);
+                    const auto& top = static_cast<ast::nodes::Struct&>(*nodeStack.top());
+                    throw SyntaxError("Enum must have fields", "no fields declared in '" + top.name() + "'", token.fileInfo());
                 }
+
+                nodeStack.pop();
+                return ParserState::TranslationUnitMain;
             }
 
             throw ParserError("Internal parser error, top of node stack is not ast::nodes::Struct");

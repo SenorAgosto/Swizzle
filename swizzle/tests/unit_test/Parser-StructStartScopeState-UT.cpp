@@ -137,6 +137,19 @@ namespace {
         const TokenInfo info = TokenInfo(token, fileInfo);
     };
 
+    TEST_FIXTURE(WhenNextTokenIsRightBrace, verifyConsume)
+    {
+        CHECK_EQUAL(2U, nodeStack.size());
+        CHECK_EQUAL(0U, tokenStack.size());
+
+        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+
+        CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
+
+        REQUIRE CHECK_EQUAL(1U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, tokenStack.size());
+    }
+
     struct WhenNextTokenIsRightBraceAndNoFieldsWereDefined : public StructStartScopeStateFixture
     {
         const Token token = Token("}", 0, 1, TokenType::r_brace);

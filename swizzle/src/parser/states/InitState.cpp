@@ -6,6 +6,7 @@
 #include <swizzle/lexer/Token.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
 #include <swizzle/lexer/TokenType.hpp>
+#include <swizzle/parser/detail/AppendNode.hpp>
 #include <swizzle/parser/NodeStack.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/TokenStack.hpp>
@@ -18,17 +19,13 @@ namespace swizzle { namespace parser { namespace states {
 
         if(type == lexer::TokenType::comment)
         {
-            ast::Node::smartptr comment = new ast::nodes::Comment(token);
-            nodeStack.push(comment);
-
+            detail::appendNode<ast::nodes::Comment>(nodeStack, token);
             return ParserState::Init;
         }
 
         if(type == lexer::TokenType::multiline_comment)
         {
-            ast::Node::smartptr comment = new ast::nodes::MultilineComment(token);
-            nodeStack.push(comment);
-
+            detail::appendNode<ast::nodes::MultilineComment>(nodeStack, token);
             return ParserState::Init;
         }
 

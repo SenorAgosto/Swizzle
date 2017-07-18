@@ -19,6 +19,8 @@ namespace swizzle { namespace ast { namespace nodes {
     class Struct;
     class StructField;
     class TypeAlias;
+    class VariableBlock;
+    class VariableBlockCase;
 }}}
 
 namespace swizzle { namespace ast {
@@ -47,5 +49,7 @@ namespace swizzle { namespace ast {
         virtual void operator()(nodes::Struct& node) = 0;
         virtual void operator()(nodes::StructField& node) = 0;
         virtual void operator()(nodes::TypeAlias& node) = 0;
+        virtual void operator()(nodes::VariableBlock& node) = 0;
+        virtual void operator()(nodes::VariableBlockCase& node) = 0;
     };
 }}

@@ -1,6 +1,7 @@
 #include "./ut_support/UnitTestSupport.hpp"
 
 #include <swizzle/ast/AbstractSyntaxTree.hpp>
+#include <swizzle/ast/Matcher.hpp>
 #include <swizzle/ast/nodes/Comment.hpp>
 #include <swizzle/ast/nodes/MultilineComment.hpp>
 #include <swizzle/Exceptions.hpp>
@@ -50,12 +51,16 @@ namespace {
 
         CHECK_EQUAL(ParserState::Init, parserState);
 
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto ptr = nodeStack.top();
-        const auto comment = dynamic_cast<nodes::Comment&>(*ptr.get());
+        auto matcher = Matcher().getChildrenOf<nodes::Comment>().bind("comment");
+        matcher(nodeStack.top());
 
+        const auto commentNode = matcher.bound("comment_0");
+        REQUIRE CHECK(commentNode);
+
+        const auto comment = static_cast<nodes::Comment&>(*commentNode);
         CHECK_EQUAL(TokenType::comment, comment.info().token().type());
         CHECK_EQUAL("// this is a comment", comment.info().token().to_string());
     }
@@ -77,12 +82,16 @@ namespace {
 
         CHECK_EQUAL(ParserState::Init, parserState);
 
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto ptr = nodeStack.top();
-        const auto comment = dynamic_cast<nodes::MultilineComment&>(*ptr.get());
+        auto matcher = Matcher().getChildrenOf<nodes::MultilineComment>().bind("comment");
+        matcher(nodeStack.top());
 
+        const auto commentNode = matcher.bound("comment_0");
+        REQUIRE CHECK(commentNode);
+
+        const auto& comment = static_cast<nodes::MultilineComment&>(*commentNode);
         CHECK_EQUAL(TokenType::multiline_comment, comment.info().token().type());
         CHECK_EQUAL("// this is a \\\n multiline comment", comment.info().token().to_string());
     }

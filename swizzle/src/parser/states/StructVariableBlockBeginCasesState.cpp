@@ -1,6 +1,7 @@
 #include <swizzle/parser/states/StructVariableBlockBeginCasesState.hpp>
 
 #include <swizzle/Exceptions.hpp>
+#include <swizzle/ast/Matcher.hpp>
 #include <swizzle/ast/nodes/Comment.hpp>
 #include <swizzle/ast/nodes/MultilineComment.hpp>
 #include <swizzle/ast/nodes/VariableBlockCase.hpp>
@@ -37,7 +38,9 @@ namespace swizzle { namespace parser { namespace states {
         if(type == lexer::TokenType::r_brace)
         {
             const auto& top = nodeStack.top();
-            if(top->empty())
+
+            auto hasNonCommentChildren = ast::Matcher().hasChildNotOf<ast::nodes::Comment, ast::nodes::MultilineComment>();
+            if(!hasNonCommentChildren(top))
             {
                 throw SyntaxError("Expected variable block cases", " empty variable block", token.fileInfo());
             }

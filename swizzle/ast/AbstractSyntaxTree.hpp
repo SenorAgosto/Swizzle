@@ -12,7 +12,9 @@ namespace swizzle { namespace ast {
     public:
         AbstractSyntaxTree();
 
+        const Node::smartptr root() const;
         Node::smartptr root();
+
         void accept(VisitorInterface& visitor);
 
     private:

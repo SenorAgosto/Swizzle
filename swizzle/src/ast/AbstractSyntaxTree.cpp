@@ -8,6 +8,11 @@ namespace swizzle { namespace ast {
     {
     }
 
+    const Node::smartptr AbstractSyntaxTree::root() const
+    {
+        return root_;
+    }
+
     Node::smartptr AbstractSyntaxTree::root()
     {
         return root_;

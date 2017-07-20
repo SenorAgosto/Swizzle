@@ -15,14 +15,14 @@
 #include <swizzle/ast/nodes/VariableBlock.hpp>
 
 #include <swizzle/Exceptions.hpp>
-#include <swizzle/IsIntegerType.hpp>
-#include <swizzle/IsFloatType.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
 #include <swizzle/parser/detail/AppendNode.hpp>
 #include <swizzle/parser/detail/NodeStackTopIs.hpp>
 #include <swizzle/parser/NodeStack.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/TokenStack.hpp>
+#include <swizzle/types/IsIntegerType.hpp>
+#include <swizzle/types/IsFloatType.hpp>
 
 namespace swizzle { namespace parser { namespace states {
 
@@ -131,7 +131,7 @@ namespace swizzle { namespace parser { namespace states {
         if(type == lexer::TokenType::type)
         {
             const auto& value = token.token().value();
-            if(IsIntegerType(value) || IsFloatType(value))
+            if(types::IsIntegerType(value) || types::IsFloatType(value))
             {
                 auto node = detail::appendNode<ast::nodes::StructField>(nodeStack);
                 nodeStack.push(node);

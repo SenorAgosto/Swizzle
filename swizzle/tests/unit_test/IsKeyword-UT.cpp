@@ -1,10 +1,11 @@
 #include "./ut_support/UnitTestSupport.hpp"
-#include <swizzle/IsKeyword.hpp>
+#include <swizzle/types/IsKeyword.hpp>
 
 namespace {
 
     using namespace swizzle;
-
+    using namespace swizzle::types;
+    
     TEST(verifyIsKeyword)
     {
         CHECK(IsKeyword("case"));

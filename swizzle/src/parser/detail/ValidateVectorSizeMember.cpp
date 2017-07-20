@@ -1,8 +1,6 @@
 #include <swizzle/parser/detail/ValidateVectorSizeMember.hpp>
 
 #include <swizzle/Exceptions.hpp>
-#include <swizzle/IsIntegerType.hpp>
-#include <swizzle/IsType.hpp>
 
 #include <swizzle/ast/Matcher.hpp>
 #include <swizzle/ast/matchers/HasFieldNamed.hpp>
@@ -13,6 +11,8 @@
 #include <swizzle/parser/TokenList.hpp>
 #include <swizzle/parser/utils/StackInvert.hpp>
 #include <swizzle/parser/utils/StackToList.hpp>
+#include <swizzle/types/IsIntegerType.hpp>
+#include <swizzle/types/IsType.hpp>
 
 #include "./ContainsNamespace.hpp"
 
@@ -87,11 +87,11 @@ namespace swizzle { namespace parser { namespace detail {
                     const auto ts = field.type();
                     auto type = boost::string_view(ts);
 
-                    if(IsIntegerType(type))
+                    if(types::IsIntegerType(type))
                     {
                         last = true;
                     }
-                    else if(IsType(type))
+                    else if(types::IsType(type))
                     {
                         throw SyntaxError("Vector size member is constructed from unsupported type. Type must be integeral.", " non-integral type", token.fileInfo());
                     }

@@ -1,10 +1,11 @@
 #include "./ut_support/UnitTestSupport.hpp"
-#include <swizzle/IsUnsignedIntegerType.hpp>
+#include <swizzle/types/IsUnsignedIntegerType.hpp>
 
 namespace {
 
     using namespace swizzle;
-
+    using namespace swizzle::types;
+    
     TEST(verifyIsType)
     {
         CHECK(!IsUnsignedIntegerType("case"));

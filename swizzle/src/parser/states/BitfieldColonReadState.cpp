@@ -1,13 +1,13 @@
 #include <swizzle/parser/states/BitfieldColonReadState.hpp>
 
 #include <swizzle/Exceptions.hpp>
-#include <swizzle/IsUnsignedIntegerType.hpp>
 #include <swizzle/ast/nodes/Bitfield.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
 #include <swizzle/parser/detail/NodeStackTopIs.hpp>
 #include <swizzle/parser/NodeStack.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/TokenStack.hpp>
+#include <swizzle/types/IsUnsignedIntegerType.hpp>
 
 namespace swizzle { namespace parser { namespace states {
 
@@ -17,7 +17,7 @@ namespace swizzle { namespace parser { namespace states {
 
         if(type == lexer::TokenType::type)
         {
-            if(!IsUnsignedIntegerType(token.token().value()))
+            if(!types::IsUnsignedIntegerType(token.token().value()))
             {
                 throw SyntaxError("Underlying type must be unsigned integer type", token);
             }

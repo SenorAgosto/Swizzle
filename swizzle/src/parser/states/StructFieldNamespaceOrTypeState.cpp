@@ -3,14 +3,14 @@
 #include <swizzle/ast/nodes/FieldLabel.hpp>
 #include <swizzle/ast/nodes/StructField.hpp>
 #include <swizzle/Exceptions.hpp>
-#include <swizzle/IsIntegerType.hpp>
-#include <swizzle/IsFloatType.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
 #include <swizzle/parser/detail/CreateType.hpp>
 #include <swizzle/parser/detail/NodeStackTopIs.hpp>
 #include <swizzle/parser/NodeStack.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/TokenStack.hpp>
+#include <swizzle/types/IsIntegerType.hpp>
+#include <swizzle/types/IsFloatType.hpp>
 
 namespace swizzle { namespace parser { namespace states {
 
@@ -38,7 +38,7 @@ namespace swizzle { namespace parser { namespace states {
                 const auto t = detail::createType(tokenStack);
                 const auto& value = t.token().value();
 
-                if(IsIntegerType(value) || IsFloatType(value))
+                if(types::IsIntegerType(value) || types::IsFloatType(value))
                 {
                     top.type(value.to_string());
                     top.name(token);

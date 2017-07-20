@@ -1,10 +1,11 @@
 #include "./ut_support/UnitTestSupport.hpp"
-#include <swizzle/IsType.hpp>
+#include <swizzle/types/IsType.hpp>
 
 namespace {
 
     using namespace swizzle;
-
+    using namespace swizzle::types;
+    
     TEST(verifyIsType)
     {
         CHECK(!IsType("case"));

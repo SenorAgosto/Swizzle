@@ -2,6 +2,7 @@
 
 #include <swizzle/ast/Matcher.hpp>
 #include <swizzle/ast/nodes/Comment.hpp>
+#include <swizzle/ast/nodes/MultilineComment.hpp>
 
 #include <swizzle/lexer/Tokenizer.hpp>
 #include <swizzle/parser/Parser.hpp>
@@ -71,6 +72,22 @@ namespace {
     TEST_FIXTURE(WhenInputIsComment, verifyConsume)
     {
         auto matcher = Matcher().hasChildOf<nodes::Comment>();
+        CHECK(!matcher(parser.ast().root()));
+
+        tokenize(sv);
+        parse();
+
+        CHECK(matcher(parser.ast().root()));
+    }
+
+    struct WhenInputIsMultilineComment : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view("// multi-line \\\n   comment");
+    };
+
+    TEST_FIXTURE(WhenInputIsMultilineComment, verifyConsume)
+    {
+        auto matcher = Matcher().hasChildOf<nodes::MultilineComment>();
         CHECK(!matcher(parser.ast().root()));
 
         tokenize(sv);

@@ -5,6 +5,7 @@
 #include <swizzle/ast/nodes/Extern.hpp>
 #include <swizzle/ast/nodes/Import.hpp>
 #include <swizzle/ast/nodes/MultilineComment.hpp>
+#include <swizzle/ast/nodes/Namespace.hpp>
 
 #include <swizzle/lexer/Tokenizer.hpp>
 #include <swizzle/parser/Parser.hpp>
@@ -231,5 +232,71 @@ namespace {
 
         const auto& external = static_cast<nodes::Extern&>(*node);
         CHECK_EQUAL("foo::bar::baz::Magui", external.externType().token().to_string());
+    }
+
+    struct WhenInputIsNamespace : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view("namespace foo;");
+    };
+
+    TEST_FIXTURE(WhenInputIsNamespace, verifyConsume)
+    {
+        auto matcher = Matcher().getChildrenOf<nodes::Namespace>().bind("namespace");
+        CHECK(!matcher(parser.ast().root()));
+
+        tokenize(sv);
+        parse();
+
+        CHECK(matcher(parser.ast().root()));
+
+        const auto node = matcher.bound("namespace_0");
+        REQUIRE CHECK(node);
+
+        const auto& nameSpace = static_cast<nodes::Namespace&>(*node);
+        CHECK_EQUAL("foo", nameSpace.info().token().to_string());
+    }
+
+    struct WhenInputIsNestedNamespace : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view("namespace foo::bar;");
+    };
+
+    TEST_FIXTURE(WhenInputIsNestedNamespace, verifyConsume)
+    {
+        auto matcher = Matcher().getChildrenOf<nodes::Namespace>().bind("namespace");
+        CHECK(!matcher(parser.ast().root()));
+
+        tokenize(sv);
+        parse();
+
+        CHECK(matcher(parser.ast().root()));
+
+        const auto node = matcher.bound("namespace_0");
+        REQUIRE CHECK(node);
+
+        const auto& nameSpace = static_cast<nodes::Namespace&>(*node);
+        CHECK_EQUAL("foo::bar", nameSpace.info().token().to_string());
+    }
+
+    struct WhenInputIsMultipleNestedNamespaces : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view("namespace foo::bar::baz;");
+    };
+
+    TEST_FIXTURE(WhenInputIsMultipleNestedNamespaces, verifyConsume)
+    {
+        auto matcher = Matcher().getChildrenOf<nodes::Namespace>().bind("namespace");
+        CHECK(!matcher(parser.ast().root()));
+
+        tokenize(sv);
+        parse();
+
+        CHECK(matcher(parser.ast().root()));
+
+        const auto node = matcher.bound("namespace_0");
+        REQUIRE CHECK(node);
+
+        const auto& nameSpace = static_cast<nodes::Namespace&>(*node);
+        CHECK_EQUAL("foo", nameSpace.info().token().to_string());
     }
 }

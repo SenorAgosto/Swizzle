@@ -132,13 +132,11 @@ namespace {
     {
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
-        CHECK_EQUAL(100U, boost::get<std::uint64_t>(context.CurrentEnumValue.value())); // I wanted to use visitor here, but got stuck on ambigous calls error
 
         const auto parserState = state.consume(info, nodeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StartEnum, parserState);
 
-        CHECK_EQUAL(0U, boost::get<std::uint64_t>(context.CurrentEnumValue.value()));
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
         REQUIRE CHECK_EQUAL(1U, tokenStack.size());
     }

@@ -9,9 +9,11 @@
 #include <swizzle/parser/TokenStack.hpp>
 #include <swizzle/types/IsIntegerType.hpp>
 
+#include <cstdint>
+
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState EnumColonReadState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack&, ParserStateContext&)
+    ParserState EnumColonReadState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack&, ParserStateContext& context)
     {
         const auto type = token.token().type();
         const auto& value = token.token().value();
@@ -27,13 +29,59 @@ namespace swizzle { namespace parser { namespace states {
             {
                 auto& top = static_cast<ast::nodes::Enum&>(*nodeStack.top());
                 top.underlying(token);
-            }
-            else
-            {
-                throw ParserError("Internal parser error: expected top of node stack to be ast::nodes::Enum");
+
+                if(value == "u8")
+                {
+                    context.CurrentEnumValue = types::EnumValue(std::uint8_t(0));
+                    return ParserState::EnumUnderlyingType;
+                }
+
+                if(value == "u16")
+                {
+                    context.CurrentEnumValue = types::EnumValue(std::uint16_t(0));
+                    return ParserState::EnumUnderlyingType;
+                }
+
+                if(value == "u32")
+                {
+                    context.CurrentEnumValue = types::EnumValue(std::uint32_t(0));
+                    return ParserState::EnumUnderlyingType;
+                }
+
+                if(value == "u64")
+                {
+                    context.CurrentEnumValue = types::EnumValue(std::uint64_t(0));
+                    return ParserState::EnumUnderlyingType;
+                }
+
+                if(value == "i8")
+                {
+                    context.CurrentEnumValue = types::EnumValue(std::int8_t(0));
+                    return ParserState::EnumUnderlyingType;
+                }
+
+                if(value == "i16")
+                {
+                    context.CurrentEnumValue = types::EnumValue(std::int16_t(0));
+                    return ParserState::EnumUnderlyingType;
+                }
+
+                if(value == "i32")
+                {
+                    context.CurrentEnumValue = types::EnumValue(std::int32_t(0));
+                    return ParserState::EnumUnderlyingType;
+                }
+
+                if(value == "i64")
+                {
+                    context.CurrentEnumValue = types::EnumValue(std::int64_t(0));
+                    return ParserState::EnumUnderlyingType;
+                }
+
+                throw SyntaxError("Expecting integer enum underyling type", token);
             }
 
-            return ParserState::EnumUnderlyingType;
+            throw ParserError("Internal parser error: expected top of node stack to be ast::nodes::Enum");
         }
 
         throw SyntaxError("Expecting enum underlying type", token);

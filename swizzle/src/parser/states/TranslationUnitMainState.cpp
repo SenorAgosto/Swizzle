@@ -101,8 +101,6 @@ namespace swizzle { namespace parser { namespace states {
             if(value == "enum")
             {
                 tokenStack.push(token);
-                context.CurrentEnumValue = types::EnumValue();
-
                 return ParserState::StartEnum;
             }
 

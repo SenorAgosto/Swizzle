@@ -100,6 +100,17 @@ namespace {
         CHECK(matcher(parser.ast().root()));
     }
 
+    struct WhenInputIsImportAndFileDoesntExist : public ParserFixture
+    {
+        const boost::string_view sv= boost::string_view("import Flan;");
+    };
+
+    TEST_FIXTURE(WhenInputIsImportAndFileDoesntExist, verifyConsume)
+    {
+        tokenize(sv);
+        CHECK_THROW(parse(), swizzle::ParserError);
+    }
+
     struct WhenInputIsImport : public ParserFixture
     {
         WhenInputIsImport()

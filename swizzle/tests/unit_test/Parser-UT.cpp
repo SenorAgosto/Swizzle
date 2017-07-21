@@ -308,6 +308,6 @@ namespace {
         REQUIRE CHECK(node);
 
         const auto& nameSpace = static_cast<nodes::Namespace&>(*node);
-        CHECK_EQUAL("foo", nameSpace.info().token().to_string());
+        CHECK_EQUAL("foo::bar::baz", nameSpace.info().token().to_string());
     }
 }

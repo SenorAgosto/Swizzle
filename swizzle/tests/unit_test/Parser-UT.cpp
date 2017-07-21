@@ -130,4 +130,39 @@ namespace {
         const auto& import = static_cast<nodes::Import&>(*node);
         CHECK_EQUAL("Flan.swizzle", import.path());
     }
+
+    struct WhenInputIsImportWithNamespace : public ParserFixture
+    {
+        WhenInputIsImportWithNamespace()
+        {
+            boost::filesystem::create_directories(testFile.parent_path());
+            boost::filesystem::fstream file(testFile, std::ios::out | std::ios::app);
+        }
+
+        ~WhenInputIsImportWithNamespace()
+        {
+            boost::filesystem::remove(testFile);
+            boost::filesystem::remove_all("./foo");
+        }
+
+        const boost::string_view sv = boost::string_view("import foo::bar::Flan;");
+        const boost::filesystem::path testFile = boost::filesystem::path("foo/bar/Flan.swizzle");
+    };
+
+    TEST_FIXTURE(WhenInputIsImportWithNamespace, verifyConsume)
+    {
+        auto matcher = Matcher().getChildrenOf<nodes::Import>().bind("import");
+        CHECK(!matcher(parser.ast().root()));
+
+        tokenize(sv);
+        parse();
+
+        CHECK(matcher(parser.ast().root()));
+
+        const auto node = matcher.bound("import_0");
+        REQUIRE CHECK(node);
+
+        const auto& import = static_cast<nodes::Import&>(*node);
+        CHECK_EQUAL("foo/bar/Flan.swizzle", import.path());
+    }
 }

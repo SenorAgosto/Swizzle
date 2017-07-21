@@ -2,6 +2,7 @@
 
 #include <swizzle/ast/Matcher.hpp>
 #include <swizzle/ast/nodes/Comment.hpp>
+#include <swizzle/ast/nodes/Extern.hpp>
 #include <swizzle/ast/nodes/Import.hpp>
 #include <swizzle/ast/nodes/MultilineComment.hpp>
 
@@ -164,5 +165,71 @@ namespace {
 
         const auto& import = static_cast<nodes::Import&>(*node);
         CHECK_EQUAL("foo/bar/Flan.swizzle", import.path());
+    }
+
+    struct WhenInputIsExtern : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view("extern Magui;");
+    };
+
+    TEST_FIXTURE(WhenInputIsExtern, verifyConsume)
+    {
+        auto matcher = Matcher().getChildrenOf<nodes::Extern>().bind("extern");
+        CHECK(!matcher(parser.ast().root()));
+
+        tokenize(sv);
+        parse();
+
+        CHECK(matcher(parser.ast().root()));
+
+        const auto node = matcher.bound("extern_0");
+        REQUIRE CHECK(node);
+
+        const auto& external = static_cast<nodes::Extern&>(*node);
+        CHECK_EQUAL("Magui", external.externType().token().to_string());
+    }
+
+    struct WhenInputIsExternWithNamespace : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view("extern foo::Magui;");
+    };
+
+    TEST_FIXTURE(WhenInputIsExternWithNamespace, verifyConsume)
+    {
+        auto matcher = Matcher().getChildrenOf<nodes::Extern>().bind("extern");
+        CHECK(!matcher(parser.ast().root()));
+
+        tokenize(sv);
+        parse();
+
+        CHECK(matcher(parser.ast().root()));
+
+        const auto node = matcher.bound("extern_0");
+        REQUIRE CHECK(node);
+
+        const auto& external = static_cast<nodes::Extern&>(*node);
+        CHECK_EQUAL("foo::Magui", external.externType().token().to_string());
+    }
+
+    struct WhenInputIsExternWithMultipleNamespaces : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view("extern foo::bar::baz::Magui;");
+    };
+
+    TEST_FIXTURE(WhenInputIsExternWithMultipleNamespaces, verifyConsume)
+    {
+        auto matcher = Matcher().getChildrenOf<nodes::Extern>().bind("extern");
+        CHECK(!matcher(parser.ast().root()));
+
+        tokenize(sv);
+        parse();
+
+        CHECK(matcher(parser.ast().root()));
+
+        const auto node = matcher.bound("extern_0");
+        REQUIRE CHECK(node);
+
+        const auto& external = static_cast<nodes::Extern&>(*node);
+        CHECK_EQUAL("foo::bar::baz::Magui", external.externType().token().to_string());
     }
 }

@@ -2,11 +2,13 @@
 
 #include <swizzle/ast/Matcher.hpp>
 #include <swizzle/ast/nodes/Comment.hpp>
+#include <swizzle/ast/nodes/Import.hpp>
 #include <swizzle/ast/nodes/MultilineComment.hpp>
 
 #include <swizzle/lexer/Tokenizer.hpp>
 #include <swizzle/parser/Parser.hpp>
 
+#include <boost/filesystem.hpp>
 #include <boost/utility/string_view.hpp>
 #include <deque>
 
@@ -94,5 +96,38 @@ namespace {
         parse();
 
         CHECK(matcher(parser.ast().root()));
+    }
+
+    struct WhenInputIsImport : public ParserFixture
+    {
+        WhenInputIsImport()
+        {
+            boost::filesystem::fstream file(testFile, std::ios::out | std::ios::app);
+        }
+
+        ~WhenInputIsImport()
+        {
+            boost::filesystem::remove(testFile);
+        }
+
+        const boost::string_view sv = boost::string_view("import Flan;");
+        const boost::filesystem::path testFile = boost::filesystem::path("Flan.swizzle");
+    };
+
+    TEST_FIXTURE(WhenInputIsImport, verifyConsume)
+    {
+        auto matcher = Matcher().getChildrenOf<nodes::Import>().bind("import");
+        CHECK(!matcher(parser.ast().root()));
+
+        tokenize(sv);
+        parse();
+
+        CHECK(matcher(parser.ast().root()));
+
+        const auto node = matcher.bound("import_0");
+        REQUIRE CHECK(node);
+
+        const auto& import = static_cast<nodes::Import&>(*node);
+        CHECK_EQUAL("Flan.swizzle", import.path());
     }
 }

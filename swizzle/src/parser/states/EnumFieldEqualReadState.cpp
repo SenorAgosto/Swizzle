@@ -39,7 +39,9 @@ namespace swizzle { namespace parser { namespace states {
         {
             static const bool isHex = true;
             enumField.value(types::setValue<isHex>(underlying.token().value(), token.token().value()));
+
             context.CurrentEnumValue = enumField.value();
+            context.CurrentEnumValue.increment();
 
             return ParserState::EnumFieldValueRead;
         }
@@ -48,7 +50,9 @@ namespace swizzle { namespace parser { namespace states {
         {
             static const bool isNotHex = false;
             enumField.value(types::setValue<isNotHex>(underlying.token().value(), token.token().value()));
+
             context.CurrentEnumValue = enumField.value();
+            context.CurrentEnumValue.increment();
 
             return ParserState::EnumFieldValueRead;
         }
@@ -60,7 +64,9 @@ namespace swizzle { namespace parser { namespace states {
             trimValue.remove_suffix(1); // remove trailing '
 
             enumField.value(types::setValueFromChar(underlying.token().value(), trimValue));
+
             context.CurrentEnumValue = enumField.value();
+            context.CurrentEnumValue.increment();
             
             return ParserState::EnumFieldValueRead;
         }

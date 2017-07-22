@@ -13,64 +13,83 @@
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState EnumFieldEqualReadState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack&, ParserStateContext& context)
+    namespace {
+        // implementation is wrapped in a try/catch
+        ParserState consumeImpl(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack&, ParserStateContext& context)
+        {
+            const auto type = token.token().type();
+
+            if(!detail::nodeStackTopIs<ast::nodes::EnumField>(nodeStack))
+            {
+                throw ParserError("Internal parser error, top of stack is not ast::nodes::EnumField");
+            }
+
+            auto enumFieldNode = nodeStack.top();
+            auto& enumField = static_cast<ast::nodes::EnumField&>(*enumFieldNode);
+            nodeStack.pop();
+
+            if(!detail::nodeStackTopIs<ast::nodes::Enum>(nodeStack))
+            {
+                throw ParserError("Internal parser error, node below top of stack is not ast::nodes::Enum");
+            }
+
+            const auto& top = static_cast<ast::nodes::Enum&>(*nodeStack.top());
+            const auto underlying = top.underlying();
+            nodeStack.push(enumFieldNode);
+
+            if(type == lexer::TokenType::hex_literal)
+            {
+                static const bool isHex = true;
+                enumField.value(types::setValue<isHex>(underlying.token().value(), token.token().value()));
+
+                context.CurrentEnumValue = enumField.value();
+                context.CurrentEnumValue.increment();
+
+                return ParserState::EnumFieldValueRead;
+            }
+
+            if(type == lexer::TokenType::numeric_literal)
+            {
+                static const bool isNotHex = false;
+                enumField.value(types::setValue<isNotHex>(underlying.token().value(), token.token().value()));
+
+                context.CurrentEnumValue = enumField.value();
+                context.CurrentEnumValue.increment();
+
+                return ParserState::EnumFieldValueRead;
+            }
+
+            if(type == lexer::TokenType::char_literal)
+            {
+                auto trimValue = token.token().value();
+                trimValue.remove_prefix(1); // remove leading '
+                trimValue.remove_suffix(1); // remove trailing '
+
+                enumField.value(types::setValueFromChar(underlying.token().value(), trimValue));
+
+                context.CurrentEnumValue = enumField.value();
+                context.CurrentEnumValue.increment();
+                
+                return ParserState::EnumFieldValueRead;
+            }
+
+            throw SyntaxError("Expected literal value", token);
+        }
+    }
+
+    ParserState EnumFieldEqualReadState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack& tokenStack, ParserStateContext& context)
     {
-        const auto type = token.token().type();
-
-        if(!detail::nodeStackTopIs<ast::nodes::EnumField>(nodeStack))
+        try
         {
-            throw ParserError("Internal parser error, top of stack is not ast::nodes::EnumField");
+            return consumeImpl(token, nodeStack, tokenStack, context);
         }
-
-        auto enumFieldNode = nodeStack.top();
-        auto& enumField = static_cast<ast::nodes::EnumField&>(*enumFieldNode);
-        nodeStack.pop();
-
-        if(!detail::nodeStackTopIs<ast::nodes::Enum>(nodeStack))
+        catch(const boost::bad_numeric_cast&)
         {
-            throw ParserError("Internal parser error, node below top of stack is not ast::nodes::Enum");
+            throw SyntaxError("Enum field value overflows underlying type", token);
         }
-
-        const auto& top = static_cast<ast::nodes::Enum&>(*nodeStack.top());
-        const auto underlying = top.underlying();
-        nodeStack.push(enumFieldNode);
-
-        if(type == lexer::TokenType::hex_literal)
+        catch(const StreamNotFullyConsumed& valueError)
         {
-            static const bool isHex = true;
-            enumField.value(types::setValue<isHex>(underlying.token().value(), token.token().value()));
-
-            context.CurrentEnumValue = enumField.value();
-            context.CurrentEnumValue.increment();
-
-            return ParserState::EnumFieldValueRead;
+            throw SyntaxError("Enum field value overflows undelying type", token);
         }
-
-        if(type == lexer::TokenType::numeric_literal)
-        {
-            static const bool isNotHex = false;
-            enumField.value(types::setValue<isNotHex>(underlying.token().value(), token.token().value()));
-
-            context.CurrentEnumValue = enumField.value();
-            context.CurrentEnumValue.increment();
-
-            return ParserState::EnumFieldValueRead;
-        }
-
-        if(type == lexer::TokenType::char_literal)
-        {
-            auto trimValue = token.token().value();
-            trimValue.remove_prefix(1); // remove leading '
-            trimValue.remove_suffix(1); // remove trailing '
-
-            enumField.value(types::setValueFromChar(underlying.token().value(), trimValue));
-
-            context.CurrentEnumValue = enumField.value();
-            context.CurrentEnumValue.increment();
-            
-            return ParserState::EnumFieldValueRead;
-        }
-
-        throw SyntaxError("Expected literal value", token);
     }
 }}}

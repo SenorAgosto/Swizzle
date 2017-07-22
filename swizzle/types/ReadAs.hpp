@@ -1,87 +1,60 @@
 #pragma once
+#include <swizzle/Exceptions.hpp>
 
+#include <boost/lexical_cast.hpp>
+#include <boost/numeric/conversion/cast.hpp>
 #include <boost/utility/string_view.hpp>
 #include <cstdint>
 #include <stdexcept>
 #include <sstream>
+#include <string>
 #include <type_traits>
 
 namespace swizzle { namespace types {
 
-    // @isHex should be true if the stream has a hex value in the form 0x01
-    template<class T, bool isHex>
+    template<class T>
     T readAs(const boost::string_view& value)
     {
-        static_assert(! std::is_same<T, std::uint8_t>::value, "Cannot instantiate this function with std::uint8_t, use the overloads readAsU8() and readAsI8() instead.");
-        
-        if(isHex)
-        {
-            // trim leading 0x
-            std::istringstream is(value.data() + 2, value.length() - 2);
+        static_assert(!std::is_same<T, std::uint8_t>::value && !std::is_same<T, std::int8_t>::value, "Do not instantiate this function template with uint8_t or int8_t types.");
 
-            T t = 0;
-            is >> std::hex >> t;
-
-            return t;
-        }
-
-        std::istringstream is(value.data(), value.length());
+        std::istringstream is(std::string(value.data(), value.length()));
 
         T t = 0;
         is >> t;
 
+        if(!is.eof())
+        {
+            throw StreamNotFullyConsumed(value);
+        }
+
         return t;
     }
 
-    template<bool isHex>
-    std::uint8_t readAsU8(const boost::string_view& value)
+    template<class T>
+    T readAsHex(const boost::string_view& value)
     {
-        if(isHex)
+        if(value.length() != (sizeof(T) * 2 + 2))
         {
-            if(value.length() != 4)
-            {
-                throw std::out_of_range("'value.length() != 4' in readAsU8<isHex=true>()");
-            }
-
-            std::istringstream is(value.data() + 2, value.length() - 2);
-
-            std::uint16_t t = 0;
-            is >> std::hex >> t;
-
-            return static_cast<std::uint8_t>(t);
+            throw std::out_of_range("'value.length != " + boost::lexical_cast<std::string>(sizeof(T) + 2) + "' in readAsHex()");
         }
 
-        std::istringstream is(value.data(), value.length());
+        // trim leading 0x
+        std::istringstream is(std::string(value.data() + 2, value.length() - 2));
 
-        std::uint16_t t = 0;
-        is >> t;
+        T t = 0;
+        is >> std::hex >> t;
 
-        return static_cast<std::uint8_t>(t);
-    }
-
-    template<bool isHex>
-    std::int8_t readAsI8(const boost::string_view& value)
-    {
-        if(isHex)
+        if(!is.eof())
         {
-            if(value.length() != 4)
-            {
-                throw std::out_of_range("'value.length() != 4' in readAsU8<isHex=true>()");
-            }
-
-            std::istringstream is(value.data() + 2, value.length() - 2);
-
-            std::int16_t t = 0;
-            is >> std::hex >> t;
-
-            return static_cast<std::int8_t>(t);
+            throw StreamNotFullyConsumed(value);
         }
 
-        std::istringstream is(value.data(), value.length());
-
-        std::int16_t t = 0;
-        is >> t;
-
-        return static_cast<std::int8_t>(t);
+        return t;
     }
+
+    std::uint8_t readAsU8(const boost::string_view& value);
+    std::uint8_t readAsHexU8(const boost::string_view& value);
+
+    std::int8_t readAsI8(const boost::string_view& value);
+    std::int8_t readAsHexI8(const boost::string_view& value);
 }}

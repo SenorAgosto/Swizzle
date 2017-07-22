@@ -11,6 +11,8 @@
 #include <swizzle/types/SetValue.hpp>
 #include <swizzle/types/SetValueFromChar.hpp>
 
+#include <boost/numeric/conversion/cast.hpp>
+
 namespace swizzle { namespace parser { namespace states {
 
     namespace {
@@ -39,8 +41,7 @@ namespace swizzle { namespace parser { namespace states {
 
             if(type == lexer::TokenType::hex_literal)
             {
-                static const bool isHex = true;
-                enumField.value(types::setValue<isHex>(underlying.token().value(), token.token().value()));
+                enumField.value(types::setValue(underlying.token().value(), token.token().value(), types::isHex));
 
                 context.CurrentEnumValue = enumField.value();
                 context.CurrentEnumValue.increment();
@@ -51,7 +52,7 @@ namespace swizzle { namespace parser { namespace states {
             if(type == lexer::TokenType::numeric_literal)
             {
                 static const bool isNotHex = false;
-                enumField.value(types::setValue<isNotHex>(underlying.token().value(), token.token().value()));
+                enumField.value(types::setValue(underlying.token().value(), token.token().value()));
 
                 context.CurrentEnumValue = enumField.value();
                 context.CurrentEnumValue.increment();

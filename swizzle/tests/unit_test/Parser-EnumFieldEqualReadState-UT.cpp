@@ -67,14 +67,10 @@ namespace {
 
         CHECK_EQUAL(ParserState::EnumFieldValueRead, parserState);
 
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(3U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        auto matcher = Matcher().getChildrenOf<nodes::EnumField>().bind("fields");
-        REQUIRE CHECK(matcher(nodeStack.top()));
-
-        auto node = matcher.bound("fields_0");
-        const auto& field = dynamic_cast<nodes::EnumField&>(*node);
+        const auto& field = dynamic_cast<nodes::EnumField&>(*nodeStack.top());
         const auto& value = field.value();
 
         REQUIRE CHECK_EQUAL(0, value.which());
@@ -98,14 +94,10 @@ namespace {
 
         CHECK_EQUAL(ParserState::EnumFieldValueRead, parserState);
 
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(3U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        auto matcher = Matcher().getChildrenOf<nodes::EnumField>().bind("fields");
-        REQUIRE CHECK(matcher(nodeStack.top()));
-
-        auto node = matcher.bound("fields_0");
-        const auto& field = dynamic_cast<nodes::EnumField&>(*node);
+        const auto& field = dynamic_cast<nodes::EnumField&>(*nodeStack.top());
         const auto& value = field.value();
 
         REQUIRE CHECK_EQUAL(0, value.which());
@@ -129,14 +121,10 @@ namespace {
 
         CHECK_EQUAL(ParserState::EnumFieldValueRead, parserState);
 
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(3U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        auto matcher = Matcher().getChildrenOf<nodes::EnumField>().bind("fields");
-        REQUIRE CHECK(matcher(nodeStack.top()));
-
-        auto node = matcher.bound("fields_0");
-        const auto& field = dynamic_cast<nodes::EnumField&>(*node);
+        const auto& field = dynamic_cast<nodes::EnumField&>(*nodeStack.top());
         const auto& value = field.value();
 
         REQUIRE CHECK_EQUAL(0, value.which());

@@ -22,8 +22,9 @@ namespace swizzle { namespace parser { namespace states {
             throw ParserError("Internal parser error, top of stack is not ast::nodes::EnumField");
         }
 
-        auto& enumField = static_cast<ast::nodes::EnumField&>(*nodeStack.top());
-        nodeStack.pop(); // enumField is attached to Enum, so it shouldn't go out of scope here
+        auto enumFieldNode = nodeStack.top();
+        auto& enumField = static_cast<ast::nodes::EnumField&>(*enumFieldNode);
+        nodeStack.pop();
 
         if(!detail::nodeStackTopIs<ast::nodes::Enum>(nodeStack))
         {
@@ -32,6 +33,7 @@ namespace swizzle { namespace parser { namespace states {
 
         const auto& top = static_cast<ast::nodes::Enum&>(*nodeStack.top());
         const auto underlying = top.underlying();
+        nodeStack.push(enumFieldNode);
 
         if(type == lexer::TokenType::hex_literal)
         {

@@ -1,4 +1,6 @@
-#pragma once 
+#pragma once
+
+#include <boost/utility/string_view.hpp> 
 #include <cstdint>
 #include <stdexcept>
 #include <string>
@@ -21,7 +23,16 @@ namespace swizzle {
     public:
         ParserError(const std::string& reason);
     };
-    
+
+    class StreamNotFullyConsumed : std::runtime_error
+    {
+    public:
+        StreamNotFullyConsumed(const boost::string_view& value);
+
+    private:
+        boost::string_view value_;
+    };
+
     class TokenizerError : public std::runtime_error
     {
     public:

@@ -77,12 +77,6 @@ namespace swizzle {
     {
     }
 
-    StreamNotFullyConsumed::StreamNotFullyConsumed(const boost::string_view& value)
-        : std::runtime_error("Stream not fully consumed.")
-        , value_(value)
-    {
-    }
-
     TokenizerError::TokenizerError(const std::string& reason)
         : std::runtime_error(reason)
     {

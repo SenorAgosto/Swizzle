@@ -47,16 +47,7 @@ namespace swizzle {
     public:
         StreamInputCausesUnderflow(const std::string& s);
     };
-
-    class StreamNotFullyConsumed : std::runtime_error
-    {
-    public:
-        StreamNotFullyConsumed(const boost::string_view& value);
-
-    private:
-        boost::string_view value_;
-    };
-
+    
     class TokenizerError : public std::runtime_error
     {
     public:

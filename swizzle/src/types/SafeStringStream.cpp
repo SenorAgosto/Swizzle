@@ -1,7 +1,6 @@
 #include <swizzle/types/SafeStringStream.hpp>
 #include <swizzle/Exceptions.hpp>
 
-#include <boost/numeric/conversion/cast.hpp>
 #include <limits>
 
 namespace swizzle { namespace types {
@@ -46,20 +45,6 @@ namespace swizzle { namespace types {
             return t;
         }
 
-        // convert std::uint16_t -> std::uint8_t, catch boost::bad_numeric_cast and raise our exception
-        // instead.
-        std::uint8_t convert_to_u8(const std::uint16_t v, char const * const input, const std::size_t length)
-        {
-            try
-            {
-                return boost::numeric_cast<std::uint8_t>(v);
-            }
-            catch(const boost::bad_numeric_cast&)
-            {
-                throw StreamInputCausesOverflow(std::string(input, length));
-            }
-        }
-
         // specialization for u8 which can rollover badly enough we can't detect it.
         template<>
         std::uint8_t ReadUnsigned(char const * const input, const std::size_t length)
@@ -78,7 +63,6 @@ namespace swizzle { namespace types {
             }
 
             std::uint16_t t = 0;
-            std::uint16_t previous = 0;
 
             char const* spot = input;
             char const* end = input + length;
@@ -88,15 +72,13 @@ namespace swizzle { namespace types {
                 t *= 10;
                 t += *spot - '0';
 
-                if((t < previous) && (previous != 0))
+                if(t > 255)
                 {
                     throw StreamInputCausesOverflow(std::string(input, length));
                 }
-
-                previous = t;
             }
 
-            return convert_to_u8(t, input, length);
+            return static_cast<std::uint8_t>(t);
         }
 
 

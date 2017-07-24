@@ -9,12 +9,12 @@ namespace swizzle { namespace types {
     {
         if(underlying == "u8")
         {
-            return readAsU8(value);
+            return readAs<std::uint8_t>(value);
         }
 
         if(underlying == "i8")
         {
-            return readAsI8(value);
+            return readAs<std::int8_t>(value);
         }
 
         if(underlying == "u16")
@@ -54,12 +54,12 @@ namespace swizzle { namespace types {
     {
         if(underlying == "u8")
         {
-            return readAsHexU8(value);
+            return readAsHex<std::uint8_t>(value);
         }
 
         if(underlying == "i8")
         {
-            return readAsHexI8(value);
+            return readAsHex<std::int8_t>(value);
         }
 
         if(underlying == "u16")

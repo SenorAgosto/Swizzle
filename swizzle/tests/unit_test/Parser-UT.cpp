@@ -613,4 +613,20 @@ namespace {
         tokenize(sv);
         CHECK_THROW(parse(), swizzle::SyntaxError);
     }
+
+    struct WhenInputIsEnumWithOutOfRangeHexLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "enum Metal : u8 {" "\n"
+            "\t" "gold = 0xabba," "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsEnumWithOutOfRangeHexLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        CHECK_THROW(parse(), swizzle::SyntaxError);
+    }
 }

@@ -51,7 +51,6 @@ namespace swizzle { namespace parser { namespace states {
 
             if(type == lexer::TokenType::numeric_literal)
             {
-                static const bool isNotHex = false;
                 enumField.value(types::setValue(underlying.token().value(), token.token().value()));
 
                 context.CurrentEnumValue = enumField.value();
@@ -84,13 +83,17 @@ namespace swizzle { namespace parser { namespace states {
         {
             return consumeImpl(token, nodeStack, tokenStack, context);
         }
-        catch(const boost::bad_numeric_cast&)
+        catch(const StreamInputCausesOverflow&)
         {
             throw SyntaxError("Enum field value overflows underlying type", token);
         }
-        catch(const StreamNotFullyConsumed& valueError)
+        catch(const StreamInputCausesUnderflow& valueError)
         {
-            throw SyntaxError("Enum field value overflows undelying type", token);
+            throw SyntaxError("Enum field value underflows undelying type", token);
+        }
+        catch(const InvalidStreamInput&)
+        {
+            throw SyntaxError("Enum field value contais an invalid character", token);
         }
     }
 }}}

@@ -52,14 +52,28 @@ namespace swizzle {
         }
     }
 
+    InvalidStreamInput::InvalidStreamInput(const std::string& s)
+        : std::runtime_error("Invalid character encountered in safe_istringstream: '" + s + "'")
+    {
+    }
+
     ParserError::ParserError(const std::string& reason)
         : std::runtime_error(reason)
     {
     }
 
-    StreamNotFullyConsumed::StreamNotFullyConsumed(const boost::string_view& value)
-        : std::runtime_error("Stream not fully consumed.")
-        , value_(value)
+    StreamEmpty::StreamEmpty()
+        : std::runtime_error("safe_istringstream empty when insertion operator called.")
+    {
+    }
+
+    StreamInputCausesOverflow::StreamInputCausesOverflow(const std::string& s)
+        : std::runtime_error("Input caused value overflow in safe_istringstream: '" + s + "'")
+    {
+    }
+
+    StreamInputCausesUnderflow::StreamInputCausesUnderflow(const std::string& s)
+        : std::runtime_error("Input caused value underflow in safe_istringstream: '" + s + "'")
     {
     }
 

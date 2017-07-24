@@ -18,21 +18,36 @@ namespace swizzle { namespace parser {
 
 namespace swizzle {
 
+    class InvalidStreamInput : public std::runtime_error
+    {
+    public:
+        InvalidStreamInput(const std::string& sv);
+    };
+
     class ParserError : public std::runtime_error
     {
     public:
         ParserError(const std::string& reason);
     };
 
-    class StreamNotFullyConsumed : std::runtime_error
+    class StreamEmpty : std::runtime_error
     {
     public:
-        StreamNotFullyConsumed(const boost::string_view& value);
-
-    private:
-        boost::string_view value_;
+        StreamEmpty();
     };
 
+    class StreamInputCausesOverflow : public std::runtime_error
+    {
+    public:
+        StreamInputCausesOverflow(const std::string& s);
+    };
+
+    class StreamInputCausesUnderflow : public std::runtime_error
+    {
+    public:
+        StreamInputCausesUnderflow(const std::string& s);
+    };
+    
     class TokenizerError : public std::runtime_error
     {
     public:

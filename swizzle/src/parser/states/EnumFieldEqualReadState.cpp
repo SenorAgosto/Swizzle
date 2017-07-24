@@ -11,6 +11,8 @@
 #include <swizzle/types/SetValue.hpp>
 #include <swizzle/types/SetValueFromChar.hpp>
 
+#include <boost/numeric/conversion/cast.hpp>
+
 namespace swizzle { namespace parser { namespace states {
 
     namespace {
@@ -39,8 +41,7 @@ namespace swizzle { namespace parser { namespace states {
 
             if(type == lexer::TokenType::hex_literal)
             {
-                static const bool isHex = true;
-                enumField.value(types::setValue<isHex>(underlying.token().value(), token.token().value()));
+                enumField.value(types::setValue(underlying.token().value(), token.token().value(), types::isHex));
 
                 context.CurrentEnumValue = enumField.value();
                 context.CurrentEnumValue.increment();
@@ -50,8 +51,7 @@ namespace swizzle { namespace parser { namespace states {
 
             if(type == lexer::TokenType::numeric_literal)
             {
-                static const bool isNotHex = false;
-                enumField.value(types::setValue<isNotHex>(underlying.token().value(), token.token().value()));
+                enumField.value(types::setValue(underlying.token().value(), token.token().value()));
 
                 context.CurrentEnumValue = enumField.value();
                 context.CurrentEnumValue.increment();
@@ -83,13 +83,17 @@ namespace swizzle { namespace parser { namespace states {
         {
             return consumeImpl(token, nodeStack, tokenStack, context);
         }
-        catch(const boost::bad_numeric_cast&)
+        catch(const StreamInputCausesOverflow&)
         {
             throw SyntaxError("Enum field value overflows underlying type", token);
         }
-        catch(const StreamNotFullyConsumed& valueError)
+        catch(const StreamInputCausesUnderflow& valueError)
         {
-            throw SyntaxError("Enum field value overflows undelying type", token);
+            throw SyntaxError("Enum field value underflows undelying type", token);
+        }
+        catch(const InvalidStreamInput&)
+        {
+            throw SyntaxError("Enum field value contais an invalid character", token);
         }
     }
 }}}

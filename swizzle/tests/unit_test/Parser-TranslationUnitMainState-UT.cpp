@@ -143,7 +143,7 @@ namespace {
 
     struct WhenNextTokenIsBitfieldKeyword : public TranslationUnitMainStateFixture
     {
-        const Token token = Token("bitfield", 0, 8, TokenType::keyword);
+        const Token token = Token("bitfield", 0, 8, TokenType::type);
         const FileInfo fileInfo = FileInfo("test.swizzle");
 
         const TokenInfo info = TokenInfo(token, fileInfo);

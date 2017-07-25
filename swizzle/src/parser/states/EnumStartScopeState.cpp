@@ -15,7 +15,7 @@
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState EnumStartScopeState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack&, ParserStateContext&)
+    ParserState EnumStartScopeState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack&, ParserStateContext& context)
     {
         const auto type = token.token().type();
 
@@ -56,7 +56,9 @@ namespace swizzle { namespace parser { namespace states {
                     throw SyntaxError("Enum must have fields", "no fields declared in '" + top.name() + "'", token.fileInfo());
                 }
 
+                context.ClearEnumValueAllocations();
                 nodeStack.pop();
+
                 return ParserState::TranslationUnitMain;
             }
 

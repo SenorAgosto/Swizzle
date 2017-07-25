@@ -44,6 +44,7 @@ namespace swizzle { namespace parser { namespace states {
                 enumField.value(types::setValue(underlying.token().value(), token.token().value(), types::isHex));
 
                 context.CurrentEnumValue = enumField.value();
+                context.AllocateEnumValue(token, context.CurrentEnumValue);
                 context.CurrentEnumValue.increment();
 
                 return ParserState::EnumFieldValueRead;
@@ -54,6 +55,7 @@ namespace swizzle { namespace parser { namespace states {
                 enumField.value(types::setValue(underlying.token().value(), token.token().value()));
 
                 context.CurrentEnumValue = enumField.value();
+                context.AllocateEnumValue(token, context.CurrentEnumValue);
                 context.CurrentEnumValue.increment();
 
                 return ParserState::EnumFieldValueRead;
@@ -68,6 +70,7 @@ namespace swizzle { namespace parser { namespace states {
                 enumField.value(types::setValueFromChar(underlying.token().value(), trimValue));
 
                 context.CurrentEnumValue = enumField.value();
+                context.AllocateEnumValue(token, context.CurrentEnumValue);
                 context.CurrentEnumValue.increment();
                 
                 return ParserState::EnumFieldValueRead;

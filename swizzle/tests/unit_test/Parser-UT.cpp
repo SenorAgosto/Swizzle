@@ -685,6 +685,23 @@ namespace {
         CHECK_EQUAL(201U, boost::get<std::uint8_t>(f5.value()));
     }
 
+    struct WhenInputIsEnumWhichReusesValues : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "enum Metal : u8 {" "\n"
+            "\t" "gold = 300," "\n"
+            "\t" "silver = 300," "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsEnumWhichReusesValues, verifyConsume)
+    {
+        tokenize(sv);
+        CHECK_THROW(parse(), swizzle::SyntaxError);
+    }
+
     struct WhenInputIsEnumWithOutOfRangeNumericLiteral : public ParserFixture
     {
         const boost::string_view sv = boost::string_view(

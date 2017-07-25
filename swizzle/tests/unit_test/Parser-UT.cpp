@@ -598,6 +598,90 @@ namespace {
         CHECK_EQUAL(200U, boost::get<std::uint8_t>(f2.value()));
     }
 
+    struct WhenInputIsEnumWithDifferentLiteralsAndFieldsBetween : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "enum Metal : u8 {" "\n"
+            "\t" "iron = 0x04," "\n"
+            "\t" "iron2," "\n"
+            "\t" "copper = 'a'," "\n"
+            "\t" "copper2," "\n"
+            "\t" "gold = 200," "\n"
+            "\t" "gold2," "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsEnumWithDifferentLiteralsAndFieldsBetween, verifyConsume)
+    {
+        auto matcher = Matcher().getChildrenOf<nodes::Enum>().bind("enum");
+        CHECK(!matcher(parser.ast().root()));
+
+        tokenize(sv);
+        parse();
+
+        CHECK(matcher(parser.ast().root()));
+
+        const auto node = matcher.bound("enum_0");
+        REQUIRE CHECK(node);
+
+        const auto& Enum = static_cast<nodes::Enum&>(*node);
+        CHECK_EQUAL("foo::Metal", Enum.name());
+        CHECK_EQUAL("u8", Enum.underlying().token().to_string());
+
+        auto fieldsMatcher = Matcher().getChildrenOf<nodes::EnumField>().bind("fields");
+        CHECK(fieldsMatcher(node));
+
+        const auto field0 = fieldsMatcher.bound("fields_0");
+        REQUIRE CHECK(field0);
+
+        const auto& f0 = static_cast<nodes::EnumField&>(*field0);
+        CHECK_EQUAL("iron", f0.name().token().to_string());
+        CHECK_EQUAL("u8", f0.underlying().token().to_string());
+        CHECK_EQUAL(4U, boost::get<std::uint8_t>(f0.value()));
+
+        const auto field1 = fieldsMatcher.bound("fields_1");
+        REQUIRE CHECK(field1);
+
+        const auto& f1 = static_cast<nodes::EnumField&>(*field1);
+        CHECK_EQUAL("iron2", f1.name().token().to_string());
+        CHECK_EQUAL("u8", f1.underlying().token().to_string());
+        CHECK_EQUAL(5U, boost::get<std::uint8_t>(f1.value()));
+
+        const auto field2 = fieldsMatcher.bound("fields_2");
+        REQUIRE CHECK(field2);
+
+        const auto& f2 = static_cast<nodes::EnumField&>(*field2);
+        CHECK_EQUAL("copper", f2.name().token().to_string());
+        CHECK_EQUAL("u8", f2.underlying().token().to_string());
+        CHECK_EQUAL(97U, boost::get<std::uint8_t>(f2.value()));
+
+        const auto field3 = fieldsMatcher.bound("fields_3");
+        REQUIRE CHECK(field3);
+
+        const auto& f3 = static_cast<nodes::EnumField&>(*field3);
+        CHECK_EQUAL("copper2", f3.name().token().to_string());
+        CHECK_EQUAL("u8", f3.underlying().token().to_string());
+        CHECK_EQUAL(98U, boost::get<std::uint8_t>(f3.value()));
+
+        const auto field4 = fieldsMatcher.bound("fields_4");
+        REQUIRE CHECK(field4);
+
+        const auto& f4 = static_cast<nodes::EnumField&>(*field4);
+        CHECK_EQUAL("gold", f4.name().token().to_string());
+        CHECK_EQUAL("u8", f4.underlying().token().to_string());
+        CHECK_EQUAL(200U, boost::get<std::uint8_t>(f4.value()));
+
+        const auto field5 = fieldsMatcher.bound("fields_5");
+        REQUIRE CHECK(field5);
+
+        const auto& f5 = static_cast<nodes::EnumField&>(*field5);
+        CHECK_EQUAL("gold2", f5.name().token().to_string());
+        CHECK_EQUAL("u8", f5.underlying().token().to_string());
+        CHECK_EQUAL(201U, boost::get<std::uint8_t>(f5.value()));
+    }
+
     struct WhenInputIsEnumWithOutOfRangeNumericLiteral : public ParserFixture
     {
         const boost::string_view sv = boost::string_view(

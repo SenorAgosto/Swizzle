@@ -1,6 +1,8 @@
 #include "./ut_support/UnitTestSupport.hpp"
 
 #include <swizzle/ast/Matcher.hpp>
+#include <swizzle/ast/nodes/Bitfield.hpp>
+#include <swizzle/ast/nodes/BitfieldField.hpp>
 #include <swizzle/ast/nodes/Comment.hpp>
 #include <swizzle/ast/nodes/Enum.hpp>
 #include <swizzle/ast/nodes/EnumField.hpp>
@@ -729,6 +731,150 @@ namespace {
     };
 
     TEST_FIXTURE(WhenInputIsEnumWithOutOfRangeHexLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        CHECK_THROW(parse(), swizzle::SyntaxError);
+    }
+
+    struct WhenInputIsBitfield : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "bitfield Field1 : u8 {" "\n"
+            "\t" "f1 : 0," "\n"
+            "\t" "// comment" "\n"
+            "\t" "f2 : 1..2," "\n"
+            "\t" "// multi-line \\" "\n"
+            "\t" "   comment" "\n"
+            "\t" "f3 : 3..4," "\n"
+            "\t" "f4 : 5," "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsBitfield, verifyConsume)
+    {
+        auto matcher = Matcher().getChildrenOf<nodes::Bitfield>().bind("bitfield");
+        CHECK(!matcher(parser.ast().root()));
+
+        tokenize(sv);
+        parse();
+
+        CHECK(matcher(parser.ast().root()));
+
+        const auto bitfieldNode = matcher.bound("bitfield_0");
+        REQUIRE CHECK(bitfieldNode);
+
+        const auto& bitfield = static_cast<nodes::Bitfield&>(*bitfieldNode);
+        CHECK_EQUAL("foo::Field1", bitfield.name());
+        CHECK_EQUAL("u8", bitfield.underlying().token().value());
+
+        auto fieldMatcher = Matcher().getChildrenOf<nodes::BitfieldField>().bind("fields");
+        REQUIRE CHECK(fieldMatcher(bitfieldNode));
+
+        const auto field0 = fieldMatcher.bound("fields_0");
+        REQUIRE CHECK(field0);
+
+        const auto& f0 = static_cast<nodes::BitfieldField&>(*field0);
+        CHECK_EQUAL("f1", f0.name().token().value());
+        CHECK_EQUAL("u8", f0.underlying().token().value());
+        CHECK_EQUAL(0U, f0.beginBit());
+        CHECK_EQUAL(0U, f0.endBit());
+
+        const auto field1 = fieldMatcher.bound("fields_1");
+        REQUIRE CHECK(field1);
+
+        const auto& f1 = static_cast<nodes::BitfieldField&>(*field1);
+        CHECK_EQUAL("f2", f1.name().token().value());
+        CHECK_EQUAL("u8", f1.underlying().token().value());
+        CHECK_EQUAL(1U, f1.beginBit());
+        CHECK_EQUAL(2U, f1.endBit());
+
+        const auto field2 = fieldMatcher.bound("fields_2");
+        REQUIRE CHECK(field2);
+
+        const auto& f2 = static_cast<nodes::BitfieldField&>(*field2);
+        CHECK_EQUAL("f3", f2.name().token().value());
+        CHECK_EQUAL("u8", f2.underlying().token().value());
+        CHECK_EQUAL(3U, f2.beginBit());
+        CHECK_EQUAL(4U, f2.endBit());
+
+        const auto field3 = fieldMatcher.bound("fields_3");
+        REQUIRE CHECK(field3);
+
+        const auto& f3 = static_cast<nodes::BitfieldField&>(*field3);
+        CHECK_EQUAL("f4", f3.name().token().value());
+        CHECK_EQUAL("u8", f3.underlying().token().value());
+        CHECK_EQUAL(5U, f3.beginBit());
+        CHECK_EQUAL(5U, f3.endBit());
+    }
+
+    struct WhenInputIsBitfieldReassigningBits_1 : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "bitfield Field1 : u8 {" "\n"
+            "\t" "f1 : 0," "\n"
+            "\t" "f2 : 0..2," "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsBitfieldReassigningBits_1, verifyConsume)
+    {
+        tokenize(sv);
+        CHECK_THROW(parse(), swizzle::SyntaxError);
+    }
+
+    struct WhenInputIsBitfieldReassigningBits_2 : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "bitfield Field1 : u8 {" "\n"
+            "\t" "f1 : 0," "\n"
+            "\t" "f2 : 1..2," "\n"
+            "\t" "f3 : 0," "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsBitfieldReassigningBits_2, verifyConsume)
+    {
+        tokenize(sv);
+        CHECK_THROW(parse(), swizzle::SyntaxError);
+    }
+
+    struct WhenInputIsBitfieldNotStartingAtLowBit : ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "bitfield Field1 : u8 {" "\n"
+            "\t" "f1 : 7," "\n"
+            "\t" "f2 : 6..4," "\n"
+            "\t" "f3 : 3," "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsBitfieldNotStartingAtLowBit, verifyConsume)
+    {
+        tokenize(sv);
+        CHECK_THROW(parse(), swizzle::SyntaxError);
+    }
+
+    struct WhenInputIsBitFieldAndFieldRangeExceedsUnderlyingType : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "bitfield Field1 : u8 {" "\n"
+            "\t" "f1 : 7," "\n"
+            "\t" "f2 : 6..4," "\n"
+            "\t" "f3 : 258," "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsBitFieldAndFieldRangeExceedsUnderlyingType, verifyConsume)
     {
         tokenize(sv);
         CHECK_THROW(parse(), swizzle::SyntaxError);

@@ -17,6 +17,8 @@
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/TokenStack.hpp>
 
+#include <limits>
+
 namespace swizzle { namespace parser { namespace states {
 
     ParserState TranslationUnitMainState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack& tokenStack, ParserStateContext& context)
@@ -93,7 +95,7 @@ namespace swizzle { namespace parser { namespace states {
         if((type == lexer::TokenType::type) && (value == "bitfield"))
         {
             tokenStack.push(token);
-            context.CurrentBitfieldBit = 0;
+            context.CurrentBitfieldBit = std::numeric_limits<std::intmax_t>::lowest();
             
             return ParserState::StartBitfield;
         }

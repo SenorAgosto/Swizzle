@@ -867,8 +867,8 @@ namespace {
         const boost::string_view sv = boost::string_view(
             "namespace foo;" "\n"
             "bitfield Field1 : u8 {" "\n"
-            "\t" "f1 : 7," "\n"
-            "\t" "f2 : 6..4," "\n"
+            "\t" "f1 : 5," "\n"
+            "\t" "f2 : 6..7," "\n"
             "\t" "f3 : 258," "\n"
             "}"
         );

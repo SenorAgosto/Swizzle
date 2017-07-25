@@ -862,6 +862,24 @@ namespace {
         CHECK_THROW(parse(), swizzle::SyntaxError);
     }
 
+    struct WhenInputIsBitfieldAndEndBitIsTooLow : ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "bitfield Field1 : u8 {" "\n"
+            "\t" "f1 : 0," "\n"
+            "\t" "f2 : 3..2," "\n"
+            "\t" "f3 : 5," "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsBitfieldAndEndBitIsTooLow, verifyConsume)
+    {
+        tokenize(sv);
+        CHECK_THROW(parse(), swizzle::SyntaxError);
+    }
+
     struct WhenInputIsBitFieldAndFieldRangeExceedsUnderlyingType : public ParserFixture
     {
         const boost::string_view sv = boost::string_view(

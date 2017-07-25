@@ -5,6 +5,7 @@
 
 #include <cstddef>
 #include <string>
+#include <limits>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -20,7 +21,7 @@ namespace swizzle { namespace parser {
         ast::Node::smartptr CurrentVariableOnFieldType = nullptr;       // the pointer to the field we're variable on, so we can query the type
 
         std::string CurrentNamespace;
-        std::size_t CurrentBitfieldBit = 0;
+        std::intmax_t CurrentBitfieldBit = std::numeric_limits<std::intmax_t>::lowest();
 
         types::EnumValue CurrentEnumValue = types::EnumValue(types::EnumValueType(std::uint64_t(0)));
         void AllocateEnumValue(const lexer::TokenInfo& token, const types::EnumValue& value);  // mark value as taken, reusing values is a syntax error.

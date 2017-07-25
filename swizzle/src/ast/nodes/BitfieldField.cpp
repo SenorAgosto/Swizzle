@@ -6,6 +6,7 @@
 #include <swizzle/parser/ParserStateContext.hpp>
 
 #include <boost/lexical_cast.hpp>
+#include <limits>
 
 namespace swizzle { namespace ast { namespace nodes {
 
@@ -29,14 +30,14 @@ namespace swizzle { namespace ast { namespace nodes {
 
         void BitfieldField::beginBit(const lexer::TokenInfo& token, parser::ParserStateContext& context)
         {
-            const std::size_t bit = parser::detail::extractBitValueFromToken(underlying_.token().value(), token);
+            const std::intmax_t bit = parser::detail::extractBitValueFromToken(underlying_.token().value(), token);
 
             if(bit < context.CurrentBitfieldBit)
             {
                 throw SyntaxError("Bitfield begin bit's value must be greater than previous value", token);
             }
 
-            if((bit == context.CurrentBitfieldBit) && (context.CurrentBitfieldBit != 0))
+            if((bit == context.CurrentBitfieldBit) && (context.CurrentBitfieldBit != std::numeric_limits<std::intmax_t>::lowest()))
             {
                 throw SyntaxError("Bitfield begin bit's value must be greater than previous value", token);
             }
@@ -53,7 +54,7 @@ namespace swizzle { namespace ast { namespace nodes {
 
         void BitfieldField::endBit(const lexer::TokenInfo& token, parser::ParserStateContext& context)
         {
-            const std::size_t bit = parser::detail::extractBitValueFromToken(underlying_.token().value(), token);
+            const std::intmax_t bit = parser::detail::extractBitValueFromToken(underlying_.token().value(), token);
 
             if(bit <= beginBit_)
             {
@@ -65,7 +66,7 @@ namespace swizzle { namespace ast { namespace nodes {
                 throw SyntaxError("Bitfield begin bit's value must be greater than previous value", token);
             }
 
-            if((bit == context.CurrentBitfieldBit) && (context.CurrentBitfieldBit != 0))
+            if((bit == context.CurrentBitfieldBit) && (context.CurrentBitfieldBit != std::numeric_limits<std::intmax_t>::lowest()))
             {
                 throw SyntaxError("Bitfield begin bit's value must be greater than previous value", token);
             }

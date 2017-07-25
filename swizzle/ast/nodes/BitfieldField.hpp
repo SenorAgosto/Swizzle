@@ -2,7 +2,7 @@
 #include <swizzle/ast/Node.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
 
-#include <cstddef>
+#include <cstdint>
 
 namespace swizzle { namespace ast {
     class VisitorInterface;
@@ -36,7 +36,7 @@ namespace swizzle { namespace ast { namespace nodes {
 
         lexer::TokenInfo valueInfo_;
 
-        std::size_t beginBit_;
-        std::size_t endBit_;
+        std::intmax_t beginBit_;
+        std::intmax_t endBit_;
     };
 }}}

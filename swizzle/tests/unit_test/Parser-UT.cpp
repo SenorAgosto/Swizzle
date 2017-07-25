@@ -603,9 +603,12 @@ namespace {
         const boost::string_view sv = boost::string_view(
             "namespace foo;" "\n"
             "enum Metal : u8 {" "\n"
+            "\t" "// this is a comment" "\n"
             "\t" "iron = 0x04," "\n"
             "\t" "iron2," "\n"
             "\t" "copper = 'a'," "\n"
+            "\t" "// this is a multi-line \\" "\n"
+            "\t" "   comment" "\n"
             "\t" "copper2," "\n"
             "\t" "gold = 200," "\n"
             "\t" "gold2," "\n"

@@ -90,6 +90,14 @@ namespace swizzle { namespace parser { namespace states {
         }
 
         const auto& value = token.token().value();
+        if((type == lexer::TokenType::type) && (value == "bitfield"))
+        {
+            tokenStack.push(token);
+            context.CurrentBitfieldBit = 0;
+            
+            return ParserState::StartBitfield;
+        }
+
         if(type == lexer::TokenType::keyword)
         {
             if(value == "using")
@@ -102,14 +110,6 @@ namespace swizzle { namespace parser { namespace states {
             {
                 tokenStack.push(token);
                 return ParserState::StartEnum;
-            }
-
-            if(value == "bitfield")
-            {
-                tokenStack.push(token);
-                context.CurrentBitfieldBit = 0;
-                
-                return ParserState::StartBitfield;
             }
 
             if(value == "struct")

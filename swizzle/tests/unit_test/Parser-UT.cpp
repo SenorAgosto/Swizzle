@@ -10,6 +10,9 @@
 #include <swizzle/ast/nodes/Import.hpp>
 #include <swizzle/ast/nodes/MultilineComment.hpp>
 #include <swizzle/ast/nodes/Namespace.hpp>
+#include <swizzle/ast/nodes/Struct.hpp>
+#include <swizzle/ast/nodes/StructField.hpp>
+#include <swizzle/ast/nodes/TypeAlias.hpp>
 
 #include <swizzle/lexer/Tokenizer.hpp>
 #include <swizzle/parser/Parser.hpp>
@@ -893,6 +896,209 @@ namespace {
     };
 
     TEST_FIXTURE(WhenInputIsBitFieldAndFieldRangeExceedsUnderlyingType, verifyConsume)
+    {
+        tokenize(sv);
+        CHECK_THROW(parse(), swizzle::SyntaxError);
+    }
+
+    struct WhenInputIsStruct : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Myfield {" "\n"
+            "\t" "// field 1 is blah blah blah" "\n"
+            "\t" "u8 field1;" "\n"
+            "\t" "// field 2 will be blah \\" "\n"
+            "\t" "   blah blah" "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStruct, verifyConsume)
+    {
+        auto matcher = Matcher().getChildrenOf<nodes::Struct>().bind("struct");
+        CHECK(!matcher(parser.ast().root()));
+
+        tokenize(sv);
+        parse();
+
+        CHECK(matcher(parser.ast().root()));
+
+        const auto node = matcher.bound("struct_0");
+        REQUIRE CHECK(node);
+
+        const auto& s = static_cast<nodes::Struct&>(*node);
+        CHECK_EQUAL("foo::Myfield", s.name());
+
+        auto fieldsMatcher = Matcher().getChildrenOf<nodes::StructField>().bind("fields");
+        REQUIRE CHECK(fieldsMatcher(node));
+
+        const auto f0_node = fieldsMatcher.bound("fields_0");
+        REQUIRE CHECK(f0_node);
+
+        const auto& f0 = static_cast<nodes::StructField&>(*f0_node);
+        CHECK_EQUAL("field1", f0.name().token().value());
+        CHECK_EQUAL("u8", f0.type());
+        CHECK(!f0.isConst());
+        CHECK(!f0.isArray());
+        CHECK(!f0.isVector());
+    }
+
+    struct WhenInputIsNestedStruct : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n\n"
+
+            "// struct 1" "\n"
+            "struct Struct1 {" "\n"
+            "\t" "u8 field1;" "\n"
+            "}" "\n\n"
+
+            "// struct 2" "\n"
+            "struct Struct2 {" "\n"
+            "\t" "f32 slope;" "\n"
+            "\t" "Struct1 s1;" "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsNestedStruct, verifyConsume)
+    {
+        auto matcher = Matcher().getChildrenOf<nodes::Struct>().bind("struct");
+        CHECK(!matcher(parser.ast().root()));
+
+        tokenize(sv);
+        parse();
+
+        CHECK(matcher(parser.ast().root()));
+
+        const auto node = matcher.bound("struct_1");
+        REQUIRE CHECK(node);
+
+        auto fieldMatcher = Matcher().getChildrenOf<nodes::StructField>().bind("fields");
+        CHECK(fieldMatcher(node));
+
+        const auto field1_node = fieldMatcher.bound("fields_1");
+        REQUIRE CHECK(field1_node);
+
+        const auto& s1 = static_cast<nodes::StructField&>(*field1_node);
+        CHECK_EQUAL("foo::Struct1", s1.type());
+        CHECK_EQUAL("s1", s1.name().token().value());
+    }
+
+    struct WhenInputIsNestedStruct_2 : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n\n"
+
+            "// struct 1" "\n"
+            "struct Struct1 {" "\n"
+            "\t" "u8 field1;" "\n"
+            "}" "\n\n"
+
+            "// struct 2" "\n"
+            "struct Struct2 {" "\n"
+            "\t" "f32 slope;" "\n"
+            "\t" "foo::Struct1 s1;" "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsNestedStruct_2, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsStructWithArray : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "u8[10] name;"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithArray, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    //-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_
+    //
+    // TODO: more struct coverage
+    //
+    //-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_
+
+    struct WhenInputIsStructWithNoFields : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct S1 {"
+                " // comment " "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithNoFields, verifyConsume)
+    {
+        tokenize(sv);
+        CHECK_THROW(parse(), swizzle::SyntaxError);
+    }
+
+    struct WhenInputIsAUsingStatementOfBuiltinType : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "using Indicator = u8;" "\n"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsAUsingStatementOfBuiltinType, verifyConsume)
+    {
+        auto matcher = Matcher().getChildrenOf<nodes::TypeAlias>().bind("using");
+        CHECK(!matcher(parser.ast().root()));
+
+        tokenize(sv);
+        parse();
+
+        CHECK(matcher(parser.ast().root()));
+
+        const auto node = matcher.bound("using_0");
+        REQUIRE CHECK(node);
+
+        const auto& typeAlias = static_cast<nodes::TypeAlias&>(*node);
+        CHECK_EQUAL("Indicator", typeAlias.aliasedType().token().value());
+        CHECK_EQUAL("u8", typeAlias.existingType().token().value());
+    }
+
+    struct WhenInputIsAUsingStatementOfDefinedStruct : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct S1{u8 field1;}" "\n"
+
+            "using Struct1 = S1;"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsAUsingStatementOfDefinedStruct, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsAUsingStatementButTypeIsNotDefined : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "using Indicator = bar::UndefinedType;" "\n"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsAUsingStatementButTypeIsNotDefined, verifyConsume)
     {
         tokenize(sv);
         CHECK_THROW(parse(), swizzle::SyntaxError);

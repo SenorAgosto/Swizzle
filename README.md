@@ -1,12 +1,13 @@
 # Swizzle
 
-An on-wire message description language and transpiler.
+An on-wire message [description language](_docs/SwizzleLanguage.md) and transpiler.
 
 ### Dependencies 
 
 - c++14
 - [UsingIntrusivePtrIn](https://github.com/paxos1977/UsingIntrusivePtrIn)
-- [boost](http://boost.org). Uses intrusive_ptr in production code by default. Uses filesystem, bind, and asio in example code.
+- [PluginFactory](https://github.com/paxos1977/PluginFactory)
+- [boost](http://boost.org)
 
 Used for unit testing on all platforms:
 

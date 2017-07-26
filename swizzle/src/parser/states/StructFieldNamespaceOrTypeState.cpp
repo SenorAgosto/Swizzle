@@ -20,6 +20,14 @@ namespace swizzle { namespace parser { namespace states {
 
         if(type == lexer::TokenType::colon)
         {
+            // NOTE:
+            // We come here from StructArray and StructVector after a ],
+            // the token stack shouldn't be empty here, but there's no
+            // good way to validate it here. We'll let createType() validate
+            // the type exists. If we're here with a bad token stack, the type
+            // would be like "::something::bar::baz" which should fail to be found
+            // in the TypeCache.
+
             return ParserState::StructFieldNamespaceFirstColon;
         }
 

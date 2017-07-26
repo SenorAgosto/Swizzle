@@ -32,7 +32,7 @@ namespace swizzle { namespace parser { namespace states {
                 top.makeVector(member);
 
                 nodeStack.pop();
-                return ParserState::StructStartScope;
+                return ParserState::StructFieldNamespaceOrType;
             }
             else
             {

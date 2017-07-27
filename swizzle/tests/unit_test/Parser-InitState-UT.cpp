@@ -46,6 +46,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsComment, verifyConsume)
     {
         CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -53,6 +54,7 @@ namespace {
         CHECK_EQUAL(ParserState::Init, parserState);
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         auto matcher = Matcher().getChildrenOf<nodes::Comment>().bind("comment");
@@ -77,6 +79,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsMultilineComment, verifyConsume)
     {
         CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -84,6 +87,7 @@ namespace {
         CHECK_EQUAL(ParserState::Init, parserState);
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         auto matcher = Matcher().getChildrenOf<nodes::MultilineComment>().bind("comment");
@@ -108,6 +112,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsImport, verifyConsume)
     {
         CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -115,6 +120,7 @@ namespace {
         CHECK_EQUAL(ParserState::StartImport, parserState);
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
     }
 
@@ -129,6 +135,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsNamespace, verifyConsume)
     {
         CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -136,6 +143,7 @@ namespace {
         CHECK_EQUAL(ParserState::StartNamespace, parserState);
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
     }
 

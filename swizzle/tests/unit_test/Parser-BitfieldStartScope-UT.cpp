@@ -59,6 +59,7 @@ namespace {
         auto matcher = Matcher().hasChildOf<nodes::Comment>();
 
         CHECK_EQUAL(2U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
         CHECK(!matcher(nodeStack.top()));
 
@@ -67,6 +68,7 @@ namespace {
         CHECK_EQUAL(ParserState::BitfieldStartScope, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
         CHECK(matcher(nodeStack.top()));
     }
@@ -84,6 +86,7 @@ namespace {
         auto matcher = Matcher().hasChildOf<nodes::MultilineComment>();
 
         CHECK_EQUAL(2U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
         CHECK(!matcher(nodeStack.top()));
 
@@ -92,6 +95,7 @@ namespace {
         CHECK_EQUAL(ParserState::BitfieldStartScope, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
         CHECK(matcher(nodeStack.top()));
     }
@@ -107,6 +111,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsFieldName, verifyConsume)
     {
         CHECK_EQUAL(2U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         REQUIRE CHECK(detail::nodeStackTopIs<nodes::Bitfield>(nodeStack));
@@ -118,6 +123,7 @@ namespace {
         CHECK_EQUAL(ParserState::BitfieldField, parserState);
 
         REQUIRE CHECK_EQUAL(3U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
         CHECK(detail::nodeStackTopIs<nodes::BitfieldField>(nodeStack));
     }
@@ -139,6 +145,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsRightBrace, verifyConsume)
     {
         CHECK_EQUAL(2U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -146,6 +153,7 @@ namespace {
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
     }
 

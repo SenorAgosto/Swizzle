@@ -62,6 +62,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsDot, verifyConsume)
     {
         CHECK_EQUAL(2U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -69,6 +70,7 @@ namespace {
         CHECK_EQUAL(ParserState::StructVectorNestedOnMember, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
     }
 
@@ -100,6 +102,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsRightBracket, verifyConsume)
     {
         CHECK_EQUAL(3U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(1U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -107,6 +110,7 @@ namespace {
         CHECK_EQUAL(ParserState::StructFieldNamespaceOrType, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         auto matcher = Matcher().getChildrenOf<nodes::StructField>().bind("field");

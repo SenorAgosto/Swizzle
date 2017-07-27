@@ -53,12 +53,14 @@ namespace{
     TEST_FIXTURE(WhenNextTokenIsDot, verifyConsume)
     {
         CHECK_EQUAL(2U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         const auto parserState = state.consume(token, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructVariableBlockOnNestedField, parserState);
         CHECK_EQUAL(2U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
     }
 
@@ -84,12 +86,14 @@ namespace{
     TEST_FIXTURE(WhenNextTokenIsLeftBrace, verifyConsume)
     {
         CHECK_EQUAL(3U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(1U, tokenStack.size());
 
         const auto parserState = state.consume(token, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructVariableBlockBeginCases, parserState);
         CHECK_EQUAL(3U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
     }
 

@@ -46,6 +46,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsColon, verifyConsume)
     {
         CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -53,6 +54,7 @@ namespace {
         CHECK_EQUAL(ParserState::NamespaceFirstColon, parserState);
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
     }
 
@@ -75,6 +77,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsEndStatement, verifyConsume)
     {
         CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(1U, tokenStack.size());
 
         CHECK_EQUAL("", context.CurrentNamespace);
@@ -82,6 +85,7 @@ namespace {
         state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         CHECK_EQUAL("MyNamespace", context.CurrentNamespace);
@@ -116,12 +120,14 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsEndStatementAndFileHasPath, verifyConsume)
     {
         CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(3U, tokenStack.size());
         CHECK_EQUAL("", context.CurrentNamespace);
 
         state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
         CHECK_EQUAL("foo::bar::MyNamespace", context.CurrentNamespace);
     }

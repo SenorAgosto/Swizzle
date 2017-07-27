@@ -52,6 +52,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsU8, verifyConsume)
     {
         CHECK_EQUAL(2U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -59,6 +60,7 @@ namespace {
         CHECK_EQUAL(ParserState::EnumUnderlyingType, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
     }
 
@@ -73,6 +75,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsI8, verifyConsume)
     {
         CHECK_EQUAL(2U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -80,6 +83,7 @@ namespace {
         CHECK_EQUAL(ParserState::EnumUnderlyingType, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
     }
 
@@ -94,6 +98,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsU16, verifyConsume)
     {
         CHECK_EQUAL(2U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -101,6 +106,7 @@ namespace {
         CHECK_EQUAL(ParserState::EnumUnderlyingType, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
     }
 
@@ -115,6 +121,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsI16, verifyConsume)
     {
         CHECK_EQUAL(2U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -122,6 +129,7 @@ namespace {
         CHECK_EQUAL(ParserState::EnumUnderlyingType, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
     }
 
@@ -136,6 +144,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsU32, verifyConsume)
     {
         CHECK_EQUAL(2U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -143,6 +152,7 @@ namespace {
         CHECK_EQUAL(ParserState::EnumUnderlyingType, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
     }
 
@@ -157,6 +167,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsI32, verifyConsume)
     {
         CHECK_EQUAL(2U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -164,6 +175,7 @@ namespace {
         CHECK_EQUAL(ParserState::EnumUnderlyingType, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
     }
 
@@ -178,6 +190,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsU64, verifyConsume)
     {
         CHECK_EQUAL(2U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -185,6 +198,7 @@ namespace {
         CHECK_EQUAL(ParserState::EnumUnderlyingType, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
     }
 
@@ -199,6 +213,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsI64, verifyConsume)
     {
         CHECK_EQUAL(2U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -206,6 +221,7 @@ namespace {
         CHECK_EQUAL(ParserState::EnumUnderlyingType, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
     }
 

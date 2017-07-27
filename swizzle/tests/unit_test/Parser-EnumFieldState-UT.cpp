@@ -61,6 +61,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsComma, verifyConsume)
     {
         CHECK_EQUAL(3U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         REQUIRE CHECK_EQUAL(6, context.CurrentEnumValue.value().which());
@@ -71,6 +72,7 @@ namespace {
         CHECK_EQUAL(ParserState::EnumStartScope, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         REQUIRE CHECK_EQUAL(6, context.CurrentEnumValue.value().which());
@@ -98,6 +100,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsEqual, verifyConsume)
     {
         CHECK_EQUAL(3U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -105,6 +108,7 @@ namespace {
         CHECK_EQUAL(ParserState::EnumFieldEqualRead, parserState);
 
         REQUIRE CHECK_EQUAL(3U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
     }
 

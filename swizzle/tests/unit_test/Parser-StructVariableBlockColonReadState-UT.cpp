@@ -43,13 +43,15 @@ namespace{
     TEST_FIXTURE(WhenNextTokenIsString, verifyConsume)
     {
         CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         const auto parserState = state.consume(token, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructVariableBlockOnField, parserState);
         CHECK_EQUAL(1U, nodeStack.size());
-        CHECK_EQUAL(1U, tokenStack.size());\
+        CHECK_EQUAL(0U, attributeStack.size());
+        CHECK_EQUAL(1U, tokenStack.size());
     }
 
     struct WhenNextTokenIsNotString : public StructVariableBlockColonReadFixture

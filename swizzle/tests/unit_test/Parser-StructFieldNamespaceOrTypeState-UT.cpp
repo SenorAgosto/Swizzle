@@ -58,6 +58,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsColon, verifyConsume)
     {
         CHECK_EQUAL(2U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -65,6 +66,7 @@ namespace {
         CHECK_EQUAL(ParserState::StructFieldNamespaceFirstColon, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
     }
 
@@ -90,6 +92,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsStringAndTypeIsU8, verifyConsume)
     {
         CHECK_EQUAL(3U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(1U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -97,6 +100,7 @@ namespace {
         CHECK_EQUAL(ParserState::StructFieldName, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         auto matcher = Matcher().getChildrenOf<nodes::StructField>().bind("field");
@@ -136,6 +140,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsStringAndTypeIsU8AndThereIsAFieldLabel, verifyConsume)
     {
         CHECK_EQUAL(4U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(1U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -143,6 +148,7 @@ namespace {
         CHECK_EQUAL(ParserState::StructFieldName, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
         REQUIRE CHECK(detail::nodeStackTopIs<nodes::Struct>(nodeStack));
 
@@ -212,6 +218,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsStringAndTypeIsUserTypeWithNamespace, verifyConsume)
     {
         CHECK_EQUAL(3U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(3U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -219,6 +226,7 @@ namespace {
         CHECK_EQUAL(ParserState::StructFieldName, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         auto matcher = Matcher().getChildrenOf<nodes::StructField>().bind("field");
@@ -270,6 +278,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsStringAndTypeIsUserTypeWithNamespaceWithFieldLabel, verifyConsume)
     {
         CHECK_EQUAL(4U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(3U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -277,6 +286,7 @@ namespace {
         CHECK_EQUAL(ParserState::StructFieldName, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         auto matcher = Matcher().getChildrenOf<nodes::StructField>().bind("field");
@@ -323,6 +333,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsStringAndTypeIsUserTypeWithoutNamespace, verifyConsume)
     {
         CHECK_EQUAL(3U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(1U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -330,6 +341,7 @@ namespace {
         CHECK_EQUAL(ParserState::StructFieldName, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         auto matcher = Matcher().getChildrenOf<nodes::StructField>().bind("field");
@@ -371,6 +383,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsStringAndTypeIsUserTypeWithoutNamespaceWithFieldLabel, verifyConsume)
     {
         CHECK_EQUAL(4U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(1U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -378,6 +391,7 @@ namespace {
         CHECK_EQUAL(ParserState::StructFieldName, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         auto matcher = Matcher().getChildrenOf<nodes::StructField>().bind("field");
@@ -411,6 +425,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsLeftBracket, verifyConsume)
     {
         CHECK_EQUAL(2U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -418,6 +433,7 @@ namespace {
         CHECK_EQUAL(ParserState::StructStartArray, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
     }
 

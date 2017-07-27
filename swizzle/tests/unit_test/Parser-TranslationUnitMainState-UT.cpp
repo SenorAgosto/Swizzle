@@ -63,6 +63,7 @@ namespace {
         auto matcher = Matcher().hasChildOf<nodes::Comment>();
 
         CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
         CHECK(!matcher(nodeStack.top()));
 
@@ -71,6 +72,7 @@ namespace {
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
         CHECK(matcher(nodeStack.top()));
     }
@@ -88,6 +90,7 @@ namespace {
         auto matcher = Matcher().hasChildOf<nodes::MultilineComment>();
 
         CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
         CHECK(!matcher(nodeStack.top()));
 
@@ -96,6 +99,7 @@ namespace {
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
         CHECK(matcher(nodeStack.top()));
     }
@@ -111,6 +115,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsUsingKeyword, verifyConsume)
     {
         CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -118,6 +123,7 @@ namespace {
         CHECK_EQUAL(ParserState::StartUsing, parserState);
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(1U, tokenStack.size());
     }
 
@@ -132,6 +138,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsEnumKeyword, verifyConsume)
     {
         CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -139,6 +146,7 @@ namespace {
         CHECK_EQUAL(ParserState::StartEnum, parserState);
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(1U, tokenStack.size());
     }
 
@@ -153,6 +161,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsBitfieldKeyword, verifyConsume)
     {
         CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -160,6 +169,7 @@ namespace {
         CHECK_EQUAL(ParserState::StartBitfield, parserState);
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(1U, tokenStack.size());
     }
 
@@ -174,6 +184,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsStructKeyword, verifyConsume)
     {
         CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -181,6 +192,7 @@ namespace {
         CHECK_EQUAL(ParserState::StartStruct, parserState);
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(1U, tokenStack.size());
     }
 
@@ -195,6 +207,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsAttribute, verifyConsume)
     {
         CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -202,6 +215,7 @@ namespace {
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
         CHECK(detail::nodeStackTopIs<nodes::Attribute>(nodeStack));
     }
@@ -217,6 +231,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsAttributeBlock, verifyConsume)
     {
         CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         auto parserState = state.consume(tokens[0], nodeStack, attributeStack, tokenStack, context);
@@ -224,6 +239,7 @@ namespace {
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         parserState = state.consume(tokens[1], nodeStack, attributeStack, tokenStack, context);
@@ -231,6 +247,7 @@ namespace {
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         auto attributeMatcher = Matcher().getChildrenOf<nodes::Attribute>().bind("attribute");
@@ -254,6 +271,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsHexLiteralAfterAttribute, verifyConsume)
     {
         CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         auto parserState = state.consume(tokens[0], nodeStack, attributeStack, tokenStack, context);
@@ -261,6 +279,7 @@ namespace {
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         parserState = state.consume(tokens[1], nodeStack, attributeStack, tokenStack, context);
@@ -268,6 +287,7 @@ namespace {
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         auto attributeMatcher = Matcher().getChildrenOf<nodes::Attribute>().bind("attribute");
@@ -297,6 +317,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsCharLiteralAfterAttribute, verifyConsume)
     {
         CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         auto parserState = state.consume(tokens[0], nodeStack, attributeStack, tokenStack, context);
@@ -304,6 +325,7 @@ namespace {
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         parserState = state.consume(tokens[1], nodeStack, attributeStack, tokenStack, context);
@@ -311,6 +333,7 @@ namespace {
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         auto attributeMatcher = Matcher().getChildrenOf<nodes::Attribute>().bind("attribute");
@@ -340,6 +363,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsStringLiteralAfterAttribute, verifyConsume)
     {
         CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         auto parserState = state.consume(tokens[0], nodeStack, attributeStack, tokenStack, context);
@@ -347,6 +371,7 @@ namespace {
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         parserState = state.consume(tokens[1], nodeStack, attributeStack, tokenStack, context);
@@ -354,6 +379,7 @@ namespace {
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         auto attributeMatcher = Matcher().getChildrenOf<nodes::Attribute>().bind("attribute");
@@ -383,6 +409,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsCommentAfterAnAttribute, verifyConsume)
     {
         CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         auto parserState = state.consume(tokens[0], nodeStack, attributeStack, tokenStack, context);
@@ -390,6 +417,7 @@ namespace {
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         parserState = state.consume(tokens[1], nodeStack, attributeStack, tokenStack, context);
@@ -397,6 +425,7 @@ namespace {
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
     }
 }

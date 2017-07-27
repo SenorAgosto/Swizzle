@@ -47,6 +47,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsLeftBrace, verifyConsume)
     {
         CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
         CHECK(context.MemberIsConst);
 
@@ -56,6 +57,7 @@ namespace {
 
         CHECK(!context.MemberIsConst);
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
     }
 

@@ -74,6 +74,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsHexLiteral, verifyConsume)
     {
         CHECK_EQUAL(3U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         const auto parserState = state.consume(token, nodeStack, attributeStack, tokenStack, context);
@@ -81,6 +82,7 @@ namespace {
         CHECK_EQUAL(ParserState::StructVariableBlockCaseValueRead, parserState);
 
         REQUIRE CHECK_EQUAL(3U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         REQUIRE CHECK(detail::nodeStackTopIs<nodes::VariableBlockCase>(nodeStack));
@@ -97,6 +99,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsNumericLiteral, verifyConsume)
     {
         CHECK_EQUAL(3U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         const auto parserState = state.consume(token, nodeStack, attributeStack, tokenStack, context);
@@ -104,6 +107,7 @@ namespace {
         CHECK_EQUAL(ParserState::StructVariableBlockCaseValueRead, parserState);
 
         REQUIRE CHECK_EQUAL(3U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         REQUIRE CHECK(detail::nodeStackTopIs<nodes::VariableBlockCase>(nodeStack));
@@ -120,6 +124,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsCharLiteral, verifyConsume)
     {
         CHECK_EQUAL(3U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         const auto parserState = state.consume(token, nodeStack, attributeStack, tokenStack, context);
@@ -127,6 +132,7 @@ namespace {
         CHECK_EQUAL(ParserState::StructVariableBlockCaseValueRead, parserState);
 
         REQUIRE CHECK_EQUAL(3U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         REQUIRE CHECK(detail::nodeStackTopIs<nodes::VariableBlockCase>(nodeStack));
@@ -165,6 +171,7 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsStringLiteral, verifyConsume)
     {
         CHECK_EQUAL(3U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
         const auto parserState = state.consume(token, nodeStack, attributeStack, tokenStack, context);
@@ -172,6 +179,7 @@ namespace {
         CHECK_EQUAL(ParserState::StructVariableBlockCaseValueRead, parserState);
 
         REQUIRE CHECK_EQUAL(3U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         REQUIRE CHECK(detail::nodeStackTopIs<nodes::VariableBlockCase>(nodeStack));

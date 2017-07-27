@@ -52,6 +52,7 @@ namespace {
         auto matcher = Matcher().isTypeOf<nodes::TypeAlias>();
 
         CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(1U, tokenStack.size());
         CHECK(!matcher(nodeStack.top()));
 
@@ -60,6 +61,7 @@ namespace {
         CHECK_EQUAL(ParserState::UsingName, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
         CHECK(matcher(nodeStack.top()));
     }

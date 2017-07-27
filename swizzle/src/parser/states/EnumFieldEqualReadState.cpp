@@ -17,7 +17,7 @@ namespace swizzle { namespace parser { namespace states {
 
     namespace {
         // implementation is wrapped in a try/catch
-        ParserState consumeImpl(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack&, ParserStateContext& context)
+        ParserState consumeImpl(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack&, TokenStack&, ParserStateContext& context)
         {
             const auto type = token.token().type();
 
@@ -80,11 +80,11 @@ namespace swizzle { namespace parser { namespace states {
         }
     }
 
-    ParserState EnumFieldEqualReadState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack& tokenStack, ParserStateContext& context)
+    ParserState EnumFieldEqualReadState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack& attributeStack, TokenStack& tokenStack, ParserStateContext& context)
     {
         try
         {
-            return consumeImpl(token, nodeStack, tokenStack, context);
+            return consumeImpl(token, nodeStack, attributeStack, tokenStack, context);
         }
         catch(const StreamInputCausesOverflow&)
         {

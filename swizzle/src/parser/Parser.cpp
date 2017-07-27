@@ -11,7 +11,7 @@ namespace swizzle { namespace parser {
 
     void Parser::consume(const lexer::TokenInfo& token)
     {
-        state_ = states_.consume(state_, token, nodeStack_, tokenStack_, context_);
+        state_ = states_.consume(state_, token, nodeStack_, attributeStack_, tokenStack_, context_);
     }
 
     const ast::AbstractSyntaxTree& Parser::ast() const

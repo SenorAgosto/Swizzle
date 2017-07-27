@@ -37,6 +37,7 @@ namespace {
         AbstractSyntaxTree ast;
 
         NodeStack nodeStack;
+        NodeStack attributeStack;
         TokenStack tokenStack;
         ParserStateContext context;
     };
@@ -61,7 +62,7 @@ namespace {
         CHECK_EQUAL(0U, tokenStack.size());
         CHECK(!matcher(nodeStack.top()));
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::BitfieldStartScope, parserState);
 
@@ -86,7 +87,7 @@ namespace {
         CHECK_EQUAL(0U, tokenStack.size());
         CHECK(!matcher(nodeStack.top()));
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::BitfieldStartScope, parserState);
 
@@ -112,7 +113,7 @@ namespace {
         auto matcher = Matcher().hasChildOf<nodes::BitfieldField>();
         CHECK(!matcher(nodeStack.top()));       // nodeStack.top() is bitfield
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::BitfieldField, parserState);
 
@@ -140,7 +141,7 @@ namespace {
         CHECK_EQUAL(2U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
@@ -158,7 +159,7 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsInvalid, verifyConsume)
     {
-        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::SyntaxError);
+        CHECK_THROW(state.consume(info, nodeStack, attributeStack, tokenStack, context), swizzle::SyntaxError);
     }
 
     struct WhenNextTokenIsFieldNameAndTopOfStackIsNotBitfield : public BitfieldStartScopeStateFixture
@@ -176,7 +177,7 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsFieldNameAndTopOfStackIsNotBitfield, verifyConsume)
     {
-        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::ParserError);
+        CHECK_THROW(state.consume(info, nodeStack, attributeStack, tokenStack, context), swizzle::ParserError);
     }
 
     struct WhenNextTokenIsRightBraceAndTopOfStackIsNotBitfield : public BitfieldStartScopeStateFixture
@@ -194,7 +195,7 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsRightBraceAndTopOfStackIsNotBitfield, verifyConsume)
     {
-        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::ParserError);
+        CHECK_THROW(state.consume(info, nodeStack, attributeStack, tokenStack, context), swizzle::ParserError);
     }
 
     struct WhenNextTokenIsRightBraceButNoFieldsWereCreated : public BitfieldStartScopeStateFixture
@@ -207,6 +208,6 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsRightBraceButNoFieldsWereCreated, verifyConsume)
     {
-        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::SyntaxError);
+        CHECK_THROW(state.consume(info, nodeStack, attributeStack, tokenStack, context), swizzle::SyntaxError);
     }
 }

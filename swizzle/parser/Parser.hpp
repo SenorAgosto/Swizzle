@@ -29,6 +29,7 @@ namespace swizzle { namespace parser {
         ParserState state_;
 
         NodeStack nodeStack_;
+        NodeStack attributeStack_;
         TokenStack tokenStack_;
         ParserStateContext context_;
 

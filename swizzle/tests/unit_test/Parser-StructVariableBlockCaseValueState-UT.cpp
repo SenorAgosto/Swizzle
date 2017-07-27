@@ -30,6 +30,7 @@ namespace {
         AbstractSyntaxTree ast;
 
         NodeStack nodeStack;
+        NodeStack attributeStack;
         TokenStack tokenStack;
         ParserStateContext context;
     };
@@ -75,7 +76,7 @@ namespace {
         CHECK_EQUAL(3U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(token, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(token, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructVariableBlockCaseValueRead, parserState);
 
@@ -98,7 +99,7 @@ namespace {
         CHECK_EQUAL(3U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(token, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(token, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructVariableBlockCaseValueRead, parserState);
 
@@ -121,7 +122,7 @@ namespace {
         CHECK_EQUAL(3U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(token, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(token, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructVariableBlockCaseValueRead, parserState);
 
@@ -166,7 +167,7 @@ namespace {
         CHECK_EQUAL(3U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(token, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(token, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructVariableBlockCaseValueRead, parserState);
 
@@ -186,7 +187,7 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsStringLiteralButMemberIsInteger, verifyConsume)
     {
-        CHECK_THROW(state.consume(token, nodeStack, tokenStack, context), swizzle::SyntaxError);
+        CHECK_THROW(state.consume(token, nodeStack, attributeStack, tokenStack, context), swizzle::SyntaxError);
     }
 
     struct WhenNextTokenIsHexLiteralButMemberIsString : public StringMemberFixture
@@ -196,7 +197,7 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsHexLiteralButMemberIsString, verifyConsume)
     {
-        CHECK_THROW(state.consume(token, nodeStack, tokenStack, context), swizzle::SyntaxError);
+        CHECK_THROW(state.consume(token, nodeStack, attributeStack, tokenStack, context), swizzle::SyntaxError);
     }
 
     struct WhenNextTokenIsInvalid : public StructVariableBlockCaseValueStateFixture
@@ -206,6 +207,6 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsInvalid, verifyConsume)
     {
-        CHECK_THROW(state.consume(token, nodeStack, tokenStack, context), swizzle::SyntaxError);
+        CHECK_THROW(state.consume(token, nodeStack, attributeStack, tokenStack, context), swizzle::SyntaxError);
     }
 }

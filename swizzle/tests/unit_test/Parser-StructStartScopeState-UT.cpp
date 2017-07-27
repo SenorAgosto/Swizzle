@@ -45,6 +45,7 @@ namespace {
         AbstractSyntaxTree ast;
 
         NodeStack nodeStack;
+        NodeStack attributeStack;
         TokenStack tokenStack;
         ParserStateContext context;
     };
@@ -66,7 +67,7 @@ namespace {
         CHECK_EQUAL(2U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructFieldLabel, parserState);
 
@@ -90,7 +91,7 @@ namespace {
         CHECK_EQUAL(0U, tokenStack.size());
         CHECK(!matcher(nodeStack.top()));
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructStartScope, parserState);
 
@@ -115,7 +116,7 @@ namespace {
         CHECK_EQUAL(0U, tokenStack.size());
         CHECK(!matcher(nodeStack.top()));
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructStartScope, parserState);
 
@@ -142,7 +143,7 @@ namespace {
         CHECK_EQUAL(2U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
@@ -160,7 +161,7 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsRightBraceAndNoFieldsWereDefined, verifyConsume)
     {
-        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::ParserError);
+        CHECK_THROW(state.consume(info, nodeStack, attributeStack, tokenStack, context), swizzle::ParserError);
     }
 
     struct WhenNextTokenIsConst : public StructStartScopeStateFixture
@@ -177,7 +178,7 @@ namespace {
         CHECK_EQUAL(0U, tokenStack.size());
         CHECK(!context.MemberIsConst);
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructStartScope, parserState);
 
@@ -199,7 +200,7 @@ namespace {
         CHECK_EQUAL(2U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructStartScope, parserState);
 
@@ -232,7 +233,7 @@ namespace {
         CHECK_EQUAL(3U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructStartScope, parserState);
 
@@ -277,7 +278,7 @@ namespace {
         CHECK_EQUAL(3U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructStartScope, parserState);
 
@@ -310,7 +311,7 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsAttributeValueAsHexLiteralButTopOfNodeStackIsNotAttribute, verifyConsume)
     {
-        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::ParserError);
+        CHECK_THROW(state.consume(info, nodeStack, attributeStack, tokenStack, context), swizzle::ParserError);
     }
 
     struct WhenNextTokenIsAttributeValueAsCharLiteral : public StructStartScopeStateFixture
@@ -335,7 +336,7 @@ namespace {
         CHECK_EQUAL(3U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructStartScope, parserState);
 
@@ -368,7 +369,7 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsAttributeValueAsCharLiteralButTopOfNodeStackIsNotAttribute, verifyConsume)
     {
-        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::ParserError);
+        CHECK_THROW(state.consume(info, nodeStack, attributeStack, tokenStack, context), swizzle::ParserError);
     }
 
     struct WhenNextTokenIsAttributeValueAsStringLiteral : public StructStartScopeStateFixture
@@ -393,7 +394,7 @@ namespace {
         CHECK_EQUAL(3U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructStartScope, parserState);
 
@@ -426,7 +427,7 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsAttributeValueAsStringLiteralButTopOfNodeStackIsNotAttribute, verifyConsume)
     {
-        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::ParserError);
+        CHECK_THROW(state.consume(info, nodeStack, attributeStack, tokenStack, context), swizzle::ParserError);
     }
 
     struct WhenNextTokenIsAttributeBlock : public StructStartScopeStateFixture
@@ -451,7 +452,7 @@ namespace {
         CHECK_EQUAL(3U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructStartScope, parserState);
 
@@ -484,7 +485,7 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsAttributeBlockButTopOfStackIsNotAttribute, verifyConsume)
     {
-        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::ParserError);
+        CHECK_THROW(state.consume(info, nodeStack, attributeStack, tokenStack, context), swizzle::ParserError);
     }
 
     struct WhenNextTokenIsU8 : public StructStartScopeStateFixture
@@ -500,7 +501,7 @@ namespace {
         CHECK_EQUAL(2U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructFieldNamespaceOrType, parserState);
 
@@ -524,7 +525,7 @@ namespace {
         CHECK_EQUAL(2U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructFieldNamespaceOrType, parserState);
 
@@ -548,7 +549,7 @@ namespace {
         CHECK_EQUAL(2U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructFieldNamespaceOrType, parserState);
 
@@ -572,7 +573,7 @@ namespace {
         CHECK_EQUAL(2U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructFieldNamespaceOrType, parserState);
 
@@ -596,7 +597,7 @@ namespace {
         CHECK_EQUAL(2U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructFieldNamespaceOrType, parserState);
 
@@ -620,7 +621,7 @@ namespace {
         CHECK_EQUAL(2U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructFieldNamespaceOrType, parserState);
 
@@ -644,7 +645,7 @@ namespace {
         CHECK_EQUAL(2U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructFieldNamespaceOrType, parserState);
 
@@ -668,7 +669,7 @@ namespace {
         CHECK_EQUAL(2U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructFieldNamespaceOrType, parserState);
 
@@ -692,7 +693,7 @@ namespace {
         CHECK_EQUAL(2U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructFieldNamespaceOrType, parserState);
 
@@ -716,7 +717,7 @@ namespace {
         CHECK_EQUAL(2U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructFieldNamespaceOrType, parserState);
 
@@ -737,7 +738,7 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsBitfield, verifyConsume)
     {
-        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::SyntaxError);
+        CHECK_THROW(state.consume(info, nodeStack, attributeStack, tokenStack, context), swizzle::SyntaxError);
     }
 
     struct WhenNextTokenIsVariableBlock : public StructStartScopeStateFixture
@@ -753,7 +754,7 @@ namespace {
         CHECK_EQUAL(2U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructStartVariableBlock, parserState);
 
@@ -775,7 +776,7 @@ namespace {
         CHECK_EQUAL(2U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructFieldNamespaceOrType, parserState);
 
@@ -797,7 +798,7 @@ namespace {
         CHECK_EQUAL(2U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructFieldNamespaceOrType, parserState);
 
@@ -825,7 +826,7 @@ namespace {
         CHECK_EQUAL(3U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructFieldName, parserState);
 
@@ -847,6 +848,6 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsInvalid, verifyConsume)
     {
-        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::SyntaxError);
+        CHECK_THROW(state.consume(info, nodeStack, attributeStack, tokenStack, context), swizzle::SyntaxError);
     }
 }

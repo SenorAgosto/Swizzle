@@ -17,6 +17,6 @@ namespace swizzle { namespace parser {
     {
     public:
         virtual ~ParserStateInterface(){}
-        virtual ParserState consume(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack& tokenStack, ParserStateContext& context) = 0;
+        virtual ParserState consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack& attributeStack, TokenStack& tokenStack, ParserStateContext& context) = 0;
     };
 }}

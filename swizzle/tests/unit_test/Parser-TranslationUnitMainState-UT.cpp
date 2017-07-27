@@ -41,6 +41,7 @@ namespace {
         AbstractSyntaxTree ast;
 
         NodeStack nodeStack;
+        NodeStack attributeStack;
         TokenStack tokenStack;
         ParserStateContext context;
     };
@@ -65,7 +66,7 @@ namespace {
         CHECK_EQUAL(0U, tokenStack.size());
         CHECK(!matcher(nodeStack.top()));
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
@@ -90,7 +91,7 @@ namespace {
         CHECK_EQUAL(0U, tokenStack.size());
         CHECK(!matcher(nodeStack.top()));
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
@@ -112,7 +113,7 @@ namespace {
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StartUsing, parserState);
 
@@ -133,7 +134,7 @@ namespace {
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StartEnum, parserState);
 
@@ -154,7 +155,7 @@ namespace {
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StartBitfield, parserState);
 
@@ -175,7 +176,7 @@ namespace {
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StartStruct, parserState);
 
@@ -196,7 +197,7 @@ namespace {
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
@@ -218,14 +219,14 @@ namespace {
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        auto parserState = state.consume(tokens[0], nodeStack, tokenStack, context);
+        auto parserState = state.consume(tokens[0], nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        parserState = state.consume(tokens[1], nodeStack, tokenStack, context);
+        parserState = state.consume(tokens[1], nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
@@ -255,14 +256,14 @@ namespace {
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        auto parserState = state.consume(tokens[0], nodeStack, tokenStack, context);
+        auto parserState = state.consume(tokens[0], nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        parserState = state.consume(tokens[1], nodeStack, tokenStack, context);
+        parserState = state.consume(tokens[1], nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
@@ -298,14 +299,14 @@ namespace {
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        auto parserState = state.consume(tokens[0], nodeStack, tokenStack, context);
+        auto parserState = state.consume(tokens[0], nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        parserState = state.consume(tokens[1], nodeStack, tokenStack, context);
+        parserState = state.consume(tokens[1], nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
@@ -341,14 +342,14 @@ namespace {
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        auto parserState = state.consume(tokens[0], nodeStack, tokenStack, context);
+        auto parserState = state.consume(tokens[0], nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        parserState = state.consume(tokens[1], nodeStack, tokenStack, context);
+        parserState = state.consume(tokens[1], nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
@@ -384,14 +385,14 @@ namespace {
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        auto parserState = state.consume(tokens[0], nodeStack, tokenStack, context);
+        auto parserState = state.consume(tokens[0], nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        parserState = state.consume(tokens[1], nodeStack, tokenStack, context);
+        parserState = state.consume(tokens[1], nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 

@@ -10,7 +10,7 @@
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState StructStartArrayState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack& tokenStack, ParserStateContext&)
+    ParserState StructStartArrayState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack&, TokenStack& tokenStack, ParserStateContext&)
     {
         const auto type = token.token().type();
 

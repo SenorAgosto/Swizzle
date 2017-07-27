@@ -37,6 +37,7 @@ namespace {
         AbstractSyntaxTree ast;
 
         NodeStack nodeStack;
+        NodeStack attributeStack;
         TokenStack tokenStack;
         ParserStateContext context;
     };
@@ -61,7 +62,7 @@ namespace {
         CHECK_EQUAL(0U, tokenStack.size());
         CHECK(!matcher(nodeStack.top()));
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::EnumStartScope, parserState);
 
@@ -88,7 +89,7 @@ namespace {
         CHECK_EQUAL(0U, tokenStack.size());
         CHECK(!matcher(nodeStack.top()));
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::EnumStartScope, parserState);
 
@@ -112,7 +113,7 @@ namespace {
         CHECK_EQUAL(2U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::EnumField, parserState);
 
@@ -141,7 +142,7 @@ namespace {
         CHECK_EQUAL(2U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
@@ -159,7 +160,7 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsInvalid, verifyConsume)
     {
-        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::SyntaxError);
+        CHECK_THROW(state.consume(info, nodeStack, attributeStack, tokenStack, context), swizzle::SyntaxError);
     }
 
     struct WhenNextTokenIsFieldNameAndTopOfStackIsNotEnum : public EnumStartScopeStateFixture
@@ -177,7 +178,7 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsFieldNameAndTopOfStackIsNotEnum, verifyConsume)
     {
-        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::ParserError);
+        CHECK_THROW(state.consume(info, nodeStack, attributeStack, tokenStack, context), swizzle::ParserError);
     }
 
     struct WhenNextTokenIsRightBraceAndTopOfStackIsNotEnum : public EnumStartScopeStateFixture
@@ -195,7 +196,7 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsRightBraceAndTopOfStackIsNotEnum, verifyConsume)
     {
-        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::ParserError);
+        CHECK_THROW(state.consume(info, nodeStack, attributeStack, tokenStack, context), swizzle::ParserError);
     }
 
     struct WhenNextTokenIsRightBraceButNoFieldsWereCreated : public EnumStartScopeStateFixture
@@ -208,6 +209,6 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsRightBraceButNoFieldsWereCreated, verifyConsume)
     {
-        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::SyntaxError);
+        CHECK_THROW(state.consume(info, nodeStack, attributeStack, tokenStack, context), swizzle::SyntaxError);
     }
 }

@@ -41,6 +41,7 @@ namespace {
         AbstractSyntaxTree ast;
 
         NodeStack nodeStack;
+        NodeStack attributeStack;
         TokenStack tokenStack;
         ParserStateContext context;
     };
@@ -62,7 +63,7 @@ namespace {
         CHECK_EQUAL(3U, nodeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::EnumStartScope, parserState);
 
@@ -80,6 +81,6 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsInvalid, verifyConsume)
     {
-        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::SyntaxError);
+        CHECK_THROW(state.consume(info, nodeStack, attributeStack, tokenStack, context), swizzle::SyntaxError);
     }
 }

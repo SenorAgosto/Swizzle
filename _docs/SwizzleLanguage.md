@@ -78,15 +78,15 @@ This is an informal description of the Swizzle DSL for describing messages on th
     extern <namespace>::<namespace>::<type_name>; 
 
     // attribute applied to extern statement
-    @attribute
+    @<attribute>
     extern <type_name>;
     
     // key/value attribute applied to extern statement
-    @attribute=value
+    @<attribute>=<value>
     extern <type_name>;
 
     // attribute block applied to extern statement
-    @attribute{<content>}
+    @<attribute>{<content>}
     extern <type_name>;
 
     namespace <namespace>;                  // e.g. foo 

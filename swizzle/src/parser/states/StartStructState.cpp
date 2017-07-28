@@ -4,6 +4,7 @@
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
 #include <swizzle/parser/detail/AppendNode.hpp>
+#include <swizzle/parser/detail/AttachAttributes.hpp>
 #include <swizzle/parser/detail/NodeStackTopIs.hpp>
 #include <swizzle/parser/NodeStack.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
@@ -11,7 +12,7 @@
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState StartStructState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack&, TokenStack& tokenStack, ParserStateContext& context)
+    ParserState StartStructState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack& attributeStack, TokenStack& tokenStack, ParserStateContext& context)
     {
         const auto type = token.token().type();
 
@@ -24,6 +25,8 @@ namespace swizzle { namespace parser { namespace states {
 
             auto& structKeyword = tokenStack.top();
             auto node = detail::appendNode<ast::nodes::Struct>(nodeStack, structKeyword, token, context.CurrentNamespace);
+
+            detail::attachAttributes(attributeStack, node);
 
             nodeStack.push(node);
             tokenStack.pop();

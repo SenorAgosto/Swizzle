@@ -214,10 +214,10 @@ namespace {
 
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
-        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
+        REQUIRE CHECK_EQUAL(1U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(1U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
-        CHECK(detail::nodeStackTopIs<nodes::Attribute>(nodeStack));
+        CHECK(detail::nodeStackTopIs<nodes::Attribute>(attributeStack));
     }
 
     struct WhenNextTokenIsAttributeBlock : public TranslationUnitMainStateFixture
@@ -238,8 +238,8 @@ namespace {
 
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
-        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
+        REQUIRE CHECK_EQUAL(1U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(1U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         parserState = state.consume(tokens[1], nodeStack, attributeStack, tokenStack, context);
@@ -247,17 +247,12 @@ namespace {
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
-        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
+        REQUIRE CHECK_EQUAL(1U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        auto attributeMatcher = Matcher().getChildrenOf<nodes::Attribute>().bind("attribute");
         auto matcher = Matcher().hasChildOf<nodes::AttributeBlock>();
-
-        REQUIRE CHECK(attributeMatcher(nodeStack.top()));
-
-        const auto attributeNode = attributeMatcher.bound("attribute_0");
-        REQUIRE CHECK(attributeNode);
-        CHECK(matcher(attributeNode));
+        REQUIRE CHECK(detail::nodeStackTopIs<nodes::Attribute>(attributeStack));
+        REQUIRE CHECK(matcher(attributeStack.top()));
     }
 
     struct WhenNextTokenIsHexLiteralAfterAttribute : public TranslationUnitMainStateFixture
@@ -278,8 +273,8 @@ namespace {
 
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
-        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
+        REQUIRE CHECK_EQUAL(1U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(1U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         parserState = state.consume(tokens[1], nodeStack, attributeStack, tokenStack, context);
@@ -287,17 +282,12 @@ namespace {
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
-        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
+        REQUIRE CHECK_EQUAL(1U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        auto attributeMatcher = Matcher().getChildrenOf<nodes::Attribute>().bind("attribute");
         auto matcher = Matcher().getChildrenOf<nodes::HexLiteral>().bind("hex");
-
-        REQUIRE CHECK(attributeMatcher(nodeStack.top()));
-
-        const auto attributeNode = attributeMatcher.bound("attribute_0");
-        REQUIRE CHECK(attributeNode);
-        REQUIRE CHECK(matcher(attributeNode));
+        REQUIRE CHECK(detail::nodeStackTopIs<nodes::Attribute>(attributeStack));
+        REQUIRE CHECK(matcher(attributeStack.top()));
 
         const auto hexLiteralNode = matcher.bound("hex_0");
         REQUIRE CHECK(hexLiteralNode);
@@ -324,8 +314,8 @@ namespace {
 
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
-        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
+        REQUIRE CHECK_EQUAL(1U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(1U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         parserState = state.consume(tokens[1], nodeStack, attributeStack, tokenStack, context);
@@ -333,23 +323,19 @@ namespace {
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
-        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
+        REQUIRE CHECK_EQUAL(1U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        auto attributeMatcher = Matcher().getChildrenOf<nodes::Attribute>().bind("attribute");
         auto matcher = Matcher().getChildrenOf<nodes::CharLiteral>().bind("char");
 
-        REQUIRE CHECK(attributeMatcher(nodeStack.top()));
+        REQUIRE CHECK(detail::nodeStackTopIs<nodes::Attribute>(attributeStack));
+        REQUIRE CHECK(matcher(attributeStack.top()));
 
-        const auto attributeNode = attributeMatcher.bound("attribute_0");
-        REQUIRE CHECK(attributeNode);
-        REQUIRE CHECK(matcher(attributeNode));
+        const auto charLiteralNode = matcher.bound("char_0");
+        REQUIRE CHECK(charLiteralNode);
 
-        const auto hexLiteralNode = matcher.bound("char_0");
-        REQUIRE CHECK(hexLiteralNode);
-
-        const auto& hex = static_cast<nodes::CharLiteral&>(*hexLiteralNode);
-        CHECK_EQUAL("'a'", hex.info().token().value());
+        const auto& charValue = static_cast<nodes::CharLiteral&>(*charLiteralNode);
+        CHECK_EQUAL("'a'", charValue.info().token().value());
     }
 
     struct WhenNextTokenIsStringLiteralAfterAttribute : public TranslationUnitMainStateFixture
@@ -370,8 +356,8 @@ namespace {
 
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
-        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
+        REQUIRE CHECK_EQUAL(1U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(1U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         parserState = state.consume(tokens[1], nodeStack, attributeStack, tokenStack, context);
@@ -379,23 +365,18 @@ namespace {
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
-        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
+        REQUIRE CHECK_EQUAL(1U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        auto attributeMatcher = Matcher().getChildrenOf<nodes::Attribute>().bind("attribute");
         auto matcher = Matcher().getChildrenOf<nodes::StringLiteral>().bind("string");
+        REQUIRE CHECK(detail::nodeStackTopIs<nodes::Attribute>(attributeStack));
+        REQUIRE CHECK(matcher(attributeStack.top()));
 
-        REQUIRE CHECK(attributeMatcher(nodeStack.top()));
+        const auto stringLiteralNode = matcher.bound("string_0");
+        REQUIRE CHECK(stringLiteralNode);
 
-        const auto attributeNode = attributeMatcher.bound("attribute_0");
-        REQUIRE CHECK(attributeNode);
-        REQUIRE CHECK(matcher(attributeNode));
-
-        const auto hexLiteralNode = matcher.bound("string_0");
-        REQUIRE CHECK(hexLiteralNode);
-
-        const auto& hex = static_cast<nodes::StringLiteral&>(*hexLiteralNode);
-        CHECK_EQUAL("\"string\"", hex.info().token().value());
+        const auto& s = static_cast<nodes::StringLiteral&>(*stringLiteralNode);
+        CHECK_EQUAL("\"string\"", s.info().token().value());
     }
 
     struct WhenNextTokenIsCommentAfterAnAttribute : public TranslationUnitMainStateFixture
@@ -416,8 +397,8 @@ namespace {
 
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
-        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
+        REQUIRE CHECK_EQUAL(1U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(1U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         parserState = state.consume(tokens[1], nodeStack, attributeStack, tokenStack, context);
@@ -425,7 +406,7 @@ namespace {
         CHECK_EQUAL(ParserState::TranslationUnitMain, parserState);
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
-        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
+        REQUIRE CHECK_EQUAL(1U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
     }
 }

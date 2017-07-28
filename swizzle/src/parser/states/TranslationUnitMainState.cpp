@@ -21,62 +21,54 @@
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState TranslationUnitMainState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack&, TokenStack& tokenStack, ParserStateContext& context)
+    ParserState TranslationUnitMainState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack& attributeStack, TokenStack& tokenStack, ParserStateContext& context)
     {
         const auto type = token.token().type();
 
-        if(type == lexer::TokenType::char_literal)
+        // we only push ast::nodes::Attribute onto the attribute stack,
+        // so we know if the stack is non-empty we have an attribute
+        if(!attributeStack.empty())
         {
-            detail::appendNode<ast::nodes::CharLiteral>(nodeStack, token);
-            nodeStack.pop();
+            if(type == lexer::TokenType::equal)
+            {
+                return ParserState::TranslationUnitMain;
+            }
 
-            return ParserState::TranslationUnitMain;
-        }
+            if(type == lexer::TokenType::char_literal)
+            {
+                detail::appendNode<ast::nodes::CharLiteral>(attributeStack, token);
+                return ParserState::TranslationUnitMain;
+            }
 
-        if(type == lexer::TokenType::string_literal)
-        {
-            detail::appendNode<ast::nodes::StringLiteral>(nodeStack, token);
-            nodeStack.pop();
+            if(type == lexer::TokenType::string_literal)
+            {
+                detail::appendNode<ast::nodes::StringLiteral>(attributeStack, token);
+                return ParserState::TranslationUnitMain;
+            }
 
-            return ParserState::TranslationUnitMain;
-        }
+            if(type == lexer::TokenType::hex_literal)
+            {
+                detail::appendNode<ast::nodes::HexLiteral>(attributeStack, token);
+                return ParserState::TranslationUnitMain;
+            }
 
-        if(type == lexer::TokenType::hex_literal)
-        {
-            detail::appendNode<ast::nodes::HexLiteral>(nodeStack, token);
-            nodeStack.pop();
+            if(type == lexer::TokenType::numeric_literal)
+            {
+                detail::appendNode<ast::nodes::NumericLiteral>(attributeStack, token);
+                return ParserState::TranslationUnitMain;
+            }
 
-            return ParserState::TranslationUnitMain;
-        }
-
-        if(type == lexer::TokenType::numeric_literal)
-        {
-            detail::appendNode<ast::nodes::NumericLiteral>(nodeStack, token);
-            nodeStack.pop();
-
-            return ParserState::TranslationUnitMain;
-        }
-
-        if(type == lexer::TokenType::attribute_block)
-        {
-            detail::appendNode<ast::nodes::AttributeBlock>(nodeStack, token);
-            nodeStack.pop();
-
-            return ParserState::TranslationUnitMain;
+            if(type == lexer::TokenType::attribute_block)
+            {
+                detail::appendNode<ast::nodes::AttributeBlock>(attributeStack, token);
+                return ParserState::TranslationUnitMain;
+            }
         }
 
         if(type == lexer::TokenType::attribute)
         {
-            auto attribute = detail::appendNode<ast::nodes::Attribute>(nodeStack, token);
-            nodeStack.push(attribute);
-
+            attributeStack.push(new ast::nodes::Attribute(token));
             return ParserState::TranslationUnitMain;
-        }
-
-        // cleanup the node stack
-        if(detail::nodeStackTopIs<ast::nodes::Attribute>(nodeStack))
-        {
-            nodeStack.pop();
         }
 
         if(type == lexer::TokenType::comment)

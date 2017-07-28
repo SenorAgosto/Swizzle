@@ -1,6 +1,7 @@
 #include "./ut_support/UnitTestSupport.hpp"
 
 #include <swizzle/ast/Matcher.hpp>
+#include <swizzle/ast/nodes/Attribute.hpp>
 #include <swizzle/ast/nodes/Bitfield.hpp>
 #include <swizzle/ast/nodes/BitfieldField.hpp>
 #include <swizzle/ast/nodes/Comment.hpp>
@@ -1010,6 +1011,40 @@ namespace {
         parse();
     }
 
+    struct WhenInputIsStructWithAttribute : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "@amigo" "\n"
+            "struct Struct1 {" "\n"
+                "u8 field;" "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithAttribute, verifyConsume)
+    {
+        auto matcher = Matcher().getChildrenOf<nodes::Struct>().bind("struct");
+        CHECK(!matcher(parser.ast().root()));
+
+        tokenize(sv);
+        parse();
+
+        CHECK(matcher(parser.ast().root()));
+
+        const auto node = matcher.bound("struct_0");
+        REQUIRE CHECK(node);
+
+        auto attributeMatcher = Matcher().getChildrenOf<nodes::Attribute>().bind("attribute");
+        CHECK(attributeMatcher(node));
+
+        const auto attributeNode = attributeMatcher.bound("attribute_0");
+        REQUIRE CHECK(attributeNode);
+
+        const auto& attribute = static_cast<nodes::Attribute&>(*attributeNode);
+        CHECK_EQUAL("@amigo", attribute.info().token().value());
+    }
+
     struct WhenInputIsStructWithArray : public ParserFixture
     {
         const boost::string_view sv = boost::string_view(
@@ -1088,6 +1123,91 @@ namespace {
     {
         tokenize(sv);
         parse();
+    }
+
+    struct WhenInputIsAUsingStatementWithAttribute : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "@attribute" "\n"
+            "using Indicator = u8;"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsAUsingStatementWithAttribute, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+
+        // TODO: validate AST
+    }
+
+    struct WhenInputIsAUsingStatementWithKeyValueAttribute : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "@attribute=\"value\"" "\n"
+            "using Indicator = u8;"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsAUsingStatementWithKeyValueAttribute, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+
+        // TODO: validate AST
+    }
+
+    struct WhenInputIsAUsingStatementWithKeyValueAttributeAndCharLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "@attribute='a'" "\n"
+            "using Indicator = u8;"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsAUsingStatementWithKeyValueAttributeAndCharLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+
+        // TODO: validate AST
+    }
+
+    struct WhenInputIsAUsingStatementWithKeyValueAttributeAndHexLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "@attribute=0x02" "\n"
+            "using Indicator = u8;"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsAUsingStatementWithKeyValueAttributeAndHexLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+
+        // TODO: validate AST
+    }
+
+    struct WhenInputIsAusingStatementWithKeyValueAttributeAndNumericLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "@attribute=42" "\n"
+            "using Indicator = f64;"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsAusingStatementWithKeyValueAttributeAndNumericLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+
+        // TODO: validate AST
     }
 
     struct WhenInputIsAUsingStatementButTypeIsNotDefined : public ParserFixture

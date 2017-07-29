@@ -77,19 +77,6 @@ This is an informal description of the Swizzle DSL for describing messages on th
     extern <namespace>::<type_name>;
     extern <namespace>::<namespace>::<type_name>; 
 
-    // attribute applied to extern statement
-    @<attribute>
-    extern <type_name>;
-    
-    // key/value attribute applied to extern statement
-    // <value> can a string_literal, char_literal, hex_literal, numeric_literal.
-    @<attribute>=<value>
-    extern <type_name>;
-
-    // attribute block applied to extern statement
-    @<attribute>{<content>}
-    extern <type_name>;
-
     namespace <namespace>;                  // e.g. foo 
     namespace <namespace>::<namespace>;     // nested namespaces, e.g. foo::bar
 

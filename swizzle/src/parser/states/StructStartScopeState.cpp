@@ -177,10 +177,7 @@ namespace swizzle { namespace parser { namespace states {
                         throw SyntaxError("Enum must have fields", "no fields declared in '" + top.name() + "'", token.fileInfo());
                     }
 
-                    const auto structNode = static_cast<ast::nodes::Struct&>(*nodeStack.top());
-                    context.TypeCache[structNode.name()] = nodeStack.top();
                     nodeStack.pop();
-
                     return ParserState::TranslationUnitMain;
                 }
 

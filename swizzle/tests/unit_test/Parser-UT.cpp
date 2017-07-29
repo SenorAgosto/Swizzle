@@ -4,6 +4,7 @@
 #include <swizzle/ast/nodes/Attribute.hpp>
 #include <swizzle/ast/nodes/Bitfield.hpp>
 #include <swizzle/ast/nodes/BitfieldField.hpp>
+#include <swizzle/ast/nodes/CharLiteral.hpp>
 #include <swizzle/ast/nodes/Comment.hpp>
 #include <swizzle/ast/nodes/Enum.hpp>
 #include <swizzle/ast/nodes/EnumField.hpp>
@@ -11,6 +12,7 @@
 #include <swizzle/ast/nodes/Import.hpp>
 #include <swizzle/ast/nodes/MultilineComment.hpp>
 #include <swizzle/ast/nodes/Namespace.hpp>
+#include <swizzle/ast/nodes/StringLiteral.hpp>
 #include <swizzle/ast/nodes/Struct.hpp>
 #include <swizzle/ast/nodes/StructField.hpp>
 #include <swizzle/ast/nodes/TypeAlias.hpp>
@@ -1059,6 +1061,57 @@ namespace {
     {
         tokenize(sv);
         parse();
+    }
+
+    struct WhenInputIsStructWithFieldAttribute : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {" "\n"
+                "@align=\"left\" @padding=' '" "\n"
+                "u8[20] name;" "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithFieldAttribute, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+
+        auto structMatcher = Matcher().getChildrenOf<nodes::Struct>().bind("struct");
+        auto structFieldMatcher = Matcher().getChildrenOf<nodes::StructField>().bind("field");
+        auto attributeMatcher = Matcher().getChildrenOf<nodes::Attribute>().bind("attribute");
+
+        REQUIRE CHECK(structMatcher(parser.ast().root()));
+        const auto structNode = structMatcher.bound("struct_0");
+        REQUIRE CHECK(structNode);
+
+        REQUIRE CHECK(structFieldMatcher(structNode));
+        const auto structFieldNode = structFieldMatcher.bound("field_0");
+        REQUIRE CHECK(structFieldNode);
+
+        REQUIRE CHECK(attributeMatcher(structFieldNode));
+
+        auto attribute0Node = attributeMatcher.bound("attribute_0");
+        REQUIRE CHECK(attribute0Node);
+
+        const auto& attribute0 = static_cast<nodes::Attribute&>(*attribute0Node);
+        CHECK_EQUAL("@padding", attribute0.info().token().value());
+
+        REQUIRE CHECK_EQUAL(1U, attribute0Node->children().size());
+        const auto& value0 = dynamic_cast<nodes::CharLiteral&>(*attribute0Node->children()[0]);
+        CHECK_EQUAL("' '", value0.info().token().value());
+
+        auto attribute1Node = attributeMatcher.bound("attribute_1");
+        REQUIRE CHECK(attribute1Node);
+
+        const auto& attribute1 = static_cast<nodes::Attribute&>(*attribute1Node);
+        CHECK_EQUAL("@align", attribute1.info().token().value());
+
+        REQUIRE CHECK_EQUAL(1U, attribute1Node->children().size());
+        const auto& value1 = dynamic_cast<nodes::StringLiteral&>(*attribute1Node->children()[0]);
+        CHECK_EQUAL("\"left\"", value1.info().token().value());
     }
 
     //-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_

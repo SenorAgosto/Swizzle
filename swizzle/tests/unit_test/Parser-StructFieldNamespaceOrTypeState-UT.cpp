@@ -99,14 +99,13 @@ namespace {
 
         CHECK_EQUAL(ParserState::StructFieldName, parserState);
 
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(3U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        auto matcher = Matcher().getChildrenOf<nodes::StructField>().bind("field");
-        REQUIRE CHECK(matcher(nodeStack.top()));
+        REQUIRE CHECK(detail::nodeStackTopIs<nodes::StructField>(nodeStack));
 
-        const auto sf = matcher.bound("field_0");
+        const auto sf = nodeStack.top();
         REQUIRE CHECK(sf);
 
         const auto& field = static_cast<nodes::StructField&>(*sf);
@@ -147,15 +146,13 @@ namespace {
 
         CHECK_EQUAL(ParserState::StructFieldName, parserState);
 
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(3U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
-        REQUIRE CHECK(detail::nodeStackTopIs<nodes::Struct>(nodeStack));
 
-        auto matcher = Matcher().getChildrenOf<nodes::StructField>().bind("field");
-        REQUIRE CHECK(matcher(nodeStack.top()));
+        REQUIRE CHECK(detail::nodeStackTopIs<nodes::StructField>(nodeStack));
 
-        const auto sf = matcher.bound("field_0");
+        const auto sf = nodeStack.top();
         REQUIRE CHECK(sf);
 
         const auto& field = static_cast<nodes::StructField&>(*sf);
@@ -225,14 +222,13 @@ namespace {
 
         CHECK_EQUAL(ParserState::StructFieldName, parserState);
 
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(3U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        auto matcher = Matcher().getChildrenOf<nodes::StructField>().bind("field");
-        REQUIRE CHECK(matcher(nodeStack.top()));
+        REQUIRE CHECK(detail::nodeStackTopIs<nodes::StructField>(nodeStack));
 
-        const auto sf = matcher.bound("field_0");
+        const auto sf = nodeStack.top();
         REQUIRE CHECK(sf);
 
         const auto& field = static_cast<nodes::StructField&>(*sf);
@@ -252,8 +248,6 @@ namespace {
             structNode->append(node);
             nodeStack.push(node);
 
-            const std::string s = "foo::bar::MyType";
-
             const Token t1 = Token(s, 0, 3, TokenType::string);
             const FileInfo f1 = FileInfo("test.swizzle", LineInfo(1U, 1U), LineInfo(1U, 4U));
             tokenStack.push(TokenInfo(t1, f1));
@@ -268,6 +262,8 @@ namespace {
 
             context.TypeCache["foo::bar::MyType"] = new Node();
         }
+
+        const std::string s = "foo::bar::MyType";
 
         const Token token = Token("field1", 0, 6, TokenType::string);
         const FileInfo fileInfo = FileInfo("test.swizzle");
@@ -285,14 +281,13 @@ namespace {
 
         CHECK_EQUAL(ParserState::StructFieldName, parserState);
 
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(3U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        auto matcher = Matcher().getChildrenOf<nodes::StructField>().bind("field");
-        REQUIRE CHECK(matcher(nodeStack.top()));
+        REQUIRE CHECK(detail::nodeStackTopIs<nodes::StructField>(nodeStack));
 
-        const auto sf = matcher.bound("field_0");
+        const auto sf = nodeStack.top();
         REQUIRE CHECK(sf);
 
         const auto& field = static_cast<nodes::StructField&>(*sf);
@@ -340,14 +335,13 @@ namespace {
 
         CHECK_EQUAL(ParserState::StructFieldName, parserState);
 
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(3U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        auto matcher = Matcher().getChildrenOf<nodes::StructField>().bind("field");
-        REQUIRE CHECK(matcher(nodeStack.top()));
+        REQUIRE CHECK(detail::nodeStackTopIs<nodes::StructField>(nodeStack));
 
-        const auto sf = matcher.bound("field_0");
+        const auto sf = nodeStack.top();
         REQUIRE CHECK(sf);
 
         const auto& field = static_cast<nodes::StructField&>(*sf);
@@ -390,14 +384,13 @@ namespace {
 
         CHECK_EQUAL(ParserState::StructFieldName, parserState);
 
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(3U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        auto matcher = Matcher().getChildrenOf<nodes::StructField>().bind("field");
-        REQUIRE CHECK(matcher(nodeStack.top()));
+        REQUIRE CHECK(detail::nodeStackTopIs<nodes::StructField>(nodeStack));
 
-        const auto sf = matcher.bound("field_0");
+        const auto sf = nodeStack.top();
         REQUIRE CHECK(sf);
 
         const auto& field = static_cast<nodes::StructField&>(*sf);

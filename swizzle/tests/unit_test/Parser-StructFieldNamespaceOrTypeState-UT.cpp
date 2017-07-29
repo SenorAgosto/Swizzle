@@ -38,6 +38,7 @@ namespace {
         AbstractSyntaxTree ast;
 
         NodeStack nodeStack;
+        NodeStack attributeStack;
         TokenStack tokenStack;
         ParserStateContext context;
     };
@@ -57,13 +58,15 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsColon, verifyConsume)
     {
         CHECK_EQUAL(2U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructFieldNamespaceFirstColon, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
     }
 
@@ -89,19 +92,20 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsStringAndTypeIsU8, verifyConsume)
     {
         CHECK_EQUAL(3U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(1U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructFieldName, parserState);
 
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(3U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        auto matcher = Matcher().getChildrenOf<nodes::StructField>().bind("field");
-        REQUIRE CHECK(matcher(nodeStack.top()));
+        REQUIRE CHECK(detail::nodeStackTopIs<nodes::StructField>(nodeStack));
 
-        const auto sf = matcher.bound("field_0");
+        const auto sf = nodeStack.top();
         REQUIRE CHECK(sf);
 
         const auto& field = static_cast<nodes::StructField&>(*sf);
@@ -135,20 +139,20 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsStringAndTypeIsU8AndThereIsAFieldLabel, verifyConsume)
     {
         CHECK_EQUAL(4U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(1U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructFieldName, parserState);
 
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(3U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
-        REQUIRE CHECK(detail::nodeStackTopIs<nodes::Struct>(nodeStack));
 
-        auto matcher = Matcher().getChildrenOf<nodes::StructField>().bind("field");
-        REQUIRE CHECK(matcher(nodeStack.top()));
+        REQUIRE CHECK(detail::nodeStackTopIs<nodes::StructField>(nodeStack));
 
-        const auto sf = matcher.bound("field_0");
+        const auto sf = nodeStack.top();
         REQUIRE CHECK(sf);
 
         const auto& field = static_cast<nodes::StructField&>(*sf);
@@ -175,7 +179,7 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsStringAndTypeIsU8AndTopOfStackIsNotStructField, verifyConsume)
     {
-        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::ParserError);
+        CHECK_THROW(state.consume(info, nodeStack, attributeStack, tokenStack, context), swizzle::ParserError);
     }
 
     struct WhenNextTokenIsStringAndTypeIsUserTypeWithNamespace : public StructFieldNamespaceOrTypeStateFixture
@@ -211,19 +215,20 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsStringAndTypeIsUserTypeWithNamespace, verifyConsume)
     {
         CHECK_EQUAL(3U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(3U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructFieldName, parserState);
 
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(3U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        auto matcher = Matcher().getChildrenOf<nodes::StructField>().bind("field");
-        REQUIRE CHECK(matcher(nodeStack.top()));
+        REQUIRE CHECK(detail::nodeStackTopIs<nodes::StructField>(nodeStack));
 
-        const auto sf = matcher.bound("field_0");
+        const auto sf = nodeStack.top();
         REQUIRE CHECK(sf);
 
         const auto& field = static_cast<nodes::StructField&>(*sf);
@@ -243,8 +248,6 @@ namespace {
             structNode->append(node);
             nodeStack.push(node);
 
-            const std::string s = "foo::bar::MyType";
-
             const Token t1 = Token(s, 0, 3, TokenType::string);
             const FileInfo f1 = FileInfo("test.swizzle", LineInfo(1U, 1U), LineInfo(1U, 4U));
             tokenStack.push(TokenInfo(t1, f1));
@@ -260,6 +263,8 @@ namespace {
             context.TypeCache["foo::bar::MyType"] = new Node();
         }
 
+        const std::string s = "foo::bar::MyType";
+
         const Token token = Token("field1", 0, 6, TokenType::string);
         const FileInfo fileInfo = FileInfo("test.swizzle");
 
@@ -269,19 +274,20 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsStringAndTypeIsUserTypeWithNamespaceWithFieldLabel, verifyConsume)
     {
         CHECK_EQUAL(4U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(3U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructFieldName, parserState);
 
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(3U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        auto matcher = Matcher().getChildrenOf<nodes::StructField>().bind("field");
-        REQUIRE CHECK(matcher(nodeStack.top()));
+        REQUIRE CHECK(detail::nodeStackTopIs<nodes::StructField>(nodeStack));
 
-        const auto sf = matcher.bound("field_0");
+        const auto sf = nodeStack.top();
         REQUIRE CHECK(sf);
 
         const auto& field = static_cast<nodes::StructField&>(*sf);
@@ -322,19 +328,20 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsStringAndTypeIsUserTypeWithoutNamespace, verifyConsume)
     {
         CHECK_EQUAL(3U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(1U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructFieldName, parserState);
 
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(3U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        auto matcher = Matcher().getChildrenOf<nodes::StructField>().bind("field");
-        REQUIRE CHECK(matcher(nodeStack.top()));
+        REQUIRE CHECK(detail::nodeStackTopIs<nodes::StructField>(nodeStack));
 
-        const auto sf = matcher.bound("field_0");
+        const auto sf = nodeStack.top();
         REQUIRE CHECK(sf);
 
         const auto& field = static_cast<nodes::StructField&>(*sf);
@@ -370,19 +377,20 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsStringAndTypeIsUserTypeWithoutNamespaceWithFieldLabel, verifyConsume)
     {
         CHECK_EQUAL(4U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(1U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructFieldName, parserState);
 
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(3U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        auto matcher = Matcher().getChildrenOf<nodes::StructField>().bind("field");
-        REQUIRE CHECK(matcher(nodeStack.top()));
+        REQUIRE CHECK(detail::nodeStackTopIs<nodes::StructField>(nodeStack));
 
-        const auto sf = matcher.bound("field_0");
+        const auto sf = nodeStack.top();
         REQUIRE CHECK(sf);
 
         const auto& field = static_cast<nodes::StructField&>(*sf);
@@ -410,13 +418,15 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsLeftBracket, verifyConsume)
     {
         CHECK_EQUAL(2U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructStartArray, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
     }
 
@@ -430,6 +440,6 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsInvalid, verifyConsume)
     {
-        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::SyntaxError);
+        CHECK_THROW(state.consume(info, nodeStack, attributeStack, tokenStack, context), swizzle::SyntaxError);
     }
 }

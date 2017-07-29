@@ -26,113 +26,129 @@
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState StructStartScopeState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack& tokenStack, ParserStateContext& context)
+    ParserState StructStartScopeState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack& attributeStack, TokenStack& tokenStack, ParserStateContext& context)
     {
         const auto type = token.token().type();
 
-        if(type == lexer::TokenType::numeric_literal)
+        if(equalRead_)
         {
-            if(detail::nodeStackTopIs<ast::nodes::Attribute>(nodeStack))
+            if(type == lexer::TokenType::equal)
             {
-                detail::appendNode<ast::nodes::NumericLiteral>(nodeStack, token);
-                nodeStack.pop();
+                throw SyntaxError("Expected literal value", token);
+            }
+
+            if(type == lexer::TokenType::numeric_literal)
+            {
+                equalRead_ = false;
+                detail::appendNode<ast::nodes::NumericLiteral>(attributeStack, token);
 
                 return ParserState::StructStartScope;
             }
 
-            if(detail::nodeStackTopIs<ast::nodes::FieldLabel>(nodeStack))
+            if(type == lexer::TokenType::hex_literal)
             {
-                throw SyntaxError("Expected field declaration, found duplicitous field label", token);
-            }
-
-            // we want to attach this to the field
-            nodeStack.push(new ast::nodes::FieldLabel(token));
-            return ParserState::StructFieldLabel;
-        }
-
-        if(type == lexer::TokenType::hex_literal)
-        {
-            if(detail::nodeStackTopIs<ast::nodes::Attribute>(nodeStack))
-            {
-                detail::appendNode<ast::nodes::HexLiteral>(nodeStack, token);
-                nodeStack.pop();
+                equalRead_ = false;
+                detail::appendNode<ast::nodes::HexLiteral>(attributeStack, token);
 
                 return ParserState::StructStartScope;
             }
 
-            throw ParserError("Internal parser error, top of node stack was not ast::nodes::Attribute");
-        }
-
-        if(type == lexer::TokenType::char_literal)
-        {
-            if(detail::nodeStackTopIs<ast::nodes::Attribute>(nodeStack))
+            if(type == lexer::TokenType::char_literal)
             {
-                detail::appendNode<ast::nodes::CharLiteral>(nodeStack, token);
-                nodeStack.pop();
+                equalRead_ = false;
+                detail::appendNode<ast::nodes::CharLiteral>(attributeStack, token);
 
                 return ParserState::StructStartScope;
             }
 
-            throw ParserError("Internal parser error, top of node stack was not ast::nodes::Attribute");
-        }
-
-        if(type == lexer::TokenType::string_literal)
-        {
-            if(detail::nodeStackTopIs<ast::nodes::Attribute>(nodeStack))
+            if(type == lexer::TokenType::string_literal)
             {
-                detail::appendNode<ast::nodes::StringLiteral>(nodeStack, token);
-                nodeStack.pop();
+                equalRead_ = false;
+                detail::appendNode<ast::nodes::StringLiteral>(attributeStack, token);
 
                 return ParserState::StructStartScope;
             }
-
-            throw ParserError("Internal parser error, top of node stack was not ast::nodes::Attribute");
         }
-
-        if(type == lexer::TokenType::attribute_block)
+        else
         {
-            if(detail::nodeStackTopIs<ast::nodes::Attribute>(nodeStack))
+            if(type == lexer::TokenType::equal)
             {
-                detail::appendNode<ast::nodes::AttributeBlock>(nodeStack, token);
-                nodeStack.pop();
-
+                equalRead_ = true;
                 return ParserState::StructStartScope;
             }
 
-            throw ParserError("Internal parser error, top of node stack was not ast::nodes::Attribute");
-        }
-
-        // cleanup node stack if the last value was an attribute
-        if(detail::nodeStackTopIs<ast::nodes::Attribute>(nodeStack))
-        {
-            nodeStack.pop();
-        }
-
-        if(type == lexer::TokenType::attribute)
-        {
-            const auto node = detail::appendNode<ast::nodes::Attribute>(nodeStack, token);
-            nodeStack.push(node);
-
-            return ParserState::StructStartScope;
-        }
-
-        if(type == lexer::TokenType::comment)
-        {
-            detail::appendNode<ast::nodes::Comment>(nodeStack, token);
-            return ParserState::StructStartScope;
-        }
-
-        if(type == lexer::TokenType::multiline_comment)
-        {
-            detail::appendNode<ast::nodes::MultilineComment>(nodeStack, token);
-            return ParserState::StructStartScope;
-        }
-
-        if(type == lexer::TokenType::type)
-        {
-            const auto& value = token.token().value();
-            if(types::IsIntegerType(value) || types::IsFloatType(value))
+            if(type == lexer::TokenType::numeric_literal)
             {
+                if(detail::nodeStackTopIs<ast::nodes::FieldLabel>(nodeStack))
+                {
+                    throw SyntaxError("Expected field declaration, found duplicitous field label", token);
+                }
+
+                // we want to attach this to the field
+                nodeStack.push(new ast::nodes::FieldLabel(token));
+                return ParserState::StructFieldLabel;
+            }
+
+            if(type == lexer::TokenType::attribute_block)
+            {
+                if(!attributeStack.empty())
+                {
+                    detail::appendNode<ast::nodes::AttributeBlock>(attributeStack, token);
+                    return ParserState::StructStartScope;
+                }
+            }
+
+            if(type == lexer::TokenType::attribute)
+            {
+                attributeStack.push(new ast::nodes::Attribute(token));
+                return ParserState::StructStartScope;
+            }
+
+            if(type == lexer::TokenType::comment)
+            {
+                detail::appendNode<ast::nodes::Comment>(nodeStack, token);
+                return ParserState::StructStartScope;
+            }
+
+            if(type == lexer::TokenType::multiline_comment)
+            {
+                detail::appendNode<ast::nodes::MultilineComment>(nodeStack, token);
+                return ParserState::StructStartScope;
+            }
+
+            if(type == lexer::TokenType::type)
+            {
+                const auto& value = token.token().value();
+                if(types::IsIntegerType(value) || types::IsFloatType(value))
+                {
+                    auto node = detail::appendNode<ast::nodes::StructField>(nodeStack);
+                    nodeStack.push(node);
+                    tokenStack.push(token);
+
+                    return ParserState::StructFieldNamespaceOrType;
+                }
+
+                if(value == "variable_block")
+                {
+                    auto node = detail::appendNode<ast::nodes::VariableBlock>(nodeStack, token);
+                    nodeStack.push(node);
+
+                    return ParserState::StructStartVariableBlock;
+                }
+
+                throw SyntaxError("Unsupported type encountered in struct field", token);
+            }
+
+            if(type == lexer::TokenType::string)
+            {
+                if(detail::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
+                {
+                    auto& top = static_cast<ast::nodes::StructField&>(*nodeStack.top());
+                    top.name(token);
+
+                    return ParserState::StructFieldName;
+                }
+
                 auto node = detail::appendNode<ast::nodes::StructField>(nodeStack);
                 nodeStack.push(node);
                 tokenStack.push(token);
@@ -140,63 +156,36 @@ namespace swizzle { namespace parser { namespace states {
                 return ParserState::StructFieldNamespaceOrType;
             }
 
-            if(value == "variable_block")
+            if(type == lexer::TokenType::keyword)
             {
-                auto node = detail::appendNode<ast::nodes::VariableBlock>(nodeStack, token);
-                nodeStack.push(node);
-
-                return ParserState::StructStartVariableBlock;
-            }
-
-            throw SyntaxError("Unsupported type encountered in struct field", token);
-        }
-
-        if(type == lexer::TokenType::string)
-        {
-            if(detail::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
-            {
-                auto& top = static_cast<ast::nodes::StructField&>(*nodeStack.top());
-                top.name(token);
-
-                return ParserState::StructFieldName;
-            }
-
-            auto node = detail::appendNode<ast::nodes::StructField>(nodeStack);
-            nodeStack.push(node);
-            tokenStack.push(token);
-
-            return ParserState::StructFieldNamespaceOrType;
-        }
-
-        if(type == lexer::TokenType::keyword)
-        {
-            const auto& value = token.token().value();
-            if(value == "const")
-            {
-                context.MemberIsConst = true;
-                return ParserState::StructStartScope;
-            }
-        }
-
-        if(type == lexer::TokenType::r_brace)
-        {
-            if(detail::nodeStackTopIs<ast::nodes::Struct>(nodeStack))
-            {
-                auto hasNonCommentChildren = ast::Matcher().hasChildNotOf<ast::nodes::Comment, ast::nodes::MultilineComment>();
-                if(!hasNonCommentChildren(nodeStack.top()))
+                const auto& value = token.token().value();
+                if(value == "const")
                 {
-                    const auto& top = static_cast<ast::nodes::Struct&>(*nodeStack.top());
-                    throw SyntaxError("Enum must have fields", "no fields declared in '" + top.name() + "'", token.fileInfo());
+                    context.MemberIsConst = true;
+                    return ParserState::StructStartScope;
+                }
+            }
+
+            if(type == lexer::TokenType::r_brace)
+            {
+                if(detail::nodeStackTopIs<ast::nodes::Struct>(nodeStack))
+                {
+                    auto hasNonCommentChildren = ast::Matcher().hasChildNotOf<ast::nodes::Comment, ast::nodes::MultilineComment>();
+                    if(!hasNonCommentChildren(nodeStack.top()))
+                    {
+                        const auto& top = static_cast<ast::nodes::Struct&>(*nodeStack.top());
+                        throw SyntaxError("Enum must have fields", "no fields declared in '" + top.name() + "'", token.fileInfo());
+                    }
+
+                    const auto structNode = static_cast<ast::nodes::Struct&>(*nodeStack.top());
+                    context.TypeCache[structNode.name()] = nodeStack.top();
+                    nodeStack.pop();
+
+                    return ParserState::TranslationUnitMain;
                 }
 
-                const auto structNode = static_cast<ast::nodes::Struct&>(*nodeStack.top());
-                context.TypeCache[structNode.name()] = nodeStack.top();
-                nodeStack.pop();
-
-                return ParserState::TranslationUnitMain;
+                throw ParserError("Internal parser error, top of node stack is not ast::nodes::Struct");
             }
-
-            throw ParserError("Internal parser error, top of node stack is not ast::nodes::Struct");
         }
 
         throw SyntaxError("Unexpected token encountered", token);

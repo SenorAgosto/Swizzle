@@ -31,6 +31,7 @@ namespace {
         AbstractSyntaxTree ast;
 
         NodeStack nodeStack;
+        NodeStack attributeStack;
         TokenStack tokenStack;
         ParserStateContext context;
     };
@@ -49,14 +50,16 @@ namespace {
         auto matcher = Matcher().hasChildOf<nodes::Comment>();
 
         CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
         CHECK(!matcher(nodeStack.top()));
 
-        const auto parserState = state.consume(token, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(token, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructVariableBlockBeginCases, parserState);
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
         CHECK(matcher(nodeStack.top()));
     }
@@ -71,14 +74,16 @@ namespace {
         auto matcher = Matcher().hasChildOf<nodes::MultilineComment>();
 
         CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
         CHECK(!matcher(nodeStack.top()));
 
-        const auto parserState = state.consume(token, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(token, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructVariableBlockBeginCases, parserState);
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
         CHECK(matcher(nodeStack.top()));
     }
@@ -93,14 +98,16 @@ namespace {
         auto matcher = Matcher().hasChildOf<nodes::VariableBlockCase>();
 
         CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
         CHECK(!matcher(nodeStack.top()));
 
-        const auto parserState = state.consume(token, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(token, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructVariableBlockCaseValue, parserState);
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
         CHECK(matcher(nodeStack.top()));
     }
@@ -123,13 +130,15 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsRightBrace, verifyConsume)
     {
         CHECK_EQUAL(2U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(token, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(token, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructStartScope, parserState);
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
     }
 
@@ -140,6 +149,6 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsRightBraceAndVariableBlockIsEmpty, verifyConsume)
     {
-        CHECK_THROW(state.consume(token, nodeStack, tokenStack, context), swizzle::SyntaxError);
+        CHECK_THROW(state.consume(token, nodeStack, attributeStack, tokenStack, context), swizzle::SyntaxError);
     }
 }

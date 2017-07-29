@@ -42,6 +42,7 @@ namespace {
         AbstractSyntaxTree ast;
 
         NodeStack nodeStack;
+        NodeStack attributeStack;
         TokenStack tokenStack;
         ParserStateContext context;
     };
@@ -61,13 +62,15 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsHexLiteral, verifyConsume)
     {
         CHECK_EQUAL(3U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::EnumFieldValueRead, parserState);
 
         REQUIRE CHECK_EQUAL(3U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         const auto& field = dynamic_cast<nodes::EnumField&>(*nodeStack.top());
@@ -88,13 +91,15 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsNumericLiteral, verifyConsume)
     {
         CHECK_EQUAL(3U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::EnumFieldValueRead, parserState);
 
         REQUIRE CHECK_EQUAL(3U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         const auto& field = dynamic_cast<nodes::EnumField&>(*nodeStack.top());
@@ -115,13 +120,15 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsCharLiteral, verifyConsume)
     {
         CHECK_EQUAL(3U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(info, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::EnumFieldValueRead, parserState);
 
         REQUIRE CHECK_EQUAL(3U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         const auto& field = dynamic_cast<nodes::EnumField&>(*nodeStack.top());
@@ -141,7 +148,7 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsInvalid, verifyConsume)
     {
-        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::SyntaxError);
+        CHECK_THROW(state.consume(info, nodeStack, attributeStack, tokenStack, context), swizzle::SyntaxError);
     }
 
     struct WhenNextTokenIsHexLiteralButTopOfStackIsNotEnumField : public WhenNextTokenIsHexLiteral
@@ -154,7 +161,7 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsHexLiteralButTopOfStackIsNotEnumField, verifyConsume)
     {
-        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::ParserError);
+        CHECK_THROW(state.consume(info, nodeStack, attributeStack, tokenStack, context), swizzle::ParserError);
     }
 
     struct WhenNextTokenIsHexLiteralButSecondEntryOnStackIsNotEnum : public WhenNextTokenIsHexLiteral
@@ -170,6 +177,6 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsHexLiteralButSecondEntryOnStackIsNotEnum, verifyConsume)
     {
-        CHECK_THROW(state.consume(info, nodeStack, tokenStack, context), swizzle::ParserError);
+        CHECK_THROW(state.consume(info, nodeStack, attributeStack, tokenStack, context), swizzle::ParserError);
     }
 }

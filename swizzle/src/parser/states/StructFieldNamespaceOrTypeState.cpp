@@ -14,7 +14,7 @@
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState StructFieldNamespaceOrTypeState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, TokenStack& tokenStack, ParserStateContext& context)
+    ParserState StructFieldNamespaceOrTypeState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack&, TokenStack& tokenStack, ParserStateContext& context)
     {
         const auto type = token.token().type();
 
@@ -59,6 +59,7 @@ namespace swizzle { namespace parser { namespace states {
                         nodeStack.pop();
                     }
 
+                    nodeStack.push(sf);
                     return ParserState::StructFieldName;
                 }
 
@@ -75,6 +76,7 @@ namespace swizzle { namespace parser { namespace states {
                         nodeStack.pop();
                     }
 
+                    nodeStack.push(sf);
                     return ParserState::StructFieldName;
                 }
 
@@ -92,6 +94,7 @@ namespace swizzle { namespace parser { namespace states {
                         nodeStack.pop();
                     }
 
+                    nodeStack.push(sf);
                     return ParserState::StructFieldName;
                 }
 

@@ -78,15 +78,16 @@ This is an informal description of the Swizzle DSL for describing messages on th
     extern <namespace>::<namespace>::<type_name>; 
 
     // attribute applied to extern statement
-    @attribute
+    @<attribute>
     extern <type_name>;
     
     // key/value attribute applied to extern statement
-    @attribute=value
+    // <value> can a string_literal, char_literal, hex_literal, numeric_literal.
+    @<attribute>=<value>
     extern <type_name>;
 
     // attribute block applied to extern statement
-    @attribute{<content>}
+    @<attribute>{<content>}
     extern <type_name>;
 
     namespace <namespace>;                  // e.g. foo 
@@ -221,8 +222,9 @@ It should be noted, Swizzle doesn't process attributes beyond attaching them to 
 
 Here are some attributes a backend might define:
 
-    @justified=left
-    @justified=right
+    @validate{size != 0}
+    @justified="left"
+    @justified="right"
     @padded=' '
     @padded='\0'
     @ignore 

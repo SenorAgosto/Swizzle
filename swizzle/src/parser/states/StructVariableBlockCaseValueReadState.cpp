@@ -8,7 +8,7 @@
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState StructVariableBlockCaseValueReadState::consume(const lexer::TokenInfo& token, NodeStack&, TokenStack&, ParserStateContext&)
+    ParserState StructVariableBlockCaseValueReadState::consume(const lexer::TokenInfo& token, NodeStack&, NodeStack&, TokenStack&, ParserStateContext&)
     {
         const auto type = token.token().type();
 

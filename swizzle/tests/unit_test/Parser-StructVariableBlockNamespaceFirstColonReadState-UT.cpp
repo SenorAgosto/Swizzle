@@ -28,6 +28,7 @@ namespace {
         AbstractSyntaxTree ast;
 
         NodeStack nodeStack;
+        NodeStack attributeStack;
         TokenStack tokenStack;
         ParserStateContext context;
     };
@@ -44,13 +45,15 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsColon, verifyConsume)
     {
         CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        const auto parserState = state.consume(token, nodeStack, tokenStack, context);
+        const auto parserState = state.consume(token, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructVariableBlockNamespaceSecondColonRead, parserState);
 
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
     }
 
@@ -61,6 +64,6 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsInvalid, verifyConsume)
     {
-        CHECK_THROW(state.consume(token, nodeStack, tokenStack, context), swizzle::SyntaxError);
+        CHECK_THROW(state.consume(token, nodeStack, attributeStack, tokenStack, context), swizzle::SyntaxError);
     }
 }

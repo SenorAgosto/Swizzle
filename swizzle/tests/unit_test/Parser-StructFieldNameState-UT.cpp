@@ -28,6 +28,9 @@ namespace {
 
             auto node = detail::appendNode<nodes::Struct>(nodeStack, structKeyword, name, "my_namespace");
             nodeStack.push(node);
+
+            auto field = detail::appendNode<nodes::StructField>(nodeStack);
+            nodeStack.push(field);
         }
 
         states::StructFieldNameState state;
@@ -54,7 +57,7 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsEndLine, verifyConsume)
     {
-        CHECK_EQUAL(2U, nodeStack.size());
+        CHECK_EQUAL(3U, nodeStack.size());
         CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 

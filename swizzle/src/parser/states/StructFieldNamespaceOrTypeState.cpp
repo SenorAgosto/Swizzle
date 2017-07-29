@@ -59,6 +59,7 @@ namespace swizzle { namespace parser { namespace states {
                         nodeStack.pop();
                     }
 
+                    nodeStack.push(sf);
                     return ParserState::StructFieldName;
                 }
 
@@ -75,6 +76,7 @@ namespace swizzle { namespace parser { namespace states {
                         nodeStack.pop();
                     }
 
+                    nodeStack.push(sf);
                     return ParserState::StructFieldName;
                 }
 
@@ -92,6 +94,7 @@ namespace swizzle { namespace parser { namespace states {
                         nodeStack.pop();
                     }
 
+                    nodeStack.push(sf);
                     return ParserState::StructFieldName;
                 }
 

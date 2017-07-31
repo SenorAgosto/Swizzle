@@ -8,12 +8,13 @@
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState StructVectorNestedOnMemberState::consume(const lexer::TokenInfo& token, NodeStack&, NodeStack&, TokenStack&, ParserStateContext&)
+    ParserState StructVectorNestedOnMemberState::consume(const lexer::TokenInfo& token, NodeStack&, NodeStack&, TokenStack& tokenStack, ParserStateContext&)
     {
         const auto type = token.token().type();
 
         if(type == lexer::TokenType::string)
         {
+            tokenStack.push(token);
             return ParserState::StructVector;
         }
 

@@ -77,15 +77,16 @@ namespace {
             auto node = detail::appendNode<nodes::StructField>(nodeStack);
             nodeStack.push(node);
 
-            const Token t = Token("u8", 0, 2, TokenType::type);
-            const FileInfo f = FileInfo("test.swizzle");
-
             tokenStack.push(TokenInfo(t, f));
         }
 
-        const Token token = Token("field1", 0, 6, TokenType::string);
-        const FileInfo fileInfo = FileInfo("test.swizzle");
+        const std::string s = "u8 field1";
 
+        const Token t = Token(s, 0, 2, TokenType::type);
+        const FileInfo f = FileInfo("test.swizzle", LineInfo(1, 1), LineInfo(1, 3));
+
+        const Token token = Token(s, 3, 9, TokenType::string);
+        const FileInfo fileInfo = FileInfo("test.swizzle", LineInfo(1, 4), LineInfo(1, 10));
         const TokenInfo info = TokenInfo(token, fileInfo);
     };
 
@@ -409,23 +410,35 @@ namespace {
 
     struct WhenNextTokenIsLeftBracket : public StructFieldNamespaceOrTypeStateFixture
     {
+        WhenNextTokenIsLeftBracket()
+        {
+            const auto node = detail::appendNode<nodes::StructField>(nodeStack);
+            nodeStack.push(node);
+            tokenStack.push(type);
+
+            context.CurrentNamespace = "foo::bar";
+        }
+
         const Token token = Token("[", 0, 1, TokenType::l_bracket);
         const FileInfo fileInfo = FileInfo("test.swizzle");
-
         const TokenInfo info = TokenInfo(token, fileInfo);
+
+        const Token token2 = Token("u8", 0, 2, TokenType::type);
+        const FileInfo fileInfo2 = FileInfo("test.swizzle");
+        const TokenInfo type = TokenInfo(token2, fileInfo2);
     };
 
     TEST_FIXTURE(WhenNextTokenIsLeftBracket, verifyConsume)
     {
-        CHECK_EQUAL(2U, nodeStack.size());
+        CHECK_EQUAL(3U, nodeStack.size());
         CHECK_EQUAL(0U, attributeStack.size());
-        CHECK_EQUAL(0U, tokenStack.size());
+        CHECK_EQUAL(1U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
         CHECK_EQUAL(ParserState::StructStartArray, parserState);
 
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(3U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
     }

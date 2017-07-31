@@ -31,13 +31,10 @@ namespace swizzle { namespace parser { namespace states {
                 auto& top = static_cast<ast::nodes::StructField&>(*nodeStack.top());
                 top.makeVector(member);
 
-                nodeStack.pop();
-                return ParserState::StructFieldNamespaceOrType;
+                return ParserState::StructEndArrayOrVector;
             }
-            else
-            {
-                throw ParserError("Internal parser error, top of node stack was not ast::nodes::StructField");
-            }
+
+            throw ParserError("Internal parser error, top of node stack was not ast::nodes::StructField");
         }
 
         throw SyntaxError("Expected ']' or '.'" , token);

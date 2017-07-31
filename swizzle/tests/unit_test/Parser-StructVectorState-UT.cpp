@@ -9,6 +9,7 @@
 
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/parser/detail/AppendNode.hpp>
+#include <swizzle/parser/detail/NodeStackTopIs.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/states/StructVectorState.hpp>
 
@@ -107,16 +108,15 @@ namespace {
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
-        CHECK_EQUAL(ParserState::StructFieldNamespaceOrType, parserState);
+        CHECK_EQUAL(ParserState::StructEndArrayOrVector, parserState);
 
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(3U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        auto matcher = Matcher().getChildrenOf<nodes::StructField>().bind("field");
-        REQUIRE CHECK(matcher(nodeStack.top()));
+        REQUIRE CHECK(detail::nodeStackTopIs<nodes::StructField>(nodeStack));
 
-        const auto fieldNode = matcher.bound("field_0");
+        const auto fieldNode = nodeStack.top();
         REQUIRE CHECK(fieldNode);
 
         const auto& field = static_cast<nodes::StructField&>(*fieldNode);

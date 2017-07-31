@@ -1063,6 +1063,23 @@ namespace {
         parse();
     }
 
+    struct WhenInputIsStructWithVector : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "u8 size;" "\n"
+                "u8[size] name;" "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithVector, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
     struct WhenInputIsStructWithFieldAttribute : public ParserFixture
     {
         const boost::string_view sv = boost::string_view(

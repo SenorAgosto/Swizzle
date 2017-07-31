@@ -14,7 +14,7 @@ namespace swizzle { namespace parser { namespace states {
 
         if(type == lexer::TokenType::r_bracket)
         {
-            return ParserState::StructFieldNamespaceOrType;
+            return ParserState::StructEndArrayOrVector;
         }
 
         throw SyntaxError("Expected ']'", token);

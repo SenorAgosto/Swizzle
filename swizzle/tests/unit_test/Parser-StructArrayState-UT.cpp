@@ -63,7 +63,7 @@ namespace {
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
-        CHECK_EQUAL(ParserState::StructFieldNamespaceOrType, parserState);
+        CHECK_EQUAL(ParserState::StructEndArrayOrVector, parserState);
 
         REQUIRE CHECK_EQUAL(3U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, attributeStack.size());

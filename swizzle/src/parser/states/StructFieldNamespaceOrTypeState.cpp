@@ -9,6 +9,7 @@
 #include <swizzle/parser/NodeStack.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/TokenStack.hpp>
+#include <swizzle/parser/utils/ClearTokenStack.hpp>
 #include <swizzle/types/IsIntegerType.hpp>
 #include <swizzle/types/IsFloatType.hpp>
 
@@ -43,7 +44,11 @@ namespace swizzle { namespace parser { namespace states {
                 auto sf = nodeStack.top();
                 auto& top = static_cast<ast::nodes::StructField&>(*sf);
 
+                tokenStack.push(token);
+
                 const auto t = detail::createType(tokenStack);
+                utils::clear(tokenStack);
+
                 const auto& value = t.token().value();
 
                 if(types::IsIntegerType(value) || types::IsFloatType(value))

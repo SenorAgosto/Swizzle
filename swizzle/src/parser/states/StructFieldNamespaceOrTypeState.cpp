@@ -15,6 +15,21 @@
 
 namespace swizzle { namespace parser { namespace states {
 
+    namespace {
+        // the field label will be under the current top of the node stack,
+        // if there is a field label, append it @node
+        void attachFieldLabel(NodeStack& nodeStack, ast::Node::smartptr node)
+        {
+            nodeStack.pop();
+            if(detail::nodeStackTopIs<ast::nodes::FieldLabel>(nodeStack))
+            {
+                node->append(nodeStack.top());
+                nodeStack.pop();
+            }
+            nodeStack.push(node);
+        }
+    }
+
     ParserState StructFieldNamespaceOrTypeState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack&, TokenStack& tokenStack, ParserStateContext& context)
     {
         const auto type = token.token().type();
@@ -34,7 +49,41 @@ namespace swizzle { namespace parser { namespace states {
 
         if(type == lexer::TokenType::l_bracket)
         {
-            return ParserState::StructStartArray;
+            if(detail::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
+            {
+                auto sf = nodeStack.top();
+                attachFieldLabel(nodeStack, sf);
+
+                const auto t = detail::createType(tokenStack);
+                utils::clear(tokenStack);
+
+                auto& top = static_cast<ast::nodes::StructField&>(*sf);
+                const auto& value = t.token().value();
+
+                if(types::IsIntegerType(value) || types::IsFloatType(value))
+                {
+                    top.type(value.to_string());
+                    return ParserState::StructStartArray;
+                }
+
+                if(context.TypeCache.find(value.to_string()) != context.TypeCache.cend())
+                {
+                    top.type(value.to_string());
+                    return ParserState::StructStartArray;
+
+                }
+
+                const auto typeWithNamespace = context.CurrentNamespace + "::" + value.to_string();
+                if(context.TypeCache.find(typeWithNamespace) != context.TypeCache.cend())
+                {
+                    top.type(typeWithNamespace);
+                    return ParserState::StructStartArray;
+                }
+
+                throw SyntaxError("Struct array/vector member using undeclared type", token);
+            }
+
+            throw ParserError("Internal parser error, expect top of node stack to be ast::nodes::StructField");
         }
 
         if(type == lexer::TokenType::string)
@@ -42,9 +91,15 @@ namespace swizzle { namespace parser { namespace states {
             if(detail::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
             {
                 auto sf = nodeStack.top();
-                auto& top = static_cast<ast::nodes::StructField&>(*sf);
+                attachFieldLabel(nodeStack, sf);
 
-                tokenStack.push(token);
+                auto& top = static_cast<ast::nodes::StructField&>(*sf);
+                top.name(token);
+
+                if(top.isArray() || top.isVector())
+                {
+                    return ParserState::StructFieldName;
+                }
 
                 const auto t = detail::createType(tokenStack);
                 utils::clear(tokenStack);
@@ -54,34 +109,12 @@ namespace swizzle { namespace parser { namespace states {
                 if(types::IsIntegerType(value) || types::IsFloatType(value))
                 {
                     top.type(value.to_string());
-                    top.name(token);
-
-                    nodeStack.pop();
-
-                    if(detail::nodeStackTopIs<ast::nodes::FieldLabel>(nodeStack))
-                    {
-                        sf->append(nodeStack.top());
-                        nodeStack.pop();
-                    }
-
-                    nodeStack.push(sf);
                     return ParserState::StructFieldName;
                 }
 
                 if(context.TypeCache.find(value.to_string()) != context.TypeCache.cend())
                 {
                     top.type(value.to_string());
-                    top.name(token);
-
-                    nodeStack.pop();
-
-                    if(detail::nodeStackTopIs<ast::nodes::FieldLabel>(nodeStack))
-                    {
-                        sf->append(nodeStack.top());
-                        nodeStack.pop();
-                    }
-
-                    nodeStack.push(sf);
                     return ParserState::StructFieldName;
                 }
 
@@ -89,17 +122,6 @@ namespace swizzle { namespace parser { namespace states {
                 if(context.TypeCache.find(typeWithNamespace) != context.TypeCache.cend())
                 {
                     top.type(typeWithNamespace);
-                    top.name(token);
-
-                    nodeStack.pop();
-
-                    if(detail::nodeStackTopIs<ast::nodes::FieldLabel>(nodeStack))
-                    {
-                        sf->append(nodeStack.top());
-                        nodeStack.pop();
-                    }
-
-                    nodeStack.push(sf);
                     return ParserState::StructFieldName;
                 }
 

@@ -1078,6 +1078,51 @@ namespace {
     {
         tokenize(sv);
         parse();
+
+        // TODO: validate AST
+    }
+
+    struct WhenInputIsStructWithVectorAndNestedSizeMember : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "u8 size;" "\n"
+            "}"
+            "struct Struct2 {"
+                "Struct1 s1;"
+                "u16[s1.size] name;"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithVectorAndNestedSizeMember, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsStructWithDoubleNestedVectorSizeMember : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "u8 size;" "\n"
+            "}"
+            "struct Struct2 {"
+                "Struct1 s1;"
+            "}"
+            "struct Struct3 {"
+                "Struct2 s2;"
+                "f32[s2.s1.size] buffer;"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithDoubleNestedVectorSizeMember, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
     }
 
     struct WhenInputIsStructWithFieldAttribute : public ParserFixture

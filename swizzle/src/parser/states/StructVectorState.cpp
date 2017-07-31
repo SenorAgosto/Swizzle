@@ -35,10 +35,8 @@ namespace swizzle { namespace parser { namespace states {
                 nodeStack.pop();
                 return ParserState::StructEndArrayOrVector;
             }
-            else
-            {
-                throw ParserError("Internal parser error, top of node stack was not ast::nodes::StructField");
-            }
+
+            throw ParserError("Internal parser error, top of node stack was not ast::nodes::StructField");
         }
 
         throw SyntaxError("Expected ']' or '.'" , token);

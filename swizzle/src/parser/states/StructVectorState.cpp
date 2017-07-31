@@ -31,8 +31,6 @@ namespace swizzle { namespace parser { namespace states {
                 auto& top = static_cast<ast::nodes::StructField&>(*nodeStack.top());
                 top.makeVector(member);
 
-                // [ARG]: this pop might be incorrect
-                nodeStack.pop();
                 return ParserState::StructEndArrayOrVector;
             }
 

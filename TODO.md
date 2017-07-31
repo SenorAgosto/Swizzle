@@ -1,5 +1,7 @@
 # TODO
 
+- need a new state, state #44 and #45 should not return to state 39 (it would allow multi-dimensional arrays)
+
 - extern types should be in the TypeCache with nullptr for the value (indicating they're extern types)
 - the alias name in a TypeAlias should also be entered in the TypeCache
 - make sure I can apply attributes to:

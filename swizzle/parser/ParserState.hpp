@@ -53,6 +53,7 @@ namespace swizzle { namespace parser {
         StructArray,
         StructVector,
         StructVectorNestedOnMember,
+        StructEndArrayOrVector,
         StructStartVariableBlock,
         StructVariableBlockColonRead,
         StructVariableBlockOnField,

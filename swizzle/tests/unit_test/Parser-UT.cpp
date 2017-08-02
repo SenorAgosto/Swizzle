@@ -1176,6 +1176,32 @@ namespace {
         CHECK_EQUAL("\"left\"", value1.info().token().value());
     }
 
+    struct WhenInputIsABitfieldUsedInAStruct : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "bitfield Bitfield1 : u8 {"
+                "field1 : 0,"
+                "field2 : 1..2,"
+                "field3 : 3,"
+                "field4 : 4,"
+                "field5 : 5,"
+                "field6 : 6,"
+                "field7 : 7,"
+            "}"
+            "struct Struct1 {"
+                "Bitfield1 b1;"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsABitfieldUsedInAStruct, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+
     //-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_
     //
     // TODO: more struct coverage

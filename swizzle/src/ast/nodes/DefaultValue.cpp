@@ -5,30 +5,20 @@
 
 namespace swizzle { namespace ast { namespace nodes {
 
-    DefaultValue::DefaultValue(const lexer::TokenInfo& defaultValueInfo, const lexer::TokenInfo& underlyingType)
-        : info_(defaultValueInfo)
+    DefaultValue::DefaultValue(const lexer::TokenInfo& value, const lexer::TokenInfo& underlyingType)
+        : value_(value)
         , underlying_(underlyingType)
     {
-    }
-
-    const lexer::TokenInfo& DefaultValue::info() const
-    {
-        return info_;
-    }
-
-    const lexer::TokenInfo& DefaultValue::underlying() const
-    {
-        return underlying_;
-    }
-
-    void DefaultValue::value(const lexer::TokenInfo& valueToken)
-    {
-        value_ = valueToken;
     }
 
     const lexer::TokenInfo& DefaultValue::value() const
     {
         return value_;
+    }
+
+    const lexer::TokenInfo& DefaultValue::underlying() const
+    {
+        return underlying_;
     }
 
     void DefaultValue::accept(VisitorInterface& visitor)
@@ -40,5 +30,4 @@ namespace swizzle { namespace ast { namespace nodes {
             child->accept(visitor);
         }
     }
-
 }}}

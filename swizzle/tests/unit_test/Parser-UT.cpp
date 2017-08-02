@@ -1201,6 +1201,26 @@ namespace {
         parse();
     }
 
+    struct WhenInputIsEnumUsedInAStruct : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "enum Metal : u8 {" "\n"
+            "\t" "iron," "\n"
+            "\t" "copper," "\n"
+            "\t" "gold," "\n"
+            "}"
+            "struct Struct1 {"
+                "Metal metal;"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsEnumUsedInAStruct, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
 
     //-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_
     //

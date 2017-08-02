@@ -70,6 +70,29 @@ namespace {
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
     }
 
+    struct WhenNextTokenIsEqual : public StructFieldNameStateFixture
+    {
+        const Token token = Token("=", 0, 1, TokenType::equal);
+        const FileInfo fileInfo = FileInfo("test.swizzle");
+
+        const TokenInfo info = TokenInfo(token, fileInfo);
+    };
+
+    TEST_FIXTURE(WhenNextTokenIsEqual, verifyConsume)
+    {
+        CHECK_EQUAL(3U, nodeStack.size());
+        CHECK_EQUAL(0U, attributeStack.size());
+        CHECK_EQUAL(0U, tokenStack.size());
+
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
+
+        CHECK_EQUAL(ParserState::StructFieldEqualRead, parserState);
+
+        REQUIRE CHECK_EQUAL(3U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(0U, attributeStack.size());
+        REQUIRE CHECK_EQUAL(0U, tokenStack.size());
+    }
+
     struct WhenNextTokenIsInvalid : public StructFieldNameStateFixture
     {
         const Token token = Token(":", 0, 1, TokenType::colon);

@@ -16,6 +16,7 @@ namespace swizzle { namespace ast {
         void operator()(nodes::BitfieldField&) override {}
         void operator()(nodes::CharLiteral&) override {}
         void operator()(nodes::Comment&) override {}
+        void operator()(nodes::DefaultStringValue&) override {}
         void operator()(nodes::DefaultValue&) override {}
         void operator()(nodes::Enum&) override {}
         void operator()(nodes::EnumField&) override {}

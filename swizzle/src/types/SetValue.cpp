@@ -5,7 +5,7 @@
 
 namespace swizzle { namespace types {
 
-    EnumValueType setValue(const boost::string_view& underlying, const boost::string_view& value)
+    EnumValueType setValue(const boost::string_view& underlying, const boost::string_view& value, const std::string& errorMessage)
     {
         if(underlying == "u8")
         {
@@ -47,10 +47,10 @@ namespace swizzle { namespace types {
             return readAs<std::int64_t>(value);
         }
 
-        throw ParserError("Encountered unknown enum type:" + underlying.to_string());
+        throw ParserError(errorMessage + ": " + underlying.to_string());
     }
 
-    EnumValueType setValue(const boost::string_view& underlying, const boost::string_view& value, const isHexTag&)
+    EnumValueType setValue(const boost::string_view& underlying, const boost::string_view& value, const isHexTag&, const std::string& errorMessage)
     {
         if(underlying == "u8")
         {
@@ -92,6 +92,6 @@ namespace swizzle { namespace types {
             return readAsHex<std::int64_t>(value);
         }
 
-        throw ParserError("Encountered unknown enum type:" + underlying.to_string());
+        throw ParserError(errorMessage + ": " + underlying.to_string());
     }
 }}

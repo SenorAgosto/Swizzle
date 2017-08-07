@@ -1,5 +1,8 @@
 #include <swizzle/parser/ParserStatesPack.hpp>
 
+#include <swizzle/Exceptions.hpp>
+#include <sstream>
+
 namespace swizzle { namespace parser {
 
     ParserState ParserStatesPack::consume(const ParserState state, const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack& attributeStack, TokenStack& tokenStack, ParserStateContext& context)
@@ -50,6 +53,8 @@ namespace swizzle { namespace parser {
         case ParserState::StructFieldNamespaceFirstColon: return structFieldNamespaceFirstColonState_.consume(token, nodeStack, attributeStack, tokenStack, context);
         case ParserState::StructFieldNamespaceSecondColon: return structFieldNamespaceSecondColonState_.consume(token, nodeStack, attributeStack, tokenStack, context);
         case ParserState::StructFieldName: return structFieldNameState_.consume(token, nodeStack, attributeStack, tokenStack, context);
+        case ParserState::StructFieldEqualRead: return structFieldEqualReadState_.consume(token, nodeStack, attributeStack, tokenStack, context);
+        case ParserState::StructFieldValueRead: return structFieldValueReadState_.consume(token, nodeStack, attributeStack, tokenStack, context);
         case ParserState::StructStartArray: return structStartArrayState_.consume(token, nodeStack, attributeStack, tokenStack, context);
         case ParserState::StructArray: return structArrayState_.consume(token, nodeStack, attributeStack, tokenStack, context);
         case ParserState::StructVector: return structVectorState_.consume(token, nodeStack, attributeStack, tokenStack, context);
@@ -66,6 +71,14 @@ namespace swizzle { namespace parser {
         case ParserState::StructVariableBlockCaseBlockNameRead: return structVariableBlockCaseBlockNameReadState_.consume(token, nodeStack, attributeStack, tokenStack, context);
         case ParserState::StructVariableBlockNamespaceFirstColonRead: return structVariableBlockNamespaceFirstColonReadState_.consume(token, nodeStack, attributeStack, tokenStack, context);
         case ParserState::StructVariableBlockNamespaceSecondColonRead: return structVariableBlockNamespaceSecondColonReadState_.consume(token, nodeStack, attributeStack, tokenStack, context);
+
+        default:
+            break;
         };
+
+        std::stringstream ss;
+        ss << static_cast<std::size_t>(state);
+
+        throw ParserError("Internal parser error, unrecognized parser state: " + ss.str());
     }
 }}

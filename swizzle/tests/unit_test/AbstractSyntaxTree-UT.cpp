@@ -40,6 +40,8 @@ namespace {
         void operator()(nodes::AttributeBlock&) override { attributeBlock++; }
         void operator()(nodes::Bitfield&) override { bitfield++; }
         void operator()(nodes::BitfieldField&) override { bitfieldField++; }
+        void operator()(nodes::DefaultStringValue&) override { defaultString++; }
+        void operator()(nodes::DefaultValue&) override { defaultValue++; }
         void operator()(nodes::CharLiteral&) override { charLiteral++; }
         void operator()(nodes::Comment&) override { comment++; }
         void operator()(nodes::Enum&) override { enumCount++; }
@@ -66,6 +68,8 @@ namespace {
         std::size_t bitfieldField = 0;
         std::size_t charLiteral = 0;
         std::size_t comment = 0;
+        std::size_t defaultString = 0;
+        std::size_t defaultValue = 0;
         std::size_t enumCount = 0;
         std::size_t enumField = 0;
         std::size_t fieldLabel = 0;

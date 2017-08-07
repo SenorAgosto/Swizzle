@@ -5,7 +5,7 @@
 
 namespace swizzle { namespace ast { namespace nodes {
 
-    DefaultValue::DefaultValue(const lexer::TokenInfo& value, const lexer::TokenInfo& underlyingType)
+    DefaultValue::DefaultValue(const lexer::TokenInfo& value, const std::string& underlyingType)
         : value_(value)
         , underlying_(underlyingType)
     {
@@ -16,7 +16,7 @@ namespace swizzle { namespace ast { namespace nodes {
         return value_;
     }
 
-    const lexer::TokenInfo& DefaultValue::underlying() const
+    const std::string& DefaultValue::underlying() const
     {
         return underlying_;
     }

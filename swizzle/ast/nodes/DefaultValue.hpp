@@ -13,15 +13,15 @@ namespace swizzle { namespace ast { namespace nodes {
     class DefaultValue : public Node
     {
     public:
-        DefaultValue(const lexer::TokenInfo& defaultValueInfo, const lexer::TokenInfo& underlyingType);
+        DefaultValue(const lexer::TokenInfo& defaultValueInfo, const std::string& underlyingType);
 
         const lexer::TokenInfo& value() const;
-        const lexer::TokenInfo& underlying() const;
+        const std::string& underlying() const;
 
         void accept(VisitorInterface& visitor) override;
 
     private:
         const lexer::TokenInfo value_;
-        const lexer::TokenInfo underlying_;
+        const std::string underlying_;
     };
 }}}

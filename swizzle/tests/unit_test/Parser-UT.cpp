@@ -1222,6 +1222,189 @@ namespace {
         parse();
     }
 
+    struct WhenInputIsStructWithConstMemberAssignedNumericLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "const u8 value = 10;"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithConstMemberAssignedNumericLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+
+        // TODO: validate AST
+    }
+
+    struct WhenInputIsStructWithConstMemberAssignedNumericLiteralWhichOverflowsUnderlying : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "const u8 value = 300;"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithConstMemberAssignedNumericLiteralWhichOverflowsUnderlying, verifyConsume)
+    {
+        tokenize(sv);
+        CHECK_THROW(parse(), std::runtime_error);
+    }
+
+    struct WhenInputIsStructWithConstMemberAssignedHexLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "const u8 value = 0x0a;"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithConstMemberAssignedHexLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsStructWithConstMemberAssignedHexLiteralWhichOverflowsUnderyling : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "const u8 value = 0x0afa;"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithConstMemberAssignedHexLiteralWhichOverflowsUnderyling, verifyConsume)
+    {
+        tokenize(sv);
+        CHECK_THROW(parse(), std::runtime_error);
+    }
+
+    struct WhenInputIsStructWithConstMemberAssignedCharLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "const u8 value = 'c';"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithConstMemberAssignedCharLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsStructWithConstMemberAssignedStringLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "const u8[5] value = \"hello\";"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithConstMemberAssignedStringLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+
+        // TODO: validate AST
+    }
+
+    struct WhenInputIsStructWithConstMemberAssignedStringLiteralWhichWouldBeTruncated : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "const u8[4] value = \"hello\";"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithConstMemberAssignedStringLiteralWhichWouldBeTruncated, verifyConsume)
+    {
+        tokenize(sv);
+        CHECK_THROW(parse(), swizzle::SyntaxError);
+    }
+
+    struct WhenInputIsStructWithAMemberAssignedNumericLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "u8 value = 10;"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithAMemberAssignedNumericLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsStructWithAMemberAssignedHexLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "u8 value = 0x0f;"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithAMemberAssignedHexLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsStructWithAMemberAssignedCharLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "u8 value = 'c';"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithAMemberAssignedCharLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsStructWithAMemberAssignedStringLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "u8[5] value = \"hello\";"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithAMemberAssignedStringLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+
+        // TODO: validate AST
+    }
+
+
     //-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_
     //
     // TODO: more struct coverage

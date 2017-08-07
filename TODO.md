@@ -1,5 +1,6 @@
 # TODO
 
+- implement initialization lists so arrays can be initialized
 - extern types should be in the TypeCache with nullptr for the value (indicating they're extern types)
 - the alias name in a TypeAlias should also be entered in the TypeCache
 - make sure I can apply attributes to:

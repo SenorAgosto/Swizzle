@@ -52,7 +52,7 @@ namespace {
 
         CHECK_EQUAL(ParserState::StructStartScope, parserState);
 
-        CHECK_EQUAL(1U, nodeStack.size());
+        CHECK_EQUAL(0U, nodeStack.size());
         CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
     }

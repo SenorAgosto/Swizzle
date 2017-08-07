@@ -41,7 +41,7 @@ namespace swizzle { namespace parser { namespace states {
 
             if(type == lexer::TokenType::hex_literal)
             {
-                enumField.value(types::setValue(underlying.token().value(), token.token().value(), types::isHex));
+                enumField.value(types::setValue(underlying.token().value(), token.token().value(), types::isHex, "Encountered unknown enum type"));
 
                 context.CurrentEnumValue = enumField.value();
                 context.AllocateEnumValue(token, context.CurrentEnumValue);
@@ -52,7 +52,7 @@ namespace swizzle { namespace parser { namespace states {
 
             if(type == lexer::TokenType::numeric_literal)
             {
-                enumField.value(types::setValue(underlying.token().value(), token.token().value()));
+                enumField.value(types::setValue(underlying.token().value(), token.token().value(), "Encountered unknown enum type"));
 
                 context.CurrentEnumValue = enumField.value();
                 context.AllocateEnumValue(token, context.CurrentEnumValue);

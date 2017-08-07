@@ -4,31 +4,21 @@
 
 namespace swizzle { namespace ast { namespace nodes {
 
-    DefaultStringValue::DefaultStringValue(const lexer::TokenInfo& defaultValueInfo, const lexer::TokenInfo& underlyingType, const std::ptrdiff_t length)
-        : info_(defaultValueInfo)
+    DefaultStringValue::DefaultStringValue(const lexer::TokenInfo& value, const std::string& underlyingType, const std::ptrdiff_t length)
+        : value_(value)
         , underlying_(underlyingType)
         , length_(length)
     {
     }
 
-    const lexer::TokenInfo& DefaultStringValue::info() const
-    {
-        return info_;
-    }
-
-    const lexer::TokenInfo& DefaultStringValue::underlying() const
-    {
-        return underlying_;
-    }
-
-    void DefaultStringValue::value(const lexer::TokenInfo& valueToken)
-    {
-        value_ = valueToken;
-    }
-
     const lexer::TokenInfo& DefaultStringValue::value() const
     {
         return value_;
+    }
+
+    const std::string& DefaultStringValue::underlying() const
+    {
+        return underlying_;
     }
 
     std::ptrdiff_t DefaultStringValue::length() const

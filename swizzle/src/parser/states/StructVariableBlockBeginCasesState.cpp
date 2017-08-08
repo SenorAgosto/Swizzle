@@ -31,7 +31,9 @@ namespace swizzle { namespace parser { namespace states {
 
         if((type == lexer::TokenType::keyword) && (token.token().value() == "case"))
         {
-            detail::appendNode<ast::nodes::VariableBlockCase>(nodeStack);
+            auto node = detail::appendNode<ast::nodes::VariableBlockCase>(nodeStack);
+            nodeStack.push(node);
+
             return ParserState::StructVariableBlockCaseValue;
         }
 

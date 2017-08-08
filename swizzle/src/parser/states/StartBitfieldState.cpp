@@ -27,6 +27,9 @@ namespace swizzle { namespace parser { namespace states {
 
             detail::attachAttributes(attributeStack, node);
 
+            const auto& bf = static_cast<ast::nodes::Bitfield&>(*node);
+            context.TypeCache[bf.name()] = node;
+
             nodeStack.push(node);
             tokenStack.pop();
             

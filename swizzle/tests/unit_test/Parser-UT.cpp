@@ -64,6 +64,8 @@ namespace {
             {
                 parser.consume(token);
             }
+
+            parser.finalize();
         }
 
         std::deque<TokenInfo> tokens;
@@ -893,7 +895,7 @@ namespace {
             "bitfield Field1 : u8 {" "\n"
             "\t" "f1 : 5," "\n"
             "\t" "f2 : 6..7," "\n"
-            "\t" "f3 : 258," "\n"
+            "\t" "f3 : 8," "\n"
             "}"
         );
     };
@@ -1174,6 +1176,546 @@ namespace {
         REQUIRE CHECK_EQUAL(1U, attribute1Node->children().size());
         const auto& value1 = dynamic_cast<nodes::StringLiteral&>(*attribute1Node->children()[0]);
         CHECK_EQUAL("\"left\"", value1.info().token().value());
+    }
+
+    struct WhenInputIsABitfieldUsedInAStruct : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "bitfield Bitfield1 : u8 {"
+                "field1 : 0,"
+                "field2 : 1..2,"
+                "field3 : 3,"
+                "field4 : 4,"
+                "field5 : 5,"
+                "field6 : 6,"
+                "field7 : 7,"
+            "}"
+            "struct Struct1 {"
+                "Bitfield1 b1;"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsABitfieldUsedInAStruct, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsEnumUsedInAStruct : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "enum Metal : u8 {" "\n"
+            "\t" "iron," "\n"
+            "\t" "copper," "\n"
+            "\t" "gold," "\n"
+            "}"
+            "struct Struct1 {"
+                "Metal metal;"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsEnumUsedInAStruct, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsStructWithConstMemberAssignedNumericLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "const u8 value = 10;"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithConstMemberAssignedNumericLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+
+        // TODO: validate AST
+    }
+
+    struct WhenInputIsStructWithConstMemberAssignedNumericLiteralWhichOverflowsUnderlying : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "const u8 value = 300;"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithConstMemberAssignedNumericLiteralWhichOverflowsUnderlying, verifyConsume)
+    {
+        tokenize(sv);
+        CHECK_THROW(parse(), std::runtime_error);
+    }
+
+    struct WhenInputIsStructWithConstMemberAssignedHexLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "const u8 value = 0x0a;"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithConstMemberAssignedHexLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsStructWithConstMemberAssignedHexLiteralWhichOverflowsUnderyling : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "const u8 value = 0x0afa;"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithConstMemberAssignedHexLiteralWhichOverflowsUnderyling, verifyConsume)
+    {
+        tokenize(sv);
+        CHECK_THROW(parse(), std::runtime_error);
+    }
+
+    struct WhenInputIsStructWithConstMemberAssignedCharLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "const u8 value = 'c';"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithConstMemberAssignedCharLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsStructWithConstMemberAssignedStringLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "const u8[5] value = \"hello\";"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithConstMemberAssignedStringLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+
+        // TODO: validate AST
+    }
+
+    struct WhenInputIsStructWithConstMemberAssignedStringLiteralWhichWouldBeTruncated : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "const u8[4] value = \"hello\";"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithConstMemberAssignedStringLiteralWhichWouldBeTruncated, verifyConsume)
+    {
+        tokenize(sv);
+        CHECK_THROW(parse(), swizzle::SyntaxError);
+    }
+
+    struct WhenInputIsStructWithAMemberAssignedNumericLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "u8 value = 10;"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithAMemberAssignedNumericLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsStructWithAMemberAssignedHexLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "u8 value = 0x0f;"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithAMemberAssignedHexLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsStructWithAMemberAssignedCharLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "u8 value = 'c';"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithAMemberAssignedCharLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsStructWithAMemberAssignedStringLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "u8[5] value = \"hello\";"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithAMemberAssignedStringLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+
+        // TODO: validate AST
+    }
+
+    struct WhenInputIsStructWithVariableBlock : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "u8 field1;"
+            "}"
+            "struct Struct2 {"
+                "u16 field1;"
+            "}"
+            "struct Struct3 {"
+                "u32 field1;"
+            "}"
+            "struct Struct4 {"
+                "u8 blockType;"
+                "variable_block : blockType {"
+                    "case 'a': Struct1,"
+                    "case 'b': Struct2,"
+                    "case 'c': Struct3,"
+                "}"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithVariableBlock, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+
+        // TODO: validate the AST
+    }
+
+    struct WhenInputIsStructWithVariableBlockAndNestedField : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;"
+            "struct Struct1 {"
+                "u8 blockType;"
+            "}"
+            "struct Struct2 {"
+                "Struct1 s1;"
+            "}"
+            "struct Struct3 {"
+                "u8 foo;"
+                "u8 bar;"
+            "}"
+            "struct Struct4 {"
+                "u16 foo;"
+                "u16 bar;"
+            "}"
+            "struct Struct5 {"
+                "Struct2 s2;"
+                "variable_block : s2.s1.blockType {"
+                    "case 'a': Struct3,"
+                    "case 'b': Struct4,"
+                "}"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithVariableBlockAndNestedField, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+
+        // TODO: validate the AST
+    }
+
+    struct WhenInputIsStructCaseStatementsAreNumericLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "u8 field1;"
+            "}"
+            "struct Struct2 {"
+                "u16 field1;"
+            "}"
+            "struct Struct3 {"
+                "u32 field1;"
+            "}"
+            "struct Struct4 {"
+                "u8 blockType;"
+                "variable_block : blockType {"
+                    "case 1: Struct1,"
+                    "case 2: Struct2,"
+                    "case 3: Struct3,"
+                "}"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructCaseStatementsAreNumericLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+
+        // TODO: validate the AST
+    }
+
+    struct WhenInputIsStructCaseStatementsAreHexLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "u8 field1;"
+            "}"
+            "struct Struct2 {"
+                "u16 field1;"
+            "}"
+            "struct Struct3 {"
+                "u32 field1;"
+            "}"
+            "struct Struct4 {"
+                "u8 blockType;"
+                "variable_block : blockType {"
+                    "case 0x01: Struct1,"
+                    "case 0x02: Struct2,"
+                    "case 0x03: Struct3,"
+                "}"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructCaseStatementsAreHexLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+
+        // TODO: validate the AST
+    }
+
+    struct WhenInputIsStructCaseStatementsAreHexLiteralThatOverflowTheSwitchField : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "u8 field1;"
+            "}"
+            "struct Struct2 {"
+                "u16 field1;"
+            "}"
+            "struct Struct3 {"
+                "u32 field1;"
+            "}"
+            "struct Struct4 {"
+                "u8 blockType;"
+                "variable_block : blockType {"
+                    "case 0x01: Struct1,"
+                    "case 0x02: Struct2,"
+                    "case 0xffaa: Struct3,"
+                "}"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructCaseStatementsAreHexLiteralThatOverflowTheSwitchField, verifyConsume)
+    {
+        tokenize(sv);
+        CHECK_THROW(parse(), std::runtime_error);
+    }
+
+    struct WhenInputIsStructCaseStatementsAreStringLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "u8 field1;"
+            "}"
+            "struct Struct2 {"
+                "u16 field1;"
+            "}"
+            "struct Struct3 {"
+                "u32 field1;"
+            "}"
+            "struct Struct4 {"
+                "u8[4] blockType;"
+                "variable_block : blockType {"
+                    "case \"ab\": Struct1,"
+                    "case \"a\": Struct2,"
+                    "case \"b\": Struct3,"
+                "}"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructCaseStatementsAreStringLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsStructCaseStatementsAreStringLiteralAndSwitchingFieldIsVector : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "u8 field1;"
+            "}"
+            "struct Struct2 {"
+                "u16 field1;"
+            "}"
+            "struct Struct3 {"
+                "u32 field1;"
+            "}"
+            "struct Struct4 {"
+                "u8 length;"
+                "u8[length] blockType;"
+                "variable_block : blockType {"
+                    "case \"ab\": Struct1,"
+                    "case \"a\": Struct2,"
+                    "case \"b\": Struct3,"
+                "}"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructCaseStatementsAreStringLiteralAndSwitchingFieldIsVector, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsStructCaseStatementsAreStringLiteralAndCaseOverflowsSwitchField : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "u8 field1;"
+            "}"
+            "struct Struct2 {"
+                "u16 field1;"
+            "}"
+            "struct Struct3 {"
+                "u32 field1;"
+            "}"
+            "struct Struct4 {"
+                "u8[2] blockType;"
+                "variable_block : blockType {"
+                    "case \"abc\": Struct1,"
+                    "case \"a\": Struct2,"
+                    "case \"b\": Struct3,"
+                "}"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructCaseStatementsAreStringLiteralAndCaseOverflowsSwitchField, verifyConsume)
+    {
+        tokenize(sv);
+        CHECK_THROW(parse(), swizzle::SyntaxError);
+    }
+
+    struct WhenInputIsStructCaseStatementsAreStringLiteralAndSwitchFieldIsNotArrayOrVector : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "u8 field1;"
+            "}"
+            "struct Struct2 {"
+                "u16 field1;"
+            "}"
+            "struct Struct3 {"
+                "u32 field1;"
+            "}"
+            "struct Struct4 {"
+                "u8 blockType;"
+                "variable_block : blockType {"
+                    "case \"ab\": Struct1,"
+                    "case \"a\": Struct2,"
+                    "case \"b\": Struct3,"
+                "}"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructCaseStatementsAreStringLiteralAndSwitchFieldIsNotArrayOrVector, verifyConsume)
+    {
+        tokenize(sv);
+        CHECK_THROW(parse(), swizzle::SyntaxError);
+    }
+
+
+    struct WhenInputIsStructWithVerifyBlockAndCaseValueOverflowsSwitchField : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;"
+            "struct Struct1 {"
+                "u8 field1;"
+                "f32 field2;"
+            "}"
+            "struct Struct2 {"
+                "f64 field1;"
+                "f64 field2;"
+            "}"
+            "struct Struct3 {"
+                "u8 blockType;"
+                "variable_block : blockType {"
+                    "case 200: Struct1,"
+                    "case 300: Struct2,"
+                "}"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithVerifyBlockAndCaseValueOverflowsSwitchField, verifyConsume)
+    {
+        tokenize(sv);
+        CHECK_THROW(parse(), std::runtime_error);
     }
 
     //-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_

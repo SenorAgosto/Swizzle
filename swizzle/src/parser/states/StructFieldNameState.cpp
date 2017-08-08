@@ -28,6 +28,11 @@ namespace swizzle { namespace parser { namespace states {
             throw ParserError("Internal parser error, top of node stack is not ast::nodes::StructField");
         }
 
+        if(type == lexer::TokenType::equal)
+        {
+            return ParserState::StructFieldEqualRead;
+        }
+
         throw SyntaxError("Expected ';'", token);
     }
 }}}

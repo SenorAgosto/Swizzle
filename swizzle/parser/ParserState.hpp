@@ -49,6 +49,8 @@ namespace swizzle { namespace parser {
         StructFieldNamespaceFirstColon,
         StructFieldNamespaceSecondColon,
         StructFieldName,
+        StructFieldEqualRead,
+        StructFieldValueRead,
         StructStartArray,
         StructArray,
         StructVector,

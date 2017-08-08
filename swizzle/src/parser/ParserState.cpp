@@ -50,6 +50,8 @@ namespace swizzle { namespace parser {
         case ParserState::StructFieldNamespaceFirstColon: return os << "ParserState::StructFieldNamespaceFirstColon";
         case ParserState::StructFieldNamespaceSecondColon: return os << "ParserState::StructFieldNamespaceSecondColon";
         case ParserState::StructFieldName: return os << "ParserState::StructFieldName";
+        case ParserState::StructFieldEqualRead: return os << "ParserState::StructFieldEqualRead";
+        case ParserState::StructFieldValueRead: return os << "ParserState::StructFieldValueRead";
         case ParserState::StructStartArray: return os << "ParserState::StructStartArray";
         case ParserState::StructArray: return os << "ParserState::StructArray";
         case ParserState::StructVector: return os << "ParserState::StructVector";

@@ -1406,6 +1406,317 @@ namespace {
         // TODO: validate AST
     }
 
+    struct WhenInputIsStructWithVariableBlock : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "u8 field1;"
+            "}"
+            "struct Struct2 {"
+                "u16 field1;"
+            "}"
+            "struct Struct3 {"
+                "u32 field1;"
+            "}"
+            "struct Struct4 {"
+                "u8 blockType;"
+                "variable_block : blockType {"
+                    "case 'a': Struct1,"
+                    "case 'b': Struct2,"
+                    "case 'c': Struct3,"
+                "}"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithVariableBlock, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+
+        // TODO: validate the AST
+    }
+
+    struct WhenInputIsStructWithVariableBlockAndNestedField : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;"
+            "struct Struct1 {"
+                "u8 blockType;"
+            "}"
+            "struct Struct2 {"
+                "Struct1 s1;"
+            "}"
+            "struct Struct3 {"
+                "u8 foo;"
+                "u8 bar;"
+            "}"
+            "struct Struct4 {"
+                "u16 foo;"
+                "u16 bar;"
+            "}"
+            "struct Struct5 {"
+                "Struct2 s2;"
+                "variable_block : s2.s1.blockType {"
+                    "case 'a': Struct3,"
+                    "case 'b': Struct4,"
+                "}"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithVariableBlockAndNestedField, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+
+        // TODO: validate the AST
+    }
+
+    struct WhenInputIsStructCaseStatementsAreNumericLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "u8 field1;"
+            "}"
+            "struct Struct2 {"
+                "u16 field1;"
+            "}"
+            "struct Struct3 {"
+                "u32 field1;"
+            "}"
+            "struct Struct4 {"
+                "u8 blockType;"
+                "variable_block : blockType {"
+                    "case 1: Struct1,"
+                    "case 2: Struct2,"
+                    "case 3: Struct3,"
+                "}"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructCaseStatementsAreNumericLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+
+        // TODO: validate the AST
+    }
+
+    struct WhenInputIsStructCaseStatementsAreHexLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "u8 field1;"
+            "}"
+            "struct Struct2 {"
+                "u16 field1;"
+            "}"
+            "struct Struct3 {"
+                "u32 field1;"
+            "}"
+            "struct Struct4 {"
+                "u8 blockType;"
+                "variable_block : blockType {"
+                    "case 0x01: Struct1,"
+                    "case 0x02: Struct2,"
+                    "case 0x03: Struct3,"
+                "}"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructCaseStatementsAreHexLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+
+        // TODO: validate the AST
+    }
+
+    struct WhenInputIsStructCaseStatementsAreHexLiteralThatOverflowTheSwitchField : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "u8 field1;"
+            "}"
+            "struct Struct2 {"
+                "u16 field1;"
+            "}"
+            "struct Struct3 {"
+                "u32 field1;"
+            "}"
+            "struct Struct4 {"
+                "u8 blockType;"
+                "variable_block : blockType {"
+                    "case 0x01: Struct1,"
+                    "case 0x02: Struct2,"
+                    "case 0xffaa: Struct3,"
+                "}"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructCaseStatementsAreHexLiteralThatOverflowTheSwitchField, verifyConsume)
+    {
+        tokenize(sv);
+        CHECK_THROW(parse(), std::runtime_error);
+    }
+
+    struct WhenInputIsStructCaseStatementsAreStringLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "u8 field1;"
+            "}"
+            "struct Struct2 {"
+                "u16 field1;"
+            "}"
+            "struct Struct3 {"
+                "u32 field1;"
+            "}"
+            "struct Struct4 {"
+                "u8[4] blockType;"
+                "variable_block : blockType {"
+                    "case \"ab\": Struct1,"
+                    "case \"a\": Struct2,"
+                    "case \"b\": Struct3,"
+                "}"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructCaseStatementsAreStringLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsStructCaseStatementsAreStringLiteralAndSwitchingFieldIsVector : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "u8 field1;"
+            "}"
+            "struct Struct2 {"
+                "u16 field1;"
+            "}"
+            "struct Struct3 {"
+                "u32 field1;"
+            "}"
+            "struct Struct4 {"
+                "u8 length;"
+                "u8[length] blockType;"
+                "variable_block : blockType {"
+                    "case \"ab\": Struct1,"
+                    "case \"a\": Struct2,"
+                    "case \"b\": Struct3,"
+                "}"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructCaseStatementsAreStringLiteralAndSwitchingFieldIsVector, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsStructCaseStatementsAreStringLiteralAndCaseOverflowsSwitchField : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "u8 field1;"
+            "}"
+            "struct Struct2 {"
+                "u16 field1;"
+            "}"
+            "struct Struct3 {"
+                "u32 field1;"
+            "}"
+            "struct Struct4 {"
+                "u8[2] blockType;"
+                "variable_block : blockType {"
+                    "case \"abc\": Struct1,"
+                    "case \"a\": Struct2,"
+                    "case \"b\": Struct3,"
+                "}"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructCaseStatementsAreStringLiteralAndCaseOverflowsSwitchField, verifyConsume)
+    {
+        tokenize(sv);
+        CHECK_THROW(parse(), swizzle::SyntaxError);
+    }
+
+    struct WhenInputIsStructCaseStatementsAreStringLiteralAndSwitchFieldIsNotArrayOrVector : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {"
+                "u8 field1;"
+            "}"
+            "struct Struct2 {"
+                "u16 field1;"
+            "}"
+            "struct Struct3 {"
+                "u32 field1;"
+            "}"
+            "struct Struct4 {"
+                "u8 blockType;"
+                "variable_block : blockType {"
+                    "case \"ab\": Struct1,"
+                    "case \"a\": Struct2,"
+                    "case \"b\": Struct3,"
+                "}"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructCaseStatementsAreStringLiteralAndSwitchFieldIsNotArrayOrVector, verifyConsume)
+    {
+        tokenize(sv);
+        CHECK_THROW(parse(), swizzle::SyntaxError);
+    }
+
+
+    struct WhenInputIsStructWithVerifyBlockAndCaseValueOverflowsSwitchField : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;"
+            "struct Struct1 {"
+                "u8 field1;"
+                "f32 field2;"
+            "}"
+            "struct Struct2 {"
+                "f64 field1;"
+                "f64 field2;"
+            "}"
+            "struct Struct3 {"
+                "u8 blockType;"
+                "variable_block : blockType {"
+                    "case 200: Struct1,"
+                    "case 300: Struct2,"
+                "}"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithVerifyBlockAndCaseValueOverflowsSwitchField, verifyConsume)
+    {
+        tokenize(sv);
+        CHECK_THROW(parse(), std::runtime_error);
+    }
 
     //-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_
     //

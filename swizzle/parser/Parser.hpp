@@ -21,6 +21,9 @@ namespace swizzle { namespace parser {
         // parse token
         void consume(const lexer::TokenInfo& token);
 
+        // called after parsing the last token, checks that we are in an expected state.
+        void finalize() const;
+
         // return the AST
         const ast::AbstractSyntaxTree& ast() const;
 

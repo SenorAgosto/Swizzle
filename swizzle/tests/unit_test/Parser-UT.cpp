@@ -64,6 +64,8 @@ namespace {
             {
                 parser.consume(token);
             }
+
+            parser.finalize();
         }
 
         std::deque<TokenInfo> tokens;

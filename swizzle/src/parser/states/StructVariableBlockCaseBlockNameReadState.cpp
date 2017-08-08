@@ -1,7 +1,9 @@
 #include <swizzle/parser/states/StructVariableBlockCaseBlockNameReadState.hpp>
 
-#include <swizzle/Exceptions.hpp>
+#include <swizzle/ast/nodes/Struct.hpp>
 #include <swizzle/ast/nodes/VariableBlockCase.hpp>
+
+#include <swizzle/Exceptions.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
 #include <swizzle/parser/detail/CreateType.hpp>
 #include <swizzle/parser/detail/NodeStackTopIs.hpp>
@@ -26,10 +28,20 @@ namespace swizzle { namespace parser { namespace states {
             const auto structType = detail::createType(tokenStack);
             const auto structTypeString = structType.token().to_string();
 
-            const auto iter = context.TypeCache.find(structTypeString);
+            auto iter = context.TypeCache.find(structTypeString);
+            iter = iter == context.TypeCache.cend()
+                ? context.TypeCache.find(context.CurrentNamespace + "::" + structTypeString)
+                : iter;
+
             if(iter == context.TypeCache.end())
             {
-                throw SyntaxError("Variable block case type must be defined", structTypeString + " not defined", token.fileInfo());
+                throw SyntaxError("Variable block case type must be defined, ", structTypeString + " not defined", token.fileInfo());
+            }
+
+            const auto isStruct = dynamic_cast<ast::nodes::Struct*>(iter->second.get());
+            if(!isStruct)
+            {
+                throw SyntaxError("Variable block case type must be a struct, ", structTypeString + " is not a struct", token.fileInfo());
             }
 
             // set the structType on the variableBlock case node & pop the node

@@ -1,12 +1,20 @@
 #include <swizzle/parser/states/BitfieldStartScopeState.hpp>
 
-#include <swizzle/Exceptions.hpp>
+#include <swizzle/ast/nodes/Attribute.hpp>
+#include <swizzle/ast/nodes/AttributeBlock.hpp>
 #include <swizzle/ast/nodes/Bitfield.hpp>
 #include <swizzle/ast/nodes/BitfieldField.hpp>
+#include <swizzle/ast/nodes/CharLiteral.hpp>
 #include <swizzle/ast/nodes/Comment.hpp>
+#include <swizzle/ast/nodes/HexLiteral.hpp>
 #include <swizzle/ast/nodes/MultilineComment.hpp>
+#include <swizzle/ast/nodes/NumericLiteral.hpp>
+#include <swizzle/ast/nodes/StringLiteral.hpp>
+
+#include <swizzle/Exceptions.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
 #include <swizzle/parser/detail/AppendNode.hpp>
+#include <swizzle/parser/detail/AttachAttributes.hpp>
 #include <swizzle/parser/detail/NodeStackTopIs.hpp>
 #include <swizzle/parser/NodeStack.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
@@ -14,9 +22,53 @@
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState BitfieldStartScopeState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack&, TokenStack&, ParserStateContext&)
+    ParserState BitfieldStartScopeState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack& attributeStack, TokenStack&, ParserStateContext&)
     {
         const auto type = token.token().type();
+
+        if(!attributeStack.empty())
+        {
+            if(type == lexer::TokenType::equal)
+            {
+                return ParserState::BitfieldStartScope;
+            }
+
+            if(type == lexer::TokenType::char_literal)
+            {
+                detail::appendNode<ast::nodes::CharLiteral>(attributeStack, token);
+                return ParserState::BitfieldStartScope;
+            }
+
+            if(type == lexer::TokenType::string_literal)
+            {
+                detail::appendNode<ast::nodes::StringLiteral>(attributeStack, token);
+                return ParserState::BitfieldStartScope;
+            }
+
+            if(type == lexer::TokenType::hex_literal)
+            {
+                detail::appendNode<ast::nodes::HexLiteral>(attributeStack, token);
+                return ParserState::BitfieldStartScope;
+            }
+
+            if(type == lexer::TokenType::numeric_literal)
+            {
+                detail::appendNode<ast::nodes::NumericLiteral>(attributeStack, token);
+                return ParserState::BitfieldStartScope;
+            }
+
+            if(type == lexer::TokenType::attribute_block)
+            {
+                detail::appendNode<ast::nodes::AttributeBlock>(attributeStack, token);
+                return ParserState::BitfieldStartScope;
+            }
+        }
+
+        if(type == lexer::TokenType::attribute)
+        {
+            attributeStack.push(new ast::nodes::Attribute(token));
+            return ParserState::BitfieldStartScope;
+        }
 
         if(type == lexer::TokenType::comment)
         {

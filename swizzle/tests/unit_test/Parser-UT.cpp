@@ -380,6 +380,202 @@ namespace {
         CHECK_EQUAL(2U, boost::get<std::uint8_t>(f2.value()));
     }
 
+    struct WhenInputIsEnumWithAttribute : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "@volatile" "\n"
+            "enum Metal : u8 {" "\n"
+            "\t" "iron," "\n"
+            "\t" "copper," "\n"
+            "\t" "gold," "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsEnumWithAttribute, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsEnumWithKeyValueAttributeNumeric : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "@volatile=1" "\n"
+            "enum Metal : u8 {" "\n"
+            "\t" "iron," "\n"
+            "\t" "copper," "\n"
+            "\t" "gold," "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsEnumWithKeyValueAttributeNumeric, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsEnumWithKeyValueAttributeHex : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "@volatile=0x02" "\n"
+            "enum Metal : u8 {" "\n"
+            "\t" "iron," "\n"
+            "\t" "copper," "\n"
+            "\t" "gold," "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsEnumWithKeyValueAttributeHex, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+
+    struct WhenInputIsEnumWithKeyValueAttributeWithChar : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "@volatile='a'" "\n"
+            "enum Metal : u8 {" "\n"
+            "\t" "iron," "\n"
+            "\t" "copper," "\n"
+            "\t" "gold," "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsEnumWithKeyValueAttributeWithChar, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsEnumWithKeyValueAttributeWithStringLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "@volatile=\"boo\"" "\n"
+            "enum Metal : u8 {" "\n"
+            "\t" "iron," "\n"
+            "\t" "copper," "\n"
+            "\t" "gold," "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsEnumWithKeyValueAttributeWithStringLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsEnumWithAttributeOnEnumValue : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "enum Metal : u8 {" "\n"
+            "@blah" "\n"
+            "\t" "iron," "\n"
+            "@blooie" "\n"
+            "\t" "copper," "\n"
+            "\t" "gold," "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsEnumWithAttributeOnEnumValue, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsEnumWithKeyValueAttributeOnEnumValueKeyIsNumericLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "enum Metal : u8 {" "\n"
+            "@blah=1" "\n"
+            "\t" "iron," "\n"
+            "@blooie" "\n"
+            "\t" "copper," "\n"
+            "\t" "gold," "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsEnumWithKeyValueAttributeOnEnumValueKeyIsNumericLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsEnumWithKeyValueAttributeOnEnumValueKeyIsHexLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "enum Metal : u8 {" "\n"
+            "@blah=0x04" "\n"
+            "\t" "iron," "\n"
+            "@blooie" "\n"
+            "\t" "copper," "\n"
+            "\t" "gold," "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsEnumWithKeyValueAttributeOnEnumValueKeyIsHexLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsEnumWithKeyValueAttributeOnEnumValueKeyIsCharLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "enum Metal : u8 {" "\n"
+            "@blah='a'" "\n"
+            "\t" "iron," "\n"
+            "@blooie" "\n"
+            "\t" "copper," "\n"
+            "\t" "gold," "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsEnumWithKeyValueAttributeOnEnumValueKeyIsCharLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsEnumWithKeyValueAttributeOnEnumValueKeyIsStringLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "enum Metal : u8 {" "\n"
+            "@blah=\"boo\"" "\n"
+            "\t" "iron," "\n"
+            "@blooie" "\n"
+            "\t" "copper," "\n"
+            "\t" "gold," "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsEnumWithKeyValueAttributeOnEnumValueKeyIsStringLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
     struct WhenInputIsEnumWithHexLiteral : public ParserFixture
     {
         const boost::string_view sv = boost::string_view(

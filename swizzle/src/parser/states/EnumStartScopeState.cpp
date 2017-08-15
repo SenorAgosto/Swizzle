@@ -1,5 +1,12 @@
 #include <swizzle/parser/states/EnumStartScopeState.hpp>
 
+#include <swizzle/ast/nodes/Attribute.hpp>
+#include <swizzle/ast/nodes/AttributeBlock.hpp>
+#include <swizzle/ast/nodes/CharLiteral.hpp>
+#include <swizzle/ast/nodes/HexLiteral.hpp>
+#include <swizzle/ast/nodes/NumericLiteral.hpp>
+#include <swizzle/ast/nodes/StringLiteral.hpp>
+
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/ast/Matcher.hpp>
 #include <swizzle/ast/nodes/Comment.hpp>
@@ -15,9 +22,53 @@
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState EnumStartScopeState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack&, TokenStack&, ParserStateContext& context)
+    ParserState EnumStartScopeState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack& attributeStack, TokenStack&, ParserStateContext& context)
     {
         const auto type = token.token().type();
+
+        if(!attributeStack.empty())
+        {
+            if(type == lexer::TokenType::equal)
+            {
+                return ParserState::EnumStartScope;
+            }
+
+            if(type == lexer::TokenType::char_literal)
+            {
+                detail::appendNode<ast::nodes::CharLiteral>(attributeStack, token);
+                return ParserState::EnumStartScope;
+            }
+
+            if(type == lexer::TokenType::string_literal)
+            {
+                detail::appendNode<ast::nodes::StringLiteral>(attributeStack, token);
+                return ParserState::EnumStartScope;
+            }
+
+            if(type == lexer::TokenType::hex_literal)
+            {
+                detail::appendNode<ast::nodes::HexLiteral>(attributeStack, token);
+                return ParserState::EnumStartScope;
+            }
+
+            if(type == lexer::TokenType::numeric_literal)
+            {
+                detail::appendNode<ast::nodes::NumericLiteral>(attributeStack, token);
+                return ParserState::EnumStartScope;
+            }
+
+            if(type == lexer::TokenType::attribute_block)
+            {
+                detail::appendNode<ast::nodes::AttributeBlock>(attributeStack, token);
+                return ParserState::EnumStartScope;
+            }
+        }
+
+        if(type == lexer::TokenType::attribute)
+        {
+            attributeStack.push(new ast::nodes::Attribute(token));
+            return ParserState::EnumStartScope;
+        }
 
         if(type == lexer::TokenType::comment)
         {

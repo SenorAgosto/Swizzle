@@ -88,6 +88,8 @@ namespace swizzle { namespace parser { namespace states {
             {
                 auto& top = static_cast<ast::nodes::Bitfield&>(*nodeStack.top());
                 const auto node = detail::appendNode<ast::nodes::BitfieldField>(nodeStack, token, top.underlying());
+
+                detail::attachAttributes(attributeStack, node);
                 nodeStack.push(node);
 
                 return ParserState::BitfieldField;

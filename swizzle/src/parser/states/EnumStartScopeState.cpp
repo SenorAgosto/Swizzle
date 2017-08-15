@@ -1,20 +1,21 @@
 #include <swizzle/parser/states/EnumStartScopeState.hpp>
 
+#include <swizzle/ast/Matcher.hpp>
 #include <swizzle/ast/nodes/Attribute.hpp>
 #include <swizzle/ast/nodes/AttributeBlock.hpp>
 #include <swizzle/ast/nodes/CharLiteral.hpp>
+#include <swizzle/ast/nodes/Comment.hpp>
+#include <swizzle/ast/nodes/Enum.hpp>
+#include <swizzle/ast/nodes/EnumField.hpp>
 #include <swizzle/ast/nodes/HexLiteral.hpp>
+#include <swizzle/ast/nodes/MultilineComment.hpp>
 #include <swizzle/ast/nodes/NumericLiteral.hpp>
 #include <swizzle/ast/nodes/StringLiteral.hpp>
 
 #include <swizzle/Exceptions.hpp>
-#include <swizzle/ast/Matcher.hpp>
-#include <swizzle/ast/nodes/Comment.hpp>
-#include <swizzle/ast/nodes/Enum.hpp>
-#include <swizzle/ast/nodes/EnumField.hpp>
-#include <swizzle/ast/nodes/MultilineComment.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
 #include <swizzle/parser/detail/AppendNode.hpp>
+#include <swizzle/parser/detail/AttachAttributes.hpp>
 #include <swizzle/parser/detail/NodeStackTopIs.hpp>
 #include <swizzle/parser/NodeStack.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
@@ -88,6 +89,8 @@ namespace swizzle { namespace parser { namespace states {
             {
                 auto& top = static_cast<ast::nodes::Enum&>(*nodeStack.top());
                 const auto node = detail::appendNode<ast::nodes::EnumField>(nodeStack, token, top.underlying());
+
+                detail::attachAttributes(attributeStack, node);
                 nodeStack.push(node);
 
                 return ParserState::EnumField;

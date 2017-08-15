@@ -1013,6 +1013,186 @@ namespace {
         CHECK_EQUAL(5U, f3.endBit());
     }
 
+    struct WhenInputIsBitfieldWithAttribute : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "@vogue" "\n"
+            "bitfield Field1 : u8 {" "\n"
+            "\t" "f1 : 0," "\n"
+            "\t" "f2 : 1..2," "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsBitfieldWithAttribute, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsBitfieldWithKeyValueAttributeNumericLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "@vogue=1" "\n"
+            "bitfield Field1 : u8 {" "\n"
+            "\t" "f1 : 0," "\n"
+            "\t" "f2 : 1..2," "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsBitfieldWithKeyValueAttributeNumericLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsBitfieldWithKeyValueAttributeHexLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "@vogue=0x02" "\n"
+            "bitfield Field1 : u8 {" "\n"
+            "\t" "f1 : 0," "\n"
+            "\t" "f2 : 1..2," "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsBitfieldWithKeyValueAttributeHexLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsBitfieldWithKeyValueAttributeCharLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "@vogue='a'" "\n"
+            "bitfield Field1 : u8 {" "\n"
+            "\t" "f1 : 0," "\n"
+            "\t" "f2 : 1..2," "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsBitfieldWithKeyValueAttributeCharLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsBitfieldWithKeyValueAttributeStringLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "@vogue=\"boo\"" "\n"
+            "bitfield Field1 : u8 {" "\n"
+            "\t" "f1 : 0," "\n"
+            "\t" "f2 : 1..2," "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsBitfieldWithKeyValueAttributeStringLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsBitfieldWithAttributeOnBitfield : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "bitfield Field1 : u8 {" "\n"
+            "@b1"
+            "\t" "f1 : 0," "\n"
+            "\t" "f2 : 1..2," "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsBitfieldWithAttributeOnBitfield, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsBitfieldWithAttributeOnBitfieldNumericLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "bitfield Field1 : u8 {" "\n"
+            "@b1=2"
+            "\t" "f1 : 0," "\n"
+            "\t" "f2 : 1..2," "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsBitfieldWithAttributeOnBitfieldNumericLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsBitfieldWithAttributeOnBitfieldHexLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "bitfield Field1 : u8 {" "\n"
+            "@b1=0x08"
+            "\t" "f1 : 0," "\n"
+            "\t" "f2 : 1..2," "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsBitfieldWithAttributeOnBitfieldHexLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsBitfieldWithAttributeOnBitfieldCharLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "bitfield Field1 : u8 {" "\n"
+            "@b1='c'"
+            "\t" "f1 : 0," "\n"
+            "\t" "f2 : 1..2," "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsBitfieldWithAttributeOnBitfieldCharLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsBitfieldWithAttributeOnBitfieldStringLiteral : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "bitfield Field1 : u8 {" "\n"
+            "@b1=\"boo\""
+            "\t" "f1 : 0," "\n"
+            "\t" "f2 : 1..2," "\n"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsBitfieldWithAttributeOnBitfieldStringLiteral, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
     struct WhenInputIsBitfieldReassigningBits_1 : public ParserFixture
     {
         const boost::string_view sv = boost::string_view(

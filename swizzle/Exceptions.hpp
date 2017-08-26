@@ -18,16 +18,36 @@ namespace swizzle { namespace parser {
 
 namespace swizzle {
 
+    class ParserError : public std::runtime_error
+    {
+    public:
+        ParserError(const std::string& reason);
+    };
+
+
+
+    class AliasedTypeIsNotDefinedException : public ParserError
+    {
+    public:
+        AliasedTypeIsNotDefinedException(const std::string& existingType, const lexer::FileInfo& fileInfo);
+    };
+
     class InvalidStreamInput : public std::runtime_error
     {
     public:
         InvalidStreamInput(const std::string& sv);
     };
 
-    class ParserError : public std::runtime_error
+    class RedefinitionOfAliasNameException : public ParserError
     {
     public:
-        ParserError(const std::string& reason);
+        RedefinitionOfAliasNameException(const std::string& aliasName, const lexer::FileInfo& fileInfo);
+    };
+
+    class RedefinitionOfStructTypeException : public ParserError
+    {
+    public:
+        RedefinitionOfStructTypeException(const std::string& structName, const lexer::FileInfo& fileInfo);
     };
 
     class StreamEmpty : std::runtime_error

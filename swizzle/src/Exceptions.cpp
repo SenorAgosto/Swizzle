@@ -52,6 +52,11 @@ namespace swizzle {
         }
     }
 
+    AliasedTypeIsNotDefinedException::AliasedTypeIsNotDefinedException(const std::string& existingType, const lexer::FileInfo& fileInfo)
+        : ParserError(constructError("Syntax Error: ", fileInfo, " attempting to alias an undefined type '" + existingType + "'"))
+    {
+    }
+
     InvalidStreamInput::InvalidStreamInput(const std::string& s)
         : std::runtime_error("Invalid character encountered in safe_istringstream: '" + s + "'")
     {
@@ -59,6 +64,16 @@ namespace swizzle {
 
     ParserError::ParserError(const std::string& reason)
         : std::runtime_error(reason)
+    {
+    }
+
+    RedefinitionOfAliasNameException::RedefinitionOfAliasNameException(const std::string& aliasName, const lexer::FileInfo& fileInfo)
+        : ParserError(constructError("Syntax Error: ", fileInfo, " redefinition of alias name '" + aliasName + "'"))
+    {
+    }
+
+    RedefinitionOfStructTypeException::RedefinitionOfStructTypeException(const std::string& structName, const lexer::FileInfo& fileInfo)
+        : ParserError(constructError("Syntax Error: ", fileInfo, " redefinition of struct name '" + structName + "'"))
     {
     }
 

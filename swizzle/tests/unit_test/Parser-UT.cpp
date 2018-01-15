@@ -1454,10 +1454,42 @@ namespace {
 
     TEST_FIXTURE(WhenInputIsStructWithVector, verifyConsume)
     {
+        auto matcher = Matcher().getChildrenOf<nodes::Struct>().bind("struct");
+        CHECK(!matcher(parser.ast().root()));
+        
         tokenize(sv);
         parse();
 
-        // TODO: validate AST
+        CHECK(matcher(parser.ast().root()));
+        
+        const auto node = matcher.bound("struct_0");
+        REQUIRE CHECK(node);
+        
+        const auto& s = static_cast<nodes::Struct&>(*node);
+        CHECK_EQUAL("foo::Struct1", s.name());
+
+        auto fieldsMatcher = Matcher().getChildrenOf<nodes::StructField>().bind("fields");
+        REQUIRE CHECK(fieldsMatcher(node));
+        
+        const auto f0_node = fieldsMatcher.bound("fields_0");
+        REQUIRE CHECK(f0_node);
+        
+        const auto& f0 = static_cast<nodes::StructField&>(*f0_node);
+        CHECK_EQUAL("size", f0.name().token().value());
+        CHECK_EQUAL("u8", f0.type());
+        CHECK(!f0.isConst());
+        CHECK(!f0.isArray());
+        CHECK(!f0.isVector());
+        
+        const auto f1_node = fieldsMatcher.bound("fields_1");
+        REQUIRE CHECK(f1_node);
+        
+        const auto& f1 = static_cast<nodes::StructField&>(*f1_node);
+        CHECK_EQUAL("name", f1.name().token().value());
+        CHECK_EQUAL("u8", f1.type());
+        CHECK(!f1.isConst());
+        CHECK(!f1.isArray());
+        CHECK(f1.isVector());
     }
 
     struct WhenInputIsStructWithVectorAndNestedSizeMember : public ParserFixture

@@ -2158,6 +2158,20 @@ namespace {
         parse();
     }
 
+    struct WhenInputIsAUsingStatementOfIntrinsicType : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "using A8 = u8;"
+        );
+    };
+    
+    TEST_FIXTURE(WhenInputIsAUsingStatementOfIntrinsicType, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+    
     struct WhenInputIsAUsingStatementWithAttribute : public ParserFixture
     {
         const boost::string_view sv = boost::string_view(

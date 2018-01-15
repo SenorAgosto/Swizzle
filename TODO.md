@@ -1,7 +1,6 @@
 # TODO
 
 - extern types should be in the TypeCache with nullptr for the value (indicating they're extern types)
-- the alias name in a TypeAlias should also be entered in the TypeCache
 
 
 - implement test coverage showing case values don't overflow the switching type.

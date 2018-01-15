@@ -33,15 +33,15 @@ namespace {
     {
     }
 
-    struct WhenNextTokenIsColon : public UsingSecondColonStateFixture
+    struct WhenNextTokenIsString : public UsingSecondColonStateFixture
     {
-        const Token token = Token(":", 0, 1, TokenType::colon);
+        const Token token = Token("Type1", 0, 1, TokenType::string);
         const FileInfo fileInfo = FileInfo("test.swizzle");
 
         const TokenInfo info = TokenInfo(token, fileInfo);
     };
 
-    TEST_FIXTURE(WhenNextTokenIsColon, verifyConsume)
+    TEST_FIXTURE(WhenNextTokenIsString, verifyConsume)
     {
         CHECK_EQUAL(1U, nodeStack.size());
         CHECK_EQUAL(0U, attributeStack.size());

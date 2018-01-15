@@ -12,7 +12,7 @@ namespace swizzle { namespace parser { namespace states {
     {
         const auto type = token.token().type();
 
-        if(type == lexer::TokenType::colon)
+        if(type == lexer::TokenType::string)
         {
             return ParserState::UsingTypeRead;
         }

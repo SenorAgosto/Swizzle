@@ -2151,12 +2151,6 @@ namespace {
         CHECK_THROW(parse(), std::runtime_error);
     }
 
-    //-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_
-    //
-    // TODO: more struct coverage
-    //
-    //-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_/-\_
-
     struct WhenInputIsStructWithNoFields : public ParserFixture
     {
         const boost::string_view sv = boost::string_view(
@@ -2273,10 +2267,36 @@ namespace {
 
     TEST_FIXTURE(WhenInputIsAUsingStatementWithKeyValueAttribute, verifyConsume)
     {
+        auto matcher = Matcher().getChildrenOf<nodes::TypeAlias>().bind("alias");
+        CHECK(!matcher(parser.ast().root()));
+        
         tokenize(sv);
         parse();
 
-        // TODO: validate AST
+        CHECK(matcher(parser.ast().root()));
+        
+        const auto node = matcher.bound("alias_0");
+        REQUIRE CHECK(node);
+        
+        // ensure our type alias has attribute key/value under it
+        auto attributeMatcher = Matcher().getChildrenOf<nodes::Attribute>().bind("attribute");
+        attributeMatcher(node);
+        
+        const auto a0_node = attributeMatcher.bound("attribute_0");
+        REQUIRE CHECK(a0_node);
+        
+        const auto& attribute = static_cast<nodes::Attribute&>(*a0_node);
+        CHECK_EQUAL("@attribute", attribute.info().token().value());
+        
+        // the value of the attribute is a child of the attribute
+        auto attributeValueMatcher = Matcher().getChildrenOf<nodes::StringLiteral>().bind("value");
+        attributeValueMatcher(a0_node);
+        
+        const auto v0_node = attributeValueMatcher.bound("value_0");
+        REQUIRE CHECK(v0_node);
+        
+        const auto& value = static_cast<nodes::StringLiteral&>(*v0_node);
+        CHECK_EQUAL("\"value\"", value.info().token().value());
     }
 
     struct WhenInputIsAUsingStatementWithKeyValueAttributeAndCharLiteral : public ParserFixture

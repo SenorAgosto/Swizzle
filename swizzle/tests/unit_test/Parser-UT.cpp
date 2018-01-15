@@ -1531,8 +1531,33 @@ namespace {
 
     TEST_FIXTURE(WhenInputIsStructWithDoubleNestedVectorSizeMember, verifyConsume)
     {
+        auto matcher = Matcher().getChildrenOf<nodes::Struct>().bind("struct");
+        CHECK(!matcher(parser.ast().root()));
+        
         tokenize(sv);
         parse();
+        
+        CHECK(matcher(parser.ast().root()));
+        
+        // we're interested in the 3rd struct defined
+        const auto node = matcher.bound("struct_2");
+        REQUIRE CHECK(node);
+        
+        const auto& s = static_cast<nodes::Struct&>(*node);
+        CHECK_EQUAL("foo::Struct3", s.name());
+        
+        auto fieldsMatcher = Matcher().getChildrenOf<nodes::StructField>().bind("fields");
+        REQUIRE CHECK(fieldsMatcher(node));
+
+        const auto f1_node = fieldsMatcher.bound("fields_1");
+        REQUIRE CHECK(f1_node);
+        
+        const auto& f1 = static_cast<nodes::StructField&>(*f1_node);
+        CHECK_EQUAL("buffer", f1.name().token().value());
+        CHECK_EQUAL("f32", f1.type());
+        CHECK(!f1.isConst());
+        CHECK(!f1.isArray());
+        CHECK(f1.isVector());
     }
 
     struct WhenInputIsStructWithFieldAttribute : public ParserFixture

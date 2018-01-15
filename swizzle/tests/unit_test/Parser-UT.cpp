@@ -2240,10 +2240,26 @@ namespace {
 
     TEST_FIXTURE(WhenInputIsAUsingStatementWithAttribute, verifyConsume)
     {
+        auto matcher = Matcher().getChildrenOf<nodes::TypeAlias>().bind("alias");
+        CHECK(!matcher(parser.ast().root()));
+        
         tokenize(sv);
         parse();
 
-        // TODO: validate AST
+        CHECK(matcher(parser.ast().root()));
+        
+        const auto node = matcher.bound("alias_0");
+        REQUIRE CHECK(node);
+        
+        // ensure our type alias has an attribute under it
+        auto attributeMatcher = Matcher().getChildrenOf<nodes::Attribute>().bind("attribute");
+        attributeMatcher(node);
+        
+        const auto a0_node = attributeMatcher.bound("attribute_0");
+        REQUIRE CHECK(a0_node);
+        
+        const auto& attribute = static_cast<nodes::Attribute&>(*a0_node);
+        CHECK_EQUAL("@attribute", attribute.info().token().value());
     }
 
     struct WhenInputIsAUsingStatementWithKeyValueAttribute : public ParserFixture

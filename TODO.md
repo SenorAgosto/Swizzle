@@ -1,7 +1,5 @@
 # TODO
 
-- extern types should be in the TypeCache with nullptr for the value (indicating they're extern types)
-
 - implement test coverage showing case values don't overflow the switching type.
 - implement test coverage showing the switching type is an integer type. 
 

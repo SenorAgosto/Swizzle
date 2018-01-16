@@ -4,6 +4,7 @@
 #include <swizzle/ast/nodes/Extern.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
 #include <swizzle/parser/NodeStack.hpp>
+#include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/TokenStack.hpp>
 
 #include <swizzle/parser/detail/AppendNode.hpp>
@@ -12,7 +13,7 @@
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState ExternValueState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack&, TokenStack& tokenStack, ParserStateContext&)
+    ParserState ExternValueState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack&, TokenStack& tokenStack, ParserStateContext& context)
     {
         const auto type = token.token().type();
 
@@ -27,6 +28,8 @@ namespace swizzle { namespace parser { namespace states {
             utils::clear(tokenStack);
 
             detail::appendNode<ast::nodes::Extern>(nodeStack, externType);
+            context.TypeCache[externType.token().value().to_string()] = nullptr;     // insert a nullptr into TypeCache to indicate external type
+            
             return ParserState::Init;
         }
 

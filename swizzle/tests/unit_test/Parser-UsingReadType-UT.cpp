@@ -68,13 +68,16 @@ namespace {
     {
         WhenNextTokenIsEndStatement()
         {
+            // ensure the type name exists in the TypeCache
+            context.TypeCache[sv.to_string()] = nullptr;
+            
             tokenStack.emplace(Token(sv, 0, 3, TokenType::string), FileInfo("test.swizzle", LineInfo(1, 0), LineInfo(1, 4)));
             tokenStack.emplace(Token(sv, 6, 3, TokenType::string), FileInfo("test.swizzle", LineInfo(1, 6), LineInfo(1, 9)));
             tokenStack.emplace(Token(sv, 10, 6, TokenType::string), FileInfo("test.swizzle", LineInfo(1, 11), LineInfo(1, 17)));
         }
 
         const boost::string_view sv = "foo::bar::MyType";
-
+        
         const Token token = Token(";", 0, 1, TokenType::end_statement);
         const FileInfo fileInfo = FileInfo("test.swizzle");
 
@@ -94,6 +97,28 @@ namespace {
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
+    }
+
+    struct WhenNextTokenIsEndStatementAndTypeIsUndefined : public UsingTypeReadStateFixture
+    {
+        WhenNextTokenIsEndStatementAndTypeIsUndefined()
+        {
+            tokenStack.emplace(Token(sv, 0, 3, TokenType::string), FileInfo("test.swizzle", LineInfo(1, 0), LineInfo(1, 4)));
+            tokenStack.emplace(Token(sv, 6, 3, TokenType::string), FileInfo("test.swizzle", LineInfo(1, 6), LineInfo(1, 9)));
+            tokenStack.emplace(Token(sv, 10, 6, TokenType::string), FileInfo("test.swizzle", LineInfo(1, 11), LineInfo(1, 17)));
+        }
+
+        const boost::string_view sv = "foo::bar::MyType";
+
+        const Token token = Token(";", 0, 1, TokenType::end_statement);
+        const FileInfo fileInfo = FileInfo("test.swizzle");
+
+        const TokenInfo info = TokenInfo(token, fileInfo);
+    };
+    
+    TEST_FIXTURE(WhenNextTokenIsEndStatementAndTypeIsUndefined, verifyConsume)
+    {
+        CHECK_THROW(state.consume(info, nodeStack, attributeStack, tokenStack, context), swizzle::SyntaxError);
     }
 
     struct WhenNextTokenIsInvalid : public UsingTypeReadStateFixture

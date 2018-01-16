@@ -1459,6 +1459,26 @@ namespace {
         parse();
     }
 
+    struct WhenInputIsStructWithFieldLabelsAndAttributes : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {" "\n"
+            "\t" "10: u8 msgType;" "\n"
+            "\t" "// field comment" "\n"
+            "\t" "20: @optional u8 status;  // comment" "\n"
+            "}"
+        );
+    };
+    
+    TEST_FIXTURE(WhenInputIsStructWithFieldLabelsAndAttributes, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+        
+        // TODO: validate AST
+    }
+
     struct WhenInputIsStructWithArray : public ParserFixture
     {
         const boost::string_view sv = boost::string_view(
@@ -2243,15 +2263,16 @@ namespace {
         parse();
     }
 
-    struct WhenInputIsAUsingStatementOfIntrinsicType : public ParserFixture
+    struct WhenInputIsAUsingStatementOfAnExternalType : public ParserFixture
     {
         const boost::string_view sv = boost::string_view(
+            "extern ns1::Type1;" "\n"
             "namespace foo;" "\n"
-            "using A8 = u8;"
+            "using String = ns1::Type1;"
         );
     };
     
-    TEST_FIXTURE(WhenInputIsAUsingStatementOfIntrinsicType, verifyConsume)
+    TEST_FIXTURE(WhenInputIsAUsingStatementOfAnExternalType, verifyConsume)
     {
         tokenize(sv);
         parse();
@@ -2396,5 +2417,33 @@ namespace {
     {
         tokenize(sv);
         CHECK_THROW(parse(), swizzle::SyntaxError);
+    }
+    
+    struct WhenInputIsRealistic : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "extern ns1::Type1;" "\n"
+            "extern ns2::Type2;" "\n"
+            "\n"
+            "namespace foo;" "\n"
+            "\n"
+            "using String = ns1::Type1;" "\n"
+            
+            "enum TransactionType : u8 {" "\n"
+            "\t"    "New = '0'," "\n"
+            "\t"    "Cancel = '1'," "\n"
+            "}" "\n"
+            
+            "@inbound" "\n"
+            "struct Transaction {"
+            "\t" "TransactionType transactionType;" "\n"
+            "}"
+        );
+    };
+    
+    TEST_FIXTURE(WhenInputIsRealistic, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
     }
 }

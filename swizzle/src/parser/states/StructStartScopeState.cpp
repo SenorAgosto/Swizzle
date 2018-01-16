@@ -85,7 +85,7 @@ namespace swizzle { namespace parser { namespace states {
                 }
 
                 // we want to attach this to the field
-                nodeStack.push(new ast::nodes::FieldLabel(token));
+                attributeStack.push(new ast::nodes::FieldLabel(token));
                 return ParserState::StructFieldLabel;
             }
 

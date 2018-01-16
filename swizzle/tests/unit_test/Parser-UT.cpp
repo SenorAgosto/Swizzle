@@ -1425,6 +1425,40 @@ namespace {
         CHECK_EQUAL("@amigo", attribute.info().token().value());
     }
 
+    struct WhenInputIsStructWithFieldLabels : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {" "\n"
+            "\t" "10: u8 msgType;" "\n"
+            "\t" "20: u8 status;" "\n"
+            "}"
+        );
+    };
+    
+    TEST_FIXTURE(WhenInputIsStructWithFieldLabels, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsStructWithFieldLabelsOnAConstField : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {" "\n"
+            "\t" "10: const u8 msgType = 'A';" "\n"
+            "\t" "20: u8 status;" "\n"
+            "}"
+        );
+    };
+    
+    TEST_FIXTURE(WhenInputIsStructWithFieldLabelsOnAConstField, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
     struct WhenInputIsStructWithArray : public ParserFixture
     {
         const boost::string_view sv = boost::string_view(

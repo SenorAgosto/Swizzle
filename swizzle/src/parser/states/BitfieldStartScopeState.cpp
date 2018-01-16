@@ -105,7 +105,7 @@ namespace swizzle { namespace parser { namespace states {
                 auto& top = static_cast<ast::nodes::Bitfield&>(*nodeStack.top());
                 if(top.empty())
                 {
-                    throw SyntaxError("Enum must have fields, no fields declared in '" + top.name() + "'", token);
+                    throw SyntaxError("'bitfield' must have fields, no fields declared in '" + top.name() + "'", token);
                 }
 
                 nodeStack.pop();

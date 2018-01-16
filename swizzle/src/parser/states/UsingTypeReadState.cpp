@@ -8,10 +8,13 @@
 #include <swizzle/parser/NodeStack.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/TokenStack.hpp>
+#include <swizzle/parser/utils/NameInTypeCache.hpp>
+#include <swizzle/types/IsFloatType.hpp>
+#include <swizzle/types/IsIntegerType.hpp>
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState UsingTypeReadState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack&, TokenStack& tokenStack, ParserStateContext&)
+    ParserState UsingTypeReadState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack&, TokenStack& tokenStack, ParserStateContext& context)
     {
         const auto type = token.token().type();
 
@@ -26,17 +29,23 @@ namespace swizzle { namespace parser { namespace states {
 
             if(detail::nodeStackTopIs<ast::nodes::TypeAlias>(nodeStack))
             {
-                auto& top = static_cast<ast::nodes::TypeAlias&>(*nodeStack.top());
-                top.existingType(info);
+                // the aliased type must exist in the TypeCache, or it must be a supported type.
+                const auto v = info.token().value();
+                if(types::IsIntegerType(v) || types::IsFloatType(v) || utils::NameInTypeCache(context.TypeCache, info.token().value().to_string(), context.CurrentNamespace))
+                {
+                    auto& top = static_cast<ast::nodes::TypeAlias&>(*nodeStack.top());
+                    top.existingType(info);
 
-                nodeStack.pop();
+                    nodeStack.pop();
+                    return ParserState::TranslationUnitMain;
+                }
+                
+                throw SyntaxError("Expected defined type, found undefined type", info);
             }
             else
             {
                 throw ParserError("Internal parser error in UsingTypeReadState, expected TypeAlias on top of NodeStack.");
             }
-
-            return ParserState::TranslationUnitMain;
         }
 
         throw SyntaxError("Expected ':' or ';'", token);

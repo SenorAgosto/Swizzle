@@ -1,4 +1,5 @@
 # TODO
+- bool is not being recognized as a type
 - struct field member start needs to validate the type exists, e.g. 
     struct Struct1 {
          10:    heartbeat; 	// oops, forgot type, but error is on ;

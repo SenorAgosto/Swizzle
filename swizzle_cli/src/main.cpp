@@ -1,6 +1,7 @@
 
 #include <swizzle/lexer/Tokenizer.hpp>
 #include <swizzle/parser/Parser.hpp>
+#include <swizzle/parser/utils/PrettyPrint.hpp>
 
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
@@ -143,15 +144,22 @@ namespace swizzle {
     {
         std::deque<lexer::TokenInfo> tokens;
         CreateTokenCallback callback = CreateTokenCallback(tokens);
-        
+    
         lexer::Tokenizer<CreateTokenCallback> tokenizer = lexer::Tokenizer<CreateTokenCallback>(config.file.string(), callback);
         parser::Parser parser;
 
         std::string file = load_file(config.file.string());
         boost::string_view sv = boost::string_view(file);
         
-        tokenize(tokenizer, sv);
-        parse(parser, tokens);
+        try
+        {
+            tokenize(tokenizer, sv);
+            parse(parser, tokens);
+        }
+        catch(const SyntaxError& syntaxError)
+        {
+            parser::utils::pretty_print(syntaxError);
+        }
         
         // TODO: pass AST to backend
         // parser.ast().root()

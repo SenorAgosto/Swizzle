@@ -1,4 +1,6 @@
 #pragma once
+#include <swizzle/lexer/FileInfo.hpp>
+#include <swizzle/lexer/TokenInfo.hpp>
 
 #include <boost/utility/string_view.hpp> 
 #include <cstdint>
@@ -6,8 +8,6 @@
 #include <string>
 
 namespace swizzle { namespace lexer {
-    class FileInfo;
-    class TokenInfo;
     enum class TokenizerState : std::uint8_t;
     enum class TokenType : std::uint8_t;
 }}
@@ -23,8 +23,6 @@ namespace swizzle {
     public:
         ParserError(const std::string& reason);
     };
-
-
 
     class AliasedTypeIsNotDefinedException : public ParserError
     {
@@ -89,8 +87,23 @@ namespace swizzle {
     class SyntaxError : public ParserError
     {
     public:
-        SyntaxError(const std::string& error, const lexer::TokenInfo& found);
-        SyntaxError(const std::string& error, const std::string& found, const lexer::FileInfo& info);
+        SyntaxError(const std::string& error, const lexer::TokenInfo& token);
+        SyntaxError(const std::string& error, const std::string& found, const lexer::TokenInfo& token);
+        
+        const lexer::TokenInfo& token() const { return token_; }
+        
+    private:
+        lexer::TokenInfo token_;
+    };
+    
+    class SyntaxErrorWithoutToken : public ParserError
+    {
+    public:
+        SyntaxErrorWithoutToken(const std::string& error, const std::string& found, const lexer::FileInfo& info);
+        const lexer::FileInfo& file_info() const { return info_; }
+        
+    private:
+        lexer::FileInfo info_;
     };
 
     class UnknownParserState : public ParserError

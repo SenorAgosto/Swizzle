@@ -25,7 +25,7 @@ namespace swizzle {
         {
             std::stringstream ss;
             ss  << s
-                << info.filename() << "[" << info.end().line() << ":" << info.end().column() << "]"
+                << info.filename() << "[" << info.end().line() << ":" << info.end().column() - 1 << "]"
                 << ": " << error;
 
             return ss.str();
@@ -107,13 +107,21 @@ namespace swizzle {
     {
     }
 
-    SyntaxError::SyntaxError(const std::string& error, const lexer::TokenInfo& found)
-        : ParserError(constructError("Syntax Error: ", found, error))
+    SyntaxError::SyntaxError(const std::string& error, const lexer::TokenInfo& token)
+        : ParserError(constructError("Syntax Error: ", token, error))
+        , token_(token)
     {
     }
 
-    SyntaxError::SyntaxError(const std::string& error, const std::string& found, const lexer::FileInfo& info)
+    SyntaxError::SyntaxError(const std::string& error, const std::string& found, const lexer::TokenInfo& token)
+        : ParserError(constructError("Syntax Error: ", token.fileInfo(), error + ", found " + found))
+        , token_(token)
+    {
+    }
+
+    SyntaxErrorWithoutToken::SyntaxErrorWithoutToken(const std::string& error, const std::string& found, const lexer::FileInfo& info)
         : ParserError(constructError("Syntax Error: ", info, error + ", found " + found))
+        , info_(info)
     {
     }
 

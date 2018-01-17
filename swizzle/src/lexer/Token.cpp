@@ -4,7 +4,9 @@
 namespace swizzle { namespace lexer {
     
     Token::Token()
-        : type_(TokenType::string)
+        : position_(0)
+        , length_(0)
+        , type_(TokenType::string)
     {
     }
     
@@ -30,5 +32,18 @@ namespace swizzle { namespace lexer {
 
         const auto spot = value_.substr(position_, length_).find_first_not_of("\n\r\t ");
         return spot == boost::string_view::npos;
+    }
+    
+    boost::string_view Token::line() const
+    {
+        if(value_.empty()) return value_;
+
+        std::size_t start = position_;
+        while(value_.at(start) != '\n') --start;
+        
+        std::size_t end = position_;
+        while(value_.at(end) != '\n') ++end;
+        
+        return value_.substr(start, end - start);
     }
 }}

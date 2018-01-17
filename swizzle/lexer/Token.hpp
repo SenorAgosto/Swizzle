@@ -23,6 +23,9 @@ namespace swizzle { namespace lexer {
 
         bool empty() const;
 
+        // return the entire line the token resides on
+        boost::string_view line() const;
+        
         boost::string_view value() const { return value_.substr(position_, length_); }
         std::string to_string() const { return value_.substr(position_, length_).to_string(); }
 

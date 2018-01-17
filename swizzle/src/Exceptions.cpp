@@ -24,9 +24,8 @@ namespace swizzle {
         std::string constructError(const std::string& s, const lexer::FileInfo& info, const std::string& error)
         {
             std::stringstream ss;
-            ss  << s
-                << info.filename() << "[" << info.end().line() << ":" << info.end().column() - 1 << "]"
-                << ": " << error;
+            ss  << info.filename() << ":" << info.start().line() << ":" << info.start().column() << ":"
+                << s << error;
 
             return ss.str();
         }
@@ -35,9 +34,8 @@ namespace swizzle {
         std::string constructError(const std::string& s, const lexer::TokenInfo& info, const std::string& error)
         {
             std::stringstream ss;
-            ss  << s
-                << info.fileInfo().end().line() << ":" << info.fileInfo().end().column()
-                << ": " << error
+            ss  << info.fileInfo().filename() << ":" << info.fileInfo().start().line() << ":" << info.fileInfo().start().column() << ": "
+                << s << error
                 << ", found " << info.token().type() << " (" << info.token().to_string() << ")";
 
             return ss.str();

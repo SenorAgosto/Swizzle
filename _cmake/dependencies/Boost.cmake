@@ -6,5 +6,5 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 add_definitions(-DBOOST_ALL_NO_LIB)
 add_definitions(${Boost_LIB_DIAGNOSTIC_DEFINITIONS})
 
-find_package(Boost COMPONENTS filesystem system REQUIRED)
+find_package(Boost COMPONENTS filesystem system program_options REQUIRED)
 include_directories(${Boost_INCLUDE_DIR})

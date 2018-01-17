@@ -255,7 +255,7 @@ namespace {
 
     TEST_FIXTURE(WhenTokenStackIsEmpty, verifyValidateVectorSizeMemberThrows)
     {
-        CHECK_THROW(detail::validateVectorSizeMember(token, nodeStack, tokenStack, context), swizzle::SyntaxError);
+        CHECK_THROW(detail::validateVectorSizeMember(token, nodeStack, tokenStack, context), swizzle::SyntaxErrorWithoutToken);
     }
 
     struct WhenNodeStackIsEmpty : public ValidateVectorSizeMemberFixture
@@ -268,7 +268,7 @@ namespace {
 
     TEST_FIXTURE(WhenNodeStackIsEmpty, verifyValidateVectorSizeMemberThrows)
     {
-        CHECK_THROW(detail::validateVectorSizeMember(token, nodeStack, tokenStack, context), swizzle::SyntaxError);
+        CHECK_THROW(detail::validateVectorSizeMember(token, nodeStack, tokenStack, context), swizzle::SyntaxErrorWithoutToken);
     }
 
     struct WhenTopOfNodeStackIsNotStructField : public ValidateVectorSizeMemberFixture
@@ -285,7 +285,7 @@ namespace {
 
     TEST_FIXTURE(WhenTopOfNodeStackIsNotStructField, verifyCreateMemberThrows)
     {
-        CHECK_THROW(detail::validateVectorSizeMember(token, nodeStack, tokenStack, context), swizzle::SyntaxError);
+        CHECK_THROW(detail::validateVectorSizeMember(token, nodeStack, tokenStack, context), swizzle::SyntaxErrorWithoutToken);
     }
 
     struct WhenSecondItemInNodeStackIsNotStruct : public ValidateVectorSizeMemberFixture
@@ -306,6 +306,6 @@ namespace {
 
     TEST_FIXTURE(WhenSecondItemInNodeStackIsNotStruct, verifyCreateMemberThrows)
     {
-        CHECK_THROW(detail::validateVectorSizeMember(token, nodeStack, tokenStack, context), swizzle::SyntaxError);
+        CHECK_THROW(detail::validateVectorSizeMember(token, nodeStack, tokenStack, context), swizzle::SyntaxErrorWithoutToken);
     }
 }

@@ -30,7 +30,7 @@ namespace swizzle { namespace parser { namespace states {
                     return ParserState::StructVariableBlockCaseValueRead;
                 }
 
-                throw SyntaxError("variable_block case has hex/numeric/char literal, the field we're variable on must not be an array or vector type", field.type(), token.fileInfo());
+                throw SyntaxError("variable_block case has hex/numeric/char literal, the field we're variable on must not be an array or vector type", field.type(), token);
             }
 
             throw ParserError("Internal parser error, top of node stack was not ast::nodes::VariableBlockCase");
@@ -52,7 +52,7 @@ namespace swizzle { namespace parser { namespace states {
                     return ParserState::StructVariableBlockCaseValueRead;
                 }
 
-                throw SyntaxError("variable_block case has hex/numeric/char literal, the field we're variable on must not be an array or vector type", field.type(), token.fileInfo());
+                throw SyntaxError("variable_block case has hex/numeric/char literal, the field we're variable on must not be an array or vector type", field.type(), token);
             }
 
             throw ParserError("Internal parser error, top of node stack was not ast::nodes::VariableBlockCase");
@@ -74,7 +74,7 @@ namespace swizzle { namespace parser { namespace states {
                     return ParserState::StructVariableBlockCaseValueRead;
                 }
 
-                throw SyntaxError("variable_block case has hex/numeric/char literal, the field we're variable on must not be an array or vector type", field.type(), token.fileInfo());
+                throw SyntaxError("variable_block case has hex/numeric/char literal, the field we're variable on must not be an array or vector type", field.type(), token);
             }
 
             throw ParserError("Internal parser error, top of node stack was not ast::nodes::VariableBlockCase");
@@ -106,7 +106,7 @@ namespace swizzle { namespace parser { namespace states {
                     return ParserState::StructVariableBlockCaseValueRead;
                 }
 
-                throw SyntaxError("variable_block case has string_literal, the field we're variable on must be an array or vector type", field.type(), token.fileInfo());
+                throw SyntaxError("variable_block case has string_literal, the field we're variable on must be an array or vector type", field.type(), token);
             }
         }
 

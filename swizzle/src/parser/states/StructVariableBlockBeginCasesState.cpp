@@ -44,7 +44,7 @@ namespace swizzle { namespace parser { namespace states {
             auto hasNonCommentChildren = ast::Matcher().hasChildNotOf<ast::nodes::Comment, ast::nodes::MultilineComment>();
             if(!hasNonCommentChildren(top))
             {
-                throw SyntaxError("Expected variable block cases", " empty variable block", token.fileInfo());
+                throw SyntaxError("Expected variable block cases", " empty variable block", token);
             }
 
             nodeStack.pop();

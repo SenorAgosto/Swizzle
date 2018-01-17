@@ -35,13 +35,13 @@ namespace swizzle { namespace parser { namespace states {
 
             if(iter == context.TypeCache.end())
             {
-                throw SyntaxError("Variable block case type must be defined, ", structTypeString + " not defined", token.fileInfo());
+                throw SyntaxError("Variable block case type must be defined, ", structTypeString + " not defined", token);
             }
 
             const auto isStruct = dynamic_cast<ast::nodes::Struct*>(iter->second.get());
             if(!isStruct)
             {
-                throw SyntaxError("Variable block case type must be a struct, ", structTypeString + " is not a struct", token.fileInfo());
+                throw SyntaxError("Variable block case type must be a struct, ", structTypeString + " is not a struct", token);
             }
 
             // set the structType on the variableBlock case node & pop the node

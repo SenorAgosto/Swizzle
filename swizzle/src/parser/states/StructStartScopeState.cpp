@@ -174,7 +174,7 @@ namespace swizzle { namespace parser { namespace states {
                     if(!hasNonCommentChildren(nodeStack.top()))
                     {
                         const auto& top = static_cast<ast::nodes::Struct&>(*nodeStack.top());
-                        throw SyntaxError("'struct' must have fields", "no fields declared in '" + top.name() + "'", token.fileInfo());
+                        throw SyntaxError("'struct' must have fields", "no fields declared in '" + top.name() + "'", token);
                     }
 
                     nodeStack.pop();

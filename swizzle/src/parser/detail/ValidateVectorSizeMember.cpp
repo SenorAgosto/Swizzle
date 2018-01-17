@@ -23,7 +23,7 @@ namespace swizzle { namespace parser { namespace detail {
         {
             if(tokenStack.empty())
             {
-                throw SyntaxError("Token stack should contain vector size member tokens", " it empty.", info);
+                throw SyntaxErrorWithoutToken("Token stack should contain vector size member tokens", " it empty.", info);
             }
         }
 
@@ -31,7 +31,7 @@ namespace swizzle { namespace parser { namespace detail {
         {
             if(nodeStack.empty())
             {
-                throw SyntaxError("Node stack empty, expected top of node stack to be ast::nodes::StructField", " it empty", info);
+                throw SyntaxErrorWithoutToken("Node stack empty, expected top of node stack to be ast::nodes::StructField", " it empty", info);
             }
 
             NodeStack nodes = nodeStack;
@@ -39,7 +39,7 @@ namespace swizzle { namespace parser { namespace detail {
             auto isStructField = ast::Matcher().isTypeOf<ast::nodes::StructField>();
             if(!isStructField(nodes.top()))
             {
-                throw SyntaxError("Expected top of node stack to be ast::nodes::StructField", " unexpected type", info);
+                throw SyntaxErrorWithoutToken("Expected top of node stack to be ast::nodes::StructField", " unexpected type", info);
             }
 
             const auto field = nodes.top();
@@ -48,7 +48,7 @@ namespace swizzle { namespace parser { namespace detail {
             auto isStruct = ast::Matcher().isTypeOf<ast::nodes::Struct>();
             if(!isStruct(nodes.top()))
             {
-                throw SyntaxError("Expected node below top of node stack to be ast::nodes::Struct", " unexpected type", info);
+                throw SyntaxErrorWithoutToken("Expected node below top of node stack to be ast::nodes::Struct", " unexpected type", info);
             }
 
             auto structure = nodes.top();
@@ -74,7 +74,7 @@ namespace swizzle { namespace parser { namespace detail {
         {
             if(last)
             {
-                throw SyntaxError("Invalidly formatted vector size member", " intermediate member is integer type not struct", token.fileInfo());
+                throw SyntaxError("Invalidly formatted vector size member", " intermediate member is integer type not struct", token);
             }
 
             auto matcher = ast::Matcher().isTypeOf<ast::nodes::Struct>().hasFieldNamed(token.token().to_string()).bind("field");
@@ -93,7 +93,7 @@ namespace swizzle { namespace parser { namespace detail {
                     }
                     else if(types::IsType(type))
                     {
-                        throw SyntaxError("Vector size member is constructed from unsupported type. Type must be integeral.", " non-integral type", token.fileInfo());
+                        throw SyntaxError("Vector size member is constructed from unsupported type. Type must be integeral.", " non-integral type", token);
                     }
                     else
                     {
@@ -101,7 +101,7 @@ namespace swizzle { namespace parser { namespace detail {
                         const auto iter = context.TypeCache.find(typeName);
                         if(iter == context.TypeCache.end())
                         {
-                            throw SyntaxError("Vector size member invalid", " undefined type: " + typeName, tokenInfo.fileInfo());
+                            throw SyntaxError("Vector size member invalid", " undefined type: " + typeName, tokenInfo);
                         }
 
                         structure = iter->second;
@@ -109,19 +109,19 @@ namespace swizzle { namespace parser { namespace detail {
                 }
                 else
                 {
-                    throw SyntaxError("Vector size member invalid", " construction from incorrect type", tokenInfo.fileInfo());
+                    throw SyntaxError("Vector size member invalid", " construction from incorrect type", tokenInfo);
                 }
             }
             else
             {
                 const auto& s = static_cast<ast::nodes::Struct&>(*structure);
-                throw SyntaxError("Vector size member invalid", " references to unknown field (" + token.token().to_string() + ") in type: " + s.name(), tokenInfo.fileInfo());
+                throw SyntaxError("Vector size member invalid", " references to unknown field (" + token.token().to_string() + ") in type: " + s.name(), tokenInfo);
             }
         }
 
         if(!last)
         {
-            throw SyntaxError("Vector size member invalid, must end in integral type", " non-integer type", tokenInfo.fileInfo());
+            throw SyntaxError("Vector size member invalid, must end in integral type", " non-integer type", tokenInfo);
         }
     }
 }}}

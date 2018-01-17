@@ -107,7 +107,7 @@ namespace swizzle { namespace parser { namespace states {
                 if(!hasNonCommentChildren(nodeStack.top()))
                 {
                     auto& top = static_cast<ast::nodes::Enum&>(*nodeStack.top());
-                    throw SyntaxError("'enum' must have fields", "no fields declared in '" + top.name() + "'", token.fileInfo());
+                    throw SyntaxError("'enum' must have fields", "no fields declared in '" + top.name() + "'", token);
                 }
 
                 context.ClearEnumValueAllocations();

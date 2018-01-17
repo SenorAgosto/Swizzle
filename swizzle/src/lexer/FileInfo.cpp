@@ -8,7 +8,39 @@ namespace swizzle { namespace lexer {
     FileInfo::FileInfo()
     {
     }
+   
+    FileInfo::FileInfo(const FileInfo& other)
+        : filename_(other.filename_)
+        , start_(other.start_)
+        , end_(other.end_)
+    {
+    }
     
+    FileInfo::FileInfo(FileInfo&& other)
+        : filename_(std::move(other.filename_))
+        , start_(std::move(other.start_))
+        , end_(std::move(other.end_))
+    {
+    }
+    
+    FileInfo& FileInfo::operator=(const FileInfo& other)
+    {
+        filename_ = other.filename_;
+        start_ = other.start_;
+        end_ = other.end_;
+        
+        return *this;
+    }
+
+    FileInfo& FileInfo::operator=(FileInfo&& other)
+    {
+        filename_ = std::move(other.filename_);
+        start_ = std::move(other.start_);
+        end_ = std::move(other.end_);
+        
+        return *this;
+    }
+
     FileInfo::FileInfo(const std::string& filename)
         : filename_(filename)
     {

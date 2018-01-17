@@ -1,4 +1,14 @@
 # TODO
+- struct field member start needs to validate the type exists, e.g. 
+    struct Struct1 {
+         10:    heartbeat; 	// oops, forgot type, but error is on ;
+    }
+- 'using' clause is not putting types into Type Cache correctly, e.g. 
+- need to ensure field labels are not duplicated, they must be unique, e.g. 
+    struct Struct1 {
+	10: u8 u1;
+	10: u8 u2;	// oops, duplicate field ID
+    }
 
 - implement test coverage showing case values don't overflow the switching type.
 - implement test coverage showing the switching type is an integer type. 

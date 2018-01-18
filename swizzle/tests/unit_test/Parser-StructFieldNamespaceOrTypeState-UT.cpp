@@ -119,7 +119,7 @@ namespace {
         WhenNextTokenIsStringAndTypeIsU8AndThereIsAFieldLabel()
         {
             auto structNode = nodeStack.top();
-            nodeStack.push(new nodes::FieldLabel(TokenInfo(Token("123", 0, 3, TokenType::numeric_literal), FileInfo("test.swizzle"))));
+            attributeStack.push(new nodes::FieldLabel(TokenInfo(Token("123", 0, 3, TokenType::numeric_literal), FileInfo("test.swizzle"))));
 
             auto node = new nodes::StructField();
             structNode->append(node);
@@ -139,8 +139,8 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsStringAndTypeIsU8AndThereIsAFieldLabel, verifyConsume)
     {
-        CHECK_EQUAL(4U, nodeStack.size());
-        CHECK_EQUAL(0U, attributeStack.size());
+        CHECK_EQUAL(3U, nodeStack.size());
+        CHECK_EQUAL(1U, attributeStack.size());
         CHECK_EQUAL(1U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -243,7 +243,7 @@ namespace {
         {
             auto structNode = nodeStack.top();
 
-            nodeStack.push(new nodes::FieldLabel(TokenInfo(Token("123", 0, 3, TokenType::numeric_literal), FileInfo("test.swizzle"))));
+            attributeStack.push(new nodes::FieldLabel(TokenInfo(Token("123", 0, 3, TokenType::numeric_literal), FileInfo("test.swizzle"))));
 
             auto node = new nodes::StructField();
             structNode->append(node);
@@ -274,8 +274,8 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsStringAndTypeIsUserTypeWithNamespaceWithFieldLabel, verifyConsume)
     {
-        CHECK_EQUAL(4U, nodeStack.size());
-        CHECK_EQUAL(0U, attributeStack.size());
+        CHECK_EQUAL(3U, nodeStack.size());
+        CHECK_EQUAL(1U, attributeStack.size());
         CHECK_EQUAL(3U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
@@ -355,7 +355,7 @@ namespace {
         WhenNextTokenIsStringAndTypeIsUserTypeWithoutNamespaceWithFieldLabel()
         {
             auto structNode = nodeStack.top();
-            nodeStack.push(new nodes::FieldLabel(TokenInfo(Token("123", 0, 3, TokenType::numeric_literal), FileInfo("test.swizzle"))));
+            attributeStack.push(new nodes::FieldLabel(TokenInfo(Token("123", 0, 3, TokenType::numeric_literal), FileInfo("test.swizzle"))));
 
             auto node = new nodes::StructField();
             structNode->append(node);
@@ -377,8 +377,8 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsStringAndTypeIsUserTypeWithoutNamespaceWithFieldLabel, verifyConsume)
     {
-        CHECK_EQUAL(4U, nodeStack.size());
-        CHECK_EQUAL(0U, attributeStack.size());
+        CHECK_EQUAL(3U, nodeStack.size());
+        CHECK_EQUAL(1U, attributeStack.size());
         CHECK_EQUAL(1U, tokenStack.size());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);

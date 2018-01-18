@@ -7,3 +7,4 @@ include(_cmake/dependencies.cmake)
 
 add_subdirectory(swizzle)
 add_subdirectory(swizzle_cli)
+add_subdirectory(plugins)

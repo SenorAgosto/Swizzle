@@ -14,7 +14,7 @@ namespace swizzle { namespace backend {
     class BackendInterface
     {
     public:
-        virtual ~BackendInterface() = 0 {}
-        virtual void generate(const parser::ParsingStateContext& context, const ast::AbstractSyntaxTree& ast) = 0;
+        virtual ~BackendInterface() {}
+        virtual void generate(const parser::ParserStateContext& context, ast::AbstractSyntaxTree& ast) = 0;
     };
 }}

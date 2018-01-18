@@ -170,13 +170,6 @@ namespace swizzle { namespace parser { namespace states {
             {
                 if(detail::nodeStackTopIs<ast::nodes::Struct>(nodeStack))
                 {
-                    auto hasNonCommentChildren = ast::Matcher().hasChildNotOf<ast::nodes::Comment, ast::nodes::MultilineComment>();
-                    if(!hasNonCommentChildren(nodeStack.top()))
-                    {
-                        const auto& top = static_cast<ast::nodes::Struct&>(*nodeStack.top());
-                        throw SyntaxError("'struct' must have fields", "no fields declared in '" + top.name() + "'", token);
-                    }
-
                     nodeStack.pop();
                     return ParserState::TranslationUnitMain;
                 }

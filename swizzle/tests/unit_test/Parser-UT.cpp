@@ -2218,7 +2218,7 @@ namespace {
     TEST_FIXTURE(WhenInputIsStructWithNoFields, verifyConsume)
     {
         tokenize(sv);
-        CHECK_THROW(parse(), swizzle::SyntaxError);
+        parse();
     }
 
     struct WhenInputIsAUsingStatementOfBuiltinType : public ParserFixture

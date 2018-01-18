@@ -1442,6 +1442,23 @@ namespace {
         parse();
     }
 
+    struct WhenInputIsStructWithDuplicateFieldLabels : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {" "\n"
+            "\t" "10: u8 msgType;" "\n"
+            "\t" "10: u8 status;" "\n"
+            "}"
+        );
+    };
+    
+    TEST_FIXTURE(WhenInputIsStructWithDuplicateFieldLabels, verifyConsume)
+    {
+        tokenize(sv);
+        CHECK_THROW(parse(), swizzle::SyntaxError);
+    }
+
     struct WhenInputIsStructWithFieldLabelsOnAConstField : public ParserFixture
     {
         const boost::string_view sv = boost::string_view(

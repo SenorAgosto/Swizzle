@@ -1496,6 +1496,31 @@ namespace {
         // TODO: validate AST
     }
 
+    struct WhenInputIsStructWithMemberFieldMissingType : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {" "\n"
+            "\t"    "10: heartbeat;"
+            "}"
+        );
+    };
+    
+    TEST_FIXTURE(WhenInputIsStructWithMemberFieldMissingType, verifyConsume)
+    {
+        tokenize(sv);
+        
+        try
+        {
+            parse();
+        }
+        catch(const swizzle::SyntaxError& e)
+        {
+            CHECK_EQUAL(3U, e.token().fileInfo().start().line());
+            CHECK_EQUAL(6U, e.token().fileInfo().start().column());
+        }
+    }
+
     struct WhenInputIsStructWithArray : public ParserFixture
     {
         const boost::string_view sv = boost::string_view(

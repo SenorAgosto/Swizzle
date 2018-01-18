@@ -81,7 +81,7 @@ namespace swizzle { namespace parser { namespace states {
 
                 auto& top = static_cast<ast::nodes::StructField&>(*sf);
                 top.name(token);
-
+                
                 if(top.isArray() || top.isVector())
                 {
                     return ParserState::StructFieldName;
@@ -92,7 +92,7 @@ namespace swizzle { namespace parser { namespace states {
 
                 const auto& value = t.token().value();
 
-                if(types::IsIntegerType(value) || types::IsFloatType(value))
+                if(types::IsIntegerType(value) || types::IsFloatType(value) || (value == "bool"))
                 {
                     top.type(value.to_string());
                     return ParserState::StructFieldName;
@@ -115,6 +115,12 @@ namespace swizzle { namespace parser { namespace states {
             }
 
             throw ParserError("Internal parser error, top of node stack was not ast::nodes::StructField");
+        }
+
+        // supply a better error if we can
+        if(detail::nodeStackTopIs<ast::nodes::StructField>(nodeStack) && !tokenStack.empty())
+        {
+            throw SyntaxError("Missing type declaration", tokenStack.top());
         }
 
         throw SyntaxError("Expected member name or ':'", token);

@@ -84,6 +84,8 @@ namespace swizzle { namespace parser { namespace states {
                     throw SyntaxError("Expected field declaration, found duplicitous field label", token);
                 }
 
+                context.AllocateFieldLabel(token);
+                
                 // we want to attach this to the field
                 attributeStack.push(new ast::nodes::FieldLabel(token));
                 return ParserState::StructFieldLabel;
@@ -170,6 +172,8 @@ namespace swizzle { namespace parser { namespace states {
             {
                 if(detail::nodeStackTopIs<ast::nodes::Struct>(nodeStack))
                 {
+                    context.ClearFieldLabels();
+                    
                     nodeStack.pop();
                     return ParserState::TranslationUnitMain;
                 }

@@ -191,7 +191,7 @@ This is an informal description of the Swizzle DSL for describing messages on th
         <type_name> <field_name>;
     }
 
-    // applie key/value attribute to struct node
+    // apply key/value attribute to struct node
     @<attribute>=<value>
     struct <name> {
         <type_name> <field_name>;

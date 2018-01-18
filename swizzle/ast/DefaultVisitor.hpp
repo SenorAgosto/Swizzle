@@ -8,30 +8,30 @@ namespace swizzle { namespace ast {
     class DefaultVisitor : public VisitorInterface
     {
     public:
-        void operator()(Node&) override {}
+        void operator()(Node&, Node&) override {}
 
-        void operator()(nodes::Attribute&) override {}
-        void operator()(nodes::AttributeBlock&) override {}
-        void operator()(nodes::Bitfield&) override {}
-        void operator()(nodes::BitfieldField&) override {}
-        void operator()(nodes::CharLiteral&) override {}
-        void operator()(nodes::Comment&) override {}
-        void operator()(nodes::DefaultStringValue&) override {}
-        void operator()(nodes::DefaultValue&) override {}
-        void operator()(nodes::Enum&) override {}
-        void operator()(nodes::EnumField&) override {}
-        void operator()(nodes::Extern&) override {}
-        void operator()(nodes::FieldLabel&) override {}
-        void operator()(nodes::HexLiteral&) override {}
-        void operator()(nodes::Import&) override {}
-        void operator()(nodes::MultilineComment&) override {}
-        void operator()(nodes::Namespace&) override {}
-        void operator()(nodes::NumericLiteral&) override {}
-        void operator()(nodes::StringLiteral&) override {}
-        void operator()(nodes::Struct&) override {}
-        void operator()(nodes::StructField&) override {}
-        void operator()(nodes::TypeAlias&) override {}
-        void operator()(nodes::VariableBlock&) override {}
-        void operator()(nodes::VariableBlockCase&) override {}
+        void operator()(Node&, nodes::Attribute&) override {}
+        void operator()(Node&, nodes::AttributeBlock&) override {}
+        void operator()(Node&, nodes::Bitfield&) override {}
+        void operator()(Node&, nodes::BitfieldField&) override {}
+        void operator()(Node&, nodes::CharLiteral&) override {}
+        void operator()(Node&, nodes::Comment&) override {}
+        void operator()(Node&, nodes::DefaultStringValue&) override {}
+        void operator()(Node&, nodes::DefaultValue&) override {}
+        void operator()(Node&, nodes::Enum&) override {}
+        void operator()(Node&, nodes::EnumField&) override {}
+        void operator()(Node&, nodes::Extern&) override {}
+        void operator()(Node&, nodes::FieldLabel&) override {}
+        void operator()(Node&, nodes::HexLiteral&) override {}
+        void operator()(Node&, nodes::Import&) override {}
+        void operator()(Node&, nodes::MultilineComment&) override {}
+        void operator()(Node&, nodes::Namespace&) override {}
+        void operator()(Node&, nodes::NumericLiteral&) override {}
+        void operator()(Node&, nodes::StringLiteral&) override {}
+        void operator()(Node&, nodes::Struct&) override {}
+        void operator()(Node&, nodes::StructField&) override {}
+        void operator()(Node&, nodes::TypeAlias&) override {}
+        void operator()(Node&, nodes::VariableBlock&) override {}
+        void operator()(Node&, nodes::VariableBlockCase&) override {}
     };
 }}

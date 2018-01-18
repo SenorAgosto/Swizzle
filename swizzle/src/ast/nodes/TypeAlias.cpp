@@ -30,13 +30,15 @@ namespace swizzle { namespace ast { namespace nodes {
         return existingType_;
     }
 
-    void TypeAlias::accept(VisitorInterface& visitor)
+    void TypeAlias::accept(VisitorInterface& visitor, Node& parent, const Node::Depth depth)
     {
-        visitor(*this);
-
+        visitor(parent, *this);
+        if(depth == Depth::One) return;
+        
         for(auto& child : children())
         {
-            child->accept(visitor);
+            auto parent = this;
+            child->accept(visitor, *parent, depth);
         }
     }
 }}}

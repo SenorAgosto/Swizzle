@@ -16,12 +16,12 @@ namespace swizzle { namespace ast { namespace matchers {
             {
             }
 
-            void operator()(nodes::BitfieldField& node) override
+            void operator()(Node&, nodes::BitfieldField& node) override
             {
                 found_ = node.name().token().value() == fieldName_;
             }
 
-            void operator()(nodes::StructField& node) override
+            void operator()(Node&, nodes::StructField& node) override
             {
                 found_ = node.name().token().value() == fieldName_;
             }
@@ -48,7 +48,7 @@ namespace swizzle { namespace ast { namespace matchers {
 
         for(const auto child : node->children())
         {
-            child->accept(v);
+            child->accept(v, *node);
 
             if(v.found())
             {

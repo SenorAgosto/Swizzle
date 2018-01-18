@@ -92,13 +92,15 @@ namespace swizzle { namespace ast { namespace nodes {
         return vectorOnField_;
     }
 
-    void StructField::accept(VisitorInterface& visitor)
+    void StructField::accept(VisitorInterface& visitor, Node& parent, const Node::Depth depth)
     {
-        visitor(*this);
-
-        for(auto child : children())
+        visitor(parent, *this);
+        if(depth == Depth::One) return;
+        
+        for(auto& child : children())
         {
-            child->accept(visitor);
+            auto parent = this;
+            child->accept(visitor, *parent, depth);
         }
     }
 }}}

@@ -1,9 +1,4 @@
 # TODO
-- struct field member start needs to validate the type exists, e.g. 
-    struct Struct1 {
-         10:    heartbeat; 	// oops, forgot type, but error is on ;
-    }
-
 - implement test coverage showing case values don't overflow the switching type.
 - implement test coverage showing the switching type is an integer type. 
 

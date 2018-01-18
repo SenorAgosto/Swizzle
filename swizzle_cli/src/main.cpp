@@ -45,12 +45,6 @@ namespace swizzle {
         po::store(po::command_line_parser(argc, argv).options(config.description).positional(positionalArguments).run(), config.vars);
         po::notify(config.vars);
         
-        if(argc < 2)
-        {
-            std::cerr << config.description << std::endl;
-            throw std::runtime_error("Exception: too few command line arguments");
-        }
-        
         return config;
     }
 
@@ -111,26 +105,32 @@ namespace swizzle {
         parser.finalize();
     }
     
-    int validate_config(const Config& config)
+    int validate_config(const int argc, const Config& config)
     {
         if(config.vars.count("help"))
         {
             std::cout << config.description << std::endl;
             return 0;
         }
-        
-        if(config.file.string().empty())
-        {
-            std::cout << config.description << std::endl;
-            return -1;
-        }
-        
+
         if(config.vars.count("list-backends"))
         {
             // TODO: implement
             return 0;
         }
-       
+
+        if(argc < 2)
+        {
+            std::cerr << config.description << std::endl;
+            throw std::runtime_error("Exception: too few command line arguments");
+        }
+
+        if(config.file.string().empty())
+        {
+            std::cout << config.description << std::endl;
+            throw std::runtime_error("Exception: no input file specified");
+        }
+        
         if(!validate_file(config.file))
         {
             std::cerr << config.file << " does not exist or is a directory" << std::endl;
@@ -174,7 +174,7 @@ int main(const int argc, char const * const argv[])
     {
         const Config config = parse_config(argc, argv);
         
-        const int status = validate_config(config);
+        const int status = validate_config(argc, config);
         if(status != 0) return status;
         
         process(config);

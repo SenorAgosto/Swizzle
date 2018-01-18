@@ -17,6 +17,7 @@ namespace {
         CHECK(!IsType("struct"));
         CHECK(!IsType("using"));
 
+        CHECK(IsType("bool"));
         CHECK(IsType("bitfield"));
         CHECK(IsType("u8"));
         CHECK(IsType("i8"));

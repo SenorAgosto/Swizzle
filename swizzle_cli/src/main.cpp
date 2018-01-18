@@ -1,7 +1,9 @@
-
+#include <swizzle/backend/BackendInterface.hpp>
 #include <swizzle/lexer/Tokenizer.hpp>
 #include <swizzle/parser/Parser.hpp>
 #include <swizzle/parser/utils/PrettyPrint.hpp>
+
+#include <PluginFactory/PluginFactory.hpp>
 
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
@@ -14,6 +16,8 @@
 
 namespace swizzle {
 
+    using PluginFactory = PluginFactory::PluginFactory<backend::BackendInterface>;
+    
     struct Config
     {
         Config()
@@ -27,6 +31,8 @@ namespace swizzle {
         
         boost::program_options::options_description description;
         boost::program_options::variables_map vars;
+        
+        PluginFactory plugins;
     };
     
     Config parse_config(const int argc, char const * const argv[])

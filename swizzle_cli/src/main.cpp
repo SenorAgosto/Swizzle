@@ -23,6 +23,7 @@ namespace swizzle {
         
         std::string backend;
         boost::filesystem::path file;
+        boost::filesystem::path plugin_dir;
         
         boost::program_options::options_description description;
         boost::program_options::variables_map vars;
@@ -35,6 +36,7 @@ namespace swizzle {
         
         config.description.add_options()
             ("help", "produce this message")
+            ("plugin-dir", po::value<boost::filesystem::path>(&config.plugin_dir)->default_value("."), "plugin directory")
             ("list-backends", "list backends for processing AST")
             ("backend", po::value<std::string>(&config.backend)->default_value("print"), "backend for processing AST")
             ("path", po::value<boost::filesystem::path>(&config.file), "input filename");

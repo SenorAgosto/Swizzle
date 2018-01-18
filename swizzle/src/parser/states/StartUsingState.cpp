@@ -11,7 +11,7 @@
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState StartUsingState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack& attributeStack, TokenStack& tokenStack, ParserStateContext&)
+    ParserState StartUsingState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack& attributeStack, TokenStack& tokenStack, ParserStateContext& context)
     {
         const auto type = token.token().type();
 
@@ -24,9 +24,13 @@ namespace swizzle { namespace parser { namespace states {
 
             const auto& info = tokenStack.top();
             const auto node = detail::appendNode<ast::nodes::TypeAlias>(nodeStack, info, token);
+            
+            const auto& alias = static_cast<ast::nodes::TypeAlias&>(*node);
+            const auto aliasWithNamespace = context.CurrentNamespace + "::" + alias.aliasedType().token().value().to_string();
+            context.TypeCache[aliasWithNamespace] = node;
 
             detail::attachAttributes(attributeStack, node);
-
+            
             nodeStack.push(node);
             tokenStack.pop();
 

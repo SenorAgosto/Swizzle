@@ -46,6 +46,7 @@ namespace {
         void operator()(nodes::Comment&) override { comment++; }
         void operator()(nodes::Enum&) override { enumCount++; }
         void operator()(nodes::EnumField&) override { enumField++; }
+        void operator()(nodes::Extern&) override { externCount++; }
         void operator()(nodes::FieldLabel&) override { fieldLabel++; }
         void operator()(nodes::HexLiteral&) override { hexLiteral++; }
         void operator()(nodes::Import&) override { import++; }
@@ -72,6 +73,7 @@ namespace {
         std::size_t defaultValue = 0;
         std::size_t enumCount = 0;
         std::size_t enumField = 0;
+        std::size_t externCount = 0;
         std::size_t fieldLabel = 0;
         std::size_t hexLiteral = 0;
         std::size_t import = 0;

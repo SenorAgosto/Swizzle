@@ -20,6 +20,7 @@ namespace swizzle { namespace ast {
         void operator()(nodes::DefaultValue&) override {}
         void operator()(nodes::Enum&) override {}
         void operator()(nodes::EnumField&) override {}
+        void operator()(nodes::Extern&) override {}
         void operator()(nodes::FieldLabel&) override {}
         void operator()(nodes::HexLiteral&) override {}
         void operator()(nodes::Import&) override {}

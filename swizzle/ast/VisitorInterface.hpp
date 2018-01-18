@@ -1,5 +1,9 @@
 #pragma once 
 
+namespace swizzle { namespace ast {
+    class Node;
+}}
+
 namespace swizzle { namespace ast { namespace nodes {
     class Attribute;
     class AttributeBlock;
@@ -11,6 +15,7 @@ namespace swizzle { namespace ast { namespace nodes {
     class DefaultValue;
     class Enum;
     class EnumField;
+    class Extern;
     class FieldLabel;
     class HexLiteral;
     class Import;
@@ -43,6 +48,7 @@ namespace swizzle { namespace ast {
         virtual void operator()(nodes::DefaultValue& node) = 0;
         virtual void operator()(nodes::Enum& node) = 0;
         virtual void operator()(nodes::EnumField& node) = 0;
+        virtual void operator()(nodes::Extern& node) = 0;
         virtual void operator()(nodes::FieldLabel& node) = 0;
         virtual void operator()(nodes::HexLiteral& node) = 0;
         virtual void operator()(nodes::Import& node) = 0;

@@ -1,5 +1,9 @@
 #pragma once
 #include <swizzle/ast/VisitorInterface.hpp>
+#include <swizzle/ast/Node.hpp>
+
+#include <functional>
+#include <vector>
 
 namespace swizzle { namespace plugins { namespace print {
 
@@ -31,6 +35,12 @@ namespace swizzle { namespace plugins { namespace print {
         void operator()(ast::Node& parent, ast::nodes::TypeAlias& node) override;
         void operator()(ast::Node& parent, ast::nodes::VariableBlock& node) override;
         void operator()(ast::Node& parent, ast::nodes::VariableBlockCase& node) override;
+        
+    protected:
+        std::size_t depth() const { return ancestors_.size(); }
+        
+    private:
+        std::vector<std::reference_wrapper<const ast::Node>> ancestors_;
     };
 }}}
 

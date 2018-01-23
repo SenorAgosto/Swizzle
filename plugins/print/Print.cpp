@@ -13,6 +13,11 @@ namespace swizzle { namespace plugins { namespace print {
         PrintVisitor visitor;
         ast.accept(visitor);
     }
+    
+    std::string PrintPlugin::print_name() const
+    {
+        return "print";
+    }
 }}}
 
 MAKE_PLUGIN_METHODS(swizzle::backend::BackendInterface, swizzle::plugins::print::PrintPlugin)

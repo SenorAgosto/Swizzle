@@ -7,6 +7,8 @@ namespace swizzle { namespace plugins { namespace print {
     {
     public:
         PrintPlugin(void* /* serviceInterface */) {}
+        
         void generate(const parser::ParserStateContext& context, ast::AbstractSyntaxTree& ast) override;
+        std::string print_name() const override;
     };
 }}}

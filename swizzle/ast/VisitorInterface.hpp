@@ -22,6 +22,7 @@ namespace swizzle { namespace ast { namespace nodes {
     class MultilineComment;
     class Namespace;
     class NumericLiteral;
+    class Root;
     class StringLiteral;
     class Struct;
     class StructField;
@@ -56,6 +57,7 @@ namespace swizzle { namespace ast {
         virtual void operator()(Node& parent, nodes::MultilineComment& node) = 0;
         virtual void operator()(Node& parent, nodes::Namespace& node) = 0;
         virtual void operator()(Node& parent, nodes::NumericLiteral& node) = 0;
+        virtual void operator()(Node& parent, nodes::Root& node) = 0;
         virtual void operator()(Node& parent, nodes::StringLiteral& node) = 0;
         virtual void operator()(Node& parent, nodes::Struct& node) = 0;
         virtual void operator()(Node& parent, nodes::StructField& node) = 0;

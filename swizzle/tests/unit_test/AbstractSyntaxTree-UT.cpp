@@ -34,7 +34,7 @@ namespace {
     {
     public:
         virtual ~TestVisitor(){}
-        void operator()(Node&, Node&) override { root++; }
+        void operator()(Node&, Node&) override {}
 
         void operator()(Node&, nodes::Attribute&) override { attribute++; }
         void operator()(Node&, nodes::AttributeBlock&) override { attributeBlock++; }
@@ -53,6 +53,7 @@ namespace {
         void operator()(Node&, nodes::MultilineComment&) override { multilineComment++; }
         void operator()(Node&, nodes::Namespace&) override { nameSpace++; }
         void operator()(Node&, nodes::NumericLiteral&) override { numericLiteral++; }
+        void operator()(Node&, nodes::Root&) override { root++; }
         void operator()(Node&, nodes::StringLiteral&) override { stringLiteral++; }
         void operator()(Node&, nodes::Struct&) override { structCount++; }
         void operator()(Node&, nodes::StructField&) override { structField++; }

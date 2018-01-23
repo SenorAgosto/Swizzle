@@ -1,10 +1,11 @@
 #include <swizzle/ast/AbstractSyntaxTree.hpp>
 #include <swizzle/ast/VisitorInterface.hpp>
+#include <swizzle/ast/nodes/Root.hpp>
 
 namespace swizzle { namespace ast {
 
     AbstractSyntaxTree::AbstractSyntaxTree()
-        : root_(new Node())
+        : root_(new nodes::Root())
     {
     }
 

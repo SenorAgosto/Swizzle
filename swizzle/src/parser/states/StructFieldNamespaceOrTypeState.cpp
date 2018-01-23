@@ -120,7 +120,7 @@ namespace swizzle { namespace parser { namespace states {
         // supply a better error if we can
         if(detail::nodeStackTopIs<ast::nodes::StructField>(nodeStack) && !tokenStack.empty())
         {
-            throw SyntaxError("Missing type declaration", tokenStack.top());
+            throw SyntaxError("Struct member name missing in type declaration", tokenStack.top());
         }
 
         throw SyntaxError("Expected member name or ':'", token);

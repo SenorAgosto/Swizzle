@@ -25,8 +25,12 @@ namespace swizzle { namespace parser {
         void finalize() const;
 
         // return the AST
-        const ast::AbstractSyntaxTree& ast() const;
-
+		const ast::AbstractSyntaxTree& ast() const;
+        ast::AbstractSyntaxTree& ast();
+        
+        // return the parsing context
+        const ParserStateContext& context() const;
+        
     private:
         ParserStatesPack states_;
         ParserState state_;

@@ -14,7 +14,7 @@ namespace swizzle { namespace ast { namespace nodes {
         Extern(const lexer::TokenInfo& externType);
         const lexer::TokenInfo& externType() const;
 
-        void accept(VisitorInterface& visitor) override;
+        void accept(VisitorInterface& visitor, Node& parent, const Node::Depth depth = Node::Depth::All) override;
         
     private:
         const lexer::TokenInfo externType_;

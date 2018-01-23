@@ -1,5 +1,9 @@
 #pragma once 
 
+namespace swizzle { namespace ast {
+    class Node;
+}}
+
 namespace swizzle { namespace ast { namespace nodes {
     class Attribute;
     class AttributeBlock;
@@ -11,12 +15,14 @@ namespace swizzle { namespace ast { namespace nodes {
     class DefaultValue;
     class Enum;
     class EnumField;
+    class Extern;
     class FieldLabel;
     class HexLiteral;
     class Import;
     class MultilineComment;
     class Namespace;
     class NumericLiteral;
+    class Root;
     class StringLiteral;
     class Struct;
     class StructField;
@@ -31,29 +37,32 @@ namespace swizzle { namespace ast {
     {
     public:
         virtual ~VisitorInterface(){}
-        virtual void operator()(Node& node) = 0;
+        
+        virtual void operator()(Node& parent, Node& node) = 0;
 
-        virtual void operator()(nodes::Attribute& node) = 0;
-        virtual void operator()(nodes::AttributeBlock& node) = 0;
-        virtual void operator()(nodes::Bitfield& node) = 0;
-        virtual void operator()(nodes::BitfieldField& node) = 0;
-        virtual void operator()(nodes::CharLiteral& node) = 0;
-        virtual void operator()(nodes::Comment& node) = 0;
-        virtual void operator()(nodes::DefaultStringValue& node) = 0;
-        virtual void operator()(nodes::DefaultValue& node) = 0;
-        virtual void operator()(nodes::Enum& node) = 0;
-        virtual void operator()(nodes::EnumField& node) = 0;
-        virtual void operator()(nodes::FieldLabel& node) = 0;
-        virtual void operator()(nodes::HexLiteral& node) = 0;
-        virtual void operator()(nodes::Import& node) = 0;
-        virtual void operator()(nodes::MultilineComment& node) = 0;
-        virtual void operator()(nodes::Namespace& node) = 0;
-        virtual void operator()(nodes::NumericLiteral& node) = 0;
-        virtual void operator()(nodes::StringLiteral& node) = 0;
-        virtual void operator()(nodes::Struct& node) = 0;
-        virtual void operator()(nodes::StructField& node) = 0;
-        virtual void operator()(nodes::TypeAlias& node) = 0;
-        virtual void operator()(nodes::VariableBlock& node) = 0;
-        virtual void operator()(nodes::VariableBlockCase& node) = 0;
+        virtual void operator()(Node& parent, nodes::Attribute& node) = 0;
+        virtual void operator()(Node& parent, nodes::AttributeBlock& node) = 0;
+        virtual void operator()(Node& parent, nodes::Bitfield& node) = 0;
+        virtual void operator()(Node& parent, nodes::BitfieldField& node) = 0;
+        virtual void operator()(Node& parent, nodes::CharLiteral& node) = 0;
+        virtual void operator()(Node& parent, nodes::Comment& node) = 0;
+        virtual void operator()(Node& parent, nodes::DefaultStringValue& node) = 0;
+        virtual void operator()(Node& parent, nodes::DefaultValue& node) = 0;
+        virtual void operator()(Node& parent, nodes::Enum& node) = 0;
+        virtual void operator()(Node& parent, nodes::EnumField& node) = 0;
+        virtual void operator()(Node& parent, nodes::Extern& node) = 0;
+        virtual void operator()(Node& parent, nodes::FieldLabel& node) = 0;
+        virtual void operator()(Node& parent, nodes::HexLiteral& node) = 0;
+        virtual void operator()(Node& parent, nodes::Import& node) = 0;
+        virtual void operator()(Node& parent, nodes::MultilineComment& node) = 0;
+        virtual void operator()(Node& parent, nodes::Namespace& node) = 0;
+        virtual void operator()(Node& parent, nodes::NumericLiteral& node) = 0;
+        virtual void operator()(Node& parent, nodes::Root& node) = 0;
+        virtual void operator()(Node& parent, nodes::StringLiteral& node) = 0;
+        virtual void operator()(Node& parent, nodes::Struct& node) = 0;
+        virtual void operator()(Node& parent, nodes::StructField& node) = 0;
+        virtual void operator()(Node& parent, nodes::TypeAlias& node) = 0;
+        virtual void operator()(Node& parent, nodes::VariableBlock& node) = 0;
+        virtual void operator()(Node& parent, nodes::VariableBlockCase& node) = 0;
     };
 }}

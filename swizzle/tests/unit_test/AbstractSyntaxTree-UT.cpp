@@ -34,30 +34,32 @@ namespace {
     {
     public:
         virtual ~TestVisitor(){}
-        void operator()(Node&) override { root++; }
+        void operator()(Node&, Node&) override {}
 
-        void operator()(nodes::Attribute&) override { attribute++; }
-        void operator()(nodes::AttributeBlock&) override { attributeBlock++; }
-        void operator()(nodes::Bitfield&) override { bitfield++; }
-        void operator()(nodes::BitfieldField&) override { bitfieldField++; }
-        void operator()(nodes::DefaultStringValue&) override { defaultString++; }
-        void operator()(nodes::DefaultValue&) override { defaultValue++; }
-        void operator()(nodes::CharLiteral&) override { charLiteral++; }
-        void operator()(nodes::Comment&) override { comment++; }
-        void operator()(nodes::Enum&) override { enumCount++; }
-        void operator()(nodes::EnumField&) override { enumField++; }
-        void operator()(nodes::FieldLabel&) override { fieldLabel++; }
-        void operator()(nodes::HexLiteral&) override { hexLiteral++; }
-        void operator()(nodes::Import&) override { import++; }
-        void operator()(nodes::MultilineComment&) override { multilineComment++; }
-        void operator()(nodes::Namespace&) override { nameSpace++; }
-        void operator()(nodes::NumericLiteral&) override { numericLiteral++; }
-        void operator()(nodes::StringLiteral&) override { stringLiteral++; }
-        void operator()(nodes::Struct&) override { structCount++; }
-        void operator()(nodes::StructField&) override { structField++; }
-        void operator()(nodes::TypeAlias&) override { typeAlias++; }
-        void operator()(nodes::VariableBlock&) override { varBlock++; }
-        void operator()(nodes::VariableBlockCase&) override { varBlockCase++; }
+        void operator()(Node&, nodes::Attribute&) override { attribute++; }
+        void operator()(Node&, nodes::AttributeBlock&) override { attributeBlock++; }
+        void operator()(Node&, nodes::Bitfield&) override { bitfield++; }
+        void operator()(Node&, nodes::BitfieldField&) override { bitfieldField++; }
+        void operator()(Node&, nodes::DefaultStringValue&) override { defaultString++; }
+        void operator()(Node&, nodes::DefaultValue&) override { defaultValue++; }
+        void operator()(Node&, nodes::CharLiteral&) override { charLiteral++; }
+        void operator()(Node&, nodes::Comment&) override { comment++; }
+        void operator()(Node&, nodes::Enum&) override { enumCount++; }
+        void operator()(Node&, nodes::EnumField&) override { enumField++; }
+        void operator()(Node&, nodes::Extern&) override { externCount++; }
+        void operator()(Node&, nodes::FieldLabel&) override { fieldLabel++; }
+        void operator()(Node&, nodes::HexLiteral&) override { hexLiteral++; }
+        void operator()(Node&, nodes::Import&) override { import++; }
+        void operator()(Node&, nodes::MultilineComment&) override { multilineComment++; }
+        void operator()(Node&, nodes::Namespace&) override { nameSpace++; }
+        void operator()(Node&, nodes::NumericLiteral&) override { numericLiteral++; }
+        void operator()(Node&, nodes::Root&) override { root++; }
+        void operator()(Node&, nodes::StringLiteral&) override { stringLiteral++; }
+        void operator()(Node&, nodes::Struct&) override { structCount++; }
+        void operator()(Node&, nodes::StructField&) override { structField++; }
+        void operator()(Node&, nodes::TypeAlias&) override { typeAlias++; }
+        void operator()(Node&, nodes::VariableBlock&) override { varBlock++; }
+        void operator()(Node&, nodes::VariableBlockCase&) override { varBlockCase++; }
 
     public:
         std::size_t root = 0;
@@ -72,6 +74,7 @@ namespace {
         std::size_t defaultValue = 0;
         std::size_t enumCount = 0;
         std::size_t enumField = 0;
+        std::size_t externCount = 0;
         std::size_t fieldLabel = 0;
         std::size_t hexLiteral = 0;
         std::size_t import = 0;

@@ -15,7 +15,7 @@ namespace swizzle { namespace ast { namespace nodes {
 
         const lexer::TokenInfo& info() const;
 
-        void accept(VisitorInterface& visitor) override;
+        void accept(VisitorInterface& visitor, Node& parent, const Node::Depth depth = Node::Depth::All) override;
 
     private:
         const lexer::TokenInfo info_;

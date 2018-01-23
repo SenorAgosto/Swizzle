@@ -1,12 +1,15 @@
-
+#include <swizzle/backend/BackendInterface.hpp>
 #include <swizzle/lexer/Tokenizer.hpp>
 #include <swizzle/parser/Parser.hpp>
 #include <swizzle/parser/utils/PrettyPrint.hpp>
+
+#include <PluginFactory/PluginFactory.hpp>
 
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
 #include <boost/utility/string_view.hpp>
 
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -14,18 +17,25 @@
 
 namespace swizzle {
 
+    using PluginFactory = PluginFactory::PluginFactory<backend::BackendInterface>;
+    
     struct Config
     {
         Config()
             : description("Options")
+            , factory(".")
         {
         }
         
         std::string backend;
         boost::filesystem::path file;
+        boost::filesystem::path plugin_dir;
         
         boost::program_options::options_description description;
         boost::program_options::variables_map vars;
+        
+        mutable std::vector<swizzle::backend::BackendInterface*> plugins;   // we don't own this memory, @factory does
+        mutable PluginFactory factory;
     };
     
     Config parse_config(const int argc, char const * const argv[])
@@ -35,6 +45,7 @@ namespace swizzle {
         
         config.description.add_options()
             ("help", "produce this message")
+            ("backend-dir", po::value<boost::filesystem::path>(&config.plugin_dir)->default_value("."), "directory containing backend plugins")
             ("list-backends", "list backends for processing AST")
             ("backend", po::value<std::string>(&config.backend)->default_value("print"), "backend for processing AST")
             ("path", po::value<boost::filesystem::path>(&config.file), "input filename");
@@ -44,6 +55,8 @@ namespace swizzle {
         
         po::store(po::command_line_parser(argc, argv).options(config.description).positional(positionalArguments).run(), config.vars);
         po::notify(config.vars);
+        
+        config.factory = PluginFactory(config.plugin_dir);
         
         return config;
     }
@@ -110,13 +123,26 @@ namespace swizzle {
         if(config.vars.count("help"))
         {
             std::cout << config.description << std::endl;
-            return 0;
+            return 1;
         }
 
         if(config.vars.count("list-backends"))
         {
-            // TODO: implement
-            return 0;
+            config.factory.load();
+            const auto availablePlugins = config.factory.availablePlugins();
+
+            for(const auto plugin : availablePlugins)
+            {
+                config.plugins.push_back(config.factory.instance(plugin));
+            }
+            
+            std::cout << "backends: \n";
+            for(auto plugin : config.plugins)
+            {
+                std::cout << "\t" "- " << plugin->print_name() << "\n";
+            }
+            
+            return 1;
         }
 
         if(argc < 2)
@@ -133,8 +159,33 @@ namespace swizzle {
         
         if(!validate_file(config.file))
         {
-            std::cerr << config.file << " does not exist or is a directory" << std::endl;
-            return -1;
+            std::stringstream ss;
+            ss << config.file << " does not exist or is a directory";
+            
+            throw std::runtime_error(ss.str());
+        }
+        
+        config.factory.load();
+        
+        auto availablePlugins = config.factory.availablePlugins();
+        for(const auto plugin : availablePlugins)
+        {
+            config.plugins.push_back(config.factory.instance(plugin));
+        }
+        
+        std::vector<std::string> pluginNames;
+        for(const auto plugin : config.plugins)
+        {
+            pluginNames.push_back(plugin->print_name());
+        }
+        
+        std::sort(begin(pluginNames), end(pluginNames));
+        if(!std::binary_search(begin(pluginNames), end(pluginNames), config.backend))
+        {
+            std::stringstream ss;
+            ss << "Backend '" << config.backend << "' could not be located";
+            
+            throw std::runtime_error(ss.str());
         }
         
         return 0;
@@ -161,8 +212,10 @@ namespace swizzle {
             parser::utils::pretty_print(syntaxError);
         }
         
-        // TODO: pass AST to backend
-        // parser.ast().root()
+        for(auto plugin : config.plugins)
+        {
+            plugin->generate(parser.context(), parser.ast());
+        }
     }
 }
 

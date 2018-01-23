@@ -46,7 +46,7 @@ namespace swizzle { namespace parser { namespace states {
                 auto& top = static_cast<ast::nodes::StructField&>(*sf);
                 const auto& value = t.token().value();
 
-                if(types::IsIntegerType(value) || types::IsFloatType(value))
+                if(types::IsIntegerType(value) || types::IsFloatType(value) || value == "bool")
                 {
                     top.type(value.to_string());
                     return ParserState::StructStartArray;

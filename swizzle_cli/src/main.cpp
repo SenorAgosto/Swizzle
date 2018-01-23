@@ -123,7 +123,7 @@ namespace swizzle {
         if(config.vars.count("help"))
         {
             std::cout << config.description << std::endl;
-            return 0;
+            return 1;
         }
 
         if(config.vars.count("list-backends"))
@@ -142,7 +142,7 @@ namespace swizzle {
                 std::cout << "\t" "- " << plugin->print_name() << "\n";
             }
             
-            return 0;
+            return 1;
         }
 
         if(argc < 2)
@@ -159,8 +159,10 @@ namespace swizzle {
         
         if(!validate_file(config.file))
         {
-            std::cerr << config.file << " does not exist or is a directory" << std::endl;
-            return -1;
+            std::stringstream ss;
+            ss << config.file << " does not exist or is a directory";
+            
+            throw std::runtime_error(ss.str());
         }
         
         config.factory.load();
@@ -180,8 +182,10 @@ namespace swizzle {
         std::sort(begin(pluginNames), end(pluginNames));
         if(!std::binary_search(begin(pluginNames), end(pluginNames), config.backend))
         {
-            std::cerr << "Backend '" << config.backend << "' could not be located" << std::endl;
-            return -1;
+            std::stringstream ss;
+            ss << "Backend '" << config.backend << "' could not be located";
+            
+            throw std::runtime_error(ss.str());
         }
         
         return 0;
@@ -208,8 +212,10 @@ namespace swizzle {
             parser::utils::pretty_print(syntaxError);
         }
         
-        // TODO: pass AST to backend
-        // parser.ast().root()
+        for(auto plugin : config.plugins)
+        {
+            plugin->generate(parser.context(), parser.ast());
+        }
     }
 }
 

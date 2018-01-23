@@ -2,6 +2,7 @@
 #include <swizzle/ast/VisitorInterface.hpp>
 #include <swizzle/ast/Node.hpp>
 
+#include <cstdint>
 #include <functional>
 #include <vector>
 
@@ -29,6 +30,7 @@ namespace swizzle { namespace plugins { namespace print {
         void operator()(ast::Node& parent, ast::nodes::MultilineComment& node) override;
         void operator()(ast::Node& parent, ast::nodes::Namespace& node) override;
         void operator()(ast::Node& parent, ast::nodes::NumericLiteral& node) override;
+        void operator()(ast::Node& parent, ast::nodes::Root& node) override;
         void operator()(ast::Node& parent, ast::nodes::StringLiteral& node) override;
         void operator()(ast::Node& parent, ast::nodes::Struct& node) override;
         void operator()(ast::Node& parent, ast::nodes::StructField& node) override;
@@ -37,10 +39,15 @@ namespace swizzle { namespace plugins { namespace print {
         void operator()(ast::Node& parent, ast::nodes::VariableBlockCase& node) override;
         
     protected:
-        std::size_t depth() const { return ancestors_.size(); }
+        using AncestorContainer = std::vector<std::reference_wrapper<const ast::Node>>;
+        AncestorContainer::iterator find(const ast::Node& node);
         
+        // update book-keeping and return the adjustment to @indentLevel_
+        std::ptrdiff_t adjust_indentation(const ast::Node& parent, const ast::Node& node);
+        void print_line(const std::ptrdiff_t indent, const std::string& str) const;
+
     private:
-        std::vector<std::reference_wrapper<const ast::Node>> ancestors_;
+        AncestorContainer ancestors_;
     };
 }}}
 

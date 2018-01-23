@@ -9,6 +9,7 @@
 #include <boost/program_options.hpp>
 #include <boost/utility/string_view.hpp>
 
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -22,6 +23,7 @@ namespace swizzle {
     {
         Config()
             : description("Options")
+            , factory(".")
         {
         }
         
@@ -32,7 +34,8 @@ namespace swizzle {
         boost::program_options::options_description description;
         boost::program_options::variables_map vars;
         
-        PluginFactory plugins;
+        mutable std::vector<swizzle::backend::BackendInterface*> plugins;   // we don't own this memory, @factory does
+        mutable PluginFactory factory;
     };
     
     Config parse_config(const int argc, char const * const argv[])
@@ -42,7 +45,7 @@ namespace swizzle {
         
         config.description.add_options()
             ("help", "produce this message")
-            ("plugin-dir", po::value<boost::filesystem::path>(&config.plugin_dir)->default_value("."), "plugin directory")
+            ("backend-dir", po::value<boost::filesystem::path>(&config.plugin_dir)->default_value("."), "directory containing backend plugins")
             ("list-backends", "list backends for processing AST")
             ("backend", po::value<std::string>(&config.backend)->default_value("print"), "backend for processing AST")
             ("path", po::value<boost::filesystem::path>(&config.file), "input filename");
@@ -52,6 +55,8 @@ namespace swizzle {
         
         po::store(po::command_line_parser(argc, argv).options(config.description).positional(positionalArguments).run(), config.vars);
         po::notify(config.vars);
+        
+        config.factory = PluginFactory(config.plugin_dir);
         
         return config;
     }
@@ -123,7 +128,20 @@ namespace swizzle {
 
         if(config.vars.count("list-backends"))
         {
-            // TODO: implement
+            config.factory.load();
+            const auto availablePlugins = config.factory.availablePlugins();
+
+            for(const auto plugin : availablePlugins)
+            {
+                config.plugins.push_back(config.factory.instance(plugin));
+            }
+            
+            std::cout << "backends: \n";
+            for(auto plugin : config.plugins)
+            {
+                std::cout << "\t" "- " << plugin->print_name() << "\n";
+            }
+            
             return 0;
         }
 
@@ -142,6 +160,27 @@ namespace swizzle {
         if(!validate_file(config.file))
         {
             std::cerr << config.file << " does not exist or is a directory" << std::endl;
+            return -1;
+        }
+        
+        config.factory.load();
+        
+        auto availablePlugins = config.factory.availablePlugins();
+        for(const auto plugin : availablePlugins)
+        {
+            config.plugins.push_back(config.factory.instance(plugin));
+        }
+        
+        std::vector<std::string> pluginNames;
+        for(const auto plugin : config.plugins)
+        {
+            pluginNames.push_back(plugin->print_name());
+        }
+        
+        std::sort(begin(pluginNames), end(pluginNames));
+        if(!std::binary_search(begin(pluginNames), end(pluginNames), config.backend))
+        {
+            std::cerr << "Backend '" << config.backend << "' could not be located" << std::endl;
             return -1;
         }
         

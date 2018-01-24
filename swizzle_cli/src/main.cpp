@@ -207,6 +207,11 @@ namespace swizzle {
             tokenize(tokenizer, sv);
             parse(parser, tokens);
         }
+        catch(const TokenizerSyntaxError& syntaxError)
+        {
+            parser::utils::pretty_print(syntaxError);
+            return;
+        }
         catch(const SyntaxError& syntaxError)
         {
             parser::utils::pretty_print(syntaxError);

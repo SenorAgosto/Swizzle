@@ -1,4 +1,5 @@
 #pragma once
+#include <swizzle/ast/AncestorInfo.hpp>
 #include <swizzle/ast/Node.hpp>
 
 namespace swizzle { namespace ast {
@@ -19,5 +20,6 @@ namespace swizzle { namespace ast {
 
     private:
         Node::smartptr root_;
+        AncestorInfo ancestors_;
     };
 }}

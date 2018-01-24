@@ -8,29 +8,31 @@ namespace swizzle { namespace ast {
     class DefaultVisitor : public VisitorInterface
     {
     public:
-        void operator()(Node&) override {}
+        void operator()(AncestorInfo&, Node&) override {}
 
-        void operator()(nodes::Attribute&) override {}
-        void operator()(nodes::AttributeBlock&) override {}
-        void operator()(nodes::Bitfield&) override {}
-        void operator()(nodes::BitfieldField&) override {}
-        void operator()(nodes::CharLiteral&) override {}
-        void operator()(nodes::Comment&) override {}
-        void operator()(nodes::DefaultStringValue&) override {}
-        void operator()(nodes::DefaultValue&) override {}
-        void operator()(nodes::Enum&) override {}
-        void operator()(nodes::EnumField&) override {}
-        void operator()(nodes::FieldLabel&) override {}
-        void operator()(nodes::HexLiteral&) override {}
-        void operator()(nodes::Import&) override {}
-        void operator()(nodes::MultilineComment&) override {}
-        void operator()(nodes::Namespace&) override {}
-        void operator()(nodes::NumericLiteral&) override {}
-        void operator()(nodes::StringLiteral&) override {}
-        void operator()(nodes::Struct&) override {}
-        void operator()(nodes::StructField&) override {}
-        void operator()(nodes::TypeAlias&) override {}
-        void operator()(nodes::VariableBlock&) override {}
-        void operator()(nodes::VariableBlockCase&) override {}
+        void operator()(AncestorInfo&, nodes::Attribute&) override {}
+        void operator()(AncestorInfo&, nodes::AttributeBlock&) override {}
+        void operator()(AncestorInfo&, nodes::Bitfield&) override {}
+        void operator()(AncestorInfo&, nodes::BitfieldField&) override {}
+        void operator()(AncestorInfo&, nodes::CharLiteral&) override {}
+        void operator()(AncestorInfo&, nodes::Comment&) override {}
+        void operator()(AncestorInfo&, nodes::DefaultStringValue&) override {}
+        void operator()(AncestorInfo&, nodes::DefaultValue&) override {}
+        void operator()(AncestorInfo&, nodes::Enum&) override {}
+        void operator()(AncestorInfo&, nodes::EnumField&) override {}
+        void operator()(AncestorInfo&, nodes::Extern&) override {}
+        void operator()(AncestorInfo&, nodes::FieldLabel&) override {}
+        void operator()(AncestorInfo&, nodes::HexLiteral&) override {}
+        void operator()(AncestorInfo&, nodes::Import&) override {}
+        void operator()(AncestorInfo&, nodes::MultilineComment&) override {}
+        void operator()(AncestorInfo&, nodes::Namespace&) override {}
+        void operator()(AncestorInfo&, nodes::NumericLiteral&) override {}
+        void operator()(AncestorInfo&, nodes::Root&) override {}
+        void operator()(AncestorInfo&, nodes::StringLiteral&) override {}
+        void operator()(AncestorInfo&, nodes::Struct&) override {}
+        void operator()(AncestorInfo&, nodes::StructField&) override {}
+        void operator()(AncestorInfo&, nodes::TypeAlias&) override {}
+        void operator()(AncestorInfo&, nodes::VariableBlock&) override {}
+        void operator()(AncestorInfo&, nodes::VariableBlockCase&) override {}
     };
 }}

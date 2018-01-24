@@ -4,10 +4,6 @@
 
 #include <cstdint>
 
-namespace swizzle { namespace ast {
-    class VisitorInterface;
-}}
-
 namespace swizzle { namespace parser {
     struct ParserStateContext;
 }}
@@ -28,7 +24,7 @@ namespace swizzle { namespace ast { namespace nodes {
         void endBit(const lexer::TokenInfo& token, parser::ParserStateContext& context);
         std::size_t endBit() const;
 
-        void accept(VisitorInterface& visitor) override;
+        void accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth = Node::Depth::All) override;
 
     private:
         const lexer::TokenInfo name_;

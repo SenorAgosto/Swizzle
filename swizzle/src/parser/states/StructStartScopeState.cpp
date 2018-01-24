@@ -84,6 +84,8 @@ namespace swizzle { namespace parser { namespace states {
                     throw SyntaxError("Expected field declaration, found duplicitous field label", token);
                 }
 
+                context.AllocateFieldLabel(token);
+                
                 // we want to attach this to the field
                 attributeStack.push(new ast::nodes::FieldLabel(token));
                 return ParserState::StructFieldLabel;
@@ -119,7 +121,7 @@ namespace swizzle { namespace parser { namespace states {
             if(type == lexer::TokenType::type)
             {
                 const auto& value = token.token().value();
-                if(types::IsIntegerType(value) || types::IsFloatType(value))
+                if(types::IsIntegerType(value) || types::IsFloatType(value) || value == "bool")
                 {
                     auto node = detail::appendNode<ast::nodes::StructField>(nodeStack);
                     nodeStack.push(node);
@@ -170,13 +172,8 @@ namespace swizzle { namespace parser { namespace states {
             {
                 if(detail::nodeStackTopIs<ast::nodes::Struct>(nodeStack))
                 {
-                    auto hasNonCommentChildren = ast::Matcher().hasChildNotOf<ast::nodes::Comment, ast::nodes::MultilineComment>();
-                    if(!hasNonCommentChildren(nodeStack.top()))
-                    {
-                        const auto& top = static_cast<ast::nodes::Struct&>(*nodeStack.top());
-                        throw SyntaxError("'struct' must have fields", "no fields declared in '" + top.name() + "'", token);
-                    }
-
+                    context.ClearFieldLabels();
+                    
                     nodeStack.pop();
                     return ParserState::TranslationUnitMain;
                 }

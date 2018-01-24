@@ -1,5 +1,10 @@
 #pragma once 
 
+namespace swizzle { namespace ast {
+    class AncestorInfo;
+    class Node;
+}}
+
 namespace swizzle { namespace ast { namespace nodes {
     class Attribute;
     class AttributeBlock;
@@ -11,12 +16,14 @@ namespace swizzle { namespace ast { namespace nodes {
     class DefaultValue;
     class Enum;
     class EnumField;
+    class Extern;
     class FieldLabel;
     class HexLiteral;
     class Import;
     class MultilineComment;
     class Namespace;
     class NumericLiteral;
+    class Root;
     class StringLiteral;
     class Struct;
     class StructField;
@@ -31,29 +38,32 @@ namespace swizzle { namespace ast {
     {
     public:
         virtual ~VisitorInterface(){}
-        virtual void operator()(Node& node) = 0;
+        
+        virtual void operator()(AncestorInfo& ancestors, Node& node) = 0;
 
-        virtual void operator()(nodes::Attribute& node) = 0;
-        virtual void operator()(nodes::AttributeBlock& node) = 0;
-        virtual void operator()(nodes::Bitfield& node) = 0;
-        virtual void operator()(nodes::BitfieldField& node) = 0;
-        virtual void operator()(nodes::CharLiteral& node) = 0;
-        virtual void operator()(nodes::Comment& node) = 0;
-        virtual void operator()(nodes::DefaultStringValue& node) = 0;
-        virtual void operator()(nodes::DefaultValue& node) = 0;
-        virtual void operator()(nodes::Enum& node) = 0;
-        virtual void operator()(nodes::EnumField& node) = 0;
-        virtual void operator()(nodes::FieldLabel& node) = 0;
-        virtual void operator()(nodes::HexLiteral& node) = 0;
-        virtual void operator()(nodes::Import& node) = 0;
-        virtual void operator()(nodes::MultilineComment& node) = 0;
-        virtual void operator()(nodes::Namespace& node) = 0;
-        virtual void operator()(nodes::NumericLiteral& node) = 0;
-        virtual void operator()(nodes::StringLiteral& node) = 0;
-        virtual void operator()(nodes::Struct& node) = 0;
-        virtual void operator()(nodes::StructField& node) = 0;
-        virtual void operator()(nodes::TypeAlias& node) = 0;
-        virtual void operator()(nodes::VariableBlock& node) = 0;
-        virtual void operator()(nodes::VariableBlockCase& node) = 0;
+        virtual void operator()(AncestorInfo& ancestors, nodes::Attribute& node) = 0;
+        virtual void operator()(AncestorInfo& ancestors, nodes::AttributeBlock& node) = 0;
+        virtual void operator()(AncestorInfo& ancestors, nodes::Bitfield& node) = 0;
+        virtual void operator()(AncestorInfo& ancestors, nodes::BitfieldField& node) = 0;
+        virtual void operator()(AncestorInfo& ancestors, nodes::CharLiteral& node) = 0;
+        virtual void operator()(AncestorInfo& ancestors, nodes::Comment& node) = 0;
+        virtual void operator()(AncestorInfo& ancestors, nodes::DefaultStringValue& node) = 0;
+        virtual void operator()(AncestorInfo& ancestors, nodes::DefaultValue& node) = 0;
+        virtual void operator()(AncestorInfo& ancestors, nodes::Enum& node) = 0;
+        virtual void operator()(AncestorInfo& ancestors, nodes::EnumField& node) = 0;
+        virtual void operator()(AncestorInfo& ancestors, nodes::Extern& node) = 0;
+        virtual void operator()(AncestorInfo& ancestors, nodes::FieldLabel& node) = 0;
+        virtual void operator()(AncestorInfo& ancestors, nodes::HexLiteral& node) = 0;
+        virtual void operator()(AncestorInfo& ancestors, nodes::Import& node) = 0;
+        virtual void operator()(AncestorInfo& ancestors, nodes::MultilineComment& node) = 0;
+        virtual void operator()(AncestorInfo& ancestors, nodes::Namespace& node) = 0;
+        virtual void operator()(AncestorInfo& ancestors, nodes::NumericLiteral& node) = 0;
+        virtual void operator()(AncestorInfo& ancestors, nodes::Root& node) = 0;
+        virtual void operator()(AncestorInfo& ancestors, nodes::StringLiteral& node) = 0;
+        virtual void operator()(AncestorInfo& ancestors, nodes::Struct& node) = 0;
+        virtual void operator()(AncestorInfo& ancestors, nodes::StructField& node) = 0;
+        virtual void operator()(AncestorInfo& ancestors, nodes::TypeAlias& node) = 0;
+        virtual void operator()(AncestorInfo& ancestors, nodes::VariableBlock& node) = 0;
+        virtual void operator()(AncestorInfo& ancestors, nodes::VariableBlockCase& node) = 0;
     };
 }}

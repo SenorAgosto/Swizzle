@@ -18,7 +18,11 @@ if(CYGWIN)
 endif()
 
 if(UNIX)
-    include(_cmake/platforms/unix.cmake)
+    if(APPLE) 
+	include(_cmake/platforms/macos.cmake)
+    else()
+	include(_cmake/platforms/unix.cmake)
+    endif()
 endif()
 
 

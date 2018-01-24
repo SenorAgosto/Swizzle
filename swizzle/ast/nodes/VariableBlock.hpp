@@ -20,7 +20,7 @@ namespace swizzle { namespace ast { namespace nodes {
         void variableOnField(const lexer::TokenInfo& variableOnField);
         const lexer::TokenInfo& variableOnField() const;
 
-        void accept(VisitorInterface& visitor) override;
+        void accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth = Node::Depth::All) override;
 
     private:
         const lexer::TokenInfo variableBlockInfo_;   // variable_block keyword

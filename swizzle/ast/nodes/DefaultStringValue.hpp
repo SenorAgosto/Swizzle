@@ -5,10 +5,6 @@
 #include <cstddef>
 #include <string>
 
-namespace swizzle { namespace ast {
-    class VisitorInterface;
-}}
-
 namespace swizzle { namespace ast { namespace nodes {
 
     class DefaultStringValue : public Node
@@ -21,7 +17,7 @@ namespace swizzle { namespace ast { namespace nodes {
 
         std::ptrdiff_t length() const;
 
-        void accept(VisitorInterface& visitor) override;
+        void accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth = Node::Depth::All) override;
 
     private:
         const lexer::TokenInfo value_;

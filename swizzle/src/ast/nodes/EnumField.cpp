@@ -1,4 +1,8 @@
 #include <swizzle/ast/nodes/EnumField.hpp>
+
+#include <swizzle/ast/AncestorInfo.hpp>
+
+#include <swizzle/ast/AncestorInfo.hpp>
 #include <swizzle/ast/VisitorInterface.hpp>
 
 namespace swizzle { namespace ast { namespace nodes {
@@ -44,13 +48,18 @@ namespace swizzle { namespace ast { namespace nodes {
         value_.increment();
     }
 
-    void EnumField::accept(VisitorInterface& visitor)
+    void EnumField::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth)
     {
-        visitor(*this);
-
+        visitor(ancestors, *this);
+        
+        if(depth == Depth::One) return;
+        ancestors.push(*this);
+        
         for(auto& child : children())
         {
-            child->accept(visitor);
+            child->accept(visitor, ancestors, depth);
         }
+        
+        ancestors.pop();
     }
 }}}

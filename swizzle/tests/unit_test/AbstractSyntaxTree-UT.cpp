@@ -1,5 +1,6 @@
 #include "./ut_support/UnitTestSupport.hpp"
 
+#include <swizzle/ast/AncestorInfo.hpp>
 #include <swizzle/ast/AbstractSyntaxTree.hpp>
 #include <swizzle/ast/VisitorInterface.hpp>
 #include <swizzle/ast/nodes/Attribute.hpp>
@@ -34,30 +35,32 @@ namespace {
     {
     public:
         virtual ~TestVisitor(){}
-        void operator()(Node&) override { root++; }
+        void operator()(AncestorInfo&, Node&) override {}
 
-        void operator()(nodes::Attribute&) override { attribute++; }
-        void operator()(nodes::AttributeBlock&) override { attributeBlock++; }
-        void operator()(nodes::Bitfield&) override { bitfield++; }
-        void operator()(nodes::BitfieldField&) override { bitfieldField++; }
-        void operator()(nodes::DefaultStringValue&) override { defaultString++; }
-        void operator()(nodes::DefaultValue&) override { defaultValue++; }
-        void operator()(nodes::CharLiteral&) override { charLiteral++; }
-        void operator()(nodes::Comment&) override { comment++; }
-        void operator()(nodes::Enum&) override { enumCount++; }
-        void operator()(nodes::EnumField&) override { enumField++; }
-        void operator()(nodes::FieldLabel&) override { fieldLabel++; }
-        void operator()(nodes::HexLiteral&) override { hexLiteral++; }
-        void operator()(nodes::Import&) override { import++; }
-        void operator()(nodes::MultilineComment&) override { multilineComment++; }
-        void operator()(nodes::Namespace&) override { nameSpace++; }
-        void operator()(nodes::NumericLiteral&) override { numericLiteral++; }
-        void operator()(nodes::StringLiteral&) override { stringLiteral++; }
-        void operator()(nodes::Struct&) override { structCount++; }
-        void operator()(nodes::StructField&) override { structField++; }
-        void operator()(nodes::TypeAlias&) override { typeAlias++; }
-        void operator()(nodes::VariableBlock&) override { varBlock++; }
-        void operator()(nodes::VariableBlockCase&) override { varBlockCase++; }
+        void operator()(AncestorInfo&, nodes::Attribute&) override { attribute++; }
+        void operator()(AncestorInfo&, nodes::AttributeBlock&) override { attributeBlock++; }
+        void operator()(AncestorInfo&, nodes::Bitfield&) override { bitfield++; }
+        void operator()(AncestorInfo&, nodes::BitfieldField&) override { bitfieldField++; }
+        void operator()(AncestorInfo&, nodes::DefaultStringValue&) override { defaultString++; }
+        void operator()(AncestorInfo&, nodes::DefaultValue&) override { defaultValue++; }
+        void operator()(AncestorInfo&, nodes::CharLiteral&) override { charLiteral++; }
+        void operator()(AncestorInfo&, nodes::Comment&) override { comment++; }
+        void operator()(AncestorInfo&, nodes::Enum&) override { enumCount++; }
+        void operator()(AncestorInfo&, nodes::EnumField&) override { enumField++; }
+        void operator()(AncestorInfo&, nodes::Extern&) override { externCount++; }
+        void operator()(AncestorInfo&, nodes::FieldLabel&) override { fieldLabel++; }
+        void operator()(AncestorInfo&, nodes::HexLiteral&) override { hexLiteral++; }
+        void operator()(AncestorInfo&, nodes::Import&) override { import++; }
+        void operator()(AncestorInfo&, nodes::MultilineComment&) override { multilineComment++; }
+        void operator()(AncestorInfo&, nodes::Namespace&) override { nameSpace++; }
+        void operator()(AncestorInfo&, nodes::NumericLiteral&) override { numericLiteral++; }
+        void operator()(AncestorInfo&, nodes::Root&) override { root++; }
+        void operator()(AncestorInfo&, nodes::StringLiteral&) override { stringLiteral++; }
+        void operator()(AncestorInfo&, nodes::Struct&) override { structCount++; }
+        void operator()(AncestorInfo&, nodes::StructField&) override { structField++; }
+        void operator()(AncestorInfo&, nodes::TypeAlias&) override { typeAlias++; }
+        void operator()(AncestorInfo&, nodes::VariableBlock&) override { varBlock++; }
+        void operator()(AncestorInfo&, nodes::VariableBlockCase&) override { varBlockCase++; }
 
     public:
         std::size_t root = 0;
@@ -72,6 +75,7 @@ namespace {
         std::size_t defaultValue = 0;
         std::size_t enumCount = 0;
         std::size_t enumField = 0;
+        std::size_t externCount = 0;
         std::size_t fieldLabel = 0;
         std::size_t hexLiteral = 0;
         std::size_t import = 0;

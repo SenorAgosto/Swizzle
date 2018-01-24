@@ -29,8 +29,18 @@ namespace swizzle { namespace parser {
         }
     }
 
-    const ast::AbstractSyntaxTree& Parser::ast() const
+	const ast::AbstractSyntaxTree& Parser::ast() const
+	{
+		return ast_;
+	}
+	    
+    ast::AbstractSyntaxTree& Parser::ast()
     {
         return ast_;
+    }
+    
+    const ParserStateContext& Parser::context() const
+    {
+        return context_;
     }
 }}

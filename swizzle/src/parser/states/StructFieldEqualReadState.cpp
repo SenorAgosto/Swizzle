@@ -17,118 +17,140 @@
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState StructFieldEqualReadState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack&, TokenStack&, ParserStateContext&)
+    namespace {
+        ParserState consume_impl(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack&, TokenStack&, ParserStateContext&)
+        {
+            const auto type = token.token().type();
+
+            if(type == lexer::TokenType::l_brace)
+            {
+                // [ARG]: TODO: add state for handling initialization list.
+            }
+
+            if(type == lexer::TokenType::numeric_literal)
+            {
+                if(detail::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
+                {
+                    const auto& structField = static_cast<ast::nodes::StructField&>(*nodeStack.top());
+
+                    if(structField.isVector())
+                    {
+                        throw SyntaxError("Default values not permitted for vector types.", token);
+                    }
+
+                    if(structField.isArray())
+                    {
+                        throw SyntaxError("Numeric literal cannot be assigned to array type, use initialization list instead.", token);
+                    }
+
+                    detail::appendNode<ast::nodes::DefaultValue>(nodeStack, token, structField.type());
+                    types::setValue(structField.type(), token.token().value(), "Attempting to assign numeric literal to unsupported type");
+
+                    return ParserState::StructFieldValueRead;
+                }
+
+                throw ParserError("Internal parser error, expected top of node stack to be ast::nodes::StructField");
+            }
+
+            if(type == lexer::TokenType::hex_literal)
+            {
+                if(detail::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
+                {
+                    const auto& structField = static_cast<ast::nodes::StructField&>(*nodeStack.top());
+
+                    if(structField.isVector())
+                    {
+                        throw SyntaxError("Default values not permitted for vector types.", token);
+                    }
+
+                    if(structField.isArray())
+                    {
+                        throw SyntaxError("Numeric literal cannot be assigned to array type, use initialization list instead.", token);
+                    }
+
+                    detail::appendNode<ast::nodes::DefaultValue>(nodeStack, token, structField.type());
+                    types::setValue(structField.type(), token.token().value(), types::isHex, "Attempting to assign hex literal to unsupported type");
+
+                    return ParserState::StructFieldValueRead;
+                }
+
+                throw ParserError("Internal parser error, expected top of node stack to be ast::nodes::StructField");
+            }
+
+            if(type == lexer::TokenType::char_literal)
+            {
+                if(detail::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
+                {
+                    const auto& structField = static_cast<ast::nodes::StructField&>(*nodeStack.top());
+
+                    if(structField.isVector())
+                    {
+                        throw SyntaxError("Default values not permitted for vector types.", token);
+                    }
+
+                    if(structField.isArray())
+                    {
+                        throw SyntaxError("Numeric literal cannot be assigned to array type, use initialization list instead.", token);
+                    }
+
+                    detail::appendNode<ast::nodes::DefaultValue>(nodeStack, token, structField.type());
+                    return ParserState::StructFieldValueRead;
+                }
+
+                throw ParserError("Internal parser error, expected top of node stack to be ast::nodes::StructField");
+            }
+
+            if(type == lexer::TokenType::string_literal)
+            {
+                if(detail::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
+                {
+                    const auto& structField = static_cast<ast::nodes::StructField&>(*nodeStack.top());
+
+                    if(structField.isVector())
+                    {
+                        throw SyntaxError("Default values not permitted for vector types.", token);
+                    }
+
+                    if(!structField.isArray())
+                    {
+                        throw SyntaxError("String literal default values can only be assigned to array types.", token);
+                    }
+
+                    const auto storageLength = structField.arraySize();
+                    detail::appendNode<ast::nodes::DefaultStringValue>(nodeStack, token, structField.type(), storageLength);
+
+                    if((storageLength < 0) || (static_cast<std::size_t>(storageLength) < token.token().value().length() - 2))
+                    {
+                        throw SyntaxError("Default string value would be truncated.", token);
+                    }
+
+                    return ParserState::StructFieldValueRead;
+                }
+
+                throw ParserError("Internal parser error, expected top of node stack to be ast::nodes::StructField");
+            }
+
+            throw SyntaxError("Expected numeric_literal, hex_literal, char_literal, or string_literal", token);
+        }
+    }
+    
+    ParserState StructFieldEqualReadState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack& attributeStack, TokenStack& tokenStack, ParserStateContext& context)
     {
-        const auto type = token.token().type();
-
-        if(type == lexer::TokenType::l_brace)
+        try
         {
-            // [ARG]: TODO: add state for handling initialization list.
+            return consume_impl(token, nodeStack, attributeStack, tokenStack, context);
         }
-
-        if(type == lexer::TokenType::numeric_literal)
+        catch(const StreamInputCausesOverflow&)
         {
-            if(detail::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
-            {
-                const auto& structField = static_cast<ast::nodes::StructField&>(*nodeStack.top());
-
-                if(structField.isVector())
-                {
-                    throw SyntaxError("Default values not permitted for vector types.", token);
-                }
-
-                if(structField.isArray())
-                {
-                    throw SyntaxError("Numeric literal cannot be assigned to array type, use initialization list instead.", token);
-                }
-
-                detail::appendNode<ast::nodes::DefaultValue>(nodeStack, token, structField.type());
-                types::setValue(structField.type(), token.token().value(), "Attempting to assign numeric literal to unsupported type");
-
-                return ParserState::StructFieldValueRead;
-            }
-
-            throw ParserError("Internal parser error, expected top of node stack to be ast::nodes::StructField");
+            throw SyntaxError("Enum field value overflows underlying type", token);
         }
-
-        if(type == lexer::TokenType::hex_literal)
+        catch(const StreamInputCausesUnderflow& valueError)
         {
-            if(detail::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
-            {
-                const auto& structField = static_cast<ast::nodes::StructField&>(*nodeStack.top());
-
-                if(structField.isVector())
-                {
-                    throw SyntaxError("Default values not permitted for vector types.", token);
-                }
-
-                if(structField.isArray())
-                {
-                    throw SyntaxError("Numeric literal cannot be assigned to array type, use initialization list instead.", token);
-                }
-
-                detail::appendNode<ast::nodes::DefaultValue>(nodeStack, token, structField.type());
-                types::setValue(structField.type(), token.token().value(), types::isHex, "Attempting to assign hex literal to unsupported type");
-
-                return ParserState::StructFieldValueRead;
-            }
-
-            throw ParserError("Internal parser error, expected top of node stack to be ast::nodes::StructField");
+            throw SyntaxError("Enum field value underflows undelying type", token);
         }
-
-        if(type == lexer::TokenType::char_literal)
+        catch(const InvalidStreamInput&)
         {
-            if(detail::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
-            {
-                const auto& structField = static_cast<ast::nodes::StructField&>(*nodeStack.top());
-
-                if(structField.isVector())
-                {
-                    throw SyntaxError("Default values not permitted for vector types.", token);
-                }
-
-                if(structField.isArray())
-                {
-                    throw SyntaxError("Numeric literal cannot be assigned to array type, use initialization list instead.", token);
-                }
-
-                detail::appendNode<ast::nodes::DefaultValue>(nodeStack, token, structField.type());
-                return ParserState::StructFieldValueRead;
-            }
-
-            throw ParserError("Internal parser error, expected top of node stack to be ast::nodes::StructField");
+            throw SyntaxError("Enum field value contais an invalid character", token);
         }
-
-        if(type == lexer::TokenType::string_literal)
-        {
-            if(detail::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
-            {
-                const auto& structField = static_cast<ast::nodes::StructField&>(*nodeStack.top());
-
-                if(structField.isVector())
-                {
-                    throw SyntaxError("Default values not permitted for vector types.", token);
-                }
-
-                if(!structField.isArray())
-                {
-                    throw SyntaxError("String literal default values can only be assigned to array types.", token);
-                }
-
-                const auto storageLength = structField.arraySize();
-                detail::appendNode<ast::nodes::DefaultStringValue>(nodeStack, token, structField.type(), storageLength);
-
-                if((storageLength < 0) || (static_cast<std::size_t>(storageLength) < token.token().value().length() - 2))
-                {
-                    throw SyntaxError("Default string value would be truncated.", token);
-                }
-
-                return ParserState::StructFieldValueRead;
-            }
-
-            throw ParserError("Internal parser error, expected top of node stack to be ast::nodes::StructField");
-        }
-
-        throw SyntaxError("Expected numeric_literal, hex_literal, char_literal, or string_literal", token);
     }
 }}}

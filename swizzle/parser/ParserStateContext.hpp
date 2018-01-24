@@ -7,7 +7,6 @@
 #include <cstddef>
 #include <string>
 #include <limits>
-#include <unordered_map>
 #include <unordered_set>
 
 namespace swizzle { namespace lexer {
@@ -30,7 +29,11 @@ namespace swizzle { namespace parser {
 
         bool MemberIsConst = false;
 
+        void AllocateFieldLabel(const lexer::TokenInfo& token);
+        void ClearFieldLabels();
+        
     private:
         std::unordered_set<std::intmax_t> UsedEnumValues;
+        std::unordered_set<std::string> UsedFieldLabels;
     };
 }}

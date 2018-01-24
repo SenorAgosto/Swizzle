@@ -4,6 +4,7 @@
 #include <swizzle/ast/nodes/StructField.hpp>
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
+#include <swizzle/parser/detail/AttachAttributes.hpp>
 #include <swizzle/parser/detail/CreateType.hpp>
 #include <swizzle/parser/detail/NodeStackTopIs.hpp>
 #include <swizzle/parser/NodeStack.hpp>
@@ -15,22 +16,7 @@
 
 namespace swizzle { namespace parser { namespace states {
 
-    namespace {
-        // the field label will be under the current top of the node stack,
-        // if there is a field label, append it @node
-        void attachFieldLabel(NodeStack& nodeStack, ast::Node::smartptr node)
-        {
-            nodeStack.pop();
-            if(detail::nodeStackTopIs<ast::nodes::FieldLabel>(nodeStack))
-            {
-                node->append(nodeStack.top());
-                nodeStack.pop();
-            }
-            nodeStack.push(node);
-        }
-    }
-
-    ParserState StructFieldNamespaceOrTypeState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack&, TokenStack& tokenStack, ParserStateContext& context)
+    ParserState StructFieldNamespaceOrTypeState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack& attributeStack, TokenStack& tokenStack, ParserStateContext& context)
     {
         const auto type = token.token().type();
 
@@ -52,7 +38,7 @@ namespace swizzle { namespace parser { namespace states {
             if(detail::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
             {
                 auto sf = nodeStack.top();
-                attachFieldLabel(nodeStack, sf);
+                detail::attachAttributes(attributeStack, sf);
 
                 const auto t = detail::createType(tokenStack);
                 utils::clear(tokenStack);
@@ -60,7 +46,7 @@ namespace swizzle { namespace parser { namespace states {
                 auto& top = static_cast<ast::nodes::StructField&>(*sf);
                 const auto& value = t.token().value();
 
-                if(types::IsIntegerType(value) || types::IsFloatType(value))
+                if(types::IsIntegerType(value) || types::IsFloatType(value) || value == "bool")
                 {
                     top.type(value.to_string());
                     return ParserState::StructStartArray;
@@ -91,11 +77,11 @@ namespace swizzle { namespace parser { namespace states {
             if(detail::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
             {
                 auto sf = nodeStack.top();
-                attachFieldLabel(nodeStack, sf);
+                detail::attachAttributes(attributeStack, sf);
 
                 auto& top = static_cast<ast::nodes::StructField&>(*sf);
                 top.name(token);
-
+                
                 if(top.isArray() || top.isVector())
                 {
                     return ParserState::StructFieldName;
@@ -106,7 +92,7 @@ namespace swizzle { namespace parser { namespace states {
 
                 const auto& value = t.token().value();
 
-                if(types::IsIntegerType(value) || types::IsFloatType(value))
+                if(types::IsIntegerType(value) || types::IsFloatType(value) || (value == "bool"))
                 {
                     top.type(value.to_string());
                     return ParserState::StructFieldName;
@@ -129,6 +115,12 @@ namespace swizzle { namespace parser { namespace states {
             }
 
             throw ParserError("Internal parser error, top of node stack was not ast::nodes::StructField");
+        }
+
+        // supply a better error if we can
+        if(detail::nodeStackTopIs<ast::nodes::StructField>(nodeStack) && !tokenStack.empty())
+        {
+            throw SyntaxError("Struct member name missing in type declaration", tokenStack.top());
         }
 
         throw SyntaxError("Expected member name or ':'", token);

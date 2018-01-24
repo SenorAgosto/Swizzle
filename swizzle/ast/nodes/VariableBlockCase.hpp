@@ -13,6 +13,8 @@ namespace swizzle { namespace ast { namespace nodes {
         void type(const lexer::TokenInfo& type);
         lexer::TokenInfo type() const;
 
+        void accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth = Node::Depth::All) override;
+        
     private:
         lexer::TokenInfo value_;
         lexer::TokenInfo type_;

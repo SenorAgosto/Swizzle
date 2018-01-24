@@ -6,10 +6,6 @@
 
 #include <cstddef>
 
-namespace swizzle { namespace ast {
-    class VisitorInterface;
-}}
-
 namespace swizzle { namespace ast { namespace nodes {
 
     class EnumField : public Node
@@ -28,7 +24,7 @@ namespace swizzle { namespace ast { namespace nodes {
 
         void incrementValue();
 
-        void accept(VisitorInterface& visitor) override;
+        void accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth = Node::Depth::All) override;
 
     private:
         const lexer::TokenInfo name_;

@@ -1442,6 +1442,23 @@ namespace {
         parse();
     }
 
+    struct WhenInputIsStructWithDuplicateFieldLabels : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {" "\n"
+            "\t" "10: u8 msgType;" "\n"
+            "\t" "10: u8 status;" "\n"
+            "}"
+        );
+    };
+    
+    TEST_FIXTURE(WhenInputIsStructWithDuplicateFieldLabels, verifyConsume)
+    {
+        tokenize(sv);
+        CHECK_THROW(parse(), swizzle::SyntaxError);
+    }
+
     struct WhenInputIsStructWithFieldLabelsOnAConstField : public ParserFixture
     {
         const boost::string_view sv = boost::string_view(
@@ -1477,6 +1494,31 @@ namespace {
         parse();
         
         // TODO: validate AST
+    }
+
+    struct WhenInputIsStructWithMemberFieldMissingType : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 {" "\n"
+            "\t"    "10: heartbeat;"
+            "}"
+        );
+    };
+    
+    TEST_FIXTURE(WhenInputIsStructWithMemberFieldMissingType, verifyConsume)
+    {
+        tokenize(sv);
+        
+        try
+        {
+            parse();
+        }
+        catch(const swizzle::SyntaxError& e)
+        {
+            CHECK_EQUAL(3U, e.token().fileInfo().start().line());
+            CHECK_EQUAL(6U, e.token().fileInfo().start().column());
+        }
     }
 
     struct WhenInputIsStructWithArray : public ParserFixture
@@ -2218,7 +2260,7 @@ namespace {
     TEST_FIXTURE(WhenInputIsStructWithNoFields, verifyConsume)
     {
         tokenize(sv);
-        CHECK_THROW(parse(), swizzle::SyntaxError);
+        parse();
     }
 
     struct WhenInputIsAUsingStatementOfBuiltinType : public ParserFixture

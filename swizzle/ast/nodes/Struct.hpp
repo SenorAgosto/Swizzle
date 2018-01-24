@@ -4,10 +4,6 @@
 
 #include <string>
 
-namespace swizzle { namespace ast {
-    class VisitorInterface;
-}}
-
 namespace swizzle { namespace ast { namespace nodes {
 
     class Struct : public Node
@@ -20,7 +16,7 @@ namespace swizzle { namespace ast { namespace nodes {
 
         std::string name() const;
 
-        void accept(VisitorInterface& visitor) override;
+        void accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth = Node::Depth::All) override;
 
     private:
         lexer::TokenInfo info_;

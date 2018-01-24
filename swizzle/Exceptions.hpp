@@ -81,7 +81,17 @@ namespace swizzle {
     class TokenizerSyntaxError : public TokenizerError
     {
     public:
-        TokenizerSyntaxError(const lexer::FileInfo& info, const std::string& reason);
+        TokenizerSyntaxError(const boost::string_view& source, const std::size_t position, const lexer::FileInfo& info, const std::string& reason);
+        
+        boost::string_view source() const { return source_; }
+        std::size_t position() const { return position_; }
+        const lexer::FileInfo& file_info() const { return info_; }
+        
+    private:
+        boost::string_view source_;
+        std::size_t position_;
+        
+        lexer::FileInfo info_;
     };
 
     class SyntaxError : public ParserError

@@ -328,9 +328,9 @@ namespace {
         const boost::string_view sv = boost::string_view(
             "namespace foo;" "\n"
             "enum Metal : u8 {" "\n"
-            "    " "iron," "\n"
-            "    " "copper," "\n"
-            "    " "gold," "\n"
+            "\t" "iron," "\n"
+            "\t" "copper," "\n"
+            "\t" "gold," "\n"
             "}"
         );
     };
@@ -386,9 +386,9 @@ namespace {
             "namespace foo;" "\n"
             "@volatile" "\n"
             "enum Metal : u8 {" "\n"
-            "    " "iron," "\n"
-            "    " "copper," "\n"
-            "    " "gold," "\n"
+            "\t" "iron," "\n"
+            "\t" "copper," "\n"
+            "\t" "gold," "\n"
             "}"
         );
     };
@@ -405,9 +405,9 @@ namespace {
             "namespace foo;" "\n"
             "@volatile=1" "\n"
             "enum Metal : u8 {" "\n"
-            "    " "iron," "\n"
-            "    " "copper," "\n"
-            "    " "gold," "\n"
+            "\t" "iron," "\n"
+            "\t" "copper," "\n"
+            "\t" "gold," "\n"
             "}"
         );
     };
@@ -424,9 +424,9 @@ namespace {
             "namespace foo;" "\n"
             "@volatile=0x02" "\n"
             "enum Metal : u8 {" "\n"
-            "    " "iron," "\n"
-            "    " "copper," "\n"
-            "    " "gold," "\n"
+            "\t" "iron," "\n"
+            "\t" "copper," "\n"
+            "\t" "gold," "\n"
             "}"
         );
     };
@@ -444,9 +444,9 @@ namespace {
             "namespace foo;" "\n"
             "@volatile='a'" "\n"
             "enum Metal : u8 {" "\n"
-            "    " "iron," "\n"
-            "    " "copper," "\n"
-            "    " "gold," "\n"
+            "\t" "iron," "\n"
+            "\t" "copper," "\n"
+            "\t" "gold," "\n"
             "}"
         );
     };
@@ -463,9 +463,9 @@ namespace {
             "namespace foo;" "\n"
             "@volatile=\"boo\"" "\n"
             "enum Metal : u8 {" "\n"
-            "    " "iron," "\n"
-            "    " "copper," "\n"
-            "    " "gold," "\n"
+            "\t" "iron," "\n"
+            "\t" "copper," "\n"
+            "\t" "gold," "\n"
             "}"
         );
     };
@@ -482,10 +482,10 @@ namespace {
             "namespace foo;" "\n"
             "enum Metal : u8 {" "\n"
             "@blah" "\n"
-            "    " "iron," "\n"
+            "\t" "iron," "\n"
             "@blooie" "\n"
-            "    " "copper," "\n"
-            "    " "gold," "\n"
+            "\t" "copper," "\n"
+            "\t" "gold," "\n"
             "}"
         );
     };
@@ -502,10 +502,10 @@ namespace {
             "namespace foo;" "\n"
             "enum Metal : u8 {" "\n"
             "@blah=1" "\n"
-            "    " "iron," "\n"
+            "\t" "iron," "\n"
             "@blooie" "\n"
-            "    " "copper," "\n"
-            "    " "gold," "\n"
+            "\t" "copper," "\n"
+            "\t" "gold," "\n"
             "}"
         );
     };
@@ -522,10 +522,10 @@ namespace {
             "namespace foo;" "\n"
             "enum Metal : u8 {" "\n"
             "@blah=0x04" "\n"
-            "    " "iron," "\n"
+            "\t" "iron," "\n"
             "@blooie" "\n"
-            "    " "copper," "\n"
-            "    " "gold," "\n"
+            "\t" "copper," "\n"
+            "\t" "gold," "\n"
             "}"
         );
     };
@@ -542,10 +542,10 @@ namespace {
             "namespace foo;" "\n"
             "enum Metal : u8 {" "\n"
             "@blah='a'" "\n"
-            "    " "iron," "\n"
+            "\t" "iron," "\n"
             "@blooie" "\n"
-            "    " "copper," "\n"
-            "    " "gold," "\n"
+            "\t" "copper," "\n"
+            "\t" "gold," "\n"
             "}"
         );
     };
@@ -562,10 +562,10 @@ namespace {
             "namespace foo;" "\n"
             "enum Metal : u8 {" "\n"
             "@blah=\"boo\"" "\n"
-            "    " "iron," "\n"
+            "\t" "iron," "\n"
             "@blooie" "\n"
-            "    " "copper," "\n"
-            "    " "gold," "\n"
+            "\t" "copper," "\n"
+            "\t" "gold," "\n"
             "}"
         );
     };
@@ -581,9 +581,9 @@ namespace {
         const boost::string_view sv = boost::string_view(
             "namespace foo;" "\n"
             "enum Metal : u8 {" "\n"
-            "    " "iron," "\n"
-            "    " "copper = 0x04," "\n"
-            "    " "gold," "\n"
+            "\t" "iron," "\n"
+            "\t" "copper = 0x04," "\n"
+            "\t" "gold," "\n"
             "}"
         );
     };
@@ -638,9 +638,9 @@ namespace {
         const boost::string_view sv = boost::string_view(
             "namespace foo;" "\n"
             "enum Metal : u8 {" "\n"
-            "    " "iron," "\n"
-            "    " "copper = 'a'," "\n"
-            "    " "gold," "\n"
+            "\t" "iron," "\n"
+            "\t" "copper = 'a'," "\n"
+            "\t" "gold," "\n"
             "}"
         );
     };
@@ -695,9 +695,9 @@ namespace {
         const boost::string_view sv = boost::string_view(
             "namespace foo;" "\n"
             "enum Metal : u8 {" "\n"
-            "    " "iron," "\n"
-            "    " "copper = 200," "\n"
-            "    " "gold," "\n"
+            "\t" "iron," "\n"
+            "\t" "copper = 200," "\n"
+            "\t" "gold," "\n"
             "}"
         );
     };
@@ -752,9 +752,9 @@ namespace {
         const boost::string_view sv = boost::string_view(
             "namespace foo;" "\n"
             "enum Metal : u8 {" "\n"
-            "    " "iron = 0x04," "\n"
-            "    " "copper = 'a'," "\n"
-            "    " "gold = 200," "\n"
+            "\t" "iron = 0x04," "\n"
+            "\t" "copper = 'a'," "\n"
+            "\t" "gold = 200," "\n"
             "}"
         );
     };
@@ -809,15 +809,15 @@ namespace {
         const boost::string_view sv = boost::string_view(
             "namespace foo;" "\n"
             "enum Metal : u8 {" "\n"
-            "    " "// this is a comment" "\n"
-            "    " "iron = 0x04," "\n"
-            "    " "iron2," "\n"
-            "    " "copper = 'a'," "\n"
-            "    " "// this is a multi-line \\" "\n"
-            "    " "   comment" "\n"
-            "    " "copper2," "\n"
-            "    " "gold = 200," "\n"
-            "    " "gold2," "\n"
+            "\t" "// this is a comment" "\n"
+            "\t" "iron = 0x04," "\n"
+            "\t" "iron2," "\n"
+            "\t" "copper = 'a'," "\n"
+            "\t" "// this is a multi-line \\" "\n"
+            "\t" "   comment" "\n"
+            "\t" "copper2," "\n"
+            "\t" "gold = 200," "\n"
+            "\t" "gold2," "\n"
             "}"
         );
     };
@@ -896,8 +896,8 @@ namespace {
         const boost::string_view sv = boost::string_view(
             "namespace foo;" "\n"
             "enum Metal : u8 {" "\n"
-            "    " "gold = 300," "\n"
-            "    " "silver = 300," "\n"
+            "\t" "gold = 300," "\n"
+            "\t" "silver = 300," "\n"
             "}"
         );
     };
@@ -913,7 +913,7 @@ namespace {
         const boost::string_view sv = boost::string_view(
             "namespace foo;" "\n"
             "enum Metal : u8 {" "\n"
-            "    " "gold = 300," "\n"
+            "\t" "gold = 300," "\n"
             "}"
         );
     };
@@ -929,7 +929,7 @@ namespace {
         const boost::string_view sv = boost::string_view(
             "namespace foo;" "\n"
             "enum Metal : u8 {" "\n"
-            "    " "gold = 0xabba," "\n"
+            "\t" "gold = 0xabba," "\n"
             "}"
         );
     };
@@ -945,13 +945,13 @@ namespace {
         const boost::string_view sv = boost::string_view(
             "namespace foo;" "\n"
             "bitfield Field1 : u8 {" "\n"
-            "    " "f1 : 0," "\n"
-            "    " "// comment" "\n"
-            "    " "f2 : 1..2," "\n"
-            "    " "// multi-line \\" "\n"
-            "    " "   comment" "\n"
-            "    " "f3 : 3..4," "\n"
-            "    " "f4 : 5," "\n"
+            "\t" "f1 : 0," "\n"
+            "\t" "// comment" "\n"
+            "\t" "f2 : 1..2," "\n"
+            "\t" "// multi-line \\" "\n"
+            "\t" "   comment" "\n"
+            "\t" "f3 : 3..4," "\n"
+            "\t" "f4 : 5," "\n"
             "}"
         );
     };
@@ -1019,8 +1019,8 @@ namespace {
             "namespace foo;" "\n"
             "@vogue" "\n"
             "bitfield Field1 : u8 {" "\n"
-            "    " "f1 : 0," "\n"
-            "    " "f2 : 1..2," "\n"
+            "\t" "f1 : 0," "\n"
+            "\t" "f2 : 1..2," "\n"
             "}"
         );
     };
@@ -1037,8 +1037,8 @@ namespace {
             "namespace foo;" "\n"
             "@vogue=1" "\n"
             "bitfield Field1 : u8 {" "\n"
-            "    " "f1 : 0," "\n"
-            "    " "f2 : 1..2," "\n"
+            "\t" "f1 : 0," "\n"
+            "\t" "f2 : 1..2," "\n"
             "}"
         );
     };
@@ -1055,8 +1055,8 @@ namespace {
             "namespace foo;" "\n"
             "@vogue=0x02" "\n"
             "bitfield Field1 : u8 {" "\n"
-            "    " "f1 : 0," "\n"
-            "    " "f2 : 1..2," "\n"
+            "\t" "f1 : 0," "\n"
+            "\t" "f2 : 1..2," "\n"
             "}"
         );
     };
@@ -1073,8 +1073,8 @@ namespace {
             "namespace foo;" "\n"
             "@vogue='a'" "\n"
             "bitfield Field1 : u8 {" "\n"
-            "    " "f1 : 0," "\n"
-            "    " "f2 : 1..2," "\n"
+            "\t" "f1 : 0," "\n"
+            "\t" "f2 : 1..2," "\n"
             "}"
         );
     };
@@ -1091,8 +1091,8 @@ namespace {
             "namespace foo;" "\n"
             "@vogue=\"boo\"" "\n"
             "bitfield Field1 : u8 {" "\n"
-            "    " "f1 : 0," "\n"
-            "    " "f2 : 1..2," "\n"
+            "\t" "f1 : 0," "\n"
+            "\t" "f2 : 1..2," "\n"
             "}"
         );
     };
@@ -1109,8 +1109,8 @@ namespace {
             "namespace foo;" "\n"
             "bitfield Field1 : u8 {" "\n"
             "@b1"
-            "    " "f1 : 0," "\n"
-            "    " "f2 : 1..2," "\n"
+            "\t" "f1 : 0," "\n"
+            "\t" "f2 : 1..2," "\n"
             "}"
         );
     };
@@ -1127,8 +1127,8 @@ namespace {
             "namespace foo;" "\n"
             "bitfield Field1 : u8 {" "\n"
             "@b1=2"
-            "    " "f1 : 0," "\n"
-            "    " "f2 : 1..2," "\n"
+            "\t" "f1 : 0," "\n"
+            "\t" "f2 : 1..2," "\n"
             "}"
         );
     };
@@ -1145,8 +1145,8 @@ namespace {
             "namespace foo;" "\n"
             "bitfield Field1 : u8 {" "\n"
             "@b1=0x08"
-            "    " "f1 : 0," "\n"
-            "    " "f2 : 1..2," "\n"
+            "\t" "f1 : 0," "\n"
+            "\t" "f2 : 1..2," "\n"
             "}"
         );
     };
@@ -1163,8 +1163,8 @@ namespace {
             "namespace foo;" "\n"
             "bitfield Field1 : u8 {" "\n"
             "@b1='c'"
-            "    " "f1 : 0," "\n"
-            "    " "f2 : 1..2," "\n"
+            "\t" "f1 : 0," "\n"
+            "\t" "f2 : 1..2," "\n"
             "}"
         );
     };
@@ -1181,8 +1181,8 @@ namespace {
             "namespace foo;" "\n"
             "bitfield Field1 : u8 {" "\n"
             "@b1=\"boo\""
-            "    " "f1 : 0," "\n"
-            "    " "f2 : 1..2," "\n"
+            "\t" "f1 : 0," "\n"
+            "\t" "f2 : 1..2," "\n"
             "}"
         );
     };
@@ -1198,8 +1198,8 @@ namespace {
         const boost::string_view sv = boost::string_view(
             "namespace foo;" "\n"
             "bitfield Field1 : u8 {" "\n"
-            "    " "f1 : 0," "\n"
-            "    " "f2 : 0..2," "\n"
+            "\t" "f1 : 0," "\n"
+            "\t" "f2 : 0..2," "\n"
             "}"
         );
     };
@@ -1215,9 +1215,9 @@ namespace {
         const boost::string_view sv = boost::string_view(
             "namespace foo;" "\n"
             "bitfield Field1 : u8 {" "\n"
-            "    " "f1 : 0," "\n"
-            "    " "f2 : 1..2," "\n"
-            "    " "f3 : 0," "\n"
+            "\t" "f1 : 0," "\n"
+            "\t" "f2 : 1..2," "\n"
+            "\t" "f3 : 0," "\n"
             "}"
         );
     };
@@ -1233,9 +1233,9 @@ namespace {
         const boost::string_view sv = boost::string_view(
             "namespace foo;" "\n"
             "bitfield Field1 : u8 {" "\n"
-            "    " "f1 : 7," "\n"
-            "    " "f2 : 6..4," "\n"
-            "    " "f3 : 3," "\n"
+            "\t" "f1 : 7," "\n"
+            "\t" "f2 : 6..4," "\n"
+            "\t" "f3 : 3," "\n"
             "}"
         );
     };
@@ -1251,9 +1251,9 @@ namespace {
         const boost::string_view sv = boost::string_view(
             "namespace foo;" "\n"
             "bitfield Field1 : u8 {" "\n"
-            "    " "f1 : 0," "\n"
-            "    " "f2 : 3..2," "\n"
-            "    " "f3 : 5," "\n"
+            "\t" "f1 : 0," "\n"
+            "\t" "f2 : 3..2," "\n"
+            "\t" "f3 : 5," "\n"
             "}"
         );
     };
@@ -1269,9 +1269,9 @@ namespace {
         const boost::string_view sv = boost::string_view(
             "namespace foo;" "\n"
             "bitfield Field1 : u8 {" "\n"
-            "    " "f1 : 5," "\n"
-            "    " "f2 : 6..7," "\n"
-            "    " "f3 : 8," "\n"
+            "\t" "f1 : 5," "\n"
+            "\t" "f2 : 6..7," "\n"
+            "\t" "f3 : 8," "\n"
             "}"
         );
     };
@@ -1287,10 +1287,10 @@ namespace {
         const boost::string_view sv = boost::string_view(
             "namespace foo;" "\n"
             "struct Myfield {" "\n"
-            "    " "// field 1 is blah blah blah" "\n"
-            "    " "u8 field1;" "\n"
-            "    " "// field 2 will be blah \\" "\n"
-            "    " "   blah blah" "\n"
+            "\t" "// field 1 is blah blah blah" "\n"
+            "\t" "u8 field1;" "\n"
+            "\t" "// field 2 will be blah \\" "\n"
+            "\t" "   blah blah" "\n"
             "}"
         );
     };
@@ -1332,13 +1332,13 @@ namespace {
 
             "// struct 1" "\n"
             "struct Struct1 {" "\n"
-            "    " "u8 field1;" "\n"
+            "\t" "u8 field1;" "\n"
             "}" "\n\n"
 
             "// struct 2" "\n"
             "struct Struct2 {" "\n"
-            "    " "f32 slope;" "\n"
-            "    " "Struct1 s1;" "\n"
+            "\t" "f32 slope;" "\n"
+            "\t" "Struct1 s1;" "\n"
             "}"
         );
     };
@@ -1374,13 +1374,13 @@ namespace {
 
             "// struct 1" "\n"
             "struct Struct1 {" "\n"
-            "    " "u8 field1;" "\n"
+            "\t" "u8 field1;" "\n"
             "}" "\n\n"
 
             "// struct 2" "\n"
             "struct Struct2 {" "\n"
-            "    " "f32 slope;" "\n"
-            "    " "foo::Struct1 s1;" "\n"
+            "\t" "f32 slope;" "\n"
+            "\t" "foo::Struct1 s1;" "\n"
             "}"
         );
     };
@@ -1430,8 +1430,8 @@ namespace {
         const boost::string_view sv = boost::string_view(
             "namespace foo;" "\n"
             "struct Struct1 {" "\n"
-            "    " "10: u8 msgType;" "\n"
-            "    " "20: u8 status;" "\n"
+            "\t" "10: u8 msgType;" "\n"
+            "\t" "20: u8 status;" "\n"
             "}"
         );
     };
@@ -1447,8 +1447,8 @@ namespace {
         const boost::string_view sv = boost::string_view(
             "namespace foo;" "\n"
             "struct Struct1 {" "\n"
-            "    " "10: u8 msgType;" "\n"
-            "    " "10: u8 status;" "\n"
+            "\t" "10: u8 msgType;" "\n"
+            "\t" "10: u8 status;" "\n"
             "}"
         );
     };
@@ -1464,8 +1464,8 @@ namespace {
         const boost::string_view sv = boost::string_view(
             "namespace foo;" "\n"
             "struct Struct1 {" "\n"
-            "    " "10: const u8 msgType = 'A';" "\n"
-            "    " "20: u8 status;" "\n"
+            "\t" "10: const u8 msgType = 'A';" "\n"
+            "\t" "20: u8 status;" "\n"
             "}"
         );
     };
@@ -1481,9 +1481,9 @@ namespace {
         const boost::string_view sv = boost::string_view(
             "namespace foo;" "\n"
             "struct Struct1 {" "\n"
-            "    " "10: u8 msgType;" "\n"
-            "    " "// field comment" "\n"
-            "    " "20: @optional u8 status;  // comment" "\n"
+            "\t" "10: u8 msgType;" "\n"
+            "\t" "// field comment" "\n"
+            "\t" "20: @optional u8 status;  // comment" "\n"
             "}"
         );
     };
@@ -1501,7 +1501,7 @@ namespace {
         const boost::string_view sv = boost::string_view(
             "namespace foo;" "\n"
             "struct Struct1 {" "\n"
-            "     "    "10: heartbeat;"
+            "\t"    "10: heartbeat;"
             "}"
         );
     };
@@ -1517,7 +1517,7 @@ namespace {
         catch(const swizzle::SyntaxError& e)
         {
             CHECK_EQUAL(3U, e.token().fileInfo().start().line());
-            CHECK_EQUAL(10U, e.token().fileInfo().start().column());
+            CHECK_EQUAL(6U, e.token().fileInfo().start().column());
         }
     }
 
@@ -1737,9 +1737,9 @@ namespace {
         const boost::string_view sv = boost::string_view(
             "namespace foo;" "\n"
             "enum Metal : u8 {" "\n"
-            "    " "iron," "\n"
-            "    " "copper," "\n"
-            "    " "gold," "\n"
+            "\t" "iron," "\n"
+            "\t" "copper," "\n"
+            "\t" "gold," "\n"
             "}"
             "struct Struct1 {"
                 "Metal metal;"
@@ -2472,13 +2472,13 @@ namespace {
             "using String = ns1::Type1;" "\n"
             
             "enum TransactionType : u8 {" "\n"
-            "    "    "New = '0'," "\n"
-            "    "    "Cancel = '1'," "\n"
+            "\t"    "New = '0'," "\n"
+            "\t"    "Cancel = '1'," "\n"
             "}" "\n"
             
             "@inbound" "\n"
             "struct Transaction {"
-            "    " "TransactionType transactionType;" "\n"
+            "\t" "TransactionType transactionType;" "\n"
             "}"
         );
     };

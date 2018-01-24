@@ -110,10 +110,7 @@ namespace {
 
     TEST_FIXTURE(WhenNextCharIsTab, verifyConsume)
     {
-        auto tokenState = state.consume(sv, position++, info, token);
-
-        CHECK_EQUAL(TokenizerState::Init, tokenState);
-        CHECK(token.empty());
+        CHECK_THROW(state.consume(sv, position++, info, token), swizzle::TokenizerSyntaxError);
     }
 
     struct WhenNextCharIsReturn : public BeginHexLiteralFixture

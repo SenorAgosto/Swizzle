@@ -177,14 +177,7 @@ namespace {
     TEST_FIXTURE(WhenNextCharIsTab, verifyConsume)
     {
         CHECK_EQUAL(0U, tokens.size());
-
-        auto tokenState = state.consume(sv, position, info, token);
-
-        CHECK_EQUAL(TokenizerState::Init, tokenState);
-        CHECK_EQUAL(TokenType::whitespace, token.type());
-        CHECK_EQUAL("\t", token.to_string());
-
-        CHECK_EQUAL(0U, tokens.size());
+        CHECK_THROW(state.consume(sv, position, info, token), swizzle::TokenizerSyntaxError);
     }
 
     struct WhenNextCharIsReturn : public InitStateFixture

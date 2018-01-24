@@ -28,6 +28,11 @@ namespace swizzle { namespace lexer { namespace states {
         {
             const char c = source.at(position);
 
+            if(c == '\t')
+            {
+                throw TokenizerSyntaxError(fileInfo, "Tabs are not permitted whitespace, use spaces");
+            }
+
             if(c == '=')
             {
                 fileInfo = this->produceToken(token, fileInfo);
@@ -53,7 +58,7 @@ namespace swizzle { namespace lexer { namespace states {
                 return TokenizerState::Attribute;
             }
 
-            static const std::string whitespace(" \t\r\n");
+            static const std::string whitespace(" \r\n");
             if(whitespace.find_first_of(c) != std::string::npos)
             {
                 fileInfo = this->produceToken(token, fileInfo);

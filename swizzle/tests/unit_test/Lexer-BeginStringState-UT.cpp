@@ -669,19 +669,7 @@ namespace {
         CHECK_EQUAL(TokenType::string, token.type());
         CHECK_EQUAL("f", token.to_string());
 
-        tokenState = state.consume(sv, position++, info, token);
-
-        CHECK_EQUAL(TokenizerState::Init, tokenState);
-
-        REQUIRE CHECK_EQUAL(1U, tokens.size());
-
-        CHECK_EQUAL("f", tokens[0].token().to_string());
-        CHECK_EQUAL(TokenType::string, tokens[0].token().type());
-
-        CHECK_EQUAL(1U, tokens[0].fileInfo().start().line());
-        CHECK_EQUAL(1U, tokens[0].fileInfo().start().column());
-        CHECK_EQUAL(1U, tokens[0].fileInfo().end().line());
-        CHECK_EQUAL(2U, tokens[0].fileInfo().end().column());
+        CHECK_THROW(state.consume(sv, position++, info, token), swizzle::TokenizerSyntaxError);
     }
 
     struct WhenNextCharacterIsReturn : public TokenizerFixture

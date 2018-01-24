@@ -1,6 +1,7 @@
 #pragma once 
 #include <swizzle/lexer/TokenizerStateInterface.hpp>
 
+#include <swizzle/Exceptions.hpp>
 #include <swizzle/lexer/FileInfo.hpp>
 #include <swizzle/lexer/ResetToken.hpp>
 #include <swizzle/lexer/Token.hpp>
@@ -26,6 +27,11 @@ namespace swizzle { namespace lexer { namespace states {
         TokenizerState consume(const boost::string_view& source, const std::size_t position, FileInfo& fileInfo, Token& token) override
         {
             const char c = source.at(position);
+
+            if(c == '\t')
+            {
+                throw TokenizerSyntaxError(fileInfo, "Tabs are not permitted whitespace, use spaces");
+            }
 
             if(c == '/')
             {
@@ -63,7 +69,7 @@ namespace swizzle { namespace lexer { namespace states {
                 return TokenizerState::Init;
             }
 
-            static const std::string whitespace(" \t\r\n");
+            static const std::string whitespace(" \r\n");
             if(whitespace.find_first_of(c) != std::string::npos)
             {
                 fileInfo = this->produceToken(token, fileInfo);

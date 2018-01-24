@@ -1,5 +1,6 @@
 #include <swizzle/ast/nodes/DefaultStringValue.hpp>
 
+#include <swizzle/ast/AncestorInfo.hpp>
 #include <swizzle/ast/VisitorInterface.hpp>
 
 namespace swizzle { namespace ast { namespace nodes {
@@ -26,15 +27,19 @@ namespace swizzle { namespace ast { namespace nodes {
         return length_;
     }
 
-    void DefaultStringValue::accept(VisitorInterface& visitor, Node& parent, const Node::Depth depth)
+    void DefaultStringValue::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth)
     {
-        visitor(parent, *this);
+        visitor(ancestors, *this);
+        
         if(depth == Depth::One) return;
+        ancestors.push(*this);
         
         for(auto& child : children())
         {
             auto parent = this;
-            child->accept(visitor, *parent, depth);
+            child->accept(visitor, ancestors, depth);
         }
+        
+        ancestors.pop();
     }
 }}}

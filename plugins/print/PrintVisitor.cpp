@@ -1,5 +1,6 @@
 #include "./PrintVisitor.hpp"
 
+#include <swizzle/ast/AncestorInfo.hpp>
 #include <swizzle/ast/Node.hpp>
 #include <swizzle/ast/nodes/Attribute.hpp>
 #include <swizzle/ast/nodes/AttributeBlock.hpp>
@@ -25,170 +26,302 @@
 #include <swizzle/ast/nodes/TypeAlias.hpp>
 #include <swizzle/ast/nodes/VariableBlock.hpp>
 #include <swizzle/ast/nodes/VariableBlockCase.hpp>
+#include <swizzle/lexer/FileInfo.hpp>
 
 #include <algorithm>
+#include <boost/filesystem/path.hpp>
+#include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/trim.hpp>
 #include <functional>
 #include <iostream>
 #include <iterator>
+#include <sstream>
 
 namespace swizzle { namespace plugins { namespace print {
     
-    PrintVisitor::AncestorContainer::iterator PrintVisitor::find(const ast::Node& node)
+    bool starts_with(const std::string& corpus, const std::string& pattern)
     {
-        for(auto iter = ancestors_.begin(), end = ancestors_.end(); iter != end; ++iter)
-        {
-            if(&iter->get() == &node) return iter;
-        }
-        
-        return ancestors_.end();
+        return corpus.substr(0, pattern.length()) == pattern;
     }
     
-    std::ptrdiff_t PrintVisitor::adjust_indentation(const ast::Node& parent, const ast::Node& node)
+    std::size_t PrintVisitor::adjust_indentation(const ast::AncestorInfo& ancestors)
     {
-        const auto iter = find(parent);
-        const auto distance = std::distance(begin(ancestors_), iter);
-        
-        auto iter2 = iter;
-        std::advance(iter2, 1);
-        
-        ancestors_.erase(iter2, end(ancestors_));
-        ancestors_.push_back(node);
-        
-        return distance;
+        return ancestors.depth() - 1;
     }
 
-    void PrintVisitor::print_line(const std::ptrdiff_t indent, const std::string& str) const
+    std::string PrintVisitor::print_node(const std::string& name, const lexer::FileInfo& info)
     {
-        for(std::uint16_t i = 0; i < indent; ++i)
+        return name + " <" + print_filename(info) + "> ";
+    }
+    
+    std::string PrintVisitor::print_filename(const lexer::FileInfo& info)
+    {
+        // TODO: figure out how to strip . and .. directories from start of path
+        std::stringstream ss;
+        ss  << info.filename()
+            << ":"
+            << info.start().line()
+            << ":"
+            << info.start().column();
+        
+        return ss.str();
+    }
+    
+    void PrintVisitor::print_line(const std::size_t indent, const std::string& str, char const * const bullet) const
+    {
+        for(std::size_t i = 0; i < indent; ++i)
         {
             std::cout << "   ";
         }
         
-        std::cout << "- " << str << "\n";
+        std::cout << bullet << str << "\n";
     }
     
-    void PrintVisitor::operator()(ast::Node& parent, ast::Node& node)
+    void PrintVisitor::print_multiline(const std::size_t indent, const std::string& comment)
     {
-        print_line(adjust_indentation(parent, node), "UNKNOWN NODE");
+        std::vector<std::string> lines;
+        boost::algorithm::split(lines, comment, boost::algorithm::is_any_of("\\"));
+        
+        for(auto& line : lines)
+        {
+            for(std::size_t i = 0; i < indent + 1; ++i) std::cout << "   ";
+            
+            boost::algorithm::trim_left(line);
+            std::cout << (starts_with(line, "//") ? "" : "// ") << line << "\n";
+        }
+    }
+    
+    void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::Node&)
+    {
+        print_line(adjust_indentation(ancestors), "unknown node");
     }
 
-    void PrintVisitor::operator()(ast::Node&, ast::nodes::Root& node)
+    void PrintVisitor::operator()(ast::AncestorInfo&, ast::nodes::Root&)
     {
-        ancestors_.push_back(node);
     }
     
-    void PrintVisitor::operator()(ast::Node& parent, ast::nodes::Attribute& node)
+    void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::Attribute& node)
     {
-        print_line(adjust_indentation(parent, node), "ATTRIBUTE");
+        std::stringstream ss;
+        ss  << print_node("attribute", node.info().fileInfo())
+            << node.info().token().value();
+        
+        print_line(adjust_indentation(ancestors), ss.str());
     }
     
-    void PrintVisitor::operator()(ast::Node& parent, ast::nodes::AttributeBlock& node)
+    void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::AttributeBlock& node)
     {
-        print_line(adjust_indentation(parent, node), "ATTRIBUTE_BLOCK");
+        std::stringstream ss;
+        ss  << print_node("attribute block", node.info().fileInfo())
+            << node.info().token().value();
+        
+        print_line(adjust_indentation(ancestors), ss.str());
     }
     
-    void PrintVisitor::operator()(ast::Node& parent, ast::nodes::Bitfield& node)
+    void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::Bitfield& node)
     {
-        print_line(adjust_indentation(parent, node), "BITFIELD");
+        std::stringstream ss;
+        ss  << print_node("bitfield", node.bitfieldInfo().fileInfo())
+            << node.name() << " (" << node.underlying().token().value() << ")";
+        
+        print_line(adjust_indentation(ancestors), ss.str());
     }
     
-    void PrintVisitor::operator()(ast::Node& parent, ast::nodes::BitfieldField& node)
+    void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::BitfieldField& node)
     {
-        print_line(adjust_indentation(parent, node), "BITFIELD_FIELD");
+        std::stringstream ss;
+        ss  << print_node("bitfield field", node.name().fileInfo())
+            << node.name().token().value() << " "
+            << node.beginBit() << ".."
+            << node.endBit();
+        
+        print_line(adjust_indentation(ancestors), ss.str());
     }
     
-    void PrintVisitor::operator()(ast::Node& parent, ast::nodes::CharLiteral& node)
+    void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::CharLiteral& node)
     {
-        print_line(adjust_indentation(parent, node), "CHAR_LITERAL");
+        std::stringstream ss;
+        ss  << print_node("char literal", node.info().fileInfo())
+            << node.info().token().value();
+        
+        print_line(adjust_indentation(ancestors), ss.str());
     }
     
-    void PrintVisitor::operator()(ast::Node& parent, ast::nodes::Comment& node)
+    void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::Comment& node)
     {
-        print_line(adjust_indentation(parent, node), "COMMENT");
+        std::stringstream ss;
+        ss  << print_node("comment", node.info().fileInfo());
+        
+        print_line(adjust_indentation(ancestors), ss.str());
+        print_line(adjust_indentation(ancestors), node.info().token().value().to_string(), "   ");
     }
     
-    void PrintVisitor::operator()(ast::Node& parent, ast::nodes::DefaultStringValue& node)
+    void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::DefaultStringValue& node)
     {
-        print_line(adjust_indentation(parent, node), "DEFAULT_STRING_VALUE");
+        std::stringstream ss;
+        ss  << print_node("default string value", node.value().fileInfo())
+            << node.value().token().value();
+        
+        print_line(adjust_indentation(ancestors), ss.str());
     }
     
-    void PrintVisitor::operator()(ast::Node& parent, ast::nodes::DefaultValue& node)
+    void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::DefaultValue& node)
     {
-        print_line(adjust_indentation(parent, node), "DEFAULT VALUE");
+        std::stringstream ss;
+        ss  << print_node("default value", node.value().fileInfo())
+            << node.value().token().value();
+        
+        print_line(adjust_indentation(ancestors), ss.str());
     }
     
-    void PrintVisitor::operator()(ast::Node& parent, ast::nodes::Enum& node)
+    void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::Enum& node)
     {
-        print_line(adjust_indentation(parent, node), "ENUM");
+        std::stringstream ss;
+        ss  << print_node("enum", node.enumInfo().fileInfo())
+            << node.name() << " (" << node.underlying().token().value() << ")";
+        
+        print_line(adjust_indentation(ancestors), ss.str());
     }
     
-    void PrintVisitor::operator()(ast::Node& parent, ast::nodes::EnumField& node)
+    void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::EnumField& node)
     {
-        print_line(adjust_indentation(parent, node), "ENUM_FIELD");
+        std::stringstream ss;
+        ss  << print_node("enum field", node.name().fileInfo())
+            << node.name().token().value() << " = " << node.valueInfo().token().value();
+        
+        print_line(adjust_indentation(ancestors), ss.str());
     }
     
-    void PrintVisitor::operator()(ast::Node& parent, ast::nodes::Extern& node)
+    void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::Extern& node)
     {
-        print_line(adjust_indentation(parent, node), "EXTERN");
+        std::stringstream ss;
+        ss  << print_node("extern", node.externType().fileInfo())
+            << node.externType().token().value();
+        
+        print_line(adjust_indentation(ancestors), ss.str());
     }
     
-    void PrintVisitor::operator()(ast::Node& parent, ast::nodes::FieldLabel& node)
+    void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::FieldLabel& node)
     {
-        print_line(adjust_indentation(parent, node), "FIELD_LABEL");
+        std::stringstream ss;
+        ss  << print_node("field label", node.info().fileInfo())
+            << "(" << node.info().token().value() << ")";
+        
+        print_line(adjust_indentation(ancestors), ss.str());
     }
     
-    void PrintVisitor::operator()(ast::Node& parent, ast::nodes::HexLiteral& node)
+    void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::HexLiteral& node)
     {
-        print_line(adjust_indentation(parent, node), "HEX_LITERAL");
+        std::stringstream ss;
+        ss  << print_node("hex literal", node.info().fileInfo())
+            << node.info().token().value();
+        
+        print_line(adjust_indentation(ancestors), ss.str());
     }
     
-    void PrintVisitor::operator()(ast::Node& parent, ast::nodes::Import& node)
+    void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::Import& node)
     {
-        print_line(adjust_indentation(parent, node), "IMPORT");
+        std::stringstream ss;
+        ss  << print_node("import", node.info().fileInfo())
+            << node.path();
+        
+        print_line(adjust_indentation(ancestors), ss.str());
     }
     
-    void PrintVisitor::operator()(ast::Node& parent, ast::nodes::MultilineComment& node)
+    void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::MultilineComment& node)
     {
-        print_line(adjust_indentation(parent, node), "MULTILINE_COMMENT");
+        std::stringstream ss;
+        ss  << print_node("multiline comment", node.info().fileInfo());
+        
+        const auto indent = adjust_indentation(ancestors);
+        print_line(indent, ss.str());
+        print_multiline(indent, node.info().token().value().to_string());
     }
     
-    void PrintVisitor::operator()(ast::Node& parent, ast::nodes::Namespace& node)
+    void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::Namespace& node)
     {
-        print_line(adjust_indentation(parent, node), "NAMESPACE");
+        std::stringstream ss;
+        ss  << print_node("namespace", node.info().fileInfo())
+            << node.info().token().value();
+        
+        print_line(adjust_indentation(ancestors), ss.str());
     }
     
-    void PrintVisitor::operator()(ast::Node& parent, ast::nodes::NumericLiteral& node)
+    void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::NumericLiteral& node)
     {
-        print_line(adjust_indentation(parent, node), "NUMERIC_LITERAL");
+        std::stringstream ss;
+        ss  << print_node("numeric literal", node.info().fileInfo())
+            << node.info().token().value();
+        
+        print_line(adjust_indentation(ancestors), ss.str());
     }
     
-    void PrintVisitor::operator()(ast::Node& parent, ast::nodes::StringLiteral& node)
+    void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::StringLiteral& node)
     {
-        print_line(adjust_indentation(parent, node), "STRING_LITERAL");
+        std::stringstream ss;
+        ss  << print_node("string literal", node.info().fileInfo())
+            << node.info().token().value();
+        
+        print_line(adjust_indentation(ancestors), ss.str());
     }
     
-    void PrintVisitor::operator()(ast::Node& parent, ast::nodes::Struct& node)
+    void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::Struct& node)
     {
-        print_line(adjust_indentation(parent, node), "STRUCT");
+        std::stringstream ss;
+        ss  << print_node("struct", node.info().fileInfo())
+            << node.name();
+        
+        print_line(adjust_indentation(ancestors), ss.str());
     }
     
-    void PrintVisitor::operator()(ast::Node& parent, ast::nodes::StructField& node)
+    void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::StructField& node)
     {
-        print_line(adjust_indentation(parent, node), "STRUCT_FIELD");
+        std::stringstream ss;
+        ss  << print_node("struct field", node.name().fileInfo())
+            << (node.isConst() ? "const " : "")
+            << node.type() << " "
+            << node.name().token().value();
+        
+        if(node.isArray())
+        {
+            ss << "[" << node.arraySize() << "]";
+        }
+        
+        if(node.isVector())
+        {
+            ss << "[" << node.vectorSizeMember().token().value() << "]";
+        }
+
+        print_line(adjust_indentation(ancestors), ss.str());
     }
     
-    void PrintVisitor::operator()(ast::Node& parent, ast::nodes::TypeAlias& node)
+    void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::TypeAlias& node)
     {
-        print_line(adjust_indentation(parent, node), "TYPE_ALIAS");
+        std::stringstream ss;
+        ss  << print_node("type alias", node.existingType().fileInfo())
+            << node.aliasedType().token().value() << " = "
+            << node.existingType().token().value();
+        
+        print_line(adjust_indentation(ancestors), ss.str());
     }
     
-    void PrintVisitor::operator()(ast::Node& parent, ast::nodes::VariableBlock& node)
+    void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::VariableBlock& node)
     {
-        print_line(adjust_indentation(parent, node), "VARIABLE_BLOCK");
+        std::stringstream ss;
+        ss  << print_node("variable block", node.variableBlockInfo().fileInfo())
+            << "(" << node.variableOnField().token().value() << ")";
+        
+        print_line(adjust_indentation(ancestors), ss.str());
     }
     
-    void PrintVisitor::operator()(ast::Node& parent, ast::nodes::VariableBlockCase& node)
+    void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::VariableBlockCase& node)
     {
-        print_line(adjust_indentation(parent, node), "VARIABLE_BLOCK_CASE");
+        std::stringstream ss;
+        ss  << print_node("variable block case", node.value().fileInfo())
+            << "case " << node.value().token().value() << ": "
+            << node.type().token().value();
+        
+        print_line(adjust_indentation(ancestors), ss.str());
     }
 }}}

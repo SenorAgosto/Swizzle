@@ -4,10 +4,6 @@
 
 #include <string>
 
-namespace swizzle { namespace ast {
-    class VisitorInterface;
-}}
-
 namespace swizzle { namespace ast { namespace nodes {
 
     class Bitfield : public Node
@@ -24,7 +20,7 @@ namespace swizzle { namespace ast { namespace nodes {
         void underlying(const lexer::TokenInfo& value);
         const lexer::TokenInfo& underlying() const;
 
-        void accept(VisitorInterface& visitor, Node& parent, const Node::Depth depth = Node::Depth::All) override;
+        void accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth = Node::Depth::All) override;
 
     private:
         const lexer::TokenInfo bitfieldInfo_;   // bitfield keyword

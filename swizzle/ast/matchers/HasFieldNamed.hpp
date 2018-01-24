@@ -1,4 +1,5 @@
 #pragma once
+#include <swizzle/ast/AncestorInfo.hpp>
 #include <swizzle/ast/MatchRule.hpp>
 
 #include <string>
@@ -14,6 +15,7 @@ namespace swizzle { namespace ast { namespace matchers {
         bool evaluate(VariableBindingInterface& binder, Node::smartptr node) override;
 
     private:
+        AncestorInfo ancestors_;
         std::string name_;
     };
 }}}

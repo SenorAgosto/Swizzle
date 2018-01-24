@@ -6,6 +6,7 @@
 #include <deque>
 
 namespace swizzle { namespace ast {
+    class AncestorInfo;
     class VisitorInterface;
 }}
 
@@ -20,7 +21,7 @@ namespace swizzle { namespace ast {
     public:
     
         virtual ~Node(){}
-        virtual void accept(VisitorInterface& visitor, Node& parent, const Depth depth = Depth::All);
+        virtual void accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Depth depth = Depth::All);
 
         const std::deque<Node::smartptr>& children() const;
         void append(Node::smartptr node);

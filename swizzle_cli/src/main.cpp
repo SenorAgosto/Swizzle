@@ -210,6 +210,7 @@ namespace swizzle {
         catch(const SyntaxError& syntaxError)
         {
             parser::utils::pretty_print(syntaxError);
+            return;
         }
         
         for(auto plugin : config.plugins)

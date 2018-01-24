@@ -1,6 +1,7 @@
 #include <swizzle/ast/nodes/BitfieldField.hpp>
 
 #include <swizzle/Exceptions.hpp>
+#include <swizzle/ast/AncestorInfo.hpp>
 #include <swizzle/ast/VisitorInterface.hpp>
 #include <swizzle/parser/detail/ExtractBitValueFromToken.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
@@ -80,15 +81,19 @@ namespace swizzle { namespace ast { namespace nodes {
         return endBit_;
     }
 
-    void BitfieldField::accept(VisitorInterface& visitor, Node& parent, const Node::Depth depth)
+    void BitfieldField::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth)
     {
-        visitor(parent, *this);
+        visitor(ancestors, *this);
+        
         if(depth == Depth::One) return;
+        ancestors.push(*this);
         
         for(auto& child : children())
         {
             auto parent = this;
-            child->accept(visitor, *parent, depth);
+            child->accept(visitor, ancestors, depth);
         }
+        
+        ancestors.pop();
     }
 }}}

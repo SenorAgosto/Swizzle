@@ -21,6 +21,6 @@ namespace swizzle { namespace ast {
 
     void AbstractSyntaxTree::accept(VisitorInterface& visitor)
     {
-        root_->accept(visitor, *root_);
+        root_->accept(visitor, ancestors_);
     }
 }}

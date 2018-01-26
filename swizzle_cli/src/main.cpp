@@ -206,6 +206,12 @@ namespace swizzle {
         {
             tokenize(tokenizer, sv);
             parse(parser, tokens);
+                    
+            for(auto plugin : config.plugins)
+            {
+                plugin->generate(parser.context(), parser.ast());
+            }
+
         }
         catch(const TokenizerSyntaxError& syntaxError)
         {
@@ -216,11 +222,6 @@ namespace swizzle {
         {
             parser::utils::pretty_print(syntaxError);
             return;
-        }
-        
-        for(auto plugin : config.plugins)
-        {
-            plugin->generate(parser.context(), parser.ast());
         }
     }
 }

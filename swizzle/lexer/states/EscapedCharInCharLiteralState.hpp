@@ -30,7 +30,7 @@ namespace swizzle { namespace lexer { namespace states {
                 return TokenizerState::EndCharLiteral;
             }
 
-            throw TokenizerSyntaxError(fileInfo, "Expected a valid escape sequence (\\a \\' \\r \\n \\0) found '\\" + std::string(1, c) + "'");
+            throw TokenizerSyntaxError(source, position, fileInfo, "Expected a valid escape sequence (\\a \\' \\r \\n \\0) found '\\" + std::string(1, c) + "'");
         }
     };
 }}}

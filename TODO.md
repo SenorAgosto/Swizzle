@@ -1,6 +1,11 @@
 # TODO
+- the first enum value range check is incorrect, e.g. 
+
+	enum E : u8 {
+		field1 = 0xff,
+	}
+
 - EnumField's valueInfo() token doesn't seem to be populated, needs to contain the value token 
-- when printing syntax errors and underlining, we need to respect tabs versus spaces, substitute leading \t for 4 spaces
 
 - implement test coverage showing case values don't overflow the switching type.
 - implement test coverage showing the switching type is an integer type. 

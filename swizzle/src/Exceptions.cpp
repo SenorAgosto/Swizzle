@@ -6,6 +6,7 @@
 #include <swizzle/lexer/TokenizerState.hpp>
 #include <swizzle/parser/ParserState.hpp>
 
+#include <boost/utility/string_view.hpp>
 #include <cstdint>
 #include <sstream>
 
@@ -100,8 +101,11 @@ namespace swizzle {
     {
     }
 
-    TokenizerSyntaxError::TokenizerSyntaxError(const lexer::FileInfo& info, const std::string& reason)
+    TokenizerSyntaxError::TokenizerSyntaxError(const boost::string_view& source, const std::size_t position, const lexer::FileInfo& info, const std::string& reason)
         : TokenizerError(constructError("Syntax Error: ", info, reason))
+        , source_(source)
+        , position_(position)
+        , info_(info)
     {
     }
 

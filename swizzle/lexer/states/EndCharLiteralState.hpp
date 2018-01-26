@@ -34,7 +34,7 @@ namespace swizzle { namespace lexer { namespace states {
                 return TokenizerState::Init;
             }
 
-            throw TokenizerSyntaxError(fileInfo, "Expected \"'\" to terminate character literal, found '" + std::string(1, c) + "'");
+            throw TokenizerSyntaxError(source, position, fileInfo, "Expected \"'\" to terminate character literal, found '" + std::string(1, c) + "'");
         }
     };
 }}}

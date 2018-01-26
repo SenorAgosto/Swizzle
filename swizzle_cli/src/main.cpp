@@ -1,4 +1,5 @@
 #include <swizzle/backend/BackendInterface.hpp>
+#include <swizzle/backend/SwizzleService.hpp>
 #include <swizzle/lexer/Tokenizer.hpp>
 #include <swizzle/parser/Parser.hpp>
 #include <swizzle/parser/utils/PrettyPrint.hpp>
@@ -17,16 +18,17 @@
 
 namespace swizzle {
 
-    using PluginFactory = PluginFactory::PluginFactory<backend::BackendInterface>;
+    using PluginFactory = PluginFactory::PluginFactory<backend::BackendInterface, backend::SwizzleService>;
     
     struct Config
     {
-        Config()
+        Config(const int argc, char const * const * argv)
             : description("Options")
-            , factory(".")
+            , service(argc, const_cast<char**>(argv))
+            , factory(".", service)
         {
         }
-        
+                
         std::string backend;
         boost::filesystem::path file;
         boost::filesystem::path plugin_dir;
@@ -34,6 +36,7 @@ namespace swizzle {
         boost::program_options::options_description description;
         boost::program_options::variables_map vars;
         
+        backend::SwizzleService service;
         mutable std::vector<swizzle::backend::BackendInterface*> plugins;   // we don't own this memory, @factory does
         mutable PluginFactory factory;
     };
@@ -41,7 +44,7 @@ namespace swizzle {
     Config parse_config(const int argc, char const * const argv[])
     {
         namespace po = boost::program_options;
-        Config config;
+        Config config(argc, argv);
         
         config.description.add_options()
             ("help", "produce this message")
@@ -56,7 +59,7 @@ namespace swizzle {
         po::store(po::command_line_parser(argc, argv).options(config.description).positional(positionalArguments).run(), config.vars);
         po::notify(config.vars);
         
-        config.factory = PluginFactory(config.plugin_dir);
+        config.factory = PluginFactory(config.plugin_dir, config.service);
         
         return config;
     }

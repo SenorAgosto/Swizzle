@@ -25,6 +25,7 @@ This is an informal description of the Swizzle DSL for describing messages on th
 - f32
 - f64
 - bitfield
+- bool
 - variable_block
 
 ## Tokens

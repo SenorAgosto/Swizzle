@@ -1,4 +1,6 @@
 # TODO
+- if there is no namespace declared, and we start defining enums and such, the error message is terrible. 'boost::string_view::at'
+
 - the first enum value range check is incorrect, e.g. 
 
 	enum E : u8 {

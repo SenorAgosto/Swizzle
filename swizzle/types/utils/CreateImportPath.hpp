@@ -1,8 +1,8 @@
 #pragma once 
 #include <boost/filesystem/path.hpp>
-#include <swizzle/parser/TokenStack.hpp>
+#include <swizzle/types/TokenStack.hpp>
 
-namespace swizzle { namespace parser { namespace detail {
+namespace swizzle { namespace types { namespace utils {
 
     boost::filesystem::path createImportPath(TokenStack& tokenStack);
 }}}

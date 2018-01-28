@@ -2,13 +2,13 @@
 
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
-#include <swizzle/parser/NodeStack.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
-#include <swizzle/parser/TokenStack.hpp>
+#include <swizzle/types/NodeStack.hpp>
+#include <swizzle/types/TokenStack.hpp>
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState ExternFirstColonState::consume(const lexer::TokenInfo& token, NodeStack&, NodeStack&, TokenStack&, ParserStateContext&)
+    ParserState ExternFirstColonState::consume(const lexer::TokenInfo& token, types::NodeStack&, types::NodeStack&, types::TokenStack&, ParserStateContext&)
     {
         const auto type = token.token().type();
 

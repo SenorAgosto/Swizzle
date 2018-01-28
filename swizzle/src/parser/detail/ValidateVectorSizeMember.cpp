@@ -8,18 +8,17 @@
 #include <swizzle/ast/nodes/Struct.hpp>
 #include <swizzle/ast/nodes/StructField.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
-#include <swizzle/parser/TokenList.hpp>
-#include <swizzle/parser/utils/StackInvert.hpp>
-#include <swizzle/parser/utils/StackToList.hpp>
 #include <swizzle/types/IsIntegerType.hpp>
-#include <swizzle/types/IsType.hpp>
+#include <swizzle/types/utils/StackInvert.hpp>
+#include <swizzle/types/utils/StackToList.hpp>
+#include <swizzle/types/TokenList.hpp>
 
 #include "./ContainsNamespace.hpp"
 
 namespace swizzle { namespace parser { namespace detail {
 
     namespace {
-        void validateTokenStack(const TokenStack& tokenStack, const lexer::FileInfo& info)
+        void validateTokenStack(const types::TokenStack& tokenStack, const lexer::FileInfo& info)
         {
             if(tokenStack.empty())
             {
@@ -27,14 +26,14 @@ namespace swizzle { namespace parser { namespace detail {
             }
         }
 
-        ast::Node::smartptr validateNodeStack(const NodeStack& nodeStack, const lexer::FileInfo& info)
+        ast::Node::smartptr validateNodeStack(const types::NodeStack& nodeStack, const lexer::FileInfo& info)
         {
             if(nodeStack.empty())
             {
                 throw SyntaxErrorWithoutToken("Node stack empty, expected top of node stack to be ast::nodes::StructField", " it empty", info);
             }
 
-            NodeStack nodes = nodeStack;
+            types::NodeStack nodes = nodeStack;
 
             auto isStructField = ast::Matcher().isTypeOf<ast::nodes::StructField>();
             if(!isStructField(nodes.top()))
@@ -58,18 +57,18 @@ namespace swizzle { namespace parser { namespace detail {
         }
     }
 
-    void validateVectorSizeMember(const lexer::TokenInfo& tokenInfo, const NodeStack& nodeStack, const TokenStack& tokenStack, const ParserStateContext& context)
+    void validateVectorSizeMember(const lexer::TokenInfo& tokenInfo, const types::NodeStack& nodeStack, const types::TokenStack& tokenStack, const ParserStateContext& context)
     {
         validateTokenStack(tokenStack, tokenInfo.fileInfo());
         auto structure = validateNodeStack(nodeStack, tokenInfo.fileInfo());
 
-        TokenStack stack = tokenStack;
-        stack = utils::stack::invert(stack);
+        types::TokenStack stack = tokenStack;
+        stack = types::utils::invert(stack);
 
         bool last = false;
         auto isStructField = ast::Matcher().isTypeOf<ast::nodes::StructField>();
 
-        const TokenList list = utils::stack::to_list(stack);
+        const types::TokenList list = types::utils::to_list(stack);
         for(const auto token : list)
         {
             if(last)

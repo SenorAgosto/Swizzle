@@ -1,7 +1,7 @@
-#include <swizzle/parser/utils/StackToList.hpp>
+#include <swizzle/types/utils/StackToList.hpp>
 #include <utility>
 
-namespace swizzle { namespace parser { namespace utils { namespace stack {
+namespace swizzle { namespace types { namespace utils {
 
     TokenList to_list(TokenStack& stack)
     {
@@ -15,4 +15,4 @@ namespace swizzle { namespace parser { namespace utils { namespace stack {
 
         return list;
     }
-}}}}
+}}}

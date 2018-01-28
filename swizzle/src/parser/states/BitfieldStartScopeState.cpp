@@ -13,16 +13,16 @@
 
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
-#include <swizzle/parser/detail/AppendNode.hpp>
-#include <swizzle/parser/detail/AttachAttributes.hpp>
-#include <swizzle/parser/detail/NodeStackTopIs.hpp>
-#include <swizzle/parser/NodeStack.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
-#include <swizzle/parser/TokenStack.hpp>
+#include <swizzle/types/NodeStack.hpp>
+#include <swizzle/types/utils/AppendNode.hpp>
+#include <swizzle/types/utils/AttachAttributes.hpp>
+#include <swizzle/types/utils/NodeStackTopIs.hpp>
+#include <swizzle/types/TokenStack.hpp>
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState BitfieldStartScopeState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack& attributeStack, TokenStack&, ParserStateContext&)
+    ParserState BitfieldStartScopeState::consume(const lexer::TokenInfo& token, types::NodeStack& nodeStack, types::NodeStack& attributeStack, types::TokenStack&, ParserStateContext&)
     {
         const auto type = token.token().type();
 
@@ -35,31 +35,31 @@ namespace swizzle { namespace parser { namespace states {
 
             if(type == lexer::TokenType::char_literal)
             {
-                detail::appendNode<ast::nodes::CharLiteral>(attributeStack, token);
+                types::utils::appendNode<ast::nodes::CharLiteral>(attributeStack, token);
                 return ParserState::BitfieldStartScope;
             }
 
             if(type == lexer::TokenType::string_literal)
             {
-                detail::appendNode<ast::nodes::StringLiteral>(attributeStack, token);
+                types::utils::appendNode<ast::nodes::StringLiteral>(attributeStack, token);
                 return ParserState::BitfieldStartScope;
             }
 
             if(type == lexer::TokenType::hex_literal)
             {
-                detail::appendNode<ast::nodes::HexLiteral>(attributeStack, token);
+                types::utils::appendNode<ast::nodes::HexLiteral>(attributeStack, token);
                 return ParserState::BitfieldStartScope;
             }
 
             if(type == lexer::TokenType::numeric_literal)
             {
-                detail::appendNode<ast::nodes::NumericLiteral>(attributeStack, token);
+                types::utils::appendNode<ast::nodes::NumericLiteral>(attributeStack, token);
                 return ParserState::BitfieldStartScope;
             }
 
             if(type == lexer::TokenType::attribute_block)
             {
-                detail::appendNode<ast::nodes::AttributeBlock>(attributeStack, token);
+                types::utils::appendNode<ast::nodes::AttributeBlock>(attributeStack, token);
                 return ParserState::BitfieldStartScope;
             }
         }
@@ -72,24 +72,24 @@ namespace swizzle { namespace parser { namespace states {
 
         if(type == lexer::TokenType::comment)
         {
-            detail::appendNode<ast::nodes::Comment>(nodeStack, token);
+            types::utils::appendNode<ast::nodes::Comment>(nodeStack, token);
             return ParserState::BitfieldStartScope;
         }
 
         if(type == lexer::TokenType::multiline_comment)
         {
-            detail::appendNode<ast::nodes::MultilineComment>(nodeStack, token);
+            types::utils::appendNode<ast::nodes::MultilineComment>(nodeStack, token);
             return ParserState::BitfieldStartScope;
         }
 
         if(type == lexer::TokenType::string)
         {
-            if(detail::nodeStackTopIs<ast::nodes::Bitfield>(nodeStack))
+            if(types::utils::nodeStackTopIs<ast::nodes::Bitfield>(nodeStack))
             {
                 auto& top = static_cast<ast::nodes::Bitfield&>(*nodeStack.top());
-                const auto node = detail::appendNode<ast::nodes::BitfieldField>(nodeStack, token, top.underlying());
+                const auto node = types::utils::appendNode<ast::nodes::BitfieldField>(nodeStack, token, top.underlying());
 
-                detail::attachAttributes(attributeStack, node);
+                types::utils::attachAttributes(attributeStack, node);
                 nodeStack.push(node);
 
                 return ParserState::BitfieldField;
@@ -100,7 +100,7 @@ namespace swizzle { namespace parser { namespace states {
 
         if(type == lexer::TokenType::r_brace)
         {
-            if(detail::nodeStackTopIs<ast::nodes::Bitfield>(nodeStack))
+            if(types::utils::nodeStackTopIs<ast::nodes::Bitfield>(nodeStack))
             {
                 auto& top = static_cast<ast::nodes::Bitfield&>(*nodeStack.top());
                 if(top.empty())

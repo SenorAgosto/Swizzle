@@ -3,23 +3,23 @@
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/ast/nodes/StructField.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
-#include <swizzle/parser/detail/AttachAttributes.hpp>
-#include <swizzle/parser/detail/NodeStackTopIs.hpp>
-#include <swizzle/parser/NodeStack.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
-#include <swizzle/parser/TokenStack.hpp>
+#include <swizzle/types/NodeStack.hpp>
+#include <swizzle/types/utils/AttachAttributes.hpp>
+#include <swizzle/types/utils/NodeStackTopIs.hpp>
+#include <swizzle/types/TokenStack.hpp>
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState StructFieldNameState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack& attributeStack, TokenStack&, ParserStateContext&)
+    ParserState StructFieldNameState::consume(const lexer::TokenInfo& token, types::NodeStack& nodeStack, types::NodeStack& attributeStack, types::TokenStack&, ParserStateContext&)
     {
         const auto type = token.token().type();
 
         if(type == lexer::TokenType::end_statement)
         {
-            if(detail::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
+            if(types::utils::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
             {
-                detail::attachAttributes(attributeStack, nodeStack.top());
+                types::utils::attachAttributes(attributeStack, nodeStack.top());
                 nodeStack.pop();
 
                 return ParserState::StructStartScope;

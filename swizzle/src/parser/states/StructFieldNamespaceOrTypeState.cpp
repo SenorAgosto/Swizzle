@@ -4,19 +4,19 @@
 #include <swizzle/ast/nodes/StructField.hpp>
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
-#include <swizzle/parser/detail/AttachAttributes.hpp>
-#include <swizzle/parser/detail/CreateType.hpp>
-#include <swizzle/parser/detail/NodeStackTopIs.hpp>
-#include <swizzle/parser/NodeStack.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
-#include <swizzle/parser/TokenStack.hpp>
-#include <swizzle/parser/utils/ClearTokenStack.hpp>
 #include <swizzle/types/IsIntegerType.hpp>
 #include <swizzle/types/IsFloatType.hpp>
+#include <swizzle/types/NodeStack.hpp>
+#include <swizzle/types/TokenStack.hpp>
+#include <swizzle/types/utils/AttachAttributes.hpp>
+#include <swizzle/types/utils/ClearTokenStack.hpp>
+#include <swizzle/types/utils/CreateType.hpp>
+#include <swizzle/types/utils/NodeStackTopIs.hpp>
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState StructFieldNamespaceOrTypeState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack& attributeStack, TokenStack& tokenStack, ParserStateContext& context)
+    ParserState StructFieldNamespaceOrTypeState::consume(const lexer::TokenInfo& token, types::NodeStack& nodeStack, types::NodeStack& attributeStack, types::TokenStack& tokenStack, ParserStateContext& context)
     {
         const auto type = token.token().type();
 
@@ -35,13 +35,13 @@ namespace swizzle { namespace parser { namespace states {
 
         if(type == lexer::TokenType::l_bracket)
         {
-            if(detail::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
+            if(types::utils::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
             {
                 auto sf = nodeStack.top();
-                detail::attachAttributes(attributeStack, sf);
+                types::utils::attachAttributes(attributeStack, sf);
 
-                const auto t = detail::createType(tokenStack);
-                utils::clear(tokenStack);
+                const auto t = types::utils::createType(tokenStack);
+                types::utils::clear(tokenStack);
 
                 auto& top = static_cast<ast::nodes::StructField&>(*sf);
                 const auto& value = t.token().value();
@@ -74,10 +74,10 @@ namespace swizzle { namespace parser { namespace states {
 
         if(type == lexer::TokenType::string)
         {
-            if(detail::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
+            if(types::utils::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
             {
                 auto sf = nodeStack.top();
-                detail::attachAttributes(attributeStack, sf);
+                types::utils::attachAttributes(attributeStack, sf);
 
                 auto& top = static_cast<ast::nodes::StructField&>(*sf);
                 top.name(token);
@@ -87,8 +87,8 @@ namespace swizzle { namespace parser { namespace states {
                     return ParserState::StructFieldName;
                 }
 
-                const auto t = detail::createType(tokenStack);
-                utils::clear(tokenStack);
+                const auto t = types::utils::createType(tokenStack);
+                types::utils::clear(tokenStack);
 
                 const auto& value = t.token().value();
 
@@ -118,7 +118,7 @@ namespace swizzle { namespace parser { namespace states {
         }
 
         // supply a better error if we can
-        if(detail::nodeStackTopIs<ast::nodes::StructField>(nodeStack) && !tokenStack.empty())
+        if(types::utils::nodeStackTopIs<ast::nodes::StructField>(nodeStack) && !tokenStack.empty())
         {
             throw SyntaxError("Struct member name missing in type declaration", tokenStack.top());
         }

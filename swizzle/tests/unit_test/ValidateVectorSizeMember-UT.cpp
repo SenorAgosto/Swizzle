@@ -1,40 +1,58 @@
 #include "./ut_support/UnitTestSupport.hpp"
 #include <swizzle/parser/detail/ValidateVectorSizeMember.hpp>
 
-#include <swizzle/Exceptions.hpp>
 #include <swizzle/ast/AbstractSyntaxTree.hpp>
 #include <swizzle/ast/nodes/Comment.hpp>
 #include <swizzle/ast/nodes/Struct.hpp>
 #include <swizzle/ast/nodes/StructField.hpp>
+
+#include <swizzle/Exceptions.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
-#include <swizzle/parser/detail/AppendNode.hpp>
-#include <swizzle/parser/NodeStack.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
-#include <swizzle/parser/TokenStack.hpp>
+#include <swizzle/types/NodeStack.hpp>
+#include <swizzle/types/utils/AppendNode.hpp>
+#include <swizzle/types/TokenStack.hpp>
 
 namespace {
 
     using namespace swizzle::ast;
     using namespace swizzle::lexer;
     using namespace swizzle::parser;
+    using namespace swizzle::types;
 
     struct ValidateVectorSizeMemberFixture
     {
-        Node::smartptr make_struct(const std::string& nameSpace, const std::string& structName)
+        // @start_pos points to start of 'struct' keyword, @end_pos points to the end of the struct name
+        Node::smartptr make_struct(const std::string& name_space, const boost::string_view& data, const std::size_t start_pos, const std::size_t end_pos)
         {
-            const auto info = TokenInfo(Token("struct", 0, 6, TokenType::keyword), FileInfo("test.swizzle"));
-            const auto name = TokenInfo(Token(structName, 0, structName.length(), TokenType::string), FileInfo("test.swizzle"));
-            const auto node = detail::appendNode<nodes::Struct>(nodeStack, info, name, nameSpace);
+            const auto spot = data.substr(start_pos).find_first_of(' ');
+            if(spot == boost::string_view::npos)
+            {
+                throw std::runtime_error("Expected ' ' in input, not found");
+            }
+        
+            const auto info = TokenInfo(Token(data, start_pos, spot, TokenType::keyword), FileInfo("test.swizzle"));
+            const auto name = TokenInfo(Token(data, start_pos + spot + 1, end_pos - (start_pos + spot + 1), TokenType::string), FileInfo("test.swizzle"));
+            const auto node = utils::appendNode<nodes::Struct>(nodeStack, info, name, name_space);
 
             return node;
         }
-
-        Node::smartptr make_field(const std::string& type, const Token& name)
+        
+        // @start_pos points to start of type name, @end_pos points to the end of the field name, we expect a space
+        // inbetween them.
+        Node::smartptr append_field(const boost::string_view& data, const std::size_t start_pos, const std::size_t end_pos, const TokenType tokenType)
         {
-            auto node = detail::appendNode<nodes::StructField>(nodeStack);
+            const auto spot = data.substr(start_pos).find_first_of(' ');
+            if(spot == boost::string_view::npos)
+            {
+                throw std::runtime_error("Expected ' ' in input, not found");
+            }
+        
+            auto node = utils::appendNode<nodes::StructField>(nodeStack);
             auto& field = static_cast<nodes::StructField&>(*node);
-            field.type(type);
-            field.name(TokenInfo(name, FileInfo("test.swizzle")));
+            
+            field.type(data.substr(start_pos, spot).to_string()); //TokenInfo(Token(data, start_pos, spot, tokenType), FileInfo("test.swizzle")));
+            field.name(TokenInfo(Token(data, start_pos + spot + 1, end_pos - (start_pos + spot + 1), TokenType::string), FileInfo("test.swizzle")));
 
             return node;
         }
@@ -53,28 +71,33 @@ namespace {
         {
             nodeStack.push(ast.root());
 
-            auto node = make_struct("my_namespace", "MyStruct");
+            auto node = make_struct("my_namespace", sv, 0, 14);
             context.TypeCache["my_namespace::MyStruct"] = node;
             nodeStack.push(node);
 
-            node = make_field("u8", field1);
-            node = make_field("u16", field2);
-            node = make_field("u16", field3);
+            node = append_field(sv, 17, 25, TokenType::type);
+            tokenStack.push(TokenInfo(Token(sv, 17, 2, TokenType::type), FileInfo("test.swizzle")));
+            
+            node = append_field(sv, 28, 37, TokenType::type);
+            node = append_field(sv, 40, 49, TokenType::type);
 
             nodeStack.push(node);
-            tokenStack.push(TokenInfo(Token("field1", 0, 6, TokenType::string), FileInfo("test.swizzle")));
         }
 
-        const Token field1 = Token("field1", 0, 6, TokenType::string);
-        const Token field2 = Token("field2", 0, 6, TokenType::string);
-        const Token field3 = Token("field3", 0, 6, TokenType::string);
+        const boost::string_view sv = boost::string_view(
+            "struct MyStruct {"
+                "u8 field1;" "\n"
+                "u16 field2;" "\n"
+                "u16 field3;" "\n"
+            "}"
+        );
     };
 
     TEST_FIXTURE(WhenTokenStackHasMemberNameFromCurrentStruct, verifyValidateVectorSizeMember)
     {
         detail::validateVectorSizeMember(token, nodeStack, tokenStack, context);
     }
-
+/*
     struct WhenTokenStackHasMemberNameAndItsNested : public ValidateVectorSizeMemberFixture
     {
         WhenTokenStackHasMemberNameAndItsNested()
@@ -162,6 +185,22 @@ namespace {
             tokenStack.push(TokenInfo(Token("field2", 0, 6, TokenType::string), FileInfo("test.swizzle")));
         }
 
+        const boost::string_view sv = boost::string_view(
+            "namespace my_namespace;" "\n"
+            "struct struct1 {" "\n"
+                "other_namespace::struct2 field1;" "\n"
+                "u8 field2;" "\n"
+            "}" "\n"
+            
+            "struct struct3 {" "\n"
+                "u8 field2;"
+            "}" "\n"
+            
+            "namespace other_namespace;" "\n"
+            "struct struct2 {"
+            "}"
+        );
+        
         const Token field1 = Token("field1", 0, 6, TokenType::string);
         const Token f1 = Token("f1", 0, 2, TokenType::string);
         const Token field2 = Token("field2", 0, 6, TokenType::string);
@@ -308,4 +347,5 @@ namespace {
     {
         CHECK_THROW(detail::validateVectorSizeMember(token, nodeStack, tokenStack, context), swizzle::SyntaxErrorWithoutToken);
     }
+*/
 }

@@ -11,13 +11,14 @@
 #include <swizzle/ast/nodes/Struct.hpp>
 #include <swizzle/ast/nodes/StructField.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
-#include <swizzle/parser/detail/AppendNode.hpp>
+#include <swizzle/types/utils/AppendNode.hpp>
 
 namespace {
 
     using namespace swizzle::ast;
     using namespace swizzle::lexer;
     using namespace swizzle::parser;
+    using namespace swizzle::types;
 
     struct MatcherFixture
     {
@@ -64,7 +65,7 @@ namespace {
         Matcher m = Matcher().hasChild().bind("parent");
         CHECK(!m(ast));
 
-        detail::appendNode<Node>(nodeStack);
+        utils::appendNode<Node>(nodeStack);
         CHECK(m(ast));
 
         CHECK_EQUAL(ast.root().get(), m.bound("parent").get());
@@ -83,10 +84,10 @@ namespace {
         Matcher m = Matcher().hasChildOf<nodes::Comment, nodes::MultilineComment>();
         CHECK(!m(ast));
 
-        detail::appendNode<nodes::Comment>(nodeStack, info);
+        utils::appendNode<nodes::Comment>(nodeStack, info);
         CHECK(m(ast));
 
-        detail::appendNode<nodes::MultilineComment>(nodeStack, info);
+        utils::appendNode<nodes::MultilineComment>(nodeStack, info);
         CHECK(m(ast));
     }
 
@@ -99,13 +100,13 @@ namespace {
         Matcher m = Matcher().hasChildNotOf<nodes::Comment, nodes::MultilineComment>();
         CHECK(!m(ast));
 
-        detail::appendNode<nodes::Comment>(nodeStack, info);
+        utils::appendNode<nodes::Comment>(nodeStack, info);
         CHECK(!m(ast));
 
-        detail::appendNode<nodes::MultilineComment>(nodeStack, info);
+        utils::appendNode<nodes::MultilineComment>(nodeStack, info);
         CHECK(!m(ast));
 
-        detail::appendNode<Node>(nodeStack);
+        utils::appendNode<Node>(nodeStack);
         CHECK(m(ast));
     }
 
@@ -113,18 +114,18 @@ namespace {
     {
         StructHasMemberNamedFixture()
         {
-            auto node = detail::appendNode<nodes::Struct>(nodeStack, info, info2, "my_namespace");
+            auto node = utils::appendNode<nodes::Struct>(nodeStack, info, info2, "my_namespace");
             nodeStack.push(node);
 
-            node = detail::appendNode<nodes::StructField>(nodeStack);
+            node = utils::appendNode<nodes::StructField>(nodeStack);
             auto& field1 = static_cast<nodes::StructField&>(*node);
             field1.name(TokenInfo(Token("field1", 0, 6, TokenType::string), FileInfo("test.swizzle")));
 
-            node = detail::appendNode<nodes::StructField>(nodeStack);
+            node = utils::appendNode<nodes::StructField>(nodeStack);
             auto& field2 = static_cast<nodes::StructField&>(*node);
             field2.name(TokenInfo(Token("field2", 0, 6, TokenType::string), FileInfo("test.swizzle")));
 
-            node = detail::appendNode<nodes::StructField>(nodeStack);
+            node = utils::appendNode<nodes::StructField>(nodeStack);
             auto& field3 = static_cast<nodes::StructField&>(*node);
             field3.name(TokenInfo(Token("field3", 0, 6, TokenType::string), FileInfo("test.swizzle")));
         }
@@ -151,7 +152,7 @@ namespace {
     {
         IsTypeOfFixture()
         {
-            const auto node = detail::appendNode<nodes::Comment>(nodeStack, info);
+            const auto node = utils::appendNode<nodes::Comment>(nodeStack, info);
             nodeStack.push(node);
         }
 
@@ -166,10 +167,10 @@ namespace {
         Matcher m = Matcher().isTypeOf<nodes::Comment, nodes::MultilineComment>();
         CHECK(m(nodeStack.top()));
 
-        auto node = detail::appendNode<nodes::MultilineComment>(nodeStack, info);
+        auto node = utils::appendNode<nodes::MultilineComment>(nodeStack, info);
         CHECK(m(node));
 
-        node = detail::appendNode<nodes::Struct>(nodeStack, info, TokenInfo(Token("MyStruct", 0, 8, TokenType::string), FileInfo("test.swizzle")), "my_namespace");
+        node = utils::appendNode<nodes::Struct>(nodeStack, info, TokenInfo(Token("MyStruct", 0, 8, TokenType::string), FileInfo("test.swizzle")), "my_namespace");
         CHECK(!m(node));
     }
 
@@ -182,7 +183,7 @@ namespace {
         Matcher m = Matcher().isNotTypeOf<nodes::Struct, nodes::StructField>();
         CHECK(m(nodeStack.top()));
 
-        auto node = detail::appendNode<nodes::Struct>(nodeStack, info, TokenInfo(Token("MyStruct", 0, 8, TokenType::string), FileInfo("test.swizzle")), "my_namespace");
+        auto node = utils::appendNode<nodes::Struct>(nodeStack, info, TokenInfo(Token("MyStruct", 0, 8, TokenType::string), FileInfo("test.swizzle")), "my_namespace");
         CHECK(!m(node));
     }
 }

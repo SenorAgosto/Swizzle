@@ -1,10 +1,10 @@
-#include <swizzle/parser/detail/CreateNamespace.hpp>
+#include <swizzle/types/utils/CreateType.hpp>
 
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/lexer/utils/CalculateColumnDifference.hpp>
-#include <swizzle/parser/utils/StackInvert.hpp>
+#include <swizzle/types/utils/StackInvert.hpp>
 
-namespace swizzle { namespace parser { namespace detail {
+namespace swizzle { namespace types { namespace utils {
 
     lexer::TokenInfo createType(TokenStack& tokenStack)
     {
@@ -13,7 +13,7 @@ namespace swizzle { namespace parser { namespace detail {
             throw ParserError("Internal parser error, Token Stack unexpectedly empty.");
         }
 
-        TokenStack stack = utils::stack::invert(tokenStack);
+        TokenStack stack = invert(tokenStack);
 
         lexer::TokenInfo info = stack.top();
         stack.pop();

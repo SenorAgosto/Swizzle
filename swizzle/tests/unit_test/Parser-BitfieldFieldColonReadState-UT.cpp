@@ -4,16 +4,17 @@
 #include <swizzle/ast/Node.hpp>
 #include <swizzle/ast/nodes/BitfieldField.hpp>
 #include <swizzle/Exceptions.hpp>
-#include <swizzle/parser/detail/AppendNode.hpp>
-#include <swizzle/parser/detail/NodeStackTopIs.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/states/BitfieldFieldColonReadState.hpp>
+#include <swizzle/types/utils/AppendNode.hpp>
+#include <swizzle/types/utils/NodeStackTopIs.hpp>
 
 namespace {
 
     using namespace swizzle::ast;
     using namespace swizzle::lexer;
     using namespace swizzle::parser;
+    using namespace swizzle::types;
 
     struct BitfieldFieldColonReadStateFixture
     {
@@ -24,7 +25,7 @@ namespace {
             const auto bitfieldName = TokenInfo(Token("bitfield", 0, 8, TokenType::keyword), FileInfo("test.swizzle"));
             const auto bitfieldUnderlyingType = TokenInfo(Token("u16", 0, 3, TokenType::type), FileInfo("test.swizzle"));
 
-            const auto node = swizzle::parser::detail::appendNode<nodes::BitfieldField>(nodeStack, bitfieldName, bitfieldUnderlyingType);
+            const auto node = utils::appendNode<nodes::BitfieldField>(nodeStack, bitfieldName, bitfieldUnderlyingType);
             nodeStack.push(node);
         }
 
@@ -64,7 +65,7 @@ namespace {
         REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        REQUIRE CHECK(detail::nodeStackTopIs<nodes::BitfieldField>(nodeStack));
+        REQUIRE CHECK(utils::nodeStackTopIs<nodes::BitfieldField>(nodeStack));
 
         auto& field = static_cast<nodes::BitfieldField&>(*nodeStack.top());
         CHECK_EQUAL(0U, field.beginBit());
@@ -92,7 +93,7 @@ namespace {
             const auto bitfieldName = TokenInfo(Token("bitfield", 0, 8, TokenType::keyword), FileInfo("test.swizzle"));
             const auto bitfieldUnderlyingType = TokenInfo(Token("i16", 0, 3, TokenType::type), FileInfo("test.swizzle"));
 
-            const auto node = swizzle::parser::detail::appendNode<nodes::BitfieldField>(nodeStack, bitfieldName, bitfieldUnderlyingType);
+            const auto node = utils::appendNode<nodes::BitfieldField>(nodeStack, bitfieldName, bitfieldUnderlyingType);
             nodeStack.push(node);
         }
 

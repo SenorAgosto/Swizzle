@@ -8,17 +8,18 @@
 #include <swizzle/ast/nodes/VariableBlockCase.hpp>
 
 #include <swizzle/Exceptions.hpp>
-#include <swizzle/parser/detail/AppendNode.hpp>
-#include <swizzle/parser/detail/NodeStackTopIs.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/states/StructVariableBlockCaseBlockNameReadState.hpp>
+#include <swizzle/types/utils/AppendNode.hpp>
+#include <swizzle/types/utils/NodeStackTopIs.hpp>
 
 namespace {
 
     using namespace swizzle::ast;
     using namespace swizzle::lexer;
     using namespace swizzle::parser;
-
+    using namespace swizzle::types;
+    
     struct StructVariableBlockCaseBlockNameReadStateFixture
     {
         StructVariableBlockCaseBlockNameReadStateFixture()
@@ -64,7 +65,7 @@ namespace {
     {
         WhenNextTokenIsComma()
         {
-            const auto node = detail::appendNode<nodes::VariableBlockCase>(nodeStack);
+            const auto node = utils::appendNode<nodes::VariableBlockCase>(nodeStack);
             nodeStack.push(node);
 
             tokenStack.push(TokenInfo(Token(s, 0, 12, TokenType::string), FileInfo("test.swizzle", LineInfo(0, 0), LineInfo(0, 12))));

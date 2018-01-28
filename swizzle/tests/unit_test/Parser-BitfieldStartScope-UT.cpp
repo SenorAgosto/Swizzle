@@ -7,17 +7,19 @@
 #include <swizzle/ast/nodes/BitfieldField.hpp>
 #include <swizzle/ast/nodes/Comment.hpp>
 #include <swizzle/ast/nodes/MultilineComment.hpp>
+
 #include <swizzle/Exceptions.hpp>
-#include <swizzle/parser/detail/AppendNode.hpp>
-#include <swizzle/parser/detail/NodeStackTopIs.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/states/BitfieldStartScopeState.hpp>
+#include <swizzle/types/utils/AppendNode.hpp>
+#include <swizzle/types/utils/NodeStackTopIs.hpp>
 
 namespace {
 
     using namespace swizzle::ast;
     using namespace swizzle::lexer;
     using namespace swizzle::parser;
+    using namespace swizzle::types;
 
     struct BitfieldStartScopeStateFixture
     {
@@ -28,7 +30,7 @@ namespace {
             const auto bitfieldInfo = TokenInfo(Token("bitfield", 0, 8, TokenType::keyword), FileInfo("test.swizzle"));
             const auto bitfieldName = TokenInfo(Token("my_bitfield", 0, 11, TokenType::string), FileInfo("test.swizzle"));
 
-            const auto node = swizzle::parser::detail::appendNode<nodes::Bitfield>(nodeStack, bitfieldInfo, bitfieldName, "my_namespace");
+            const auto node = utils::appendNode<nodes::Bitfield>(nodeStack, bitfieldInfo, bitfieldName, "my_namespace");
             nodeStack.push(node);
         }
 
@@ -114,7 +116,7 @@ namespace {
         CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        REQUIRE CHECK(detail::nodeStackTopIs<nodes::Bitfield>(nodeStack));
+        REQUIRE CHECK(utils::nodeStackTopIs<nodes::Bitfield>(nodeStack));
         auto matcher = Matcher().hasChildOf<nodes::BitfieldField>();
         CHECK(!matcher(nodeStack.top()));       // nodeStack.top() is bitfield
 
@@ -125,7 +127,7 @@ namespace {
         REQUIRE CHECK_EQUAL(3U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
-        CHECK(detail::nodeStackTopIs<nodes::BitfieldField>(nodeStack));
+        CHECK(utils::nodeStackTopIs<nodes::BitfieldField>(nodeStack));
     }
 
     struct WhenNextTokenIsRightBrace : public BitfieldStartScopeStateFixture

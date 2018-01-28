@@ -1,6 +1,6 @@
-#include <swizzle/parser/detail/AttachAttributes.hpp>
+#include <swizzle/types/utils/AttachAttributes.hpp>
 
-namespace swizzle { namespace parser { namespace detail {
+namespace swizzle { namespace types { namespace utils {
 
     void attachAttributes(NodeStack& attributeStack, ast::Node::smartptr node)
     {

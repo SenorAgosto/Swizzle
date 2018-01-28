@@ -7,18 +7,20 @@
 #include <swizzle/ast/nodes/Enum.hpp>
 #include <swizzle/ast/nodes/EnumField.hpp>
 #include <swizzle/ast/nodes/MultilineComment.hpp>
+
 #include <swizzle/Exceptions.hpp>
-#include <swizzle/parser/detail/AppendNode.hpp>
-#include <swizzle/parser/detail/NodeStackTopIs.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/states/EnumStartScopeState.hpp>
+#include <swizzle/types/utils/AppendNode.hpp>
+#include <swizzle/types/utils/NodeStackTopIs.hpp>
 
 namespace {
 
     using namespace swizzle::ast;
     using namespace swizzle::lexer;
     using namespace swizzle::parser;
-
+    using namespace swizzle::types;
+    
     struct EnumStartScopeStateFixture
     {
         EnumStartScopeStateFixture()
@@ -28,7 +30,7 @@ namespace {
             const auto enumInfo = TokenInfo(Token("enum", 0, 3, TokenType::keyword), FileInfo("test.swizzle"));
             const auto enumName = TokenInfo(Token("my_enum", 0, 7, TokenType::string), FileInfo("test.swizzle"));
 
-            const auto node = swizzle::parser::detail::appendNode<nodes::Enum>(nodeStack, enumInfo, enumName, "my_namespace");
+            const auto node = utils::appendNode<nodes::Enum>(nodeStack, enumInfo, enumName, "my_namespace");
             nodeStack.push(node);
         }
 
@@ -126,7 +128,7 @@ namespace {
         REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        CHECK(detail::nodeStackTopIs<nodes::EnumField>(nodeStack));
+        CHECK(utils::nodeStackTopIs<nodes::EnumField>(nodeStack));
     }
 
     struct WhenNextTokenIsRightBrace : public EnumStartScopeStateFixture

@@ -2,9 +2,9 @@
 
 #include <swizzle/lexer/TokenInfo.hpp>
 #include <swizzle/parser/ParserState.hpp>
-#include <swizzle/parser/NodeStack.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
-#include <swizzle/parser/TokenStack.hpp>
+#include <swizzle/types/NodeStack.hpp>
+#include <swizzle/types/TokenStack.hpp>
 
 #include <swizzle/parser/states/BitfieldColonReadState.hpp>
 #include <swizzle/parser/states/BitfieldEndPositionState.hpp>
@@ -74,7 +74,7 @@ namespace swizzle { namespace parser {
     class ParserStatesPack
     {
     public:
-        ParserState consume(const ParserState state, const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack& attributeStack, TokenStack& tokenStack, ParserStateContext& context);
+        ParserState consume(const ParserState state, const lexer::TokenInfo& token, types::NodeStack& nodeStack, types::NodeStack& attributeStack, types::TokenStack& tokenStack, ParserStateContext& context);
 
     private:
 

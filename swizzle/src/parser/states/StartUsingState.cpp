@@ -3,15 +3,15 @@
 #include <swizzle/ast/nodes/TypeAlias.hpp>
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
-#include <swizzle/parser/detail/AppendNode.hpp>
-#include <swizzle/parser/detail/AttachAttributes.hpp>
-#include <swizzle/parser/NodeStack.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
-#include <swizzle/parser/TokenStack.hpp>
+#include <swizzle/types/NodeStack.hpp>
+#include <swizzle/types/utils/AppendNode.hpp>
+#include <swizzle/types/utils/AttachAttributes.hpp>
+#include <swizzle/types/TokenStack.hpp>
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState StartUsingState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack& attributeStack, TokenStack& tokenStack, ParserStateContext& context)
+    ParserState StartUsingState::consume(const lexer::TokenInfo& token, types::NodeStack& nodeStack, types::NodeStack& attributeStack, types::TokenStack& tokenStack, ParserStateContext& context)
     {
         const auto type = token.token().type();
 
@@ -23,13 +23,13 @@ namespace swizzle { namespace parser { namespace states {
             }
 
             const auto& info = tokenStack.top();
-            const auto node = detail::appendNode<ast::nodes::TypeAlias>(nodeStack, info, token);
+            const auto node = types::utils::appendNode<ast::nodes::TypeAlias>(nodeStack, info, token);
             
             const auto& alias = static_cast<ast::nodes::TypeAlias&>(*node);
             const auto aliasWithNamespace = context.CurrentNamespace + "::" + alias.aliasedType().token().value().to_string();
             context.TypeCache[aliasWithNamespace] = node;
 
-            detail::attachAttributes(attributeStack, node);
+            types::utils::attachAttributes(attributeStack, node);
             
             nodeStack.push(node);
             tokenStack.pop();

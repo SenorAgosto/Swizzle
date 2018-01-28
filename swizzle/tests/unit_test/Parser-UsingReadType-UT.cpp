@@ -4,10 +4,11 @@
 #include <swizzle/ast/Node.hpp>
 #include <swizzle/ast/nodes/Comment.hpp>
 #include <swizzle/ast/nodes/TypeAlias.hpp>
+
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
-#include <swizzle/parser/detail/AppendNode.hpp>
 #include <swizzle/parser/states/UsingTypeReadState.hpp>
+#include <swizzle/types/utils/AppendNode.hpp>
 
 #include <boost/utility/string_view.hpp>
 
@@ -16,6 +17,7 @@ namespace {
     using namespace swizzle::ast;
     using namespace swizzle::lexer;
     using namespace swizzle::parser;
+    using namespace swizzle::types;
 
     struct UsingTypeReadStateFixture
     {
@@ -23,7 +25,7 @@ namespace {
         {
             nodeStack.push(ast.root());
 
-            const auto node = swizzle::parser::detail::appendNode<nodes::TypeAlias>(nodeStack, TokenInfo(Token(), FileInfo("test.swizzle")), TokenInfo(Token(), FileInfo("test.swizzle")));
+            const auto node = utils::appendNode<nodes::TypeAlias>(nodeStack, TokenInfo(Token(), FileInfo("test.swizzle")), TokenInfo(Token(), FileInfo("test.swizzle")));
             nodeStack.push(node);
         }
 

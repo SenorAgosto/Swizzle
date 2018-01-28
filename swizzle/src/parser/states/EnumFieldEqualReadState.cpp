@@ -2,14 +2,15 @@
 
 #include <swizzle/ast/nodes/Enum.hpp>
 #include <swizzle/ast/nodes/EnumField.hpp>
+
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
-#include <swizzle/parser/detail/NodeStackTopIs.hpp>
-#include <swizzle/parser/NodeStack.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
-#include <swizzle/parser/TokenStack.hpp>
+#include <swizzle/types/NodeStack.hpp>
 #include <swizzle/types/SetValue.hpp>
 #include <swizzle/types/SetValueFromChar.hpp>
+#include <swizzle/types/utils/NodeStackTopIs.hpp>
+#include <swizzle/types/TokenStack.hpp>
 
 #include <boost/numeric/conversion/cast.hpp>
 
@@ -17,11 +18,11 @@ namespace swizzle { namespace parser { namespace states {
 
     namespace {
         // implementation is wrapped in a try/catch
-        ParserState consumeImpl(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack&, TokenStack&, ParserStateContext& context)
+        ParserState consumeImpl(const lexer::TokenInfo& token, types::NodeStack& nodeStack, types::NodeStack&, types::TokenStack&, ParserStateContext& context)
         {
             const auto type = token.token().type();
 
-            if(!detail::nodeStackTopIs<ast::nodes::EnumField>(nodeStack))
+            if(!types::utils::nodeStackTopIs<ast::nodes::EnumField>(nodeStack))
             {
                 throw ParserError("Internal parser error, top of stack is not ast::nodes::EnumField");
             }
@@ -30,7 +31,7 @@ namespace swizzle { namespace parser { namespace states {
             auto& enumField = static_cast<ast::nodes::EnumField&>(*enumFieldNode);
             nodeStack.pop();
 
-            if(!detail::nodeStackTopIs<ast::nodes::Enum>(nodeStack))
+            if(!types::utils::nodeStackTopIs<ast::nodes::Enum>(nodeStack))
             {
                 throw ParserError("Internal parser error, node below top of stack is not ast::nodes::Enum");
             }
@@ -41,22 +42,18 @@ namespace swizzle { namespace parser { namespace states {
 
             if(type == lexer::TokenType::hex_literal)
             {
-                enumField.value(types::setValue(underlying.token().value(), token.token().value(), types::isHex, "Encountered unknown enum type"));
-
-                context.CurrentEnumValue = enumField.value();
-                context.AllocateEnumValue(token, context.CurrentEnumValue);
-                context.CurrentEnumValue.increment();
+                context.CurrentEnumValue->value(types::setValue(underlying.token().value(), token.token().value(), types::isHex, "Encountered unknown enum type"));
+                enumField.value(context.CurrentEnumValue->assign_field_value(token));
+                context.CurrentEnumValue->increment();
 
                 return ParserState::EnumFieldValueRead;
             }
 
             if(type == lexer::TokenType::numeric_literal)
             {
-                enumField.value(types::setValue(underlying.token().value(), token.token().value(), "Encountered unknown enum type"));
-
-                context.CurrentEnumValue = enumField.value();
-                context.AllocateEnumValue(token, context.CurrentEnumValue);
-                context.CurrentEnumValue.increment();
+                context.CurrentEnumValue->value(types::setValue(underlying.token().value(), token.token().value(), "Encountered unknown enum type"));
+                enumField.value(context.CurrentEnumValue->assign_field_value(token));
+                context.CurrentEnumValue->increment();
 
                 return ParserState::EnumFieldValueRead;
             }
@@ -67,11 +64,9 @@ namespace swizzle { namespace parser { namespace states {
                 trimValue.remove_prefix(1); // remove leading '
                 trimValue.remove_suffix(1); // remove trailing '
 
-                enumField.value(types::setValueFromChar(underlying.token().value(), trimValue));
-
-                context.CurrentEnumValue = enumField.value();
-                context.AllocateEnumValue(token, context.CurrentEnumValue);
-                context.CurrentEnumValue.increment();
+                context.CurrentEnumValue->value(types::setValueFromChar(underlying.token().value(), trimValue));
+                enumField.value(context.CurrentEnumValue->assign_field_value(token));
+                context.CurrentEnumValue->increment();
                 
                 return ParserState::EnumFieldValueRead;
             }
@@ -80,7 +75,7 @@ namespace swizzle { namespace parser { namespace states {
         }
     }
 
-    ParserState EnumFieldEqualReadState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack& attributeStack, TokenStack& tokenStack, ParserStateContext& context)
+    ParserState EnumFieldEqualReadState::consume(const lexer::TokenInfo& token, types::NodeStack& nodeStack, types::NodeStack& attributeStack, types::TokenStack& tokenStack, ParserStateContext& context)
     {
         try
         {

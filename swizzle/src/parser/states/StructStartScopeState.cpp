@@ -121,7 +121,7 @@ namespace swizzle { namespace parser { namespace states {
             if(type == lexer::TokenType::type)
             {
                 const auto& value = token.token().value();
-                if(types::IsIntegerType(value) || types::IsFloatType(value) || value == "bool")
+                if(types::IsIntegerType(value) || types::IsFloatType(value))
                 {
                     auto node = types::utils::appendNode<ast::nodes::StructField>(nodeStack);
                     nodeStack.push(node);

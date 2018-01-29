@@ -1,6 +1,5 @@
 # TODO
 - StructField needs type changed from std::string -> lexer::TokenInfo to better support AST plugins
-- setValue needs token, pass token to readAs to raise SyntaxError exception
 
 - implement test coverage showing case values don't overflow the switching type.
 - implement test coverage showing the switching type is an integer type. 

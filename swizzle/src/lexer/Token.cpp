@@ -39,10 +39,11 @@ namespace swizzle { namespace lexer {
         if(value_.empty()) return value_;
 
         std::size_t start = position_;
-        while(value_.at(start) != '\n') --start;
+        while((start > 0) && value_.at(start) != '\n') --start;
         
         std::size_t end = position_;
-        while(value_.at(end) != '\n') ++end;
+        const std::size_t fin = value_.length();
+        while((end < fin) && value_.at(end) != '\n') ++end;
         
         return value_.substr(start, end - start);
     }

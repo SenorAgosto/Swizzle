@@ -29,6 +29,8 @@ namespace swizzle { namespace parser { namespace states {
 
             auto enumFieldNode = nodeStack.top();
             auto& enumField = static_cast<ast::nodes::EnumField&>(*enumFieldNode);
+            enumField.valueInfo(token);
+            
             nodeStack.pop();
 
             if(!types::utils::nodeStackTopIs<ast::nodes::Enum>(nodeStack))
@@ -45,7 +47,7 @@ namespace swizzle { namespace parser { namespace states {
                 context.CurrentEnumValue->value(types::setValue(underlying.token().value(), token.token().value(), types::isHex, "Encountered unknown enum type"));
                 enumField.value(context.CurrentEnumValue->assign_field_value(token));
                 context.CurrentEnumValue->increment();
-
+                
                 return ParserState::EnumFieldValueRead;
             }
 

@@ -1,8 +1,7 @@
 # TODO
-- 'const' is not getting set on StructFields
-
 - StructField needs type changed from std::string -> lexer::TokenInfo to better support AST plugins
 
+- implement test coverage showing const is correctly applied to fields, and correctly disallowed on variable_block's
 - implement test coverage showing case values don't overflow the switching type.
 - implement test coverage showing the switching type is an integer type. 
 

@@ -30,12 +30,6 @@ namespace swizzle {
         AliasedTypeIsNotDefinedException(const std::string& existingType, const lexer::FileInfo& fileInfo);
     };
 
-    class InvalidStreamInput : public std::runtime_error
-    {
-    public:
-        InvalidStreamInput(const std::string& sv);
-    };
-
     class RedefinitionOfAliasNameException : public ParserError
     {
     public:
@@ -52,18 +46,6 @@ namespace swizzle {
     {
     public:
         StreamEmpty();
-    };
-
-    class StreamInputCausesOverflow : public std::runtime_error
-    {
-    public:
-        StreamInputCausesOverflow(const std::string& s);
-    };
-
-    class StreamInputCausesUnderflow : public std::runtime_error
-    {
-    public:
-        StreamInputCausesUnderflow(const std::string& s);
     };
     
     class TokenizerError : public std::runtime_error
@@ -114,6 +96,24 @@ namespace swizzle {
         
     private:
         lexer::FileInfo info_;
+    };
+
+    class InvalidStreamInput : public SyntaxError
+    {
+    public:
+        InvalidStreamInput(const lexer::TokenInfo& token, const std::string& sv);
+    };
+
+    class StreamInputCausesOverflow : public SyntaxError
+    {
+    public:
+        StreamInputCausesOverflow(const lexer::TokenInfo& token, const std::string& s);
+    };
+
+    class StreamInputCausesUnderflow : public SyntaxError
+    {
+    public:
+        StreamInputCausesUnderflow(const lexer::TokenInfo& token, const std::string& s);
     };
 
     class UnknownParserState : public ParserError

@@ -2,6 +2,10 @@
 #include <boost/utility/string_view.hpp>
 #include <cstdint>
 
+namespace swizzle { namespace lexer {
+    class TokenInfo;
+}}
+
 namespace swizzle { namespace types {
 
     // NOTE: this is *not* a fully functioning istringstream class.
@@ -10,7 +14,7 @@ namespace swizzle { namespace types {
     class safe_istringstream
     {
     public:
-        safe_istringstream(const boost::string_view& input);
+        safe_istringstream(const lexer::TokenInfo& input);
 
         safe_istringstream& operator>>(std::uint8_t& i);
         safe_istringstream& operator>>(std::int8_t& i);
@@ -25,7 +29,8 @@ namespace swizzle { namespace types {
         bool hex_stream() const { return hex_; }
 
     private:
-        boost::string_view input_;
+        const lexer::TokenInfo& token_;
+        const boost::string_view input_;
         bool hex_;
     };
 

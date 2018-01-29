@@ -6,12 +6,15 @@
 
 namespace {
 
+    using namespace swizzle::lexer;
     using namespace swizzle::types;
 
     struct SafeStringStreamFixture
     {
         const boost::string_view sv = boost::string_view("198");
-        safe_istringstream ss = safe_istringstream(sv);
+        const TokenInfo token = TokenInfo(Token(sv, 0, sv.length(), TokenType::numeric_literal), FileInfo("test.swizzle"));
+        
+        safe_istringstream ss = safe_istringstream(token);
     };
 
     TEST_FIXTURE(SafeStringStreamFixture, verifyConstruction)
@@ -23,7 +26,9 @@ namespace {
         std::uint8_t i = 0;
 
         const boost::string_view sv = boost::string_view("42");
-        safe_istringstream ss = safe_istringstream(sv);
+        const TokenInfo token = TokenInfo(Token(sv, 0, sv.length(), TokenType::numeric_literal), FileInfo("test.swizzle"));
+        
+        safe_istringstream ss = safe_istringstream(token);
     };
 
     TEST_FIXTURE(WhenInputIsU8, verifyInsertion)
@@ -37,7 +42,9 @@ namespace {
         std::int8_t i = 0;
 
         const boost::string_view sv = boost::string_view("-128");
-        safe_istringstream ss = safe_istringstream(sv);
+        const TokenInfo token = TokenInfo(Token(sv, 0, sv.length(), TokenType::numeric_literal), FileInfo("test.swizzle"));
+        
+        safe_istringstream ss = safe_istringstream(token);
     };
 
     TEST_FIXTURE(WhenInputIsI8, verifyInsertion)
@@ -51,7 +58,9 @@ namespace {
         std::uint8_t i = 0;
 
         const boost::string_view sv = boost::string_view("0xff");
-        safe_istringstream ss = safe_istringstream(sv);
+        const TokenInfo token = TokenInfo(Token(sv, 0, sv.length(), TokenType::hex_literal), FileInfo("test.swizzle"));
+        
+        safe_istringstream ss = safe_istringstream(token);
     };
 
     TEST_FIXTURE(WhenInputIsHexU8, verifyInsertionHexModifier)
@@ -67,7 +76,9 @@ namespace {
         std::uint16_t i = 0;
 
         const boost::string_view sv = boost::string_view("16500");
-        safe_istringstream ss = safe_istringstream(sv);
+        const TokenInfo token = TokenInfo(Token(sv, 0, sv.length(), TokenType::numeric_literal), FileInfo("test.swizzle"));
+        
+        safe_istringstream ss = safe_istringstream(token);
     };
 
     TEST_FIXTURE(WhenInputIsU16, verifyInsertion)
@@ -81,7 +92,9 @@ namespace {
         std::int16_t i = 0;
 
         const boost::string_view sv = boost::string_view("-405");
-        safe_istringstream ss = safe_istringstream(sv);
+        const TokenInfo token = TokenInfo(Token(sv, 0, sv.length(), TokenType::numeric_literal), FileInfo("test.swizzle"));
+        
+        safe_istringstream ss = safe_istringstream(token);
     };
 
     TEST_FIXTURE(WhenInputIsI16, verifyInsertion)
@@ -95,7 +108,9 @@ namespace {
         std::uint32_t i = 0;
 
         const boost::string_view sv = boost::string_view("65537");
-        safe_istringstream ss = safe_istringstream(sv);
+        const TokenInfo token = TokenInfo(Token(sv, 0, sv.length(), TokenType::numeric_literal), FileInfo("test.swizzle"));
+        
+        safe_istringstream ss = safe_istringstream(token);
     };
 
     TEST_FIXTURE(WhenInputIsU32, verifyInsertion)
@@ -109,7 +124,9 @@ namespace {
         std::int32_t i = 0;
 
         const boost::string_view sv = boost::string_view("65557");
-        safe_istringstream ss = safe_istringstream(sv);
+        const TokenInfo token = TokenInfo(Token(sv, 0, sv.length(), TokenType::numeric_literal), FileInfo("test.swizzle"));
+        
+        safe_istringstream ss = safe_istringstream(token);
     };
 
     TEST_FIXTURE(WhenInputIsI32, verifyInsertion)
@@ -123,7 +140,9 @@ namespace {
         std::uint64_t i = 0;
 
         const boost::string_view sv = boost::string_view("54654654654");
-        safe_istringstream ss = safe_istringstream(sv);
+        const TokenInfo token = TokenInfo(Token(sv, 0, sv.length(), TokenType::numeric_literal), FileInfo("test.swizzle"));
+        
+        safe_istringstream ss = safe_istringstream(token);
     };
 
     TEST_FIXTURE(WhenInputIsU64, verifyInsertion)
@@ -137,7 +156,9 @@ namespace {
         std::int64_t i = 0;
 
         const boost::string_view sv = boost::string_view("-54654654654");
-        safe_istringstream ss = safe_istringstream(sv);
+        const TokenInfo token = TokenInfo(Token(sv, 0, sv.length(), TokenType::numeric_literal), FileInfo("test.swizzle"));
+        
+        safe_istringstream ss = safe_istringstream(token);
     };
 
     TEST_FIXTURE(WhenInputIsI64, verifyInsertion)
@@ -149,7 +170,9 @@ namespace {
     struct WhenInputIsEmpty
     {
         const boost::string_view sv;
-        safe_istringstream ss = safe_istringstream(sv);
+        const TokenInfo token = TokenInfo(Token(sv, 0, sv.length(), TokenType::numeric_literal), FileInfo("test.swizzle"));
+        
+        safe_istringstream ss = safe_istringstream(token);
     };
 
     struct WhenInputIsEmptyAndReadingU8 : public WhenInputIsEmpty
@@ -237,7 +260,9 @@ namespace {
         std::uint8_t i = 0;
 
         const boost::string_view sv = boost::string_view("1234");
-        safe_istringstream ss = safe_istringstream(sv);
+        const TokenInfo token = TokenInfo(Token(sv, 0, sv.length(), TokenType::numeric_literal), FileInfo("test.swizzle"));
+        
+        safe_istringstream ss = safe_istringstream(token);
     };
 
     TEST_FIXTURE(WhenInputIsInvalidHexU8, verifyInsertionHexModifierThrows)
@@ -250,7 +275,9 @@ namespace {
         std::uint8_t i = 0;
 
         const boost::string_view sv = boost::string_view("0xAZ");
-        safe_istringstream ss = safe_istringstream(sv);
+        const TokenInfo token = TokenInfo(Token(sv, 0, sv.length(), TokenType::hex_literal), FileInfo("test.swizzle"));
+        
+        safe_istringstream ss = safe_istringstream(token);
     };
 
     TEST_FIXTURE(WhenInputIsInvalidHexU8_2, verifyInsertionHexModifierThrows)
@@ -263,7 +290,9 @@ namespace {
         std::uint8_t i = 0;
 
         const boost::string_view sv = boost::string_view("300");
-        safe_istringstream ss = safe_istringstream(sv);
+        const TokenInfo token = TokenInfo(Token(sv, 0, sv.length(), TokenType::numeric_literal), FileInfo("test.swizzle"));
+        
+        safe_istringstream ss = safe_istringstream(token);
     };
 
     TEST_FIXTURE(WhenInputIsU8AndOverflows, verifyInsertionThrows)
@@ -276,7 +305,9 @@ namespace {
         std::int8_t i = 0;
 
         const boost::string_view sv = boost::string_view("130");
-        safe_istringstream ss = safe_istringstream(sv);
+        const TokenInfo token = TokenInfo(Token(sv, 0, sv.length(), TokenType::numeric_literal), FileInfo("test.swizzle"));
+        
+        safe_istringstream ss = safe_istringstream(token);
     };
 
     TEST_FIXTURE(WhenInputIsI8AndOverflows, verifyInsertionThrows)
@@ -289,7 +320,9 @@ namespace {
         std::int8_t i = 0;
 
         const boost::string_view sv = boost::string_view("-130");
-        safe_istringstream ss = safe_istringstream(sv);
+        const TokenInfo token = TokenInfo(Token(sv, 0, sv.length(), TokenType::numeric_literal), FileInfo("test.swizzle"));
+        
+        safe_istringstream ss = safe_istringstream(token);
     };
 
     TEST_FIXTURE(WhenInputIsI8AndUnderflows, verifyInsertionThrows)
@@ -302,7 +335,9 @@ namespace {
         std::uint16_t i = 0;
 
         const boost::string_view sv = boost::string_view("65536");
-        safe_istringstream ss = safe_istringstream(sv);
+        const TokenInfo token = TokenInfo(Token(sv, 0, sv.length(), TokenType::numeric_literal), FileInfo("test.swizzle"));
+        
+        safe_istringstream ss = safe_istringstream(token);
     };
 
     TEST_FIXTURE(WhenInputIsU16AndInputOverflows, verifyInsertionThrows)
@@ -315,7 +350,9 @@ namespace {
         std::int16_t i = 0;
 
         const boost::string_view sv = boost::string_view("32800");
-        safe_istringstream ss = safe_istringstream(sv);
+        const TokenInfo token = TokenInfo(Token(sv, 0, sv.length(), TokenType::numeric_literal), FileInfo("test.swizzle"));
+        
+        safe_istringstream ss = safe_istringstream(token);
     };
 
     TEST_FIXTURE(WhenInputIsI16AndInputOverflows, verifyInsertionThrows)
@@ -328,7 +365,9 @@ namespace {
         std::int16_t i = 0;
 
         const boost::string_view sv = boost::string_view("-32800");
-        safe_istringstream ss = safe_istringstream(sv);
+        const TokenInfo token = TokenInfo(Token(sv, 0, sv.length(), TokenType::numeric_literal), FileInfo("test.swizzle"));
+        
+        safe_istringstream ss = safe_istringstream(token);
     };
 
     TEST_FIXTURE(WhenInputIsI16AndInputUnderflows, verifyInsertionThrows)
@@ -341,7 +380,9 @@ namespace {
         std::uint32_t i = 0;
 
         const boost::string_view sv = boost::string_view("4294967296");
-        safe_istringstream ss = safe_istringstream(sv);
+        const TokenInfo token = TokenInfo(Token(sv, 0, sv.length(), TokenType::numeric_literal), FileInfo("test.swizzle"));
+        
+        safe_istringstream ss = safe_istringstream(token);
     };
 
     TEST_FIXTURE(WhenInputIsU32AndInputOverflows, verifyInsertionThrows)
@@ -354,7 +395,9 @@ namespace {
         std::int32_t i = 0;
 
         const boost::string_view sv = boost::string_view("2147483648");
-        safe_istringstream ss = safe_istringstream(sv);
+        const TokenInfo token = TokenInfo(Token(sv, 0, sv.length(), TokenType::numeric_literal), FileInfo("test.swizzle"));
+        
+        safe_istringstream ss = safe_istringstream(token);
     };
 
     TEST_FIXTURE(WhenInputIsI32AndInputOverflows, verifyInsertionThrows)
@@ -367,7 +410,9 @@ namespace {
         std::int32_t i = 0;
 
         const boost::string_view sv = boost::string_view("-2147483650");
-        safe_istringstream ss = safe_istringstream(sv);
+        const TokenInfo token = TokenInfo(Token(sv, 0, sv.length(), TokenType::numeric_literal), FileInfo("test.swizzle"));
+        
+        safe_istringstream ss = safe_istringstream(token);
     };
 
     TEST_FIXTURE(WhenInputIsI32AndInputUnderflows, verifyInsertionThrows)
@@ -380,7 +425,9 @@ namespace {
         std::uint64_t i = 0;
 
         const boost::string_view sv = boost::string_view("184467440737095500000000000000000000");
-        safe_istringstream ss = safe_istringstream(sv);
+        const TokenInfo token = TokenInfo(Token(sv, 0, sv.length(), TokenType::numeric_literal), FileInfo("test.swizzle"));
+        
+        safe_istringstream ss = safe_istringstream(token);
     };
 
     TEST_FIXTURE(WhenInputIsU64AndInputOverflows, verifyInsertionThrows)
@@ -394,7 +441,9 @@ namespace {
         std::int64_t i = 0;
 
         const boost::string_view sv = boost::string_view("9223372036854775808");
-        safe_istringstream ss = safe_istringstream(sv);
+        const TokenInfo token = TokenInfo(Token(sv, 0, sv.length(), TokenType::numeric_literal), FileInfo("test.swizzle"));
+        
+        safe_istringstream ss = safe_istringstream(token);
     };
 
     TEST_FIXTURE(WhenInputIsI64AndInputOverflows, verifyInsertionThrows)
@@ -407,7 +456,9 @@ namespace {
         std::int64_t i = 0;
 
         const boost::string_view sv = boost::string_view("-9223372036854775809");
-        safe_istringstream ss = safe_istringstream(sv);
+        const TokenInfo token = TokenInfo(Token(sv, 0, sv.length(), TokenType::numeric_literal), FileInfo("test.swizzle"));
+        
+        safe_istringstream ss = safe_istringstream(token);
     };
 
     TEST_FIXTURE(WhenInputIsI64AndInputUnderflows, verifyInsertionThrows)
@@ -420,7 +471,9 @@ namespace {
         std::int64_t i = 0;
 
         const boost::string_view sv = boost::string_view("-922337203685477580900000000000000001");
-        safe_istringstream ss = safe_istringstream(sv);
+        const TokenInfo token = TokenInfo(Token(sv, 0, sv.length(), TokenType::numeric_literal), FileInfo("test.swizzle"));
+        
+        safe_istringstream ss = safe_istringstream(token);
     };
 
     TEST_FIXTURE(WhenInputIsI64AndInputVastlyOverflows, verifyInsertionThrows)

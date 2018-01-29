@@ -76,7 +76,7 @@ namespace {
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         const auto& field = dynamic_cast<nodes::EnumField&>(*nodeStack.top());
-        REQUIRE CHECK_EQUAL(0U, field.value());
+        REQUIRE CHECK_EQUAL(1U, field.value());
     }
 
     struct WhenNextTokenIsNumericLiteral : public EnumFieldEqualReadStateFixture
@@ -102,7 +102,7 @@ namespace {
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         const auto& field = dynamic_cast<nodes::EnumField&>(*nodeStack.top());
-        REQUIRE CHECK_EQUAL(0U, field.value());
+        REQUIRE CHECK_EQUAL(44U, field.value());
     }
 
     struct WhenNextTokenIsCharLiteral : public EnumFieldEqualReadStateFixture

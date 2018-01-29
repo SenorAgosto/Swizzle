@@ -151,6 +151,7 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsCommaButValueWillOverflowEnumType, verifyConsumer)
     {
-        CHECK_THROW(state.consume(info, nodeStack, attributeStack, tokenStack, context), swizzle::SyntaxError);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
+        CHECK_EQUAL(ParserState::EnumStartScope, parserState);
     }
 }

@@ -9,6 +9,7 @@
 #include <swizzle/ast/nodes/StructField.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/types/IsIntegerType.hpp>
+#include <swizzle/types/IsType.hpp>
 #include <swizzle/types/utils/StackInvert.hpp>
 #include <swizzle/types/utils/StackToList.hpp>
 #include <swizzle/types/TokenList.hpp>

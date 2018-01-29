@@ -64,13 +64,13 @@ namespace swizzle { namespace parser { namespace detail {
         auto structure = validateNodeStack(nodeStack, tokenInfo.fileInfo());
 
         types::TokenStack stack = tokenStack;
-        stack = utils::stack::invert(stack);
+        stack = types::utils::invert(stack);
 
         bool last = false;
         auto isStructField = ast::Matcher().isTypeOf<ast::nodes::StructField>();
         ast::Node::smartptr fieldNode = nullptr;
 
-        const TokenList list = utils::stack::to_list(stack);
+        const auto list = types::utils::to_list(stack);
         for(const auto token : list)
         {
             if(last)

@@ -1,7 +1,7 @@
 #pragma once 
-#include <swizzle/parser/NodeStack.hpp>
+#include <swizzle/types/NodeStack.hpp>
 
-namespace swizzle { namespace parser { namespace detail {
+namespace swizzle { namespace types { namespace utils {
 
     template<class NodeType>
     bool nodeStackTopIs(const NodeStack& nodeStack)

@@ -1,33 +1,34 @@
 #include "./ut_support/UnitTestSupport.hpp"
 
 #include <swizzle/ast/AbstractSyntaxTree.hpp>
-#include <swizzle/Exceptions.hpp>
-#include <swizzle/parser/detail/AppendNode.hpp>
-#include <swizzle/parser/detail/NodeStackTopIs.hpp>
-#include <swizzle/parser/ParserStateContext.hpp>
-#include <swizzle/parser/states/StructEndArrayOrVectorState.hpp>
-
 #include <swizzle/ast/nodes/Struct.hpp>
 #include <swizzle/ast/nodes/StructField.hpp>
+
+#include <swizzle/Exceptions.hpp>
+#include <swizzle/parser/ParserStateContext.hpp>
+#include <swizzle/parser/states/StructEndArrayOrVectorState.hpp>
+#include <swizzle/types/utils/AppendNode.hpp>
+#include <swizzle/types/utils/NodeStackTopIs.hpp>
 
 namespace {
 
     using namespace swizzle::ast;
     using namespace swizzle::lexer;
     using namespace swizzle::parser;
-
+    using namespace swizzle::types;
+    
     struct StructEndArrayOrVectorStateFixture
     {
         StructEndArrayOrVectorStateFixture()
         {
             nodeStack.push(ast.root());
 
-            auto node = detail::appendNode<nodes::Struct>(nodeStack, structKeyword, name, "my_namespace");
+            auto node = utils::appendNode<nodes::Struct>(nodeStack, structKeyword, name, "my_namespace");
 
             context.TypeCache["my_namespace::MyStruct"] = node;
             nodeStack.push(node);
 
-            node = detail::appendNode<nodes::StructField>(nodeStack);
+            node = utils::appendNode<nodes::StructField>(nodeStack);
             nodeStack.push(node);
         }
 
@@ -72,7 +73,7 @@ namespace {
         CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        REQUIRE CHECK(detail::nodeStackTopIs<nodes::StructField>(nodeStack));
+        REQUIRE CHECK(utils::nodeStackTopIs<nodes::StructField>(nodeStack));
         const auto& top = static_cast<nodes::StructField&>(*nodeStack.top());
 
         CHECK_EQUAL("field1", top.name().token().to_string());

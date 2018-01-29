@@ -1,10 +1,10 @@
 #include "./ut_support/UnitTestSupport.hpp"
-#include <swizzle/parser/utils/StackInvert.hpp>
+#include <swizzle/types/utils/StackInvert.hpp>
 
 namespace {
 
     using namespace swizzle::lexer;
-    using namespace swizzle::parser;
+    using namespace swizzle::types;
 
     struct InvertFixture
     {
@@ -20,7 +20,7 @@ namespace {
 
     TEST_FIXTURE(InvertFixture, verifyInvert)
     {
-        TokenStack stack = utils::stack::invert(tokenStack);
+        TokenStack stack = utils::invert(tokenStack);
 
         CHECK_EQUAL("foo", stack.top().token().to_string()); stack.pop();
         CHECK_EQUAL("bar", stack.top().token().to_string()); stack.pop();

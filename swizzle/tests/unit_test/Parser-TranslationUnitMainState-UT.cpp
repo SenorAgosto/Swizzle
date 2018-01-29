@@ -11,13 +11,15 @@
 #include <swizzle/ast/nodes/Import.hpp>
 #include <swizzle/ast/nodes/MultilineComment.hpp>
 #include <swizzle/ast/nodes/StringLiteral.hpp>
+
 #include <swizzle/Exceptions.hpp>
-#include <swizzle/parser/detail/NodeStackTopIs.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/states/TranslationUnitMainState.hpp>
+#include <swizzle/types/utils/NodeStackTopIs.hpp>
 
 #include <array>
 #include <cstdint>
+#include <memory>
 
 namespace {
 
@@ -32,8 +34,8 @@ namespace {
         {
             nodeStack.push(ast.root());
 
-            EnumValueType val = std::uint64_t(100);
-            context.CurrentEnumValue = val; // something non-zero so we can ensure this is reset
+            context.CurrentEnumValue = std::unique_ptr<EnumValueInterface>(new EnumValue<std::uint64_t>());
+            context.CurrentEnumValue->value(100);
         }
 
         states::TranslationUnitMainState state;
@@ -217,7 +219,7 @@ namespace {
         REQUIRE CHECK_EQUAL(1U, nodeStack.size());
         REQUIRE CHECK_EQUAL(1U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
-        CHECK(detail::nodeStackTopIs<nodes::Attribute>(attributeStack));
+        CHECK(utils::nodeStackTopIs<nodes::Attribute>(attributeStack));
     }
 
     struct WhenNextTokenIsAttributeBlock : public TranslationUnitMainStateFixture
@@ -251,7 +253,7 @@ namespace {
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         auto matcher = Matcher().hasChildOf<nodes::AttributeBlock>();
-        REQUIRE CHECK(detail::nodeStackTopIs<nodes::Attribute>(attributeStack));
+        REQUIRE CHECK(utils::nodeStackTopIs<nodes::Attribute>(attributeStack));
         REQUIRE CHECK(matcher(attributeStack.top()));
     }
 
@@ -286,7 +288,7 @@ namespace {
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         auto matcher = Matcher().getChildrenOf<nodes::HexLiteral>().bind("hex");
-        REQUIRE CHECK(detail::nodeStackTopIs<nodes::Attribute>(attributeStack));
+        REQUIRE CHECK(utils::nodeStackTopIs<nodes::Attribute>(attributeStack));
         REQUIRE CHECK(matcher(attributeStack.top()));
 
         const auto hexLiteralNode = matcher.bound("hex_0");
@@ -328,7 +330,7 @@ namespace {
 
         auto matcher = Matcher().getChildrenOf<nodes::CharLiteral>().bind("char");
 
-        REQUIRE CHECK(detail::nodeStackTopIs<nodes::Attribute>(attributeStack));
+        REQUIRE CHECK(utils::nodeStackTopIs<nodes::Attribute>(attributeStack));
         REQUIRE CHECK(matcher(attributeStack.top()));
 
         const auto charLiteralNode = matcher.bound("char_0");
@@ -369,7 +371,7 @@ namespace {
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         auto matcher = Matcher().getChildrenOf<nodes::StringLiteral>().bind("string");
-        REQUIRE CHECK(detail::nodeStackTopIs<nodes::Attribute>(attributeStack));
+        REQUIRE CHECK(utils::nodeStackTopIs<nodes::Attribute>(attributeStack));
         REQUIRE CHECK(matcher(attributeStack.top()));
 
         const auto stringLiteralNode = matcher.bound("string_0");

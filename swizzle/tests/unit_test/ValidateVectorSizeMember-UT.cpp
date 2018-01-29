@@ -1,22 +1,24 @@
 #include "./ut_support/UnitTestSupport.hpp"
 #include <swizzle/parser/detail/ValidateVectorSizeMember.hpp>
 
-#include <swizzle/Exceptions.hpp>
 #include <swizzle/ast/AbstractSyntaxTree.hpp>
 #include <swizzle/ast/nodes/Comment.hpp>
 #include <swizzle/ast/nodes/Struct.hpp>
 #include <swizzle/ast/nodes/StructField.hpp>
+
+#include <swizzle/Exceptions.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
-#include <swizzle/parser/detail/AppendNode.hpp>
-#include <swizzle/parser/NodeStack.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
-#include <swizzle/parser/TokenStack.hpp>
+#include <swizzle/types/NodeStack.hpp>
+#include <swizzle/types/utils/AppendNode.hpp>
+#include <swizzle/types/TokenStack.hpp>
 
 namespace {
 
     using namespace swizzle::ast;
     using namespace swizzle::lexer;
     using namespace swizzle::parser;
+    using namespace swizzle::types;
 
     struct ValidateVectorSizeMemberFixture
     {
@@ -24,14 +26,14 @@ namespace {
         {
             const auto info = TokenInfo(Token("struct", 0, 6, TokenType::keyword), FileInfo("test.swizzle"));
             const auto name = TokenInfo(Token(structName, 0, structName.length(), TokenType::string), FileInfo("test.swizzle"));
-            const auto node = detail::appendNode<nodes::Struct>(nodeStack, info, name, nameSpace);
+            const auto node = utils::appendNode<nodes::Struct>(nodeStack, info, name, nameSpace);
 
             return node;
         }
 
         Node::smartptr make_field(const std::string& type, const Token& name)
         {
-            auto node = detail::appendNode<nodes::StructField>(nodeStack);
+            auto node = utils::appendNode<nodes::StructField>(nodeStack);
             auto& field = static_cast<nodes::StructField&>(*node);
             field.type(type);
             field.name(TokenInfo(name, FileInfo("test.swizzle")));
@@ -277,7 +279,7 @@ namespace {
         {
             nodeStack.push(ast.root());
 
-            const auto node = detail::appendNode<nodes::Comment>(nodeStack, TokenInfo(Token("// blah", 0, 7, TokenType::comment), FileInfo("test.swizzle")));
+            const auto node = utils::appendNode<nodes::Comment>(nodeStack, TokenInfo(Token("// blah", 0, 7, TokenType::comment), FileInfo("test.swizzle")));
             nodeStack.push(node);
             tokenStack.push(token);
         }
@@ -296,10 +298,10 @@ namespace {
 
             const auto info = TokenInfo(Token("// blah", 0, 7, TokenType::comment), FileInfo("test.swizzle"));
 
-            auto node = detail::appendNode<nodes::Comment>(nodeStack, info);
+            auto node = utils::appendNode<nodes::Comment>(nodeStack, info);
             nodeStack.push(node);
 
-            node = detail::appendNode<nodes::StructField>(nodeStack);
+            node = utils::appendNode<nodes::StructField>(nodeStack);
             nodeStack.push(node);
         }
     };

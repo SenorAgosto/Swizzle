@@ -3,16 +3,18 @@
 #include <swizzle/ast/AbstractSyntaxTree.hpp>
 #include <swizzle/ast/Node.hpp>
 #include <swizzle/ast/nodes/BitfieldField.hpp>
+
 #include <swizzle/Exceptions.hpp>
-#include <swizzle/parser/detail/AppendNode.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/states/BitfieldEndPositionState.hpp>
+#include <swizzle/types/utils/AppendNode.hpp>
 
 namespace {
 
     using namespace swizzle::ast;
     using namespace swizzle::lexer;
     using namespace swizzle::parser;
+    using namespace swizzle::types;
 
     struct BitfieldEndPositionStateFixture
     {
@@ -23,7 +25,7 @@ namespace {
             const auto bitfieldName = TokenInfo(Token("my_bitfield", 0, 11, TokenType::string), FileInfo("test.swizzle"));
             const auto bitfieldUnderlying = TokenInfo(Token("u32", 0, 3, TokenType::type), FileInfo("test.swizzle"));
 
-            const auto node = swizzle::parser::detail::appendNode<nodes::BitfieldField>(nodeStack, bitfieldName, bitfieldUnderlying);
+            const auto node = utils::appendNode<nodes::BitfieldField>(nodeStack, bitfieldName, bitfieldUnderlying);
             nodeStack.push(node);
         }
 

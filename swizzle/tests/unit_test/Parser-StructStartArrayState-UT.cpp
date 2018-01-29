@@ -7,16 +7,17 @@
 #include <swizzle/ast/nodes/StructField.hpp>
 
 #include <swizzle/Exceptions.hpp>
-#include <swizzle/parser/detail/AppendNode.hpp>
-#include <swizzle/parser/detail/NodeStackTopIs.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/states/StructStartArrayState.hpp>
+#include <swizzle/types/utils/AppendNode.hpp>
+#include <swizzle/types/utils/NodeStackTopIs.hpp>
 
 namespace {
 
     using namespace swizzle::ast;
     using namespace swizzle::lexer;
     using namespace swizzle::parser;
+    using namespace swizzle::types;
 
     struct StructStartArrayStateFixture
     {
@@ -27,10 +28,10 @@ namespace {
             const auto structKeyword = TokenInfo(Token("struct", 0, 6, TokenType::keyword), FileInfo("test.swizzle"));
             const auto name = TokenInfo(Token("MyStruct", 0, 8, TokenType::string), FileInfo("test.swizzle"));
 
-            auto node = detail::appendNode<nodes::Struct>(nodeStack, structKeyword, name, "my_namespace");
+            auto node = utils::appendNode<nodes::Struct>(nodeStack, structKeyword, name, "my_namespace");
             nodeStack.push(node);
 
-            node = detail::appendNode<nodes::StructField>(nodeStack);
+            node = utils::appendNode<nodes::StructField>(nodeStack);
             nodeStack.push(node);
         }
 
@@ -70,7 +71,7 @@ namespace {
         REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        REQUIRE CHECK(detail::nodeStackTopIs<nodes::StructField>(nodeStack));
+        REQUIRE CHECK(utils::nodeStackTopIs<nodes::StructField>(nodeStack));
         const auto& field = static_cast<nodes::StructField&>(*nodeStack.top());
 
         CHECK(field.isArray());

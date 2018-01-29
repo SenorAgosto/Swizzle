@@ -3,18 +3,18 @@
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/ast/nodes/TypeAlias.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
-#include <swizzle/parser/detail/CreateType.hpp>
-#include <swizzle/parser/detail/NodeStackTopIs.hpp>
-#include <swizzle/parser/NodeStack.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
-#include <swizzle/parser/TokenStack.hpp>
 #include <swizzle/parser/utils/NameInTypeCache.hpp>
 #include <swizzle/types/IsFloatType.hpp>
 #include <swizzle/types/IsIntegerType.hpp>
+#include <swizzle/types/NodeStack.hpp>
+#include <swizzle/types/utils/CreateType.hpp>
+#include <swizzle/types/utils/NodeStackTopIs.hpp>
+#include <swizzle/types/TokenStack.hpp>
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState UsingTypeReadState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack&, TokenStack& tokenStack, ParserStateContext& context)
+    ParserState UsingTypeReadState::consume(const lexer::TokenInfo& token, types::NodeStack& nodeStack, types::NodeStack&, types::TokenStack& tokenStack, ParserStateContext& context)
     {
         const auto type = token.token().type();
 
@@ -25,9 +25,9 @@ namespace swizzle { namespace parser { namespace states {
 
         if(type == lexer::TokenType::end_statement)
         {
-            const auto info = detail::createType(tokenStack);
+            const auto info = types::utils::createType(tokenStack);
 
-            if(detail::nodeStackTopIs<ast::nodes::TypeAlias>(nodeStack))
+            if(types::utils::nodeStackTopIs<ast::nodes::TypeAlias>(nodeStack))
             {
                 // the aliased type must exist in the TypeCache, or it must be a supported type.
                 const auto v = info.token().value();

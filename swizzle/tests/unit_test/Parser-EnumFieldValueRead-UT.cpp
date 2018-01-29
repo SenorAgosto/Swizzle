@@ -4,11 +4,12 @@
 #include <swizzle/ast/Node.hpp>
 #include <swizzle/ast/nodes/Enum.hpp>
 #include <swizzle/ast/nodes/EnumField.hpp>
-#include <swizzle/parser/detail/AppendNode.hpp>
-#include <swizzle/parser/ParserStateContext.hpp>
-#include <swizzle/parser/states/EnumFieldValueReadState.hpp>
 
 #include <swizzle/Exceptions.hpp>
+#include <swizzle/parser/ParserStateContext.hpp>
+#include <swizzle/parser/states/EnumFieldValueReadState.hpp>
+#include <swizzle/types/utils/AppendNode.hpp>
+
 
 namespace {
 
@@ -26,13 +27,13 @@ namespace {
             const auto enumField = TokenInfo(Token("enum", 0, 3, TokenType::keyword), FileInfo("test.swizzle"));
             const auto enumName = TokenInfo(Token("my_enum", 0, 7, TokenType::string), FileInfo("test.swizzle"));
 
-            auto node = swizzle::parser::detail::appendNode<nodes::Enum>(nodeStack, enumField, enumName, "my_namespace");
+            auto node = utils::appendNode<nodes::Enum>(nodeStack, enumField, enumName, "my_namespace");
             nodeStack.push(node);
 
             const TokenInfo info(Token("field1", 0, 6, TokenType::string), FileInfo("test.swizzle"));
             const TokenInfo underlying(Token("u8", 0, 2, TokenType::type), FileInfo("test.swizzle"));
 
-            node = swizzle::parser::detail::appendNode<nodes::EnumField>(nodeStack, info, underlying);
+            node = utils::appendNode<nodes::EnumField>(nodeStack, info, underlying);
             nodeStack.push(node);
         }
 

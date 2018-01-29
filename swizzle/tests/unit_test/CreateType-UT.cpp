@@ -2,8 +2,8 @@
 
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
-#include <swizzle/parser/TokenStack.hpp>
-#include <swizzle/parser/detail/CreateType.hpp>
+#include <swizzle/types/TokenStack.hpp>
+#include <swizzle/types/utils/CreateType.hpp>
 
 #include <boost/utility/string_view.hpp>
 
@@ -11,6 +11,7 @@ namespace {
 
     using namespace swizzle::lexer;
     using namespace swizzle::parser;
+    using namespace swizzle::types;
 
     struct CreateTokenFixture
     {
@@ -29,7 +30,7 @@ namespace {
     {
         CHECK_EQUAL(3U, tokenStack.size());
 
-        const auto info = detail::createType(tokenStack);
+        const auto info = utils::createType(tokenStack);
 
         CHECK_EQUAL("foo::bar::MyType", info.token().to_string());
         CHECK_EQUAL(0U, tokenStack.size());
@@ -47,6 +48,6 @@ namespace {
     TEST_FIXTURE(WhenTokensNotOnTheSameLine, verifyCreateType)
     {
         CHECK_EQUAL(3U, tokenStack.size());
-        CHECK_THROW(detail::createType(tokenStack), swizzle::ParserError);
+        CHECK_THROW(utils::createType(tokenStack), swizzle::ParserError);
     }
 }

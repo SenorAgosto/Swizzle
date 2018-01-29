@@ -1,8 +1,8 @@
 #pragma once
 #include <swizzle/lexer/TokenInfo.hpp>
-#include <swizzle/parser/TokenStack.hpp>
+#include <swizzle/types/TokenStack.hpp>
 
-namespace swizzle { namespace parser { namespace detail {
+namespace swizzle { namespace types { namespace utils {
 
     lexer::TokenInfo createNamespace(TokenStack& tokenStack);
 }}}

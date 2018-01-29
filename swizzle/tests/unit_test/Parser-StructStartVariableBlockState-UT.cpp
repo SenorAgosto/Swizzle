@@ -5,16 +5,17 @@
 #include <swizzle/ast/Node.hpp>
 
 #include <swizzle/Exceptions.hpp>
-#include <swizzle/parser/detail/AppendNode.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/states/StructVectorState.hpp>
+#include <swizzle/types/utils/AppendNode.hpp>
 
 namespace {
 
     using namespace swizzle::ast;
     using namespace swizzle::lexer;
     using namespace swizzle::parser;
-
+    using namespace swizzle::types;
+    
     struct StructStartVariableBlockFixture
     {
         StructStartVariableBlockFixture()

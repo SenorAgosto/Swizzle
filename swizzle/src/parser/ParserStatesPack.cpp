@@ -1,11 +1,11 @@
 #include <swizzle/parser/ParserStatesPack.hpp>
-
 #include <swizzle/Exceptions.hpp>
+
 #include <sstream>
 
 namespace swizzle { namespace parser {
 
-    ParserState ParserStatesPack::consume(const ParserState state, const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack& attributeStack, TokenStack& tokenStack, ParserStateContext& context)
+    ParserState ParserStatesPack::consume(const ParserState state, const lexer::TokenInfo& token, types::NodeStack& nodeStack, types::NodeStack& attributeStack, types::TokenStack& tokenStack, ParserStateContext& context)
     {
         switch(state)
         {

@@ -1,5 +1,5 @@
 #include "./ut_support/UnitTestSupport.hpp"
-#include <swizzle/parser/detail/CreateMember.hpp>
+#include <swizzle/types/utils/CreateMember.hpp>
 
 #include <swizzle/ast/AbstractSyntaxTree.hpp>
 #include <swizzle/ast/nodes/Comment.hpp>
@@ -7,16 +7,17 @@
 #include <swizzle/ast/nodes/StructField.hpp>
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
-#include <swizzle/parser/detail/AppendNode.hpp>
-#include <swizzle/parser/NodeStack.hpp>
-#include <swizzle/parser/TokenStack.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
+#include <swizzle/types/NodeStack.hpp>
+#include <swizzle/types/utils/AppendNode.hpp>
+#include <swizzle/types/TokenStack.hpp>
 
 namespace {
 
     using namespace swizzle::ast;
     using namespace swizzle::lexer;
     using namespace swizzle::parser;
+    using namespace swizzle::types;
 
     struct CreateMemberFixture
     {
@@ -27,20 +28,20 @@ namespace {
             const auto info = TokenInfo(Token("struct", 0, 6, TokenType::keyword), FileInfo("test.swizzle"));
             const auto name = TokenInfo(Token("MyStruct", 0, 8, TokenType::string), FileInfo("test.swizzle"));
 
-            auto node = detail::appendNode<nodes::Struct>(nodeStack, info, name, "my_namespace");
+            auto node = utils::appendNode<nodes::Struct>(nodeStack, info, name, "my_namespace");
             nodeStack.push(node);
 
-            node = detail::appendNode<nodes::StructField>(nodeStack);
+            node = utils::appendNode<nodes::StructField>(nodeStack);
             auto& field1 = static_cast<nodes::StructField&>(*node);
             field1.name(TokenInfo(Token("field1", 0, 6, TokenType::string), FileInfo("test.swizzle")));
             field1.type("u8");
 
-            node = detail::appendNode<nodes::StructField>(nodeStack);
+            node = utils::appendNode<nodes::StructField>(nodeStack);
             auto& field2 = static_cast<nodes::StructField&>(*node);
             field2.name(TokenInfo(Token("field2", 0, 6, TokenType::string), FileInfo("test.swizzle")));
             field2.type("u32");
 
-            node = detail::appendNode<nodes::StructField>(nodeStack);
+            node = utils::appendNode<nodes::StructField>(nodeStack);
             auto& field3 = static_cast<nodes::StructField&>(*node);
             field3.name(TokenInfo(Token("field3", 0, 6, TokenType::string), FileInfo("test.swizzle")));
             field3.type("i8");
@@ -61,7 +62,7 @@ namespace {
         // push one token onto the tokenStack, the name of a field in the current struct which is an integer type.
         tokenStack.push(TokenInfo(Token("field2", 0, 6, TokenType::string), FileInfo("test.swizzle")));
 
-        const auto info = detail::createMember(currentToken, nodeStack, tokenStack, context, "stack empty");
+        const auto info = utils::createMember(currentToken, nodeStack, tokenStack, context, "stack empty");
         CHECK_EQUAL("field2", info.token().to_string());
     }
 
@@ -74,15 +75,15 @@ namespace {
             const auto info = TokenInfo(Token("struct", 0, 6, TokenType::keyword), FileInfo("test.swizzle"));
             const auto name = TokenInfo(Token("MyStruct", 0, 8, TokenType::string), FileInfo("test.swizzle"));
 
-            auto node = detail::appendNode<nodes::Struct>(nodeStack, info, name, "my_namespace");
+            auto node = utils::appendNode<nodes::Struct>(nodeStack, info, name, "my_namespace");
             nodeStack.push(node);
 
-            node = detail::appendNode<nodes::StructField>(nodeStack);
+            node = utils::appendNode<nodes::StructField>(nodeStack);
             auto& field1 = static_cast<nodes::StructField&>(*node);
             field1.name(TokenInfo(Token("field1", 0, 6, TokenType::string), FileInfo("test.swizzle")));
             field1.type("u8");
 
-            node = detail::appendNode<nodes::StructField>(nodeStack);
+            node = utils::appendNode<nodes::StructField>(nodeStack);
             auto& field2 = static_cast<nodes::StructField&>(*node);
             field2.name(TokenInfo(Token("field2", 0, 6, TokenType::string), FileInfo("test.swizzle")));
             field2.type("u32");
@@ -94,10 +95,10 @@ namespace {
             const auto info2 = TokenInfo(Token("struct", 0, 6, TokenType::keyword), FileInfo("test.swizzle"));
             const auto name2 = TokenInfo(Token("MyStruct2", 0, 8, TokenType::string), FileInfo("test.swizzle"));
 
-            node = detail::appendNode<nodes::Struct>(nodeStack, info2, name2, "my_namespace");
+            node = utils::appendNode<nodes::Struct>(nodeStack, info2, name2, "my_namespace");
             nodeStack.push(node);
 
-            node = detail::appendNode<nodes::StructField>(nodeStack);
+            node = utils::appendNode<nodes::StructField>(nodeStack);
             auto& field3 = static_cast<nodes::StructField&>(*node);
             field3.name(TokenInfo(Token("field1", 0, 6, TokenType::string), FileInfo("test.swizzle")));
             field3.type("MyStruct");
@@ -119,7 +120,7 @@ namespace {
         tokenStack.push(TokenInfo(Token(s, 0, 6, TokenType::string), FileInfo("test.swizzle", LineInfo(1, 1), LineInfo(1, 7))));
         tokenStack.push(TokenInfo(Token(s, 7, 6, TokenType::string), FileInfo("test.swizzle", LineInfo(1, 8), LineInfo(1, 14))));
 
-        const auto info = detail::createMember(currentToken, nodeStack, tokenStack, context, "stack empty");
+        const auto info = utils::createMember(currentToken, nodeStack, tokenStack, context, "stack empty");
         CHECK_EQUAL("field1.field2", info.token().to_string());
     }
 
@@ -134,6 +135,6 @@ namespace {
 
     TEST_FIXTURE(WhenTokenStackIsEmpty, verifyCreateMemberThrows)
     {
-        CHECK_THROW(detail::createMember(token, nodeStack, tokenStack, context, "stack empty"), swizzle::SyntaxError);
+        CHECK_THROW(utils::createMember(token, nodeStack, tokenStack, context, "stack empty"), swizzle::SyntaxError);
     }
 }

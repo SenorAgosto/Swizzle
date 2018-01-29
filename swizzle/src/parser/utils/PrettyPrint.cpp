@@ -9,10 +9,11 @@ namespace swizzle { namespace parser { namespace utils {
             if(source.empty()) return source;
             
             std::size_t start = position;
-            while(source.at(start) != '\n') --start;
+            while((start > 0) && source.at(start) != '\n') --start;
             
             std::size_t end = position;
-            while(source.at(end) != '\n') ++end;
+            const std::size_t fin = source.length();
+            while((end < fin) && source.at(end) != '\n') ++end;
             
             return source.substr(start, end - start);
         }

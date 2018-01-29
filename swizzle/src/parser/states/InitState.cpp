@@ -48,6 +48,6 @@ namespace swizzle { namespace parser { namespace states {
             }
         }
 
-        throw SyntaxError("Expected comment, import statement, or namespace declaration", token);
+        throw SyntaxError("Token not allowed before namespace declaration", token);
     }
 }}}

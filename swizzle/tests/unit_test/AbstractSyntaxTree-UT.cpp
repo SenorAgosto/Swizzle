@@ -20,8 +20,8 @@
 #include <swizzle/ast/nodes/VariableBlockCase.hpp>
 
 #include <swizzle/lexer/TokenType.hpp>
-#include <swizzle/parser/detail/AppendNode.hpp>
-#include <swizzle/parser/NodeStack.hpp>
+#include <swizzle/types/NodeStack.hpp>
+#include <swizzle/types/utils/AppendNode.hpp>
 
 #include <cstddef>
 
@@ -30,6 +30,7 @@ namespace {
     using namespace swizzle::ast;
     using namespace swizzle::lexer;
     using namespace swizzle::parser;
+    using namespace swizzle::types;
 
     class TestVisitor : public VisitorInterface
     {
@@ -116,7 +117,7 @@ namespace {
     {
         WhenTreeHasAttribute()
         {
-            detail::appendNode<nodes::Attribute>(nodeStack, TokenInfo(Token("@verify", 0, 7, TokenType::attribute), FileInfo("test.swizzle")));
+            utils::appendNode<nodes::Attribute>(nodeStack, TokenInfo(Token("@verify", 0, 7, TokenType::attribute), FileInfo("test.swizzle")));
         }
     };
 
@@ -135,7 +136,7 @@ namespace {
     {
         WhenTreeHasAttributeBlock()
         {
-            detail::appendNode<nodes::AttributeBlock>(nodeStack, TokenInfo(Token("{size() != 0}", 0, 13, TokenType::attribute), FileInfo("test.swizzle")));
+            utils::appendNode<nodes::AttributeBlock>(nodeStack, TokenInfo(Token("{size() != 0}", 0, 13, TokenType::attribute), FileInfo("test.swizzle")));
         }
     };
 
@@ -154,7 +155,7 @@ namespace {
     {
         WhenTreeHasCharLiteral()
         {
-            detail::appendNode<nodes::CharLiteral>(nodeStack, TokenInfo(Token("'a'", 0, 3, TokenType::char_literal), FileInfo("test.swizzle")));
+            utils::appendNode<nodes::CharLiteral>(nodeStack, TokenInfo(Token("'a'", 0, 3, TokenType::char_literal), FileInfo("test.swizzle")));
         }
     };
 
@@ -173,7 +174,7 @@ namespace {
     {
         WhenTreeHasComment()
         {
-            detail::appendNode<nodes::Comment>(nodeStack, TokenInfo(Token("// comment", 0, 10, TokenType::comment), FileInfo("test.swizzle")));
+            utils::appendNode<nodes::Comment>(nodeStack, TokenInfo(Token("// comment", 0, 10, TokenType::comment), FileInfo("test.swizzle")));
         }
     };
 
@@ -195,7 +196,7 @@ namespace {
             const auto keyword = TokenInfo(Token("enum", 0, 4, TokenType::keyword), FileInfo("test.swizzle"));
             const auto name = TokenInfo(Token("MyEnum", 0, 6, TokenType::string), FileInfo("test.swizzle"));
 
-            detail::appendNode<nodes::Enum>(nodeStack, keyword, name, "my_namespace");
+            utils::appendNode<nodes::Enum>(nodeStack, keyword, name, "my_namespace");
         }
     };
 
@@ -217,7 +218,7 @@ namespace {
             const auto name = TokenInfo(Token("MyEnum", 0, 6, TokenType::string), FileInfo("test.swizzle"));
             const auto underlying = TokenInfo(Token("u8", 0, 2, TokenType::type), FileInfo("test.swizzle"));
 
-            detail::appendNode<nodes::EnumField>(nodeStack, name, underlying);
+            utils::appendNode<nodes::EnumField>(nodeStack, name, underlying);
         }
     };
 
@@ -236,7 +237,7 @@ namespace {
     {
         WhenTreeHasHexLiteral()
         {
-            detail::appendNode<nodes::HexLiteral>(nodeStack, TokenInfo(Token("0x01", 0, 4, TokenType::hex_literal), FileInfo("test.swizzle")));
+            utils::appendNode<nodes::HexLiteral>(nodeStack, TokenInfo(Token("0x01", 0, 4, TokenType::hex_literal), FileInfo("test.swizzle")));
         }
     };
 
@@ -255,7 +256,7 @@ namespace {
     {
         WhenTreeHasImport()
         {
-            detail::appendNode<nodes::Import>(nodeStack, TokenInfo(Token("blahblah", 0, 8, TokenType::string), FileInfo("test.swizzle")), "blahblah.swizzle");
+            utils::appendNode<nodes::Import>(nodeStack, TokenInfo(Token("blahblah", 0, 8, TokenType::string), FileInfo("test.swizzle")), "blahblah.swizzle");
         }
     };
 
@@ -274,7 +275,7 @@ namespace {
     {
         WhenTreeHasMultilineComment()
         {
-            detail::appendNode<nodes::MultilineComment>(nodeStack, TokenInfo(Token("// multiline comment", 0, 21, TokenType::multiline_comment), FileInfo("test.swizzle")));
+            utils::appendNode<nodes::MultilineComment>(nodeStack, TokenInfo(Token("// multiline comment", 0, 21, TokenType::multiline_comment), FileInfo("test.swizzle")));
         }
     };
 
@@ -293,7 +294,7 @@ namespace {
     {
         WhenTreeHasNumericLiteral()
         {
-            detail::appendNode<nodes::NumericLiteral>(nodeStack, TokenInfo(Token("42", 0, 2, TokenType::numeric_literal), FileInfo("test.swizzle")));
+            utils::appendNode<nodes::NumericLiteral>(nodeStack, TokenInfo(Token("42", 0, 2, TokenType::numeric_literal), FileInfo("test.swizzle")));
         }
     };
 
@@ -312,7 +313,7 @@ namespace {
     {
         WhenTreeHasStringLiteral()
         {
-            detail::appendNode<nodes::StringLiteral>(nodeStack, TokenInfo(Token("\"blah\"", 0, 6, TokenType::string_literal), FileInfo("test.swizzle")));
+            utils::appendNode<nodes::StringLiteral>(nodeStack, TokenInfo(Token("\"blah\"", 0, 6, TokenType::string_literal), FileInfo("test.swizzle")));
         }
     };
 
@@ -334,7 +335,7 @@ namespace {
             const auto usingClause = TokenInfo(Token("using", 0, 5, TokenType::keyword), FileInfo("test.swizzle"));
             const auto newType = TokenInfo(Token("MyType", 0, 5, TokenType::string_literal), FileInfo("test.swizzle"));
 
-            detail::appendNode<nodes::TypeAlias>(nodeStack, usingClause, newType);
+            utils::appendNode<nodes::TypeAlias>(nodeStack, usingClause, newType);
         }
     };
 

@@ -10,7 +10,8 @@ namespace {
     using namespace swizzle::ast;
     using namespace swizzle::lexer;
     using namespace swizzle::parser;
-
+    using namespace swizzle::types;
+    
     struct ExternFirstColonStateFixture
     {
         ExternFirstColonStateFixture()

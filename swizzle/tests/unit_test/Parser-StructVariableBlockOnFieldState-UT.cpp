@@ -8,13 +8,15 @@
 #include <swizzle/ast/nodes/Struct.hpp>
 #include <swizzle/ast/nodes/StructField.hpp>
 #include <swizzle/ast/nodes/VariableBlock.hpp>
-#include <swizzle/parser/detail/AppendNode.hpp>
+
 #include <swizzle/parser/ParserStateContext.hpp>
+#include <swizzle/types/utils/AppendNode.hpp>
 
 namespace{
     using namespace swizzle::ast;
     using namespace swizzle::lexer;
     using namespace swizzle::parser;
+    using namespace swizzle::types;
 
     struct StructVariableBlockOnFieldStateFixture
     {
@@ -26,7 +28,7 @@ namespace{
 
             const auto info = TokenInfo(Token("struct", 0, 6, TokenType::keyword), FileInfo("test.swizzle"));
             const auto name = TokenInfo(Token("MyStruct", 0, 8, TokenType::string), FileInfo("test.swizzle"));
-            const auto node = detail::appendNode<nodes::Struct>(nodeStack, info, name, "my_namespace");
+            const auto node = utils::appendNode<nodes::Struct>(nodeStack, info, name, "my_namespace");
             nodeStack.push(node);
 
             context.TypeCache["my_namespace::MyStruct"] = node;
@@ -68,13 +70,13 @@ namespace{
     {
         WhenNextTokenIsLeftBrace()
         {
-            auto node = detail::appendNode<nodes::StructField>(nodeStack);
+            auto node = utils::appendNode<nodes::StructField>(nodeStack);
             auto& field = static_cast<nodes::StructField&>(*node);
             field.name(TokenInfo(Token("field1", 0, 6, TokenType::string), FileInfo("test.swizzle")));
             field.type("u8");
 
             const TokenInfo info = TokenInfo(Token("variable_block", 0, 14, TokenType::keyword), FileInfo("test.swizzle"));
-            node = detail::appendNode<nodes::VariableBlock>(nodeStack, info);
+            node = utils::appendNode<nodes::VariableBlock>(nodeStack, info);
             nodeStack.push(node);
 
             tokenStack.push(TokenInfo(Token("field1", 0, 6, TokenType::string), FileInfo("test.swizzle")));
@@ -102,7 +104,7 @@ namespace{
         WhenNextTokenIsLeftBraceAndVariableBlockFieldIsNotDefined()
         {
             const TokenInfo info = TokenInfo(Token("variable_block", 0, 14, TokenType::keyword), FileInfo("test.swizzle"));
-            const auto node = detail::appendNode<nodes::VariableBlock>(nodeStack, info);
+            const auto node = utils::appendNode<nodes::VariableBlock>(nodeStack, info);
             nodeStack.push(node);
 
             tokenStack.push(TokenInfo(Token("field1", 0, 6, TokenType::string), FileInfo("test.swizzle")));

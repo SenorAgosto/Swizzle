@@ -6,6 +6,6 @@ namespace swizzle { namespace parser { namespace states {
     class StructVariableBlockCaseValueReadState : public ParserStateInterface
     {
     public:
-        ParserState consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack& attributeStack, TokenStack& tokenStack, ParserStateContext& context) override;
+        ParserState consume(const lexer::TokenInfo& token, types::NodeStack& nodeStack, types::NodeStack& attributeStack, types::TokenStack& tokenStack, ParserStateContext& context) override;
     };
 }}}

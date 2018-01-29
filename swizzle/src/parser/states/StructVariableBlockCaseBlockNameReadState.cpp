@@ -5,16 +5,17 @@
 
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
-#include <swizzle/parser/detail/CreateType.hpp>
-#include <swizzle/parser/detail/NodeStackTopIs.hpp>
-#include <swizzle/parser/NodeStack.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
-#include <swizzle/parser/TokenStack.hpp>
-#include <swizzle/parser/utils/ClearTokenStack.hpp>
+#include <swizzle/types/NodeStack.hpp>
+#include <swizzle/types/utils/CreateType.hpp>
+#include <swizzle/types/utils/ClearTokenStack.hpp>
+#include <swizzle/types/utils/NodeStackTopIs.hpp>
+#include <swizzle/types/TokenStack.hpp>
+
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState StructVariableBlockCaseBlockNameReadState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack&, TokenStack& tokenStack, ParserStateContext& context)
+    ParserState StructVariableBlockCaseBlockNameReadState::consume(const lexer::TokenInfo& token, types::NodeStack& nodeStack, types::NodeStack&, types::TokenStack& tokenStack, ParserStateContext& context)
     {
         const auto type = token.token().type();
 
@@ -25,7 +26,7 @@ namespace swizzle { namespace parser { namespace states {
 
         if(type == lexer::TokenType::comma)
         {
-            const auto structType = detail::createType(tokenStack);
+            const auto structType = types::utils::createType(tokenStack);
             const auto structTypeString = structType.token().to_string();
 
             auto iter = context.TypeCache.find(structTypeString);
@@ -45,13 +46,13 @@ namespace swizzle { namespace parser { namespace states {
             }
 
             // set the structType on the variableBlock case node & pop the node
-            if(detail::nodeStackTopIs<ast::nodes::VariableBlockCase>(nodeStack))
+            if(types::utils::nodeStackTopIs<ast::nodes::VariableBlockCase>(nodeStack))
             {
                 auto& blockCase = static_cast<ast::nodes::VariableBlockCase&>(*nodeStack.top());
                 blockCase.type(structType);
 
                 nodeStack.pop();
-                utils::clear(tokenStack);
+                types::utils::clear(tokenStack);
 
                 return ParserState::StructVariableBlockBeginCases;
             }

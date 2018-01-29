@@ -81,8 +81,8 @@ This is an informal description of the Swizzle DSL for describing messages on th
     namespace <namespace>::<namespace>;     // nested namespaces, e.g. foo::bar
 
     enum <name> : <underlying_type> { 
-        value,                          // defaults start value to 0
-        value = <hex_literal>,		    // literal should be validated against declared type.
+        value,                              // defaults start value to 0
+        value = <hex_literal>,              // literal should be validated against declared type.
         value = <char_literal>,
         Value = <numeric_literal>,
     } 

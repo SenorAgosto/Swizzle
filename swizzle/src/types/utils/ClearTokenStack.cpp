@@ -1,6 +1,6 @@
-#include <swizzle/parser/utils/ClearTokenStack.hpp>
+#include <swizzle/types/utils/ClearTokenStack.hpp>
 
-namespace swizzle { namespace parser { namespace utils {
+namespace swizzle { namespace types { namespace utils {
 
     void clear(TokenStack& tokenStack)
     {

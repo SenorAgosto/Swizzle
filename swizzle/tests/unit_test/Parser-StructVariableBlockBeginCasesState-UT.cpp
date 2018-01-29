@@ -9,16 +9,17 @@
 #include <swizzle/ast/nodes/VariableBlockCase.hpp>
 
 #include <swizzle/Exceptions.hpp>
-#include <swizzle/parser/detail/AppendNode.hpp>
-#include <swizzle/parser/detail/NodeStackTopIs.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/states/StructVariableBlockBeginCasesState.hpp>
+#include <swizzle/types/utils/AppendNode.hpp>
+#include <swizzle/types/utils/NodeStackTopIs.hpp>
 
 namespace {
 
     using namespace swizzle::ast;
     using namespace swizzle::lexer;
     using namespace swizzle::parser;
+    using namespace swizzle::types;
 
     struct StructVariableBlockBeginCasesStateFixture
     {
@@ -110,7 +111,7 @@ namespace {
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
-        CHECK(detail::nodeStackTopIs<nodes::VariableBlockCase>(nodeStack));
+        CHECK(utils::nodeStackTopIs<nodes::VariableBlockCase>(nodeStack));
     }
 
     struct WhenNextTokenIsRightBrace : public StructVariableBlockBeginCasesStateFixture
@@ -118,11 +119,11 @@ namespace {
         WhenNextTokenIsRightBrace()
         {
             const auto info = TokenInfo(Token("variable_block", 0, 14, TokenType::type), FileInfo("test.swizzle"));
-            const auto node = detail::appendNode<nodes::VariableBlock>(nodeStack, info);
+            const auto node = utils::appendNode<nodes::VariableBlock>(nodeStack, info);
 
             nodeStack.push(node);
 
-            detail::appendNode<nodes::VariableBlockCase>(nodeStack);
+            utils::appendNode<nodes::VariableBlockCase>(nodeStack);
         }
 
         const TokenInfo token = TokenInfo(Token("}", 0, 1, TokenType::r_brace), FileInfo("test.swizzle"));

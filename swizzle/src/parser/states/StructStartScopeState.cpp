@@ -16,17 +16,17 @@
 
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
-#include <swizzle/parser/detail/AppendNode.hpp>
-#include <swizzle/parser/detail/NodeStackTopIs.hpp>
-#include <swizzle/parser/NodeStack.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
-#include <swizzle/parser/TokenStack.hpp>
+#include <swizzle/types/NodeStack.hpp>
+#include <swizzle/types/TokenStack.hpp>
 #include <swizzle/types/IsIntegerType.hpp>
 #include <swizzle/types/IsFloatType.hpp>
+#include <swizzle/types/utils/AppendNode.hpp>
+#include <swizzle/types/utils/NodeStackTopIs.hpp>
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState StructStartScopeState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack& attributeStack, TokenStack& tokenStack, ParserStateContext& context)
+    ParserState StructStartScopeState::consume(const lexer::TokenInfo& token, types::NodeStack& nodeStack, types::NodeStack& attributeStack, types::TokenStack& tokenStack, ParserStateContext& context)
     {
         const auto type = token.token().type();
 
@@ -40,7 +40,7 @@ namespace swizzle { namespace parser { namespace states {
             if(type == lexer::TokenType::numeric_literal)
             {
                 equalRead_ = false;
-                detail::appendNode<ast::nodes::NumericLiteral>(attributeStack, token);
+                types::utils::appendNode<ast::nodes::NumericLiteral>(attributeStack, token);
 
                 return ParserState::StructStartScope;
             }
@@ -48,7 +48,7 @@ namespace swizzle { namespace parser { namespace states {
             if(type == lexer::TokenType::hex_literal)
             {
                 equalRead_ = false;
-                detail::appendNode<ast::nodes::HexLiteral>(attributeStack, token);
+                types::utils::appendNode<ast::nodes::HexLiteral>(attributeStack, token);
 
                 return ParserState::StructStartScope;
             }
@@ -56,7 +56,7 @@ namespace swizzle { namespace parser { namespace states {
             if(type == lexer::TokenType::char_literal)
             {
                 equalRead_ = false;
-                detail::appendNode<ast::nodes::CharLiteral>(attributeStack, token);
+                types::utils::appendNode<ast::nodes::CharLiteral>(attributeStack, token);
 
                 return ParserState::StructStartScope;
             }
@@ -64,7 +64,7 @@ namespace swizzle { namespace parser { namespace states {
             if(type == lexer::TokenType::string_literal)
             {
                 equalRead_ = false;
-                detail::appendNode<ast::nodes::StringLiteral>(attributeStack, token);
+                types::utils::appendNode<ast::nodes::StringLiteral>(attributeStack, token);
 
                 return ParserState::StructStartScope;
             }
@@ -79,7 +79,7 @@ namespace swizzle { namespace parser { namespace states {
 
             if(type == lexer::TokenType::numeric_literal)
             {
-                if(detail::nodeStackTopIs<ast::nodes::FieldLabel>(nodeStack))
+                if(types::utils::nodeStackTopIs<ast::nodes::FieldLabel>(nodeStack))
                 {
                     throw SyntaxError("Expected field declaration, found duplicitous field label", token);
                 }
@@ -95,7 +95,7 @@ namespace swizzle { namespace parser { namespace states {
             {
                 if(!attributeStack.empty())
                 {
-                    detail::appendNode<ast::nodes::AttributeBlock>(attributeStack, token);
+                    types::utils::appendNode<ast::nodes::AttributeBlock>(attributeStack, token);
                     return ParserState::StructStartScope;
                 }
             }
@@ -108,13 +108,13 @@ namespace swizzle { namespace parser { namespace states {
 
             if(type == lexer::TokenType::comment)
             {
-                detail::appendNode<ast::nodes::Comment>(nodeStack, token);
+                types::utils::appendNode<ast::nodes::Comment>(nodeStack, token);
                 return ParserState::StructStartScope;
             }
 
             if(type == lexer::TokenType::multiline_comment)
             {
-                detail::appendNode<ast::nodes::MultilineComment>(nodeStack, token);
+                types::utils::appendNode<ast::nodes::MultilineComment>(nodeStack, token);
                 return ParserState::StructStartScope;
             }
 
@@ -123,7 +123,7 @@ namespace swizzle { namespace parser { namespace states {
                 const auto& value = token.token().value();
                 if(types::IsIntegerType(value) || types::IsFloatType(value) || value == "bool")
                 {
-                    auto node = detail::appendNode<ast::nodes::StructField>(nodeStack);
+                    auto node = types::utils::appendNode<ast::nodes::StructField>(nodeStack);
                     nodeStack.push(node);
                     tokenStack.push(token);
 
@@ -132,7 +132,7 @@ namespace swizzle { namespace parser { namespace states {
 
                 if(value == "variable_block")
                 {
-                    auto node = detail::appendNode<ast::nodes::VariableBlock>(nodeStack, token);
+                    auto node = types::utils::appendNode<ast::nodes::VariableBlock>(nodeStack, token);
                     nodeStack.push(node);
 
                     return ParserState::StructStartVariableBlock;
@@ -143,7 +143,7 @@ namespace swizzle { namespace parser { namespace states {
 
             if(type == lexer::TokenType::string)
             {
-                if(detail::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
+                if(types::utils::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
                 {
                     auto& top = static_cast<ast::nodes::StructField&>(*nodeStack.top());
                     top.name(token);
@@ -151,7 +151,7 @@ namespace swizzle { namespace parser { namespace states {
                     return ParserState::StructFieldName;
                 }
 
-                auto node = detail::appendNode<ast::nodes::StructField>(nodeStack);
+                auto node = types::utils::appendNode<ast::nodes::StructField>(nodeStack);
                 nodeStack.push(node);
                 tokenStack.push(token);
 
@@ -170,7 +170,7 @@ namespace swizzle { namespace parser { namespace states {
 
             if(type == lexer::TokenType::r_brace)
             {
-                if(detail::nodeStackTopIs<ast::nodes::Struct>(nodeStack))
+                if(types::utils::nodeStackTopIs<ast::nodes::Struct>(nodeStack))
                 {
                     context.ClearFieldLabels();
                     

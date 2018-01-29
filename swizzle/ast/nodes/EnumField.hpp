@@ -2,9 +2,9 @@
 #include <swizzle/ast/Node.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
 #include <swizzle/types/EnumValue.hpp>
-#include <swizzle/types/EnumValueType.hpp>
 
-#include <cstddef>
+#include <cstdint>
+#include <memory>
 
 namespace swizzle { namespace ast { namespace nodes {
 
@@ -19,10 +19,8 @@ namespace swizzle { namespace ast { namespace nodes {
         void valueInfo(const lexer::TokenInfo& val);
         const lexer::TokenInfo& valueInfo() const;
 
-        void value(const types::EnumValueType& value);
-        const types::EnumValueType& value() const;
-
-        void incrementValue();
+        void value(const std::uint64_t value);
+        std::uint64_t value() const;
 
         void accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth = Node::Depth::All) override;
 
@@ -31,7 +29,6 @@ namespace swizzle { namespace ast { namespace nodes {
         const lexer::TokenInfo underlying_;
 
         lexer::TokenInfo valueInfo_;
-
-        types::EnumValue value_;
+        std::uint64_t value_;
     };
 }}}

@@ -16,17 +16,18 @@
 #include <swizzle/ast/nodes/VariableBlock.hpp>
 
 #include <swizzle/Exceptions.hpp>
-#include <swizzle/parser/detail/AppendNode.hpp>
-#include <swizzle/parser/detail/NodeStackTopIs.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/states/StructStartScopeState.hpp>
+#include <swizzle/types/utils/AppendNode.hpp>
+#include <swizzle/types/utils/NodeStackTopIs.hpp>
 
 namespace {
 
     using namespace swizzle::ast;
     using namespace swizzle::lexer;
     using namespace swizzle::parser;
-
+    using namespace swizzle::types;
+    
     struct StructStartScopeStateFixture
     {
         StructStartScopeStateFixture()
@@ -36,7 +37,7 @@ namespace {
             const auto structKeyword = TokenInfo(Token("struct", 0, 6, TokenType::keyword), FileInfo("test.swizzle"));
             const auto name = TokenInfo(Token("MyStruct", 0, 8, TokenType::string), FileInfo("test.swizzle"));
 
-            auto node = detail::appendNode<nodes::Struct>(nodeStack, structKeyword, name, "my_namespace");
+            auto node = utils::appendNode<nodes::Struct>(nodeStack, structKeyword, name, "my_namespace");
             nodeStack.push(node);
         }
 
@@ -135,7 +136,7 @@ namespace {
     {
         WhenNextTokenIsRightBrace()
         {
-            detail::appendNode<nodes::StructField>(nodeStack);
+            utils::appendNode<nodes::StructField>(nodeStack);
         }
 
         const Token token = Token("}", 0, 1, TokenType::r_brace);
@@ -269,7 +270,7 @@ namespace {
         CHECK_EQUAL(1U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        REQUIRE CHECK(detail::nodeStackTopIs<nodes::Attribute>(attributeStack));
+        REQUIRE CHECK(utils::nodeStackTopIs<nodes::Attribute>(attributeStack));
         const auto attributeNode = attributeStack.top();
         REQUIRE CHECK(attributeNode);
 
@@ -319,7 +320,7 @@ namespace {
         REQUIRE CHECK_EQUAL(1U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        REQUIRE CHECK(detail::nodeStackTopIs<nodes::Attribute>(attributeStack));
+        REQUIRE CHECK(utils::nodeStackTopIs<nodes::Attribute>(attributeStack));
 
         const auto attributeNode = attributeStack.top();
         REQUIRE CHECK(attributeNode);
@@ -383,7 +384,7 @@ namespace {
         REQUIRE CHECK_EQUAL(1U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        REQUIRE CHECK(detail::nodeStackTopIs<nodes::Attribute>(attributeStack));
+        REQUIRE CHECK(utils::nodeStackTopIs<nodes::Attribute>(attributeStack));
         const auto attributeNode = attributeStack.top();
 
         auto attributeValueMatcher = Matcher().getChildrenOf<nodes::CharLiteral>().bind("value");
@@ -446,7 +447,7 @@ namespace {
         REQUIRE CHECK_EQUAL(1U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        REQUIRE CHECK(detail::nodeStackTopIs<nodes::Attribute>(attributeStack));
+        REQUIRE CHECK(utils::nodeStackTopIs<nodes::Attribute>(attributeStack));
 
         const auto attributeNode = attributeStack.top();
         REQUIRE CHECK(attributeNode);
@@ -503,7 +504,7 @@ namespace {
         REQUIRE CHECK_EQUAL(1U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        REQUIRE CHECK(detail::nodeStackTopIs<nodes::Attribute>(attributeStack));
+        REQUIRE CHECK(utils::nodeStackTopIs<nodes::Attribute>(attributeStack));
         const auto attributeNode = attributeStack.top();
         REQUIRE CHECK(attributeNode);
 
@@ -552,7 +553,7 @@ namespace {
         REQUIRE CHECK_EQUAL(1U, tokenStack.size());
 
         CHECK_EQUAL("u8", tokenStack.top().token().value());
-        CHECK(detail::nodeStackTopIs<nodes::StructField>(nodeStack));
+        CHECK(utils::nodeStackTopIs<nodes::StructField>(nodeStack));
     }
 
     struct WhenNextTokenIsI8 : public StructStartScopeStateFixture
@@ -578,7 +579,7 @@ namespace {
         REQUIRE CHECK_EQUAL(1U, tokenStack.size());
 
         CHECK_EQUAL("i8", tokenStack.top().token().value());
-        CHECK(detail::nodeStackTopIs<nodes::StructField>(nodeStack));
+        CHECK(utils::nodeStackTopIs<nodes::StructField>(nodeStack));
     }
 
     struct WhenNextTokenIsU16 : public StructStartScopeStateFixture
@@ -604,7 +605,7 @@ namespace {
         REQUIRE CHECK_EQUAL(1U, tokenStack.size());
 
         CHECK_EQUAL("u16", tokenStack.top().token().value());
-        CHECK(detail::nodeStackTopIs<nodes::StructField>(nodeStack));
+        CHECK(utils::nodeStackTopIs<nodes::StructField>(nodeStack));
     }
 
     struct WhenNextTokenIsI16 : public StructStartScopeStateFixture
@@ -630,7 +631,7 @@ namespace {
         REQUIRE CHECK_EQUAL(1U, tokenStack.size());
 
         CHECK_EQUAL("i16", tokenStack.top().token().value());
-        CHECK(detail::nodeStackTopIs<nodes::StructField>(nodeStack));
+        CHECK(utils::nodeStackTopIs<nodes::StructField>(nodeStack));
     }
 
     struct WhenNextTokenIsU32 : public StructStartScopeStateFixture
@@ -656,7 +657,7 @@ namespace {
         REQUIRE CHECK_EQUAL(1U, tokenStack.size());
 
         CHECK_EQUAL("u32", tokenStack.top().token().value());
-        CHECK(detail::nodeStackTopIs<nodes::StructField>(nodeStack));
+        CHECK(utils::nodeStackTopIs<nodes::StructField>(nodeStack));
     }
 
     struct WhenNextTokenIsI32 : public StructStartScopeStateFixture
@@ -682,7 +683,7 @@ namespace {
         REQUIRE CHECK_EQUAL(1U, tokenStack.size());
 
         CHECK_EQUAL("i32", tokenStack.top().token().value());
-        CHECK(detail::nodeStackTopIs<nodes::StructField>(nodeStack));
+        CHECK(utils::nodeStackTopIs<nodes::StructField>(nodeStack));
     }
 
     struct WhenNextTokenIsU64 : public StructStartScopeStateFixture
@@ -708,7 +709,7 @@ namespace {
         REQUIRE CHECK_EQUAL(1U, tokenStack.size());
 
         CHECK_EQUAL("u64", tokenStack.top().token().value());
-        CHECK(detail::nodeStackTopIs<nodes::StructField>(nodeStack));
+        CHECK(utils::nodeStackTopIs<nodes::StructField>(nodeStack));
     }
 
     struct WhenNextTokenIsI64 : public StructStartScopeStateFixture
@@ -734,7 +735,7 @@ namespace {
         REQUIRE CHECK_EQUAL(1U, tokenStack.size());
 
         CHECK_EQUAL("i64", tokenStack.top().token().value());
-        CHECK(detail::nodeStackTopIs<nodes::StructField>(nodeStack));
+        CHECK(utils::nodeStackTopIs<nodes::StructField>(nodeStack));
     }
 
     struct WhenNextTokenIsF32 : public StructStartScopeStateFixture
@@ -760,7 +761,7 @@ namespace {
         REQUIRE CHECK_EQUAL(1U, tokenStack.size());
 
         CHECK_EQUAL("f32", tokenStack.top().token().value());
-        CHECK(detail::nodeStackTopIs<nodes::StructField>(nodeStack));
+        CHECK(utils::nodeStackTopIs<nodes::StructField>(nodeStack));
     }
 
     struct WhenNextTokenIsF64 : public StructStartScopeStateFixture
@@ -786,7 +787,7 @@ namespace {
         REQUIRE CHECK_EQUAL(1U, tokenStack.size());
 
         CHECK_EQUAL("f64", tokenStack.top().token().value());
-        CHECK(detail::nodeStackTopIs<nodes::StructField>(nodeStack));
+        CHECK(utils::nodeStackTopIs<nodes::StructField>(nodeStack));
     }
 
     struct WhenNextTokenIsBitfield : public StructStartScopeStateFixture
@@ -823,7 +824,7 @@ namespace {
         REQUIRE CHECK_EQUAL(3U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
-        CHECK(detail::nodeStackTopIs<nodes::VariableBlock>(nodeStack));
+        CHECK(utils::nodeStackTopIs<nodes::VariableBlock>(nodeStack));
     }
 
     struct WhenNextTokenIsUserDefinedTypeWithoutNamespace : public StructStartScopeStateFixture
@@ -847,7 +848,7 @@ namespace {
         REQUIRE CHECK_EQUAL(3U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(1U, tokenStack.size());
-        CHECK(detail::nodeStackTopIs<nodes::StructField>(nodeStack));
+        CHECK(utils::nodeStackTopIs<nodes::StructField>(nodeStack));
     }
 
     struct WhenNextTokenIsNamespace : public StructStartScopeStateFixture
@@ -871,14 +872,14 @@ namespace {
         REQUIRE CHECK_EQUAL(3U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(1U, tokenStack.size());
-        CHECK(detail::nodeStackTopIs<nodes::StructField>(nodeStack));
+        CHECK(utils::nodeStackTopIs<nodes::StructField>(nodeStack));
     }
 
     struct WhenNextTokenIsMemberName : public StructStartScopeStateFixture
     {
         WhenNextTokenIsMemberName()
         {
-            const auto node = detail::appendNode<nodes::StructField>(nodeStack);
+            const auto node = utils::appendNode<nodes::StructField>(nodeStack);
             nodeStack.push(node);
         }
 
@@ -902,7 +903,7 @@ namespace {
         REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        CHECK(detail::nodeStackTopIs<nodes::StructField>(nodeStack));
+        CHECK(utils::nodeStackTopIs<nodes::StructField>(nodeStack));
         const auto& structField = static_cast<nodes::StructField&>(*nodeStack.top());
         CHECK_EQUAL("field1", structField.name().token().value());
     }

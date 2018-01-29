@@ -7,16 +7,17 @@
 #include <swizzle/ast/nodes/VariableBlockCase.hpp>
 
 #include <swizzle/Exceptions.hpp>
-#include <swizzle/parser/detail/AppendNode.hpp>
-#include <swizzle/parser/detail/NodeStackTopIs.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/states/StructVariableBlockCaseValueState.hpp>
+#include <swizzle/types/utils/AppendNode.hpp>
+#include <swizzle/types/utils/NodeStackTopIs.hpp>
 
 namespace {
 
     using namespace swizzle::ast;
     using namespace swizzle::lexer;
     using namespace swizzle::parser;
+    using namespace swizzle::types;
 
     struct StructVariableBlockCaseValueStateFixture
     {
@@ -43,12 +44,12 @@ namespace {
     {
         IntMemberFixture()
         {
-            auto node = detail::appendNode<nodes::VariableBlock>(nodeStack, info);
+            auto node = utils::appendNode<nodes::VariableBlock>(nodeStack, info);
 
             auto& varBlock = static_cast<nodes::VariableBlock&>(*node);
             nodeStack.push(node);
 
-            node = detail::appendNode<nodes::VariableBlockCase>(nodeStack);
+            node = utils::appendNode<nodes::VariableBlockCase>(nodeStack);
             nodeStack.push(node);
 
             context.CurrentVariableOnFieldType = new nodes::StructField();
@@ -85,7 +86,7 @@ namespace {
         REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        REQUIRE CHECK(detail::nodeStackTopIs<nodes::VariableBlockCase>(nodeStack));
+        REQUIRE CHECK(utils::nodeStackTopIs<nodes::VariableBlockCase>(nodeStack));
         auto& blockCase = static_cast<nodes::VariableBlockCase&>(*nodeStack.top());
 
         CHECK_EQUAL("0x01", blockCase.value().token().value());
@@ -110,7 +111,7 @@ namespace {
         REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        REQUIRE CHECK(detail::nodeStackTopIs<nodes::VariableBlockCase>(nodeStack));
+        REQUIRE CHECK(utils::nodeStackTopIs<nodes::VariableBlockCase>(nodeStack));
         auto& blockCase = static_cast<nodes::VariableBlockCase&>(*nodeStack.top());
 
         CHECK_EQUAL("100", blockCase.value().token().value());
@@ -135,7 +136,7 @@ namespace {
         REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        REQUIRE CHECK(detail::nodeStackTopIs<nodes::VariableBlockCase>(nodeStack));
+        REQUIRE CHECK(utils::nodeStackTopIs<nodes::VariableBlockCase>(nodeStack));
         auto& blockCase = static_cast<nodes::VariableBlockCase&>(*nodeStack.top());
 
         CHECK_EQUAL("'a'", blockCase.value().token().value());
@@ -145,12 +146,12 @@ namespace {
     {
         StringMemberFixture()
         {
-            auto node = detail::appendNode<nodes::VariableBlock>(nodeStack, info);
+            auto node = utils::appendNode<nodes::VariableBlock>(nodeStack, info);
 
             auto& varBlock = static_cast<nodes::VariableBlock&>(*node);
             nodeStack.push(node);
 
-            node = detail::appendNode<nodes::VariableBlockCase>(nodeStack);
+            node = utils::appendNode<nodes::VariableBlockCase>(nodeStack);
             nodeStack.push(node);
 
             context.CurrentVariableOnFieldType = new nodes::StructField();
@@ -182,7 +183,7 @@ namespace {
         REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        REQUIRE CHECK(detail::nodeStackTopIs<nodes::VariableBlockCase>(nodeStack));
+        REQUIRE CHECK(utils::nodeStackTopIs<nodes::VariableBlockCase>(nodeStack));
         auto& blockCase = static_cast<nodes::VariableBlockCase&>(*nodeStack.top());
 
         CHECK_EQUAL("AS", blockCase.value().token().value());

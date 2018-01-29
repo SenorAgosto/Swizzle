@@ -5,16 +5,18 @@
 #include <swizzle/ast/Matcher.hpp>
 #include <swizzle/ast/nodes/Enum.hpp>
 #include <swizzle/ast/nodes/EnumField.hpp>
+
 #include <swizzle/Exceptions.hpp>
-#include <swizzle/parser/detail/AppendNode.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/states/EnumFieldEqualReadState.hpp>
+#include <swizzle/types/utils/AppendNode.hpp>
 
 namespace {
 
     using namespace swizzle::ast;
     using namespace swizzle::lexer;
     using namespace swizzle::parser;
+    using namespace swizzle::types;
 
     struct EnumFieldEqualReadStateFixture
     {
@@ -25,7 +27,7 @@ namespace {
             const auto enumInfo = TokenInfo(Token("enum", 0, 3, TokenType::keyword), FileInfo("test.swizzle"));
             const auto enumName = TokenInfo(Token("my_enum", 0, 7, TokenType::string), FileInfo("test.swizzle"));
 
-            auto node = swizzle::parser::detail::appendNode<nodes::Enum>(nodeStack, enumInfo, enumName, "my_namespace");
+            auto node = utils::appendNode<nodes::Enum>(nodeStack, enumInfo, enumName, "my_namespace");
             auto& enumNode = static_cast<nodes::Enum&>(*node);
             enumNode.underlying(TokenInfo(Token("u8", 0, 2, TokenType::type), FileInfo("test.swizzle")));
             nodeStack.push(node);
@@ -33,7 +35,7 @@ namespace {
             const TokenInfo info(Token("field1", 0, 6, TokenType::string), FileInfo("test.swizzle"));
             const TokenInfo underlying(Token("u8", 0, 2, TokenType::type), FileInfo("test.swizzle"));
 
-            node = swizzle::parser::detail::appendNode<nodes::EnumField>(nodeStack, info, underlying);
+            node = utils::appendNode<nodes::EnumField>(nodeStack, info, underlying);
             nodeStack.push(node);
         }
 
@@ -74,10 +76,7 @@ namespace {
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         const auto& field = dynamic_cast<nodes::EnumField&>(*nodeStack.top());
-        const auto& value = field.value();
-
-        REQUIRE CHECK_EQUAL(0, value.which());
-        CHECK_EQUAL(1U, boost::get<std::uint8_t>(value));
+        REQUIRE CHECK_EQUAL(1U, field.value());
     }
 
     struct WhenNextTokenIsNumericLiteral : public EnumFieldEqualReadStateFixture
@@ -103,10 +102,7 @@ namespace {
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         const auto& field = dynamic_cast<nodes::EnumField&>(*nodeStack.top());
-        const auto& value = field.value();
-
-        REQUIRE CHECK_EQUAL(0, value.which());
-        CHECK_EQUAL(44U, boost::get<std::uint8_t>(value));
+        REQUIRE CHECK_EQUAL(44U, field.value());
     }
 
     struct WhenNextTokenIsCharLiteral : public EnumFieldEqualReadStateFixture
@@ -132,10 +128,7 @@ namespace {
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
         const auto& field = dynamic_cast<nodes::EnumField&>(*nodeStack.top());
-        const auto& value = field.value();
-
-        REQUIRE CHECK_EQUAL(0, value.which());
-        CHECK_EQUAL(97U, boost::get<std::uint8_t>(value));
+        CHECK_EQUAL(97U, field.value());
     }
 
     struct WhenNextTokenIsInvalid : public EnumFieldEqualReadStateFixture

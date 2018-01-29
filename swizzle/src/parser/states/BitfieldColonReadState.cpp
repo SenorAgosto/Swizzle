@@ -3,15 +3,15 @@
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/ast/nodes/Bitfield.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
-#include <swizzle/parser/detail/NodeStackTopIs.hpp>
-#include <swizzle/parser/NodeStack.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
-#include <swizzle/parser/TokenStack.hpp>
 #include <swizzle/types/IsUnsignedIntegerType.hpp>
+#include <swizzle/types/NodeStack.hpp>
+#include <swizzle/types/utils/NodeStackTopIs.hpp>
+#include <swizzle/types/TokenStack.hpp>
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState BitfieldColonReadState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack&, TokenStack&, ParserStateContext&)
+    ParserState BitfieldColonReadState::consume(const lexer::TokenInfo& token, types::NodeStack& nodeStack, types::NodeStack&, types::TokenStack&, ParserStateContext&)
     {
         const auto type = token.token().type();
 
@@ -22,7 +22,7 @@ namespace swizzle { namespace parser { namespace states {
                 throw SyntaxError("Underlying type must be unsigned integer type", token);
             }
 
-            if(detail::nodeStackTopIs<ast::nodes::Bitfield>(nodeStack))
+            if(types::utils::nodeStackTopIs<ast::nodes::Bitfield>(nodeStack))
             {
                 auto& top = static_cast<ast::nodes::Bitfield&>(*nodeStack.top());
                 top.underlying(token);

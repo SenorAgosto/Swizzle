@@ -33,19 +33,14 @@ namespace swizzle { namespace ast { namespace nodes {
         return valueInfo_;
     }
 
-    void EnumField::value(const types::EnumValueType& value)
+    void EnumField::value(const std::uint64_t value)
     {
         value_ = value;
     }
 
-    const types::EnumValueType& EnumField::value() const
+    std::uint64_t EnumField::value() const
     {
-        return value_.value();
-    }
-
-    void EnumField::incrementValue()
-    {
-        value_.increment();
+        return value_;
     }
 
     void EnumField::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth)

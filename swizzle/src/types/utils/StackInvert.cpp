@@ -1,9 +1,7 @@
-#include <swizzle/parser/utils/StackInvert.hpp>
-#include <swizzle/parser/TokenStack.hpp>
-
+#include <swizzle/types/utils/StackInvert.hpp>
 #include <utility>
 
-namespace swizzle { namespace parser { namespace utils { namespace stack {
+namespace swizzle { namespace types { namespace utils {
 
     TokenStack invert(TokenStack& stack)
     {
@@ -17,4 +15,4 @@ namespace swizzle { namespace parser { namespace utils { namespace stack {
 
         return inverted;
     }
-}}}}
+}}}

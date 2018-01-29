@@ -5,10 +5,11 @@
 #include <swizzle/ast/Node.hpp>
 #include <swizzle/ast/nodes/Enum.hpp>
 #include <swizzle/ast/nodes/EnumField.hpp>
+
 #include <swizzle/Exceptions.hpp>
-#include <swizzle/parser/detail/AppendNode.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/parser/states/EnumFieldState.hpp>
+#include <swizzle/types/utils/AppendNode.hpp>
 
 namespace {
 
@@ -26,13 +27,13 @@ namespace {
             const auto enumInfo = TokenInfo(Token("enum", 0, 3, TokenType::keyword), FileInfo("test.swizzle"));
             const auto enumName = TokenInfo(Token("my_enum", 0, 7, TokenType::string), FileInfo("test.swizzle"));
 
-            auto node = swizzle::parser::detail::appendNode<nodes::Enum>(nodeStack, enumInfo, enumName, "my_namespace");
+            auto node = utils::appendNode<nodes::Enum>(nodeStack, enumInfo, enumName, "my_namespace");
             nodeStack.push(node);
 
             const TokenInfo info(Token("field1", 0, 6, TokenType::string), FileInfo("test.swizzle"));
             const TokenInfo underlying(Token("u8", 0, 2, TokenType::type), FileInfo("test.swizzle"));
 
-            node = swizzle::parser::detail::appendNode<nodes::EnumField>(nodeStack, info, underlying);
+            node = utils::appendNode<nodes::EnumField>(nodeStack, info, underlying);
             nodeStack.push(node);
         }
 
@@ -64,8 +65,7 @@ namespace {
         CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        REQUIRE CHECK_EQUAL(6, context.CurrentEnumValue.value().which());
-        CHECK_EQUAL(0U, boost::get<std::uint64_t>(context.CurrentEnumValue.value()));
+        CHECK_EQUAL(0U, context.CurrentEnumValue->value());
 
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
 
@@ -75,18 +75,15 @@ namespace {
         REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
 
-        REQUIRE CHECK_EQUAL(6, context.CurrentEnumValue.value().which());
-        CHECK_EQUAL(1U, boost::get<std::uint64_t>(context.CurrentEnumValue.value()));   // ensure the current enum value was incremented
+        CHECK_EQUAL(1U, context.CurrentEnumValue->value());
 
         auto matcher = Matcher().getChildrenOf<nodes::EnumField>().bind("fields");
         REQUIRE CHECK(matcher(nodeStack.top()));
 
         auto node = matcher.bound("fields_0");
         const auto& field = dynamic_cast<nodes::EnumField&>(*node);
-        const auto& value = field.value();
 
-        REQUIRE CHECK_EQUAL(6, value.which());
-        CHECK_EQUAL(0U, boost::get<std::uint64_t>(value));
+        CHECK_EQUAL(0U, field.value());
     }
 
     struct WhenNextTokenIsEqual : public EnumFieldStateFixture
@@ -147,13 +144,14 @@ namespace {
     {
         WhenNextTokenIsCommaButValueWillOverflowEnumType()
         {
-            EnumValueType val = std::numeric_limits<std::uint8_t>::max();
-            context.CurrentEnumValue = val;
+            context.CurrentEnumValue = std::unique_ptr<EnumValueInterface>(new EnumValue<std::uint8_t>());
+            context.CurrentEnumValue->value(255);
         }
     };
 
     TEST_FIXTURE(WhenNextTokenIsCommaButValueWillOverflowEnumType, verifyConsumer)
     {
-        CHECK_THROW(state.consume(info, nodeStack, attributeStack, tokenStack, context), swizzle::SyntaxError);
+        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
+        CHECK_EQUAL(ParserState::EnumStartScope, parserState);
     }
 }

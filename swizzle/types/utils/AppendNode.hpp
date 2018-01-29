@@ -1,8 +1,8 @@
 #pragma once
-#include <swizzle/parser/NodeStack.hpp>
 #include <swizzle/ast/Node.hpp>
+#include <swizzle/types/NodeStack.hpp>
 
-namespace swizzle { namespace parser { namespace detail {
+namespace swizzle { namespace types { namespace utils {
 
     template<class Node, typename... Args>
     ast::Node::smartptr appendNode(NodeStack& nodeStack, Args&&... args)

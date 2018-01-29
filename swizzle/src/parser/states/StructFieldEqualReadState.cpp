@@ -8,17 +8,17 @@
 #include <swizzle/lexer/Token.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
 #include <swizzle/lexer/TokenType.hpp>
-#include <swizzle/parser/detail/AppendNode.hpp>
-#include <swizzle/parser/detail/NodeStackTopIs.hpp>
-#include <swizzle/parser/NodeStack.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
-#include <swizzle/parser/TokenStack.hpp>
+#include <swizzle/types/NodeStack.hpp>
+#include <swizzle/types/utils/AppendNode.hpp>
+#include <swizzle/types/utils/NodeStackTopIs.hpp>
+#include <swizzle/types/TokenStack.hpp>
 #include <swizzle/types/SetValue.hpp>
 
 namespace swizzle { namespace parser { namespace states {
 
     namespace {
-        ParserState consume_impl(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack&, TokenStack&, ParserStateContext&)
+        ParserState consume_impl(const lexer::TokenInfo& token, types::NodeStack& nodeStack, types::NodeStack&, types::TokenStack&, ParserStateContext&)
         {
             const auto type = token.token().type();
 
@@ -29,7 +29,7 @@ namespace swizzle { namespace parser { namespace states {
 
             if(type == lexer::TokenType::numeric_literal)
             {
-                if(detail::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
+                if(types::utils::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
                 {
                     const auto& structField = static_cast<ast::nodes::StructField&>(*nodeStack.top());
 
@@ -43,7 +43,7 @@ namespace swizzle { namespace parser { namespace states {
                         throw SyntaxError("Numeric literal cannot be assigned to array type, use initialization list instead.", token);
                     }
 
-                    detail::appendNode<ast::nodes::DefaultValue>(nodeStack, token, structField.type());
+                    types::utils::appendNode<ast::nodes::DefaultValue>(nodeStack, token, structField.type());
                     types::setValue(structField.type(), token.token().value(), "Attempting to assign numeric literal to unsupported type");
 
                     return ParserState::StructFieldValueRead;
@@ -54,7 +54,7 @@ namespace swizzle { namespace parser { namespace states {
 
             if(type == lexer::TokenType::hex_literal)
             {
-                if(detail::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
+                if(types::utils::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
                 {
                     const auto& structField = static_cast<ast::nodes::StructField&>(*nodeStack.top());
 
@@ -68,7 +68,7 @@ namespace swizzle { namespace parser { namespace states {
                         throw SyntaxError("Numeric literal cannot be assigned to array type, use initialization list instead.", token);
                     }
 
-                    detail::appendNode<ast::nodes::DefaultValue>(nodeStack, token, structField.type());
+                    types::utils::appendNode<ast::nodes::DefaultValue>(nodeStack, token, structField.type());
                     types::setValue(structField.type(), token.token().value(), types::isHex, "Attempting to assign hex literal to unsupported type");
 
                     return ParserState::StructFieldValueRead;
@@ -79,7 +79,7 @@ namespace swizzle { namespace parser { namespace states {
 
             if(type == lexer::TokenType::char_literal)
             {
-                if(detail::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
+                if(types::utils::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
                 {
                     const auto& structField = static_cast<ast::nodes::StructField&>(*nodeStack.top());
 
@@ -93,7 +93,7 @@ namespace swizzle { namespace parser { namespace states {
                         throw SyntaxError("Numeric literal cannot be assigned to array type, use initialization list instead.", token);
                     }
 
-                    detail::appendNode<ast::nodes::DefaultValue>(nodeStack, token, structField.type());
+                    types::utils::appendNode<ast::nodes::DefaultValue>(nodeStack, token, structField.type());
                     return ParserState::StructFieldValueRead;
                 }
 
@@ -102,7 +102,7 @@ namespace swizzle { namespace parser { namespace states {
 
             if(type == lexer::TokenType::string_literal)
             {
-                if(detail::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
+                if(types::utils::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
                 {
                     const auto& structField = static_cast<ast::nodes::StructField&>(*nodeStack.top());
 
@@ -117,7 +117,7 @@ namespace swizzle { namespace parser { namespace states {
                     }
 
                     const auto storageLength = structField.arraySize();
-                    detail::appendNode<ast::nodes::DefaultStringValue>(nodeStack, token, structField.type(), storageLength);
+                    types::utils::appendNode<ast::nodes::DefaultStringValue>(nodeStack, token, structField.type(), storageLength);
 
                     if((storageLength < 0) || (static_cast<std::size_t>(storageLength) < token.token().value().length() - 2))
                     {
@@ -134,7 +134,7 @@ namespace swizzle { namespace parser { namespace states {
         }
     }
     
-    ParserState StructFieldEqualReadState::consume(const lexer::TokenInfo& token, NodeStack& nodeStack, NodeStack& attributeStack, TokenStack& tokenStack, ParserStateContext& context)
+    ParserState StructFieldEqualReadState::consume(const lexer::TokenInfo& token, types::NodeStack& nodeStack, types::NodeStack& attributeStack, types::TokenStack& tokenStack, ParserStateContext& context)
     {
         try
         {

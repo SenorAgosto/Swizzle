@@ -128,7 +128,10 @@ namespace swizzle {
     {
         if(config.vars.count("help"))
         {
-            std::cout << config.description << std::endl;
+            std::cout
+                << "Usage:  swizzle [options] <file> [<file> ...]" "\n"
+                << config.description << std::endl;
+            
             return 1;
         }
 
@@ -153,7 +156,10 @@ namespace swizzle {
 
         if(argc < 2)
         {
-            std::cerr << config.description << std::endl;
+            std::cerr
+                << "Usage:  swizzle [options] <file> [<file> ...]" "\n"
+                << config.description << std::endl;
+            
             throw std::runtime_error("Exception: too few command line arguments");
         }
 

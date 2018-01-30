@@ -121,17 +121,28 @@ namespace swizzle { namespace parser { namespace states {
             if(type == lexer::TokenType::type)
             {
                 const auto& value = token.token().value();
-                if(types::IsIntegerType(value) || types::IsFloatType(value) || value == "bool")
+                if(types::IsIntegerType(value) || types::IsFloatType(value))
                 {
                     auto node = types::utils::appendNode<ast::nodes::StructField>(nodeStack);
                     nodeStack.push(node);
                     tokenStack.push(token);
+
+                    auto& top = static_cast<ast::nodes::StructField&>(*node);
+                    if(context.MemberIsConst)
+                    {
+                        top.setConst();
+                    }
 
                     return ParserState::StructFieldNamespaceOrType;
                 }
 
                 if(value == "variable_block")
                 {
+                    if(context.MemberIsConst)
+                    {
+                        throw SyntaxError("variable_block cannot be const", token);
+                    }
+                
                     auto node = types::utils::appendNode<ast::nodes::VariableBlock>(nodeStack, token);
                     nodeStack.push(node);
 
@@ -148,6 +159,11 @@ namespace swizzle { namespace parser { namespace states {
                     auto& top = static_cast<ast::nodes::StructField&>(*nodeStack.top());
                     top.name(token);
 
+                    if(context.MemberIsConst)
+                    {
+                        top.setConst();
+                    }
+                    
                     return ParserState::StructFieldName;
                 }
 

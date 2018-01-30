@@ -44,7 +44,7 @@ namespace swizzle { namespace parser { namespace states {
 
             if(type == lexer::TokenType::hex_literal)
             {
-                context.CurrentEnumValue->value(types::setValue(underlying.token().value(), token.token().value(), types::isHex, "Encountered unknown enum type"));
+                context.CurrentEnumValue->value(types::setValue(underlying.token().value(), token, types::isHex, "Encountered unknown enum type"));
                 enumField.value(context.CurrentEnumValue->assign_field_value(token));
                 context.CurrentEnumValue->increment();
                 
@@ -53,7 +53,7 @@ namespace swizzle { namespace parser { namespace states {
 
             if(type == lexer::TokenType::numeric_literal)
             {
-                context.CurrentEnumValue->value(types::setValue(underlying.token().value(), token.token().value(), "Encountered unknown enum type"));
+                context.CurrentEnumValue->value(types::setValue(underlying.token().value(), token, "Encountered unknown enum type"));
                 enumField.value(context.CurrentEnumValue->assign_field_value(token));
                 context.CurrentEnumValue->increment();
 
@@ -62,11 +62,7 @@ namespace swizzle { namespace parser { namespace states {
 
             if(type == lexer::TokenType::char_literal)
             {
-                auto trimValue = token.token().value();
-                trimValue.remove_prefix(1); // remove leading '
-                trimValue.remove_suffix(1); // remove trailing '
-
-                context.CurrentEnumValue->value(types::setValueFromChar(underlying.token().value(), trimValue));
+                context.CurrentEnumValue->value(types::setValueFromChar(underlying.token().value(), token));
                 enumField.value(context.CurrentEnumValue->assign_field_value(token));
                 context.CurrentEnumValue->increment();
                 

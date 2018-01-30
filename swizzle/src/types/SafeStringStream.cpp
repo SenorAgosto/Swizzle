@@ -8,7 +8,7 @@ namespace swizzle { namespace types {
     namespace {
 
         template<typename T>
-        T ReadUnsigned(char const * const input, const std::size_t length)
+        T ReadUnsigned(const lexer::TokenInfo& token, char const * const input, const std::size_t length)
         {
             // validate input.
             for(std::size_t i = 0; i < length; ++i)
@@ -19,7 +19,7 @@ namespace swizzle { namespace types {
                 }
                 else
                 {
-                    throw InvalidStreamInput(std::string(input, length));
+                    throw InvalidStreamInput(token, std::string(input, length));
                 }
             }
 
@@ -36,7 +36,7 @@ namespace swizzle { namespace types {
 
                 if((t < previous) && (previous != 0))
                 {
-                    throw StreamInputCausesOverflow(std::string(input, length));
+                    throw StreamInputCausesOverflow(token, std::string(input, length));
                 }
 
                 previous = t;
@@ -47,7 +47,7 @@ namespace swizzle { namespace types {
 
         // specialization for u8 which can rollover badly enough we can't detect it.
         template<>
-        std::uint8_t ReadUnsigned(char const * const input, const std::size_t length)
+        std::uint8_t ReadUnsigned(const lexer::TokenInfo& token, char const * const input, const std::size_t length)
         {
             // validate input
             for(std::size_t i = 0; i < length; ++i)
@@ -58,7 +58,7 @@ namespace swizzle { namespace types {
                 }
                 else
                 {
-                    throw InvalidStreamInput(std::string(input, length));
+                    throw InvalidStreamInput(token, std::string(input, length));
                 }
             }
 
@@ -74,7 +74,7 @@ namespace swizzle { namespace types {
 
                 if(t > 255)
                 {
-                    throw StreamInputCausesOverflow(std::string(input, length));
+                    throw StreamInputCausesOverflow(token, std::string(input, length));
                 }
             }
 
@@ -83,25 +83,25 @@ namespace swizzle { namespace types {
 
 
         template<typename T>
-        T ReadSigned(char const * const input, const std::size_t length)
+        T ReadSigned(const lexer::TokenInfo& token, char const * const input, const std::size_t length)
         {
             using Unsigned = typename std::make_unsigned<T>::type;
             const bool isNegative = input[0] == '-';
 
             const auto positiveResult = isNegative
-                ? ReadUnsigned<Unsigned>(input + 1, length - 1)
-                : ReadUnsigned<Unsigned>(input, length);
+                ? ReadUnsigned<Unsigned>(token, input + 1, length - 1)
+                : ReadUnsigned<Unsigned>(token, input, length);
 
             // abs(min) == max + 1
             constexpr const auto min = static_cast<std::size_t>(std::numeric_limits<T>::max()) + 1;
             if(isNegative && (static_cast<std::size_t>(positiveResult) > min))
             {
-                throw StreamInputCausesUnderflow(std::string(input, length));
+                throw StreamInputCausesUnderflow(token, std::string(input, length));
             }
 
             if(!isNegative && (positiveResult > static_cast<Unsigned>(std::numeric_limits<T>::max())))
             {
-                throw StreamInputCausesOverflow(std::string(input, length));
+                throw StreamInputCausesOverflow(token, std::string(input, length));
             }
 
             return isNegative
@@ -110,29 +110,29 @@ namespace swizzle { namespace types {
         }
 
         template<typename T>
-        T Read(char const * const input, const std::size_t length)
+        T Read(const lexer::TokenInfo& token, char const * const input, const std::size_t length)
         {
             static_assert(std::is_integral<T>::value, "T must be integral type.");
 
             return std::is_signed<T>::value
-                ? ReadSigned<T>(input, length)
-                : ReadUnsigned<T>(input, length);
+                ? ReadSigned<T>(token, input, length)
+                : ReadUnsigned<T>(token, input, length);
         }
 
         template<typename T>
-        T ReadHex(char const * const input, const std::size_t length)
+        T ReadHex(const lexer::TokenInfo& token, char const * const input, const std::size_t length)
         {
             static_assert(std::is_integral<T>::value, "T must be integral type.");
 
             if((input[0] != '0') || (input[1] != 'x'))
             {
-                throw InvalidStreamInput(std::string(input, length));
+                throw InvalidStreamInput(token, std::string(input, length));
             }
 
             // ensure input isn't too large for type
             if((length - 2) > (sizeof(T) * 2))
             {
-                throw StreamInputCausesOverflow(std::string(input, length));
+                throw StreamInputCausesOverflow(token, std::string(input, length));
             }
 
             // validate input
@@ -144,7 +144,7 @@ namespace swizzle { namespace types {
                 }
                 else
                 {
-                    throw InvalidStreamInput(std::string(input, length));
+                    throw InvalidStreamInput(token, std::string(input, length));
                 }
             }
 
@@ -185,8 +185,9 @@ namespace swizzle { namespace types {
 
     }
 
-    safe_istringstream::safe_istringstream(const boost::string_view& input)
-        : input_(input)
+    safe_istringstream::safe_istringstream(const lexer::TokenInfo& token)
+        : token_(token)
+        , input_(token.token().value())
         , hex_(false)
     {
     }
@@ -200,11 +201,11 @@ namespace swizzle { namespace types {
 
         if(hex_)
         {
-            i = ReadHex<std::uint8_t>(input_.data(), input_.length());
+            i = ReadHex<std::uint8_t>(token_, input_.data(), input_.length());
         }
         else
         {
-            i = Read<std::uint8_t>(input_.data(), input_.length());
+            i = Read<std::uint8_t>(token_, input_.data(), input_.length());
         }
 
         return *this;
@@ -219,11 +220,11 @@ namespace swizzle { namespace types {
 
         if(hex_)
         {
-            i = ReadHex<std::int8_t>(input_.data(), input_.length());
+            i = ReadHex<std::int8_t>(token_, input_.data(), input_.length());
         }
         else
         {
-            i = Read<std::int8_t>(input_.data(), input_.length());
+            i = Read<std::int8_t>(token_, input_.data(), input_.length());
         }
 
         return *this;
@@ -238,11 +239,11 @@ namespace swizzle { namespace types {
 
         if(hex_)
         {
-            i = ReadHex<std::uint16_t>(input_.data(), input_.length());
+            i = ReadHex<std::uint16_t>(token_, input_.data(), input_.length());
         }
         else
         {
-            i = Read<std::uint16_t>(input_.data(), input_.length());
+            i = Read<std::uint16_t>(token_, input_.data(), input_.length());
         }
 
         return *this;
@@ -257,11 +258,11 @@ namespace swizzle { namespace types {
 
         if(hex_)
         {
-            i = ReadHex<std::int16_t>(input_.data(), input_.length());
+            i = ReadHex<std::int16_t>(token_, input_.data(), input_.length());
         }
         else
         {
-            i = Read<std::int16_t>(input_.data(), input_.length());
+            i = Read<std::int16_t>(token_, input_.data(), input_.length());
         }
 
         return *this;
@@ -276,11 +277,11 @@ namespace swizzle { namespace types {
 
         if(hex_)
         {
-            i = ReadHex<std::uint32_t>(input_.data(), input_.length());
+            i = ReadHex<std::uint32_t>(token_, input_.data(), input_.length());
         }
         else
         {
-            i = Read<std::uint32_t>(input_.data(), input_.length());
+            i = Read<std::uint32_t>(token_, input_.data(), input_.length());
         }
 
         return *this;
@@ -295,11 +296,11 @@ namespace swizzle { namespace types {
 
         if(hex_)
         {
-            i = ReadHex<std::int32_t>(input_.data(), input_.length());
+            i = ReadHex<std::int32_t>(token_, input_.data(), input_.length());
         }
         else
         {
-            i = Read<std::int32_t>(input_.data(), input_.length());
+            i = Read<std::int32_t>(token_, input_.data(), input_.length());
         }
 
         return *this;
@@ -314,11 +315,11 @@ namespace swizzle { namespace types {
 
         if(hex_)
         {
-            i = ReadHex<std::uint64_t>(input_.data(), input_.length());
+            i = ReadHex<std::uint64_t>(token_, input_.data(), input_.length());
         }
         else
         {
-            i = Read<std::uint64_t>(input_.data(), input_.length());
+            i = Read<std::uint64_t>(token_, input_.data(), input_.length());
         }
 
         return *this;
@@ -333,11 +334,11 @@ namespace swizzle { namespace types {
 
         if(hex_)
         {
-            i = ReadHex<std::int64_t>(input_.data(), input_.length());
+            i = ReadHex<std::int64_t>(token_, input_.data(), input_.length());
         }
         else
         {
-            i = Read<std::int64_t>(input_.data(), input_.length());
+            i = Read<std::int64_t>(token_, input_.data(), input_.length());
         }
 
         return *this;

@@ -44,7 +44,7 @@ namespace swizzle { namespace parser { namespace states {
                     }
 
                     types::utils::appendNode<ast::nodes::DefaultValue>(nodeStack, token, structField.type());
-                    types::setValue(structField.type(), token.token().value(), "Attempting to assign numeric literal to unsupported type");
+                    types::setValue(structField.type(), token, "Attempting to assign numeric literal to unsupported type");
 
                     return ParserState::StructFieldValueRead;
                 }
@@ -69,7 +69,7 @@ namespace swizzle { namespace parser { namespace states {
                     }
 
                     types::utils::appendNode<ast::nodes::DefaultValue>(nodeStack, token, structField.type());
-                    types::setValue(structField.type(), token.token().value(), types::isHex, "Attempting to assign hex literal to unsupported type");
+                    types::setValue(structField.type(), token, types::isHex, "Attempting to assign hex literal to unsupported type");
 
                     return ParserState::StructFieldValueRead;
                 }

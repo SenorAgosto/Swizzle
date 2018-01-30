@@ -24,6 +24,9 @@ namespace swizzle { namespace parser {
         // called after parsing the last token, checks that we are in an expected state.
         void finalize() const;
 
+        // reset the parser state_ to Init
+        void reset();
+        
         // return the AST
 		const ast::AbstractSyntaxTree& ast() const;
         ast::AbstractSyntaxTree& ast();

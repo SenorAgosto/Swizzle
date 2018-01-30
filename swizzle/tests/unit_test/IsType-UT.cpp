@@ -8,6 +8,7 @@ namespace {
     
     TEST(verifyIsType)
     {
+        CHECK(!IsType("bool"));
         CHECK(!IsType("case"));
         CHECK(!IsType("const"));
         CHECK(!IsType("enum"));
@@ -16,8 +17,7 @@ namespace {
 
         CHECK(!IsType("struct"));
         CHECK(!IsType("using"));
-
-        CHECK(IsType("bool"));
+        
         CHECK(IsType("bitfield"));
         CHECK(IsType("u8"));
         CHECK(IsType("i8"));

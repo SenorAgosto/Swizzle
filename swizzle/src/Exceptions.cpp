@@ -56,8 +56,8 @@ namespace swizzle {
     {
     }
 
-    InvalidStreamInput::InvalidStreamInput(const std::string& s)
-        : std::runtime_error("Invalid character encountered in safe_istringstream: '" + s + "'")
+    InvalidStreamInput::InvalidStreamInput(const lexer::TokenInfo& token, const std::string& s)
+        : SyntaxError("Invalid character encountered in safe_istringstream: '" + s + "'", token)
     {
     }
 
@@ -81,13 +81,13 @@ namespace swizzle {
     {
     }
 
-    StreamInputCausesOverflow::StreamInputCausesOverflow(const std::string& s)
-        : std::runtime_error("Input caused value overflow in safe_istringstream: '" + s + "'")
+    StreamInputCausesOverflow::StreamInputCausesOverflow(const lexer::TokenInfo& token, const std::string& s)
+        : SyntaxError("Input caused value overflow in safe_istringstream: '" + s + "'", token)
     {
     }
 
-    StreamInputCausesUnderflow::StreamInputCausesUnderflow(const std::string& s)
-        : std::runtime_error("Input caused value underflow in safe_istringstream: '" + s + "'")
+    StreamInputCausesUnderflow::StreamInputCausesUnderflow(const lexer::TokenInfo& token, const std::string& s)
+        : SyntaxError("Input caused value underflow in safe_istringstream: '" + s + "'", token)
     {
     }
 

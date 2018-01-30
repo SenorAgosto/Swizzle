@@ -1,5 +1,6 @@
 #pragma once
 #include <swizzle/Exceptions.hpp>
+#include <swizzle/lexer/TokenInfo.hpp>
 #include <swizzle/types/SafeStringStream.hpp>
 
 #include <boost/utility/string_view.hpp>
@@ -7,9 +8,9 @@
 namespace swizzle { namespace types {
 
     template<class T>
-    T readAs(const boost::string_view& value)
+    T readAs(const lexer::TokenInfo& token)
     {
-        safe_istringstream is(value);
+        safe_istringstream is(token);
 
         T t = 0;
         is >> t;
@@ -18,9 +19,9 @@ namespace swizzle { namespace types {
     }
 
     template<class T>
-    T readAsHex(const boost::string_view& value)
+    T readAsHex(const lexer::TokenInfo& token)
     {
-        safe_istringstream is(value);
+        safe_istringstream is(token);
 
         T t = 0;
         is >> hex_stream >> t;

@@ -1,6 +1,7 @@
 # TODO
-- if there is no namespace declared, and we start defining enums and such, the error message is terrible. 'boost::string_view::at'
+- StructField needs type changed from std::string -> lexer::TokenInfo to better support AST plugins
 
+- implement test coverage showing const is correctly applied to fields, and correctly disallowed on variable_block's
 - implement test coverage showing case values don't overflow the switching type.
 - implement test coverage showing the switching type is an integer type. 
 

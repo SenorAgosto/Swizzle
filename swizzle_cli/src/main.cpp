@@ -34,7 +34,7 @@ namespace swizzle {
         mutable std::unordered_map<swizzle::backend::BackendInterface*, std::string> pluginToNames;    // we don't own this memory, the plugin instance does
         mutable std::vector<swizzle::backend::BackendInterface*> plugins;   // we don't own this memory, the plugin instance does
         
-        boost::filesystem::path file;
+        std::vector<boost::filesystem::path> files;
         boost::filesystem::path plugin_dir;
         
         boost::program_options::options_description description;
@@ -54,10 +54,10 @@ namespace swizzle {
             ("backend-dir", po::value<boost::filesystem::path>(&config.plugin_dir)->default_value("."), "directory containing backend plugins")
             ("list-backends", "list backends for processing AST")
             ("backend", po::value<std::vector<std::string>>(&config.backends), "backends for processing AST")
-            ("path", po::value<boost::filesystem::path>(&config.file), "input filename");
+            ("inputs", po::value<std::vector<boost::filesystem::path>>(&config.files), "input filename");
         
         po::positional_options_description positionalArguments;
-        positionalArguments.add("path", 1);
+        positionalArguments.add("inputs", -1);
         
         po::store(po::command_line_parser(argc, argv).options(config.description).positional(positionalArguments).run(), config.vars);
         po::notify(config.vars);
@@ -157,18 +157,21 @@ namespace swizzle {
             throw std::runtime_error("Exception: too few command line arguments");
         }
 
-        if(config.file.string().empty())
+        if(config.files.empty())
         {
             std::cout << config.description << std::endl;
-            throw std::runtime_error("Exception: no input file specified");
+            throw std::runtime_error("Exception: no input file(s) specified");
         }
         
-        if(!validate_file(config.file))
+        for(const auto file : config.files)
         {
-            std::stringstream ss;
-            ss << config.file << " does not exist or is a directory";
-            
-            throw std::runtime_error(ss.str());
+            if(!validate_file(file))
+            {
+                std::stringstream ss;
+                ss << file << " does not exist or is a directory";
+                
+                throw std::runtime_error(ss.str());
+            }
         }
         
         config.factory.load();
@@ -220,17 +223,30 @@ namespace swizzle {
         std::deque<lexer::TokenInfo> tokens;
         CreateTokenCallback callback = CreateTokenCallback(tokens);
     
-        lexer::Tokenizer<CreateTokenCallback> tokenizer = lexer::Tokenizer<CreateTokenCallback>(config.file.string(), callback);
+        std::vector<lexer::Tokenizer<CreateTokenCallback>> tokenizers;
+        std::vector<std::string> file_contents;
         parser::Parser parser;
-
-        std::string file = load_file(config.file.string());
-        boost::string_view sv = boost::string_view(file);
         
+        for(const auto file : config.files)
+        {
+            tokenizers.emplace_back(file.string(), callback);
+            file_contents.emplace_back(load_file(file.string()));
+        }
+
         try
         {
-            tokenize(tokenizer, sv);
-            parse(parser, tokens);
-                    
+            std::size_t count = 0;
+            for(auto tokenizer : tokenizers)
+            {
+                tokenize(tokenizer, boost::string_view(file_contents[count++]));
+                
+                parse(parser, tokens);
+                parser.finalize();
+                parser.reset();
+                
+                tokens.clear();
+            }
+
             for(auto plugin : config.plugins)
             {
                 plugin->generate(parser.context(), parser.ast());

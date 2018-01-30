@@ -1,4 +1,9 @@
 # TODO
+- See if I can use an enum value in a const field, e.g. 
+    enum E { e1 = '0', e2 = '3', }
+    struct S { const E e = E::e1; }     // should clearly be allowed
+    struct S2 { const u8 e = E::e1; }   // should also be allowed if underlying matches
+
 - StructField needs type changed from std::string -> lexer::TokenInfo to better support AST plugins
 
 - implement test coverage showing const is correctly applied to fields, and correctly disallowed on variable_block's

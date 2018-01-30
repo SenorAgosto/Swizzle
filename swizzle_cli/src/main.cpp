@@ -59,7 +59,7 @@ namespace swizzle {
         po::positional_options_description positionalArguments;
         positionalArguments.add("inputs", -1);
         
-        po::store(po::command_line_parser(argc, argv).options(config.description).positional(positionalArguments).run(), config.vars);
+        po::store(po::command_line_parser(argc, argv).options(config.description).positional(positionalArguments).allow_unregistered().run(), config.vars);
         po::notify(config.vars);
         
         config.factory = PluginFactory(config.plugin_dir, config.service);

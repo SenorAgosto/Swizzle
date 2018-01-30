@@ -26,7 +26,12 @@ namespace swizzle { namespace parser {
             ss << "Parse ended in unexpected state: " << state_;
 
             throw ParserError(ss.str());
-        }
+        }        
+    }
+    
+    void Parser::reset()
+    {
+        state_ = ParserState::Init;
     }
 
 	const ast::AbstractSyntaxTree& Parser::ast() const

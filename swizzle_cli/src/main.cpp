@@ -14,6 +14,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 namespace swizzle {
@@ -28,16 +29,18 @@ namespace swizzle {
             , factory(".", service)
         {
         }
-                
-        std::string backend;
-        boost::filesystem::path file;
+        
+        std::vector<std::string> backends;
+        mutable std::unordered_map<swizzle::backend::BackendInterface*, std::string> pluginToNames;    // we don't own this memory, the plugin instance does
+        mutable std::vector<swizzle::backend::BackendInterface*> plugins;   // we don't own this memory, the plugin instance does
+        
+        std::vector<boost::filesystem::path> files;
         boost::filesystem::path plugin_dir;
         
         boost::program_options::options_description description;
         boost::program_options::variables_map vars;
         
         backend::SwizzleService service;
-        mutable std::vector<swizzle::backend::BackendInterface*> plugins;   // we don't own this memory, @factory does
         mutable PluginFactory factory;
     };
     
@@ -50,13 +53,13 @@ namespace swizzle {
             ("help", "produce this message")
             ("backend-dir", po::value<boost::filesystem::path>(&config.plugin_dir)->default_value("."), "directory containing backend plugins")
             ("list-backends", "list backends for processing AST")
-            ("backend", po::value<std::string>(&config.backend)->default_value("print"), "backend for processing AST")
-            ("path", po::value<boost::filesystem::path>(&config.file), "input filename");
+            ("backend", po::value<std::vector<std::string>>(&config.backends), "backends for processing AST")
+            ("inputs", po::value<std::vector<boost::filesystem::path>>(&config.files), "input filename");
         
         po::positional_options_description positionalArguments;
-        positionalArguments.add("path", 1);
+        positionalArguments.add("inputs", -1);
         
-        po::store(po::command_line_parser(argc, argv).options(config.description).positional(positionalArguments).run(), config.vars);
+        po::store(po::command_line_parser(argc, argv).options(config.description).positional(positionalArguments).allow_unregistered().run(), config.vars);
         po::notify(config.vars);
         
         config.factory = PluginFactory(config.plugin_dir, config.service);
@@ -100,32 +103,14 @@ namespace swizzle {
         std::deque<lexer::TokenInfo>& tokens_;
     };
     
-    template<typename Callback>
-    void tokenize(lexer::Tokenizer<Callback>& tokenizer, const boost::string_view& sv)
-    {
-        for(std::size_t position = 0, end = sv.length(); position < end; ++position)
-        {
-            tokenizer.consume(sv, position);
-        }
-
-        tokenizer.flush();
-    }
-
-    void parse(parser::Parser& parser, const std::deque<lexer::TokenInfo>& tokens)
-    {
-        for(const auto token : tokens)
-        {
-            parser.consume(token);
-        }
-
-        parser.finalize();
-    }
-    
     int validate_config(const int argc, const Config& config)
     {
         if(config.vars.count("help"))
         {
-            std::cout << config.description << std::endl;
+            std::cout
+                << "Usage:  swizzle [options] <file> [<file> ...]" "\n"
+                << config.description << std::endl;
+            
             return 1;
         }
 
@@ -150,22 +135,28 @@ namespace swizzle {
 
         if(argc < 2)
         {
-            std::cerr << config.description << std::endl;
+            std::cerr
+                << "Usage:  swizzle [options] <file> [<file> ...]" "\n"
+                << config.description << std::endl;
+            
             throw std::runtime_error("Exception: too few command line arguments");
         }
 
-        if(config.file.string().empty())
+        if(config.files.empty())
         {
             std::cout << config.description << std::endl;
-            throw std::runtime_error("Exception: no input file specified");
+            throw std::runtime_error("Exception: no input file(s) specified");
         }
         
-        if(!validate_file(config.file))
+        for(const auto file : config.files)
         {
-            std::stringstream ss;
-            ss << config.file << " does not exist or is a directory";
-            
-            throw std::runtime_error(ss.str());
+            if(!validate_file(file))
+            {
+                std::stringstream ss;
+                ss << file << " does not exist or is a directory";
+                
+                throw std::runtime_error(ss.str());
+            }
         }
         
         config.factory.load();
@@ -177,44 +168,95 @@ namespace swizzle {
         }
         
         std::vector<std::string> pluginNames;
-        for(const auto plugin : config.plugins)
+        for(auto plugin : config.plugins)
         {
             pluginNames.push_back(plugin->print_name());
+            config.pluginToNames.emplace(plugin, pluginNames.back());
         }
         
         std::sort(begin(pluginNames), end(pluginNames));
-        if(!std::binary_search(begin(pluginNames), end(pluginNames), config.backend))
+        
+        for(const auto backend : config.backends)
         {
-            std::stringstream ss;
-            ss << "Backend '" << config.backend << "' could not be located";
-            
-            throw std::runtime_error(ss.str());
+            if(!std::binary_search(begin(pluginNames), end(pluginNames), backend))
+            {
+                std::stringstream ss;
+                ss << "Backend '" << backend << "' could not be located";
+                
+                throw std::runtime_error(ss.str());
+            }
         }
+        
+        auto backends = config.backends;
+        std::sort(begin(backends), end(backends));
+        
+        std::remove_if(begin(config.plugins), end(config.plugins), [&config, &backends](const auto plugin) -> bool {
+            const auto iter = config.pluginToNames.find(plugin);
+            if(iter != config.pluginToNames.cend())
+            {
+                return !std::binary_search(begin(backends), end(backends), iter->second);
+            }
+            
+            return false;
+        });
         
         return 0;
     }
-    
+
+    template<typename Callback>
+    void tokenize(lexer::Tokenizer<Callback>& tokenizer, const boost::string_view& sv)
+    {
+        for(std::size_t position = 0, end = sv.length(); position < end; ++position)
+        {
+            tokenizer.consume(sv, position);
+        }
+
+        tokenizer.flush();
+    }
+
+    void parse(parser::Parser& parser, const std::deque<lexer::TokenInfo>& tokens)
+    {
+        for(const auto token : tokens)
+        {
+            parser.consume(token);
+        }
+
+        parser.finalize();
+    }
+
     void process(const Config& config)
     {
         std::deque<lexer::TokenInfo> tokens;
         CreateTokenCallback callback = CreateTokenCallback(tokens);
     
-        lexer::Tokenizer<CreateTokenCallback> tokenizer = lexer::Tokenizer<CreateTokenCallback>(config.file.string(), callback);
+        std::vector<lexer::Tokenizer<CreateTokenCallback>> tokenizers;
+        std::vector<std::string> file_contents;
         parser::Parser parser;
-
-        std::string file = load_file(config.file.string());
-        boost::string_view sv = boost::string_view(file);
         
+        for(const auto file : config.files)
+        {
+            tokenizers.emplace_back(file.string(), callback);
+            file_contents.emplace_back(load_file(file.string()));
+        }
+
         try
         {
-            tokenize(tokenizer, sv);
-            parse(parser, tokens);
-                    
+            std::size_t count = 0;
+            for(auto tokenizer : tokenizers)
+            {
+                tokenize(tokenizer, boost::string_view(file_contents[count++]));
+                
+                parse(parser, tokens);
+                parser.finalize();
+                parser.reset();
+                
+                tokens.clear();
+            }
+
             for(auto plugin : config.plugins)
             {
                 plugin->generate(parser.context(), parser.ast());
             }
-
         }
         catch(const TokenizerSyntaxError& syntaxError)
         {

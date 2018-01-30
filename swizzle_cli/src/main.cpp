@@ -14,6 +14,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 namespace swizzle {
@@ -28,8 +29,11 @@ namespace swizzle {
             , factory(".", service)
         {
         }
-                
-        std::string backend;
+        
+        std::vector<std::string> backends;
+        mutable std::unordered_map<swizzle::backend::BackendInterface*, std::string> pluginToNames;    // we don't own this memory, the plugin instance does
+        mutable std::vector<swizzle::backend::BackendInterface*> plugins;   // we don't own this memory, the plugin instance does
+        
         boost::filesystem::path file;
         boost::filesystem::path plugin_dir;
         
@@ -37,7 +41,6 @@ namespace swizzle {
         boost::program_options::variables_map vars;
         
         backend::SwizzleService service;
-        mutable std::vector<swizzle::backend::BackendInterface*> plugins;   // we don't own this memory, @factory does
         mutable PluginFactory factory;
     };
     
@@ -50,7 +53,7 @@ namespace swizzle {
             ("help", "produce this message")
             ("backend-dir", po::value<boost::filesystem::path>(&config.plugin_dir)->default_value("."), "directory containing backend plugins")
             ("list-backends", "list backends for processing AST")
-            ("backend", po::value<std::string>(&config.backend)->default_value("print"), "backend for processing AST")
+            ("backend", po::value<std::vector<std::string>>(&config.backends), "backends for processing AST")
             ("path", po::value<boost::filesystem::path>(&config.file), "input filename");
         
         po::positional_options_description positionalArguments;
@@ -177,19 +180,37 @@ namespace swizzle {
         }
         
         std::vector<std::string> pluginNames;
-        for(const auto plugin : config.plugins)
+        for(auto plugin : config.plugins)
         {
             pluginNames.push_back(plugin->print_name());
+            config.pluginToNames.emplace(plugin, pluginNames.back());
         }
         
         std::sort(begin(pluginNames), end(pluginNames));
-        if(!std::binary_search(begin(pluginNames), end(pluginNames), config.backend))
+        
+        for(const auto backend : config.backends)
         {
-            std::stringstream ss;
-            ss << "Backend '" << config.backend << "' could not be located";
-            
-            throw std::runtime_error(ss.str());
+            if(!std::binary_search(begin(pluginNames), end(pluginNames), backend))
+            {
+                std::stringstream ss;
+                ss << "Backend '" << backend << "' could not be located";
+                
+                throw std::runtime_error(ss.str());
+            }
         }
+        
+        auto backends = config.backends;
+        std::sort(begin(backends), end(backends));
+        
+        std::remove_if(begin(config.plugins), end(config.plugins), [&config, &backends](const auto plugin) -> bool {
+            const auto iter = config.pluginToNames.find(plugin);
+            if(iter != config.pluginToNames.cend())
+            {
+                return !std::binary_search(begin(backends), end(backends), iter->second);
+            }
+            
+            return false;
+        });
         
         return 0;
     }
@@ -214,7 +235,6 @@ namespace swizzle {
             {
                 plugin->generate(parser.context(), parser.ast());
             }
-
         }
         catch(const TokenizerSyntaxError& syntaxError)
         {

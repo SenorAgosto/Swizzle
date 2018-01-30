@@ -103,27 +103,6 @@ namespace swizzle {
         std::deque<lexer::TokenInfo>& tokens_;
     };
     
-    template<typename Callback>
-    void tokenize(lexer::Tokenizer<Callback>& tokenizer, const boost::string_view& sv)
-    {
-        for(std::size_t position = 0, end = sv.length(); position < end; ++position)
-        {
-            tokenizer.consume(sv, position);
-        }
-
-        tokenizer.flush();
-    }
-
-    void parse(parser::Parser& parser, const std::deque<lexer::TokenInfo>& tokens)
-    {
-        for(const auto token : tokens)
-        {
-            parser.consume(token);
-        }
-
-        parser.finalize();
-    }
-    
     int validate_config(const int argc, const Config& config)
     {
         if(config.vars.count("help"))
@@ -223,7 +202,28 @@ namespace swizzle {
         
         return 0;
     }
-    
+
+    template<typename Callback>
+    void tokenize(lexer::Tokenizer<Callback>& tokenizer, const boost::string_view& sv)
+    {
+        for(std::size_t position = 0, end = sv.length(); position < end; ++position)
+        {
+            tokenizer.consume(sv, position);
+        }
+
+        tokenizer.flush();
+    }
+
+    void parse(parser::Parser& parser, const std::deque<lexer::TokenInfo>& tokens)
+    {
+        for(const auto token : tokens)
+        {
+            parser.consume(token);
+        }
+
+        parser.finalize();
+    }
+
     void process(const Config& config)
     {
         std::deque<lexer::TokenInfo> tokens;

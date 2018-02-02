@@ -11,7 +11,7 @@
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState StructFieldNameState::consume(const lexer::TokenInfo& token, types::NodeStack& nodeStack, types::NodeStack& attributeStack, types::TokenStack&, ParserStateContext&)
+    ParserState StructFieldNameState::consume(const lexer::TokenInfo& token, types::NodeStack& nodeStack, types::NodeStack& attributeStack, types::TokenStack&, ParserStateContext& context)
     {
         const auto type = token.token().type();
 
@@ -19,6 +19,11 @@ namespace swizzle { namespace parser { namespace states {
         {
             if(types::utils::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
             {
+                if(context.MemberIsConst)
+                {
+                    throw SyntaxError("const field declaration without default value", token);
+                }
+
                 types::utils::attachAttributes(attributeStack, nodeStack.top());
                 nodeStack.pop();
 

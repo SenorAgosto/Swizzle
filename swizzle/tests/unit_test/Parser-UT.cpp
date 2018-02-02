@@ -1521,6 +1521,66 @@ namespace {
         }
     }
 
+    struct WhenInputIsStructWithEnumFieldGettingDefaultValue : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "enum E : u16 {" "\n"
+            "\t" "e1 = 1," "\n"
+            "}" "\n"
+            "struct S {" "\n"
+            "\t" "E e = E::e1;"
+            "}"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithEnumFieldGettingDefaultValue, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsMismatchedEnumAssignment : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "enum E : u16 {" "\n"
+            "\t" "e1 = 1," "\n"
+            "}" "\n"
+            "enum E2 : u8 {" "\n"
+            "\t" "e2 = 2," "\n"
+            "}"
+            "struct S {" "\n"
+            "\t" "E2 e = E::e1;"
+            "}"
+        );
+    };
+    
+    TEST_FIXTURE(WhenInputIsMismatchedEnumAssignment, verifyConsume)
+    {
+        tokenize(sv);
+        CHECK_THROW(parse(), swizzle::SyntaxError);
+    }
+
+    struct WhenInputIsStructWithEnumFieldAssignedToInteger : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "enum E : u16 {" "\n"
+            "\t" "e1 = 1," "\n"
+            "}" "\n"
+            "struct S {" "\n"
+            "\t" "u32 e = E::e1;"
+            "}"
+        );
+    };
+    
+    TEST_FIXTURE(WhenInputIsStructWithEnumFieldAssignedToInteger, verifyConsume)
+    {
+        tokenize(sv);
+        CHECK_THROW(parse(), swizzle::SyntaxError);
+    }
+
     struct WhenInputIsStructWithArray : public ParserFixture
     {
         const boost::string_view sv = boost::string_view(

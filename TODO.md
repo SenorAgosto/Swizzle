@@ -1,6 +1,5 @@
 # TODO
 - const is not getting printed correctly for struct/enum types
-- StructField needs type changed from std::string -> lexer::TokenInfo to better support AST plugins
 
 - implement test coverage showing const is correctly applied to fields, and correctly disallowed on variable_block's
 - implement test coverage showing case values don't overflow the switching type.

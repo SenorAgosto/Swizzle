@@ -5,6 +5,7 @@
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/types/utils/AppendNode.hpp>
 #include <swizzle/types/utils/CreateType.hpp>
+#include <swizzle/types/utils/IsEnum.hpp>
 #include <swizzle/types/utils/NodeStackTopIs.hpp>
 #include <swizzle/types/utils/ValidateEnumValue.hpp>
 
@@ -25,13 +26,15 @@ namespace swizzle { namespace parser { namespace states {
             if(types::utils::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
             {
                 const auto& structField = static_cast<ast::nodes::StructField&>(*nodeStack.top());
-                if(types::utils::is_enum(structField.type()))
+                if(types::utils::is_enum(context, structField.type()))
                 {
                     const auto enumValue = types::utils::createType(tokenStack);
                     
-                    if(types::utils::validateEnumValue(context, enumValue))
+                    if(types::utils::validateEnumValue(context, structField.type(), enumValue))
                     {
-                        types::utils::appendNode<ast::nodes::DefaultValue>(nodeStack, token, structField.type());
+                        types::utils::appendNode<ast::nodes::DefaultValue>(nodeStack, enumValue, structField.type());
+                        
+                        nodeStack.pop();
                         return ParserState::StructStartScope;
                     }
         

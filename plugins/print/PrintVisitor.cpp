@@ -27,6 +27,7 @@
 #include <swizzle/ast/nodes/VariableBlock.hpp>
 #include <swizzle/ast/nodes/VariableBlockCase.hpp>
 #include <swizzle/lexer/FileInfo.hpp>
+#include <swizzle/types/utils/StartsWith.hpp>
 
 #include <algorithm>
 #include <boost/filesystem/path.hpp>
@@ -39,11 +40,6 @@
 #include <sstream>
 
 namespace swizzle { namespace plugins { namespace print {
-    
-    bool starts_with(const std::string& corpus, const std::string& pattern)
-    {
-        return corpus.substr(0, pattern.length()) == pattern;
-    }
     
     std::size_t PrintVisitor::adjust_indentation(const ast::AncestorInfo& ancestors)
     {
@@ -88,7 +84,7 @@ namespace swizzle { namespace plugins { namespace print {
             for(std::size_t i = 0; i < indent + 1; ++i) std::cout << "   ";
             
             boost::algorithm::trim_left(line);
-            std::cout << (starts_with(line, "//") ? "" : "// ") << line << "\n";
+            std::cout << (types::utils::starts_with(line, "//") ? "" : "// ") << line << "\n";
         }
     }
     

@@ -12,13 +12,14 @@
 #include <swizzle/types/NodeStack.hpp>
 #include <swizzle/types/utils/AppendNode.hpp>
 #include <swizzle/types/utils/NodeStackTopIs.hpp>
+#include <swizzle/types/utils/ValidateEnumValue.hpp>
 #include <swizzle/types/TokenStack.hpp>
 #include <swizzle/types/SetValue.hpp>
 
 namespace swizzle { namespace parser { namespace states {
 
     namespace {
-        ParserState consume_impl(const lexer::TokenInfo& token, types::NodeStack& nodeStack, types::NodeStack&, types::TokenStack&, ParserStateContext&)
+        ParserState consume_impl(const lexer::TokenInfo& token, types::NodeStack& nodeStack, types::NodeStack&, types::TokenStack& tokenStack, ParserStateContext&)
         {
             const auto type = token.token().type();
 
@@ -129,8 +130,14 @@ namespace swizzle { namespace parser { namespace states {
 
                 throw ParserError("Internal parser error, expected top of node stack to be ast::nodes::StructField");
             }
+            
+            if(type == lexer::TokenType::string)    // this is a enum value
+            {
+                tokenStack.push(token);
+                return ParserState::StructFieldEnumOrNamespaceRead;
+            }
 
-            throw SyntaxError("Expected numeric_literal, hex_literal, char_literal, or string_literal", token);
+            throw SyntaxError("Expected numeric_literal, hex_literal, char_literal, string_literal, or enum value", token);
         }
     }
     

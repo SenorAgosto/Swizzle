@@ -49,6 +49,9 @@ namespace swizzle { namespace parser {
         case ParserState::StructName: return structNameState_.consume(token, nodeStack, attributeStack, tokenStack, context);
         case ParserState::StructStartScope: return structStartScopeState_.consume(token, nodeStack, attributeStack,  tokenStack, context);
         case ParserState::StructFieldLabel: return structFieldLabelState_.consume(token, nodeStack, attributeStack, tokenStack, context);
+        case ParserState::StructFieldEnumOrNamespaceRead: return structFieldEnumOrNamespaceReadState_.consume(token, nodeStack, attributeStack, tokenStack, context);
+        case ParserState::StructFieldEnumOrNamespaceFirstColonRead: return structFieldEnumOrNamespaceFirstColonReadState_.consume(token, nodeStack, attributeStack, tokenStack, context);
+        case ParserState::StructFieldEnumValueRead: return structFieldEnumValueReadState_.consume(token, nodeStack, attributeStack, tokenStack, context);
         case ParserState::StructFieldNamespaceOrType: return structFieldNamespaceOrTypeState_.consume(token, nodeStack, attributeStack, tokenStack, context);
         case ParserState::StructFieldNamespaceFirstColon: return structFieldNamespaceFirstColonState_.consume(token, nodeStack, attributeStack, tokenStack, context);
         case ParserState::StructFieldNamespaceSecondColon: return structFieldNamespaceSecondColonState_.consume(token, nodeStack, attributeStack, tokenStack, context);

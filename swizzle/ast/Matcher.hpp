@@ -11,6 +11,7 @@
 #include <swizzle/ast/matchers/HasFieldNamed.hpp>
 #include <swizzle/ast/matchers/IsTypeOf.hpp>
 #include <swizzle/ast/matchers/IsNotTypeOf.hpp>
+#include <swizzle/types/utils/StartsWith.hpp>
 
 #include <deque>
 #include <memory>
@@ -18,7 +19,7 @@
 #include <unordered_map>
 
 namespace swizzle { namespace ast {
-
+    
     // NOTED: matcher uses a fluent interface, each of the
     // supplied MatchRules here adds a method (or methods) to the Matcher
     // interface.
@@ -128,6 +129,23 @@ namespace swizzle { namespace ast {
             }
 
             return iter->second;
+        }
+        
+        // return all nodes bound to @name
+        std::vector<Node::smartptr> all_bound(const std::string& name)
+        {
+            std::vector<Node::smartptr> results;
+            results.reserve(variables_.size());
+            
+            for(auto pair : variables_)
+            {
+                if(types::utils::starts_with(pair.first, name))
+                {
+                    results.push_back(pair.second);
+                }
+            }
+            
+            return results;
         }
 
     private:

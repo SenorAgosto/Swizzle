@@ -1,5 +1,6 @@
 # TODO
-
+- add support for float_literal, e.g. 3.1415 
+- `const u8 i;` should be an error, const field declared without default value 
 - implement test coverage showing const is correctly applied to fields, and correctly disallowed on variable_block's
 - implement test coverage showing case values don't overflow the switching type.
 - implement test coverage showing the switching type is an integer type. 

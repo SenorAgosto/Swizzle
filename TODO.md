@@ -1,5 +1,4 @@
 # TODO
-- const is not getting printed correctly for struct/enum types
 
 - implement test coverage showing const is correctly applied to fields, and correctly disallowed on variable_block's
 - implement test coverage showing case values don't overflow the switching type.

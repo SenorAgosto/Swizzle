@@ -158,11 +158,6 @@ namespace swizzle { namespace parser { namespace states {
                 {
                     auto& top = static_cast<ast::nodes::StructField&>(*nodeStack.top());
                     top.name(token);
-
-                    if(context.MemberIsConst)
-                    {
-                        top.setConst();
-                    }
                     
                     return ParserState::StructFieldName;
                 }
@@ -170,6 +165,12 @@ namespace swizzle { namespace parser { namespace states {
                 auto node = types::utils::appendNode<ast::nodes::StructField>(nodeStack);
                 nodeStack.push(node);
                 tokenStack.push(token);
+                
+                auto& top = static_cast<ast::nodes::StructField&>(*node);
+                if(context.MemberIsConst)
+                {
+                    top.setConst();
+                }
 
                 return ParserState::StructFieldNamespaceOrType;
             }

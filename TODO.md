@@ -1,5 +1,5 @@
 # TODO
-- need to support assigning enum default values to struct fields 
+- const is not getting printed correctly for struct/enum types
 - StructField needs type changed from std::string -> lexer::TokenInfo to better support AST plugins
 
 - implement test coverage showing const is correctly applied to fields, and correctly disallowed on variable_block's

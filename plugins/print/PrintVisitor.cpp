@@ -184,7 +184,16 @@ namespace swizzle { namespace plugins { namespace print {
     {
         std::stringstream ss;
         ss  << print_node("enum field", node.name().fileInfo())
-            << node.name().token().value() << " = " << node.valueInfo().token().value();
+            << node.name().token().value() << " = ";
+        
+        if(node.valueInfo().token().value().empty())
+        {
+            ss << node.value();
+        }
+        else
+        {
+            ss << node.valueInfo().token().value();
+        }
         
         print_line(adjust_indentation(ancestors), ss.str());
     }

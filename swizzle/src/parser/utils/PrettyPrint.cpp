@@ -43,7 +43,7 @@ namespace swizzle { namespace parser { namespace utils {
             
             // the lexer/parser see a tab as 2 characters, therefore with a tab == 4 spaces, we need
             // to adjust the location by 2 spaces for each tab
-            return std::make_pair(line, 2 * tab_count);
+            return std::make_pair(line, 3 * tab_count);
         }
     }
     
@@ -57,7 +57,7 @@ namespace swizzle { namespace parser { namespace utils {
                     << syntaxError.what() << "\n"
                     << spaced_line.first << "\n";
         
-        for(std::size_t i = 0, end = fileInfo.start().column() + spaced_line.second; i < end; ++i)
+        for(std::size_t i = 1, end = fileInfo.start().column() + spaced_line.second; i < end; ++i)
         {
             std::cout << '~';
         }
@@ -74,7 +74,7 @@ namespace swizzle { namespace parser { namespace utils {
                     << syntaxError.what() << "\n"
                     << spaced_line.first << "\n";
         
-        for(std::size_t i = 0, end = token.fileInfo().start().column() + spaced_line.second; i < end; ++i)
+        for(std::size_t i = 1, end = token.fileInfo().start().column() + spaced_line.second; i < end; ++i)
         {
             std::cout << '~';
         }

@@ -10,12 +10,14 @@
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState StructFieldValueReadState::consume(const lexer::TokenInfo& token, types::NodeStack& nodeStack, types::NodeStack&, types::TokenStack&, ParserStateContext&)
+    ParserState StructFieldValueReadState::consume(const lexer::TokenInfo& token, types::NodeStack& nodeStack, types::NodeStack&, types::TokenStack&, ParserStateContext& context)
     {
         const auto type = token.token().type();
 
         if(type == lexer::TokenType::end_statement)
         {
+            context.MemberIsConst = false;
+            
             nodeStack.pop();
             return ParserState::StructStartScope;
         }

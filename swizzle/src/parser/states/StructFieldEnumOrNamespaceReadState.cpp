@@ -3,6 +3,7 @@
 #include <swizzle/ast/nodes/DefaultValue.hpp>
 
 #include <swizzle/Exceptions.hpp>
+#include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/types/utils/AppendNode.hpp>
 #include <swizzle/types/utils/CreateType.hpp>
 #include <swizzle/types/utils/IsEnum.hpp>
@@ -34,6 +35,7 @@ namespace swizzle { namespace parser { namespace states {
                     {
                         types::utils::appendNode<ast::nodes::DefaultValue>(nodeStack, enumValue, structField.type());
                         
+                        context.MemberIsConst = false;
                         nodeStack.pop();
                         return ParserState::StructStartScope;
                     }

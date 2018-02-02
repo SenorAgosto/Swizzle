@@ -1,4 +1,6 @@
 # TODO
+- if an enum field is not explicitly assigned a value, the value isn't printed by 'print' plugin
+
 - const is not getting printed correctly for struct/enum types
 - StructField needs type changed from std::string -> lexer::TokenInfo to better support AST plugins
 

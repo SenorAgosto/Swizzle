@@ -1,6 +1,8 @@
 # Swizzle
 
-An on-wire message [description language](_docs/SwizzleLanguage.md) and transpiler.
+An on-wire message [description language](_docs/SwizzleLanguage.md) and transpiler. 
+
+The Swizzle CLI tool parses the Swizzle DSL into an Abstract Syntax Tree. The AST can then be passed to passed to backends for further processing or code generation. Backends are pluggable.
 
 ### Dependencies 
 

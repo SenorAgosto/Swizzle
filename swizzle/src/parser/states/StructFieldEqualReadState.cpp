@@ -12,10 +12,11 @@
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/types/NodeStack.hpp>
 #include <swizzle/types/utils/AppendNode.hpp>
+#include <swizzle/types/utils/CheckFloatValue.hpp>
 #include <swizzle/types/utils/NodeStackTopIs.hpp>
+#include <swizzle/types/utils/SetValue.hpp>
 #include <swizzle/types/utils/ValidateEnumValue.hpp>
 #include <swizzle/types/TokenStack.hpp>
-#include <swizzle/types/SetValue.hpp>
 
 namespace swizzle { namespace parser { namespace states {
 
@@ -46,7 +47,7 @@ namespace swizzle { namespace parser { namespace states {
                     }
 
                     types::utils::appendNode<ast::nodes::DefaultFloatValue>(nodeStack, token, structField.type());
-                    // types::setFloatValue(structField.type(), token, "Attempting to assign float literal to unsupported type");
+                    types::utils::checkFloatValue(structField.type(), token, "Attempting to assign float literal to a non-float type");
 
                     return ParserState::StructFieldValueRead;
                 }
@@ -71,7 +72,7 @@ namespace swizzle { namespace parser { namespace states {
                     }
 
                     types::utils::appendNode<ast::nodes::DefaultValue>(nodeStack, token, structField.type());
-                    types::setValue(structField.type(), token, "Attempting to assign numeric literal to unsupported type");
+                    types::utils::setValue(structField.type(), token, "Attempting to assign numeric literal to unsupported type");
 
                     return ParserState::StructFieldValueRead;
                 }
@@ -96,7 +97,7 @@ namespace swizzle { namespace parser { namespace states {
                     }
 
                     types::utils::appendNode<ast::nodes::DefaultValue>(nodeStack, token, structField.type());
-                    types::setValue(structField.type(), token, types::isHex, "Attempting to assign hex literal to unsupported type");
+                    types::utils::setValue(structField.type(), token, types::utils::isHex, "Attempting to assign hex literal to unsupported type");
 
                     return ParserState::StructFieldValueRead;
                 }

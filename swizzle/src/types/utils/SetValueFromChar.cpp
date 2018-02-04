@@ -1,4 +1,4 @@
-#include <swizzle/types/SetValueFromChar.hpp>
+#include <swizzle/types/utils/SetValueFromChar.hpp>
 
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>

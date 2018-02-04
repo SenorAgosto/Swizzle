@@ -7,9 +7,9 @@
 #include <swizzle/lexer/TokenInfo.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/types/NodeStack.hpp>
-#include <swizzle/types/SetValue.hpp>
-#include <swizzle/types/SetValueFromChar.hpp>
 #include <swizzle/types/utils/NodeStackTopIs.hpp>
+#include <swizzle/types/utils/SetValue.hpp>
+#include <swizzle/types/utils/SetValueFromChar.hpp>
 #include <swizzle/types/TokenStack.hpp>
 
 #include <boost/numeric/conversion/cast.hpp>
@@ -44,7 +44,7 @@ namespace swizzle { namespace parser { namespace states {
 
             if(type == lexer::TokenType::hex_literal)
             {
-                context.CurrentEnumValue->value(types::setValue(underlying.token().value(), token, types::isHex, "Encountered unknown enum type"));
+                context.CurrentEnumValue->value(types::utils::setValue(underlying.token().value(), token, types::utils::isHex, "Encountered unknown enum type"));
                 enumField.value(context.CurrentEnumValue->assign_field_value(token));
                 context.CurrentEnumValue->increment();
                 
@@ -53,7 +53,7 @@ namespace swizzle { namespace parser { namespace states {
 
             if(type == lexer::TokenType::numeric_literal)
             {
-                context.CurrentEnumValue->value(types::setValue(underlying.token().value(), token, "Encountered unknown enum type"));
+                context.CurrentEnumValue->value(types::utils::setValue(underlying.token().value(), token, "Encountered unknown enum type"));
                 enumField.value(context.CurrentEnumValue->assign_field_value(token));
                 context.CurrentEnumValue->increment();
 

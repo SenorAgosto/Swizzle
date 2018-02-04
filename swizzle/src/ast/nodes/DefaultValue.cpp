@@ -2,7 +2,7 @@
 
 #include <swizzle/ast/AncestorInfo.hpp>
 #include <swizzle/ast/VisitorInterface.hpp>
-#include <swizzle/types/SetValue.hpp>
+#include <swizzle/types/utils/SetValue.hpp>
 
 namespace swizzle { namespace ast { namespace nodes {
 

@@ -16,6 +16,7 @@ namespace swizzle { namespace ast {
         void operator()(AncestorInfo&, nodes::BitfieldField&) override {}
         void operator()(AncestorInfo&, nodes::CharLiteral&) override {}
         void operator()(AncestorInfo&, nodes::Comment&) override {}
+        void operator()(AncestorInfo&, nodes::DefaultFloatValue&) override {}
         void operator()(AncestorInfo&, nodes::DefaultStringValue&) override {}
         void operator()(AncestorInfo&, nodes::DefaultValue&) override {}
         void operator()(AncestorInfo&, nodes::Enum&) override {}

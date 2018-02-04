@@ -1,10 +1,10 @@
-#include <swizzle/types/SetValue.hpp>
+#include <swizzle/types/utils/SetValue.hpp>
 
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
 #include <swizzle/types/ReadAs.hpp>
 
-namespace swizzle { namespace types {
+namespace swizzle { namespace types { namespace utils {
 
     std::uint64_t setValue(const boost::string_view& underlying, const lexer::TokenInfo& token, const std::string& errorMessage)
     {
@@ -96,4 +96,4 @@ namespace swizzle { namespace types {
 
         throw SyntaxError(errorMessage + ": " + underlying.to_string(), token);
     }
-}}
+}}}

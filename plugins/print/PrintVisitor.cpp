@@ -8,6 +8,7 @@
 #include <swizzle/ast/nodes/BitfieldField.hpp>
 #include <swizzle/ast/nodes/CharLiteral.hpp>
 #include <swizzle/ast/nodes/Comment.hpp>
+#include <swizzle/ast/nodes/DefaultFloatValue.hpp>
 #include <swizzle/ast/nodes/DefaultStringValue.hpp>
 #include <swizzle/ast/nodes/DefaultValue.hpp>
 #include <swizzle/ast/nodes/Enum.hpp>
@@ -151,6 +152,15 @@ namespace swizzle { namespace plugins { namespace print {
         
         print_line(adjust_indentation(ancestors), ss.str());
         print_line(adjust_indentation(ancestors), node.info().token().value().to_string(), "   ");
+    }
+    
+    void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::DefaultFloatValue& node)
+    {
+        std::stringstream ss;
+        ss  << print_node("default float value", node.value().fileInfo())
+            << node.value().token().value();
+        
+        print_line(adjust_indentation(ancestors), ss.str());
     }
     
     void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::DefaultStringValue& node)

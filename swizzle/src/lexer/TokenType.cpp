@@ -12,6 +12,7 @@ namespace swizzle { namespace lexer {
         case TokenType::char_literal:           return os << "TokenType::char_literal";
         case TokenType::numeric_literal:        return os << "TokenType::numeric_literal";
         case TokenType::hex_literal:            return os << "TokenType::hex_literal";
+        case TokenType::float_literal:          return os << "TokenType::float_literal";
         
         case TokenType::attribute:              return os << "TokenType::attribute";
         case TokenType::attribute_block:        return os << "TokenType::attribute_block";

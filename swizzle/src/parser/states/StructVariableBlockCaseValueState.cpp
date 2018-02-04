@@ -8,8 +8,8 @@
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/types/NodeStack.hpp>
 #include <swizzle/types/utils/NodeStackTopIs.hpp>
+#include <swizzle/types/utils/SetValue.hpp>
 #include <swizzle/types/TokenStack.hpp>
-#include <swizzle/types/SetValue.hpp>
 
 namespace swizzle { namespace parser { namespace states {
 
@@ -45,7 +45,7 @@ namespace swizzle { namespace parser { namespace states {
                     if(!field.isArray() && !field.isVector())
                     {
                         // ensure field is integer type & assigned value fits.
-                        types::setValue(field.type(), token, types::isHex, "Error variable_block case value overflows switching type.");
+                        types::utils::setValue(field.type(), token, types::utils::isHex, "Error variable_block case value overflows switching type.");
 
                         auto& blockCase = static_cast<ast::nodes::VariableBlockCase&>(*nodeStack.top());
                         blockCase.value(token);
@@ -67,7 +67,7 @@ namespace swizzle { namespace parser { namespace states {
                     if(!field.isArray() && !field.isVector())
                     {
                         // ensure field is integer type & assigned value fits.
-                        types::setValue(field.type(), token, "Error variable_block case value overflows switching type.");
+                        types::utils::setValue(field.type(), token, "Error variable_block case value overflows switching type.");
 
                         auto& blockCase = static_cast<ast::nodes::VariableBlockCase&>(*nodeStack.top());
                         blockCase.value(token);

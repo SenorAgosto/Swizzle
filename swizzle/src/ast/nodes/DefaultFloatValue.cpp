@@ -1,4 +1,4 @@
-#include <swizzle/ast/nodes/DefaultValue.hpp>
+#include <swizzle/ast/nodes/DefaultFloatValue.hpp>
 
 #include <swizzle/ast/AncestorInfo.hpp>
 #include <swizzle/ast/VisitorInterface.hpp>
@@ -6,23 +6,23 @@
 
 namespace swizzle { namespace ast { namespace nodes {
 
-    DefaultValue::DefaultValue(const lexer::TokenInfo& value, const std::string& underlyingType)
+    DefaultFloatValue::DefaultFloatValue(const lexer::TokenInfo& value, const std::string& underlyingType)
         : value_(value)
         , underlying_(underlyingType)
     {
     }
 
-    const lexer::TokenInfo& DefaultValue::value() const
+    const lexer::TokenInfo& DefaultFloatValue::value() const
     {
         return value_;
     }
 
-    const std::string& DefaultValue::underlying() const
+    const std::string& DefaultFloatValue::underlying() const
     {
         return underlying_;
     }
 
-    void DefaultValue::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth)
+    void DefaultFloatValue::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth)
     {
         visitor(ancestors, *this);
         

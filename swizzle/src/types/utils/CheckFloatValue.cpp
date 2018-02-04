@@ -12,6 +12,8 @@ namespace swizzle { namespace types { namespace utils {
             float f = 0.0;
             std::stringstream ss(token.token().value().to_string());
             ss >> f;
+            
+            return;
         }
         
         if(underlying == "f64")
@@ -19,6 +21,8 @@ namespace swizzle { namespace types { namespace utils {
             double d = 0.0;
             std::stringstream ss(token.token().value().to_string());
             ss >> d;
+            
+            return;
         }
         
         throw SyntaxError(errorMessage + ": " + underlying.to_string(), token);

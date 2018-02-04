@@ -1,7 +1,8 @@
 #include <swizzle/parser/states/StructFieldEqualReadState.hpp>
 
-#include <swizzle/ast/nodes/DefaultValue.hpp>
+#include <swizzle/ast/nodes/DefaultFloatValue.hpp>
 #include <swizzle/ast/nodes/DefaultStringValue.hpp>
+#include <swizzle/ast/nodes/DefaultValue.hpp>
 #include <swizzle/ast/nodes/StructField.hpp>
 
 #include <swizzle/Exceptions.hpp>
@@ -28,6 +29,31 @@ namespace swizzle { namespace parser { namespace states {
                 // [ARG]: TODO: add state for handling initialization list.
             }
 
+            if(type == lexer::TokenType::float_literal)
+            {
+                if(types::utils::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
+                {
+                    const auto& structField = static_cast<ast::nodes::StructField&>(*nodeStack.top());
+
+                    if(structField.isVector())
+                    {
+                        throw SyntaxError("Default values not permitted for vector types.", token);
+                    }
+
+                    if(structField.isArray())
+                    {
+                        throw SyntaxError("Float literal cannot be assigned to array type, use initialization list instead.", token);
+                    }
+
+                    types::utils::appendNode<ast::nodes::DefaultFloatValue>(nodeStack, token, structField.type());
+                    // types::setFloatValue(structField.type(), token, "Attempting to assign float literal to unsupported type");
+
+                    return ParserState::StructFieldValueRead;
+                }
+
+                throw ParserError("Internal parser error, expected top of node stack to be ast::nodes::StructField");
+            }
+            
             if(type == lexer::TokenType::numeric_literal)
             {
                 if(types::utils::nodeStackTopIs<ast::nodes::StructField>(nodeStack))

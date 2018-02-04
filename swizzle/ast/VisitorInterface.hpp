@@ -12,6 +12,7 @@ namespace swizzle { namespace ast { namespace nodes {
     class BitfieldField;
     class CharLiteral;
     class Comment;
+    class DefaultFloatValue;
     class DefaultStringValue;
     class DefaultValue;
     class Enum;
@@ -47,6 +48,7 @@ namespace swizzle { namespace ast {
         virtual void operator()(AncestorInfo& ancestors, nodes::BitfieldField& node) = 0;
         virtual void operator()(AncestorInfo& ancestors, nodes::CharLiteral& node) = 0;
         virtual void operator()(AncestorInfo& ancestors, nodes::Comment& node) = 0;
+        virtual void operator()(AncestorInfo& ancestors, nodes::DefaultFloatValue& node) = 0;
         virtual void operator()(AncestorInfo& ancestors, nodes::DefaultStringValue& node) = 0;
         virtual void operator()(AncestorInfo& ancestors, nodes::DefaultValue& node) = 0;
         virtual void operator()(AncestorInfo& ancestors, nodes::Enum& node) = 0;

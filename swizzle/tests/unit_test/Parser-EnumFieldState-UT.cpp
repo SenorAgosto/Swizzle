@@ -27,11 +27,14 @@ namespace {
             const auto enumInfo = TokenInfo(Token("enum", 0, 3, TokenType::keyword), FileInfo("test.swizzle"));
             const auto enumName = TokenInfo(Token("my_enum", 0, 7, TokenType::string), FileInfo("test.swizzle"));
 
-            auto node = utils::appendNode<nodes::Enum>(nodeStack, enumInfo, enumName, "my_namespace");
-            nodeStack.push(node);
-
             const TokenInfo info(Token("field1", 0, 6, TokenType::string), FileInfo("test.swizzle"));
             const TokenInfo underlying(Token("u8", 0, 2, TokenType::type), FileInfo("test.swizzle"));
+
+            auto node = utils::appendNode<nodes::Enum>(nodeStack, enumInfo, enumName, "my_namespace");
+            auto& Enum = dynamic_cast<nodes::Enum&>(*node);
+            Enum.underlying(underlying);
+            
+            nodeStack.push(node);
 
             node = utils::appendNode<nodes::EnumField>(nodeStack, info, underlying);
             nodeStack.push(node);
@@ -65,17 +68,12 @@ namespace {
         CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
-        CHECK_EQUAL(0U, context.CurrentEnumValue->value());
-
         const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
-
         CHECK_EQUAL(ParserState::EnumStartScope, parserState);
 
         REQUIRE CHECK_EQUAL(2U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
-
-        CHECK_EQUAL(1U, context.CurrentEnumValue->value());
 
         auto matcher = Matcher().getChildrenOf<nodes::EnumField>().bind("fields");
         REQUIRE CHECK(matcher(nodeStack.top()));
@@ -138,20 +136,5 @@ namespace {
     TEST_FIXTURE(WhenNextTokenIsCommaButTopOfStackIsNotFieldEnum, verifyConsume)
     {
         CHECK_THROW(state.consume(info, nodeStack, attributeStack, tokenStack, context), swizzle::ParserError);
-    }
-
-    struct WhenNextTokenIsCommaButValueWillOverflowEnumType : public WhenNextTokenIsComma
-    {
-        WhenNextTokenIsCommaButValueWillOverflowEnumType()
-        {
-            context.CurrentEnumValue = std::unique_ptr<EnumValueInterface>(new EnumValue<std::uint8_t>());
-            context.CurrentEnumValue->value(255);
-        }
-    };
-
-    TEST_FIXTURE(WhenNextTokenIsCommaButValueWillOverflowEnumType, verifyConsumer)
-    {
-        const auto parserState = state.consume(info, nodeStack, attributeStack, tokenStack, context);
-        CHECK_EQUAL(ParserState::EnumStartScope, parserState);
     }
 }

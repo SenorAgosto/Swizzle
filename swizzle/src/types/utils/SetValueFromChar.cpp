@@ -3,7 +3,7 @@
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
 
-namespace swizzle { namespace types {
+namespace swizzle { namespace types { namespace utils {
 
     std::uint64_t setValueFromChar(const boost::string_view& underlying, const lexer::TokenInfo& token)
     {
@@ -22,4 +22,4 @@ namespace swizzle { namespace types {
 
         throw SyntaxError("Encountered unknown enum type:" + underlying.to_string(), token);
     }
-}}
+}}}

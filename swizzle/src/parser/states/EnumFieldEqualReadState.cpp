@@ -18,7 +18,7 @@ namespace swizzle { namespace parser { namespace states {
 
     namespace {
         // implementation is wrapped in a try/catch
-        ParserState consumeImpl(const lexer::TokenInfo& token, types::NodeStack& nodeStack, types::NodeStack&, types::TokenStack&, ParserStateContext& context)
+        ParserState consumeImpl(const lexer::TokenInfo& token, types::NodeStack& nodeStack, types::NodeStack&, types::TokenStack&, ParserStateContext&)
         {
             const auto type = token.token().type();
 
@@ -38,33 +38,29 @@ namespace swizzle { namespace parser { namespace states {
                 throw ParserError("Internal parser error, node below top of stack is not ast::nodes::Enum");
             }
 
-            const auto& top = static_cast<ast::nodes::Enum&>(*nodeStack.top());
-            const auto underlying = top.underlying();
+            auto& Enum = static_cast<ast::nodes::Enum&>(*nodeStack.top());
             nodeStack.push(enumFieldNode);
 
             if(type == lexer::TokenType::hex_literal)
             {
-                context.CurrentEnumValue->value(types::utils::setValue(underlying.token().value(), token, types::utils::isHex, "Encountered unknown enum type"));
-                enumField.value(context.CurrentEnumValue->assign_field_value(token));
-                context.CurrentEnumValue->increment();
+                Enum.set_value(types::utils::isHex, token);
+                Enum.assign_enum_field_value(enumField, token);
                 
                 return ParserState::EnumFieldValueRead;
             }
 
             if(type == lexer::TokenType::numeric_literal)
             {
-                context.CurrentEnumValue->value(types::utils::setValue(underlying.token().value(), token, "Encountered unknown enum type"));
-                enumField.value(context.CurrentEnumValue->assign_field_value(token));
-                context.CurrentEnumValue->increment();
+                Enum.set_value(token);
+                Enum.assign_enum_field_value(enumField, token);
 
                 return ParserState::EnumFieldValueRead;
             }
 
             if(type == lexer::TokenType::char_literal)
             {
-                context.CurrentEnumValue->value(types::setValueFromChar(underlying.token().value(), token));
-                enumField.value(context.CurrentEnumValue->assign_field_value(token));
-                context.CurrentEnumValue->increment();
+                Enum.set_value_from_char(token);
+                Enum.assign_enum_field_value(enumField, token);
                 
                 return ParserState::EnumFieldValueRead;
             }

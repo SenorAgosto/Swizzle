@@ -10,6 +10,7 @@ namespace swizzle { namespace ast { namespace nodes {
     EnumField::EnumField(const lexer::TokenInfo& name, const lexer::TokenInfo& underlyingType)
         : name_(name)
         , underlying_(underlyingType)
+        , value_(0)
     {
     }
 

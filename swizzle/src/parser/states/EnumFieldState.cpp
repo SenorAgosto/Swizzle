@@ -1,6 +1,7 @@
 #include <swizzle/parser/states/EnumFieldState.hpp>
 
 #include <swizzle/Exceptions.hpp>
+#include <swizzle/ast/nodes/Enum.hpp>
 #include <swizzle/ast/nodes/EnumField.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
@@ -10,7 +11,7 @@
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState EnumFieldState::consume(const lexer::TokenInfo& token, types::NodeStack& nodeStack, types::NodeStack&, types::TokenStack&, ParserStateContext& context)
+    ParserState EnumFieldState::consume(const lexer::TokenInfo& token, types::NodeStack& nodeStack, types::NodeStack&, types::TokenStack&, ParserStateContext&)
     {
         const auto type = token.token().type();
 
@@ -25,14 +26,21 @@ namespace swizzle { namespace parser { namespace states {
             {
                 try
                 {
-                    auto& top = static_cast<ast::nodes::EnumField&>(*nodeStack.top());
-
-                    top.value(context.CurrentEnumValue->assign_field_value(token));
-                    context.CurrentEnumValue->increment();
-
+                    const auto field_node = nodeStack.top();
+                    auto& field = static_cast<ast::nodes::EnumField&>(*field_node);
+                    
                     nodeStack.pop();
-                    return ParserState::EnumStartScope;
 
+                    if(types::utils::nodeStackTopIs<ast::nodes::Enum>(nodeStack))
+                    {
+                        auto& Enum = static_cast<ast::nodes::Enum&>(*nodeStack.top());
+                        Enum.assign_enum_field_value(field, token);
+                        
+                        return ParserState::EnumStartScope;
+                    }
+                    
+                    throw ParserError("Expected top of node stack to be Enum");
+                    
                 }
                 catch(const std::out_of_range&)
                 {

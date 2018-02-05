@@ -27,11 +27,14 @@ namespace {
             const auto enumInfo = TokenInfo(Token("enum", 0, 3, TokenType::keyword), FileInfo("test.swizzle"));
             const auto enumName = TokenInfo(Token("my_enum", 0, 7, TokenType::string), FileInfo("test.swizzle"));
 
-            auto node = utils::appendNode<nodes::Enum>(nodeStack, enumInfo, enumName, "my_namespace");
-            nodeStack.push(node);
-
             const TokenInfo info(Token("field1", 0, 6, TokenType::string), FileInfo("test.swizzle"));
             const TokenInfo underlying(Token("u8", 0, 2, TokenType::type), FileInfo("test.swizzle"));
+
+            auto node = utils::appendNode<nodes::Enum>(nodeStack, enumInfo, enumName, "my_namespace");
+            auto& Enum = dynamic_cast<nodes::Enum&>(*node);
+            Enum.underlying(underlying);
+            
+            nodeStack.push(node);
 
             node = utils::appendNode<nodes::EnumField>(nodeStack, info, underlying);
             nodeStack.push(node);

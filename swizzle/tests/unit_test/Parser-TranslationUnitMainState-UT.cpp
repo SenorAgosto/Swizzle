@@ -33,9 +33,6 @@ namespace {
         TranslationUnitMainStateFixture()
         {
             nodeStack.push(ast.root());
-
-            context.CurrentEnumValue = std::unique_ptr<EnumValueInterface>(new EnumValue<std::uint64_t>());
-            context.CurrentEnumValue->value(100);
         }
 
         states::TranslationUnitMainState state;

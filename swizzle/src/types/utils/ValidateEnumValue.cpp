@@ -46,7 +46,7 @@ namespace swizzle { namespace types { namespace utils {
         
         if(iter != context.TypeCache.cend())
         {
-            const auto enum_node = static_cast<ast::nodes::Enum&>(*iter->second);
+            const auto& enum_node = static_cast<ast::nodes::Enum&>(*iter->second);
             
             if(enum_node.name() != enumType)
             {

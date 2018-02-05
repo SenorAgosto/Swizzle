@@ -22,15 +22,12 @@ namespace swizzle { namespace parser {
         std::string CurrentNamespace;
         std::intmax_t CurrentBitfieldBit = std::numeric_limits<std::intmax_t>::lowest();
 
-        std::unique_ptr<types::EnumValueInterface> CurrentEnumValue = std::unique_ptr<types::EnumValueInterface>(new types::EnumValue<std::uint64_t>());
-
         bool MemberIsConst = false;
 
         void AllocateFieldLabel(const lexer::TokenInfo& token);
         void ClearFieldLabels();
         
     private:
-        std::unordered_set<std::intmax_t> UsedEnumValues;
         std::unordered_set<std::string> UsedFieldLabels;
     };
 }}

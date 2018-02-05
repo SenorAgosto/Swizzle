@@ -1,4 +1,8 @@
 # TODO
+- refactor ParserStateContext so it only holds the current namespace (scope) information and the SymbolTable (replacement for TypeCache); migrate other responsibilities into AST nodes - e.g. enum value tracking into ast::nodes::Enum.
+
+- implement inheritance for struct, enum, and bitfield
+
 - implement test coverage showing const is correctly applied to fields, and correctly disallowed on variable_block's
 - implement test coverage showing case values don't overflow the switching type.
 - implement test coverage showing the switching type is an integer type. 

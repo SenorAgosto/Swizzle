@@ -1,6 +1,8 @@
 #include <swizzle/parser/states/BitfieldSecondDotState.hpp>
 
+#include <swizzle/ast/nodes/Bitfield.hpp>
 #include <swizzle/ast/nodes/BitfieldField.hpp>
+
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
@@ -10,7 +12,7 @@
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState BitfieldSecondDotState::consume(const lexer::TokenInfo& token, types::NodeStack& nodeStack, types::NodeStack&, types::TokenStack&, ParserStateContext& context)
+    ParserState BitfieldSecondDotState::consume(const lexer::TokenInfo& token, types::NodeStack& nodeStack, types::NodeStack&, types::TokenStack&, ParserStateContext&)
     {
         const auto type = token.token().type();
 
@@ -18,10 +20,23 @@ namespace swizzle { namespace parser { namespace states {
         {
             if(types::utils::nodeStackTopIs<ast::nodes::BitfieldField>(nodeStack))
             {
-                auto& top = static_cast<ast::nodes::BitfieldField&>(*nodeStack.top());
-                top.endBit(token, context);
+                auto bf_node = nodeStack.top();
+                nodeStack.pop();
+                
+                if(types::utils::nodeStackTopIs<ast::nodes::Bitfield>(nodeStack))
+                {
+                    auto& bf = static_cast<ast::nodes::Bitfield&>(*nodeStack.top());
+                    bf.current_bit(token);
 
-                return ParserState::BitfieldEndPosition;
+                    nodeStack.push(bf_node);
+                    
+                    auto& top = static_cast<ast::nodes::BitfieldField&>(*nodeStack.top());
+                    top.endBit(bf.current_bit());
+
+                    return ParserState::BitfieldEndPosition;
+                }
+                
+                throw ParserError("Internal parser error, top of node stack is not ast::nodes::Bitfield");
             }
 
             throw ParserError("Internal parser error, top of node stack is not ast::nodes::BitfieldField");

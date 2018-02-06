@@ -982,8 +982,8 @@ namespace {
         const auto& f0 = static_cast<nodes::BitfieldField&>(*field0);
         CHECK_EQUAL("f1", f0.name().token().value());
         CHECK_EQUAL("u8", f0.underlying().token().value());
-        CHECK_EQUAL(0U, f0.beginBit());
-        CHECK_EQUAL(0U, f0.endBit());
+        CHECK_EQUAL(0, f0.beginBit());
+        CHECK_EQUAL(0, f0.endBit());
 
         const auto field1 = fieldMatcher.bound("fields_1");
         REQUIRE CHECK(field1);
@@ -991,8 +991,8 @@ namespace {
         const auto& f1 = static_cast<nodes::BitfieldField&>(*field1);
         CHECK_EQUAL("f2", f1.name().token().value());
         CHECK_EQUAL("u8", f1.underlying().token().value());
-        CHECK_EQUAL(1U, f1.beginBit());
-        CHECK_EQUAL(2U, f1.endBit());
+        CHECK_EQUAL(1, f1.beginBit());
+        CHECK_EQUAL(2, f1.endBit());
 
         const auto field2 = fieldMatcher.bound("fields_2");
         REQUIRE CHECK(field2);
@@ -1000,8 +1000,8 @@ namespace {
         const auto& f2 = static_cast<nodes::BitfieldField&>(*field2);
         CHECK_EQUAL("f3", f2.name().token().value());
         CHECK_EQUAL("u8", f2.underlying().token().value());
-        CHECK_EQUAL(3U, f2.beginBit());
-        CHECK_EQUAL(4U, f2.endBit());
+        CHECK_EQUAL(3, f2.beginBit());
+        CHECK_EQUAL(4, f2.endBit());
 
         const auto field3 = fieldMatcher.bound("fields_3");
         REQUIRE CHECK(field3);
@@ -1009,8 +1009,8 @@ namespace {
         const auto& f3 = static_cast<nodes::BitfieldField&>(*field3);
         CHECK_EQUAL("f4", f3.name().token().value());
         CHECK_EQUAL("u8", f3.underlying().token().value());
-        CHECK_EQUAL(5U, f3.beginBit());
-        CHECK_EQUAL(5U, f3.endBit());
+        CHECK_EQUAL(5, f3.beginBit());
+        CHECK_EQUAL(5, f3.endBit());
     }
 
     struct WhenInputIsBitfieldWithAttribute : public ParserFixture

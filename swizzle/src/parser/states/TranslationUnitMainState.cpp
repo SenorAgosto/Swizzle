@@ -11,7 +11,6 @@
 
 #include <swizzle/Exceptions.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
-#include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/types/NodeStack.hpp>
 #include <swizzle/types/utils/AppendNode.hpp>
 #include <swizzle/types/utils/NodeStackTopIs.hpp>
@@ -21,7 +20,7 @@
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState TranslationUnitMainState::consume(const lexer::TokenInfo& token, types::NodeStack& nodeStack, types::NodeStack& attributeStack, types::TokenStack& tokenStack, ParserStateContext& context)
+    ParserState TranslationUnitMainState::consume(const lexer::TokenInfo& token, types::NodeStack& nodeStack, types::NodeStack& attributeStack, types::TokenStack& tokenStack, ParserStateContext&)
     {
         const auto type = token.token().type();
 
@@ -87,8 +86,6 @@ namespace swizzle { namespace parser { namespace states {
         if((type == lexer::TokenType::type) && (value == "bitfield"))
         {
             tokenStack.push(token);
-            context.CurrentBitfieldBit = std::numeric_limits<std::intmax_t>::lowest();
-            
             return ParserState::StartBitfield;
         }
 

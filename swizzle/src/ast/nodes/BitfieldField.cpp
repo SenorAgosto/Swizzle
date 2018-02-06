@@ -14,8 +14,8 @@ namespace swizzle { namespace ast { namespace nodes {
     BitfieldField::BitfieldField(const lexer::TokenInfo& name, const lexer::TokenInfo& underlyingType)
         : name_(name)
         , underlying_(underlyingType)
-        , beginBit_(0)
-        , endBit_(0)
+        , beginBit_(std::numeric_limits<std::int16_t>::lowest())
+        , endBit_(std::numeric_limits<std::int16_t>::lowest())
     {
     }
 
@@ -29,54 +29,23 @@ namespace swizzle { namespace ast { namespace nodes {
         return underlying_;
     }
 
-    void BitfieldField::beginBit(const lexer::TokenInfo& token, parser::ParserStateContext& context)
+    void BitfieldField::beginBit(const std::int16_t bit)
     {
-        const std::intmax_t bit = parser::detail::extractBitValueFromToken(underlying_.token().value(), token);
-
-        if(bit < context.CurrentBitfieldBit)
-        {
-            throw SyntaxError("Bitfield begin bit's value must be greater than previous value", token);
-        }
-
-        if((bit == context.CurrentBitfieldBit) && (context.CurrentBitfieldBit != std::numeric_limits<std::intmax_t>::lowest()))
-        {
-            throw SyntaxError("Bitfield begin bit's value must be greater than previous value", token);
-        }
-
-        context.CurrentBitfieldBit = bit;
         beginBit_ = bit;
         endBit_ = bit;
     }
 
-    std::size_t BitfieldField::beginBit() const
+    std::int16_t BitfieldField::beginBit() const
     {
         return beginBit_;
     }
 
-    void BitfieldField::endBit(const lexer::TokenInfo& token, parser::ParserStateContext& context)
+    void BitfieldField::endBit(const std::int16_t bit)
     {
-        const std::intmax_t bit = parser::detail::extractBitValueFromToken(underlying_.token().value(), token);
-
-        if(bit <= beginBit_)
-        {
-            throw SyntaxError("Bitfield end bit's value must be greater than begin bit's value", token);
-        }
-
-        if(bit < context.CurrentBitfieldBit)
-        {
-            throw SyntaxError("Bitfield begin bit's value must be greater than previous value", token);
-        }
-
-        if((bit == context.CurrentBitfieldBit) && (context.CurrentBitfieldBit != std::numeric_limits<std::intmax_t>::lowest()))
-        {
-            throw SyntaxError("Bitfield begin bit's value must be greater than previous value", token);
-        }
-
-        context.CurrentBitfieldBit = bit;
         endBit_ = bit;
     }
 
-    std::size_t BitfieldField::endBit() const
+    std::int16_t BitfieldField::endBit() const
     {
         return endBit_;
     }

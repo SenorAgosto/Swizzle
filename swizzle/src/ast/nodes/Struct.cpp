@@ -2,6 +2,7 @@
 
 #include <swizzle/ast/AncestorInfo.hpp>
 #include <swizzle/ast/VisitorInterface.hpp>
+#include <swizzle/Exceptions.hpp>
 
 namespace swizzle { namespace ast { namespace nodes {
 
@@ -27,6 +28,20 @@ namespace swizzle { namespace ast { namespace nodes {
         return name_;
     }
 
+    void Struct::allocate_label(const lexer::TokenInfo& token)
+    {
+        const auto label = token.token().value().to_string();
+        
+        const auto iter = fieldLabels_.find(label);
+        if(iter != fieldLabels_.cend())
+        {
+            throw SyntaxError("Duplicate field label value assigned.", token);
+        }
+        
+        fieldLabels_.insert(label);
+    }
+
+    // virtual
     void Struct::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth)
     {
         visitor(ancestors, *this);

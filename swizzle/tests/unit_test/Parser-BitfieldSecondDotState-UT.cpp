@@ -2,6 +2,7 @@
 
 #include <swizzle/ast/AbstractSyntaxTree.hpp>
 #include <swizzle/ast/Node.hpp>
+#include <swizzle/ast/nodes/Bitfield.hpp>
 #include <swizzle/ast/nodes/BitfieldField.hpp>
 
 #include <swizzle/Exceptions.hpp>
@@ -21,11 +22,17 @@ namespace {
         BitfieldSecondDotStateFixture()
         {
             nodeStack.push(ast.root());
-
-            const auto bitfieldName = TokenInfo(Token("my_bitfield", 0, 11, TokenType::string), FileInfo("test.swizzle"));
-            const auto bitfieldUnderlying = TokenInfo(Token("u32", 0, 3, TokenType::type), FileInfo("test.swizzle"));
-
-            const auto node = utils::appendNode<nodes::BitfieldField>(nodeStack, bitfieldName, bitfieldUnderlying);
+            const auto bitfieldInfo = TokenInfo(Token("bitfield", 0, 8, TokenType::keyword), FileInfo("test.swizzle"));
+            const auto bitfieldName = TokenInfo(Token("bf", 0, 2, TokenType::string), FileInfo("test.swizzle"));
+            const auto underlying = TokenInfo(Token("u32", 0, 3, TokenType::type), FileInfo("test.swizzle"));
+            
+            const auto bf_node = utils::appendNode<nodes::Bitfield>(nodeStack, bitfieldInfo, bitfieldName, "foo");
+            auto& bf = dynamic_cast<nodes::Bitfield&>(*bf_node);
+            
+            bf.underlying(underlying);
+            nodeStack.push(bf_node);
+            
+            const auto node = utils::appendNode<nodes::BitfieldField>(nodeStack, bitfieldName, underlying);
             nodeStack.push(node);
         }
 
@@ -53,7 +60,7 @@ namespace {
 
     TEST_FIXTURE(WhenNextTokenIsNumericLiteral, verifyConsume)
     {
-        CHECK_EQUAL(2U, nodeStack.size());
+        CHECK_EQUAL(3U, nodeStack.size());
         CHECK_EQUAL(0U, attributeStack.size());
         CHECK_EQUAL(0U, tokenStack.size());
 
@@ -61,7 +68,7 @@ namespace {
 
         CHECK_EQUAL(ParserState::BitfieldEndPosition, parserState);
 
-        REQUIRE CHECK_EQUAL(2U, nodeStack.size());
+        REQUIRE CHECK_EQUAL(3U, nodeStack.size());
         REQUIRE CHECK_EQUAL(0U, attributeStack.size());
         REQUIRE CHECK_EQUAL(0U, tokenStack.size());
     }

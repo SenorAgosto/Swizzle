@@ -6,7 +6,6 @@
 #include <cstddef>
 #include <string>
 #include <limits>
-#include <unordered_set>
 
 namespace swizzle { namespace lexer {
     class TokenInfo;
@@ -23,11 +22,5 @@ namespace swizzle { namespace parser {
         std::intmax_t CurrentBitfieldBit = std::numeric_limits<std::intmax_t>::lowest();
 
         bool MemberIsConst = false;
-
-        void AllocateFieldLabel(const lexer::TokenInfo& token);
-        void ClearFieldLabels();
-        
-    private:
-        std::unordered_set<std::string> UsedFieldLabels;
     };
 }}

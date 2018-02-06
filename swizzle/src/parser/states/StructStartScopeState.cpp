@@ -84,11 +84,16 @@ namespace swizzle { namespace parser { namespace states {
                     throw SyntaxError("Expected field declaration, found duplicitous field label", token);
                 }
 
-                context.AllocateFieldLabel(token);
+                if(types::utils::nodeStackTopIs<ast::nodes::Struct>(nodeStack))
+                {
+                    auto& Struct = static_cast<ast::nodes::Struct&>(*nodeStack.top());
+                    Struct.allocate_label(token);
+
+                    attributeStack.push(new ast::nodes::FieldLabel(token));
+                    return ParserState::StructFieldLabel;
+                }
                 
-                // we want to attach this to the field
-                attributeStack.push(new ast::nodes::FieldLabel(token));
-                return ParserState::StructFieldLabel;
+                throw ParserError("Expected ast::nodes::Struct on top of node stack");
             }
 
             if(type == lexer::TokenType::attribute_block)
@@ -189,8 +194,6 @@ namespace swizzle { namespace parser { namespace states {
             {
                 if(types::utils::nodeStackTopIs<ast::nodes::Struct>(nodeStack))
                 {
-                    context.ClearFieldLabels();
-                    
                     nodeStack.pop();
                     return ParserState::TranslationUnitMain;
                 }

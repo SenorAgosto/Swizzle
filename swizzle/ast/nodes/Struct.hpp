@@ -3,6 +3,7 @@
 #include <swizzle/lexer/TokenInfo.hpp>
 
 #include <string>
+#include <unordered_set>
 
 namespace swizzle { namespace ast { namespace nodes {
 
@@ -16,6 +17,9 @@ namespace swizzle { namespace ast { namespace nodes {
 
         std::string name() const;
 
+        void allocate_label(const lexer::TokenInfo& token);
+        
+    public:
         void accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth = Node::Depth::All) override;
 
     private:
@@ -23,5 +27,6 @@ namespace swizzle { namespace ast { namespace nodes {
         lexer::TokenInfo nameInfo_;
 
         const std::string name_;
+        std::unordered_set<std::string> fieldLabels_;
     };
 }}}

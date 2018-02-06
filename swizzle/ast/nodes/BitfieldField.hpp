@@ -18,12 +18,13 @@ namespace swizzle { namespace ast { namespace nodes {
         const lexer::TokenInfo& name() const;
         const lexer::TokenInfo& underlying() const;
 
-        void beginBit(const lexer::TokenInfo& token, parser::ParserStateContext& context);
-        std::size_t beginBit() const;
+        void beginBit(const std::int16_t bit);
+        std::int16_t beginBit() const;
 
-        void endBit(const lexer::TokenInfo& token, parser::ParserStateContext& context);
-        std::size_t endBit() const;
+        void endBit(const std::int16_t bit);
+        std::int16_t endBit() const;
 
+    public:
         void accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth = Node::Depth::All) override;
 
     private:
@@ -32,7 +33,7 @@ namespace swizzle { namespace ast { namespace nodes {
 
         lexer::TokenInfo valueInfo_;
 
-        std::intmax_t beginBit_;
-        std::intmax_t endBit_;
+        std::int16_t beginBit_;
+        std::int16_t endBit_;
     };
 }}}

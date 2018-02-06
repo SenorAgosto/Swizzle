@@ -1,9 +1,9 @@
-#include <swizzle/parser/SymbolTable.hpp>
+#include <swizzle/types/SymbolTable.hpp>
 #include <swizzle/Exceptions.hpp>
 
 #include <utility>
 
-namespace swizzle { namespace parser {
+namespace swizzle { namespace types {
 
     void SymbolTable::insert(const std::string& symbol, const SymbolInfo& info)
     {

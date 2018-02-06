@@ -1,10 +1,10 @@
 #pragma once
-#include <swizzle/parser/SymbolInfo.hpp>
+#include <swizzle/types/SymbolInfo.hpp>
 
 #include <string>
 #include <unordered_map>
 
-namespace swizzle { namespace parser {
+namespace swizzle { namespace types {
 
     class SymbolTable
     {

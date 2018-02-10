@@ -10,37 +10,48 @@ namespace swizzle { namespace types {
         symbols_.emplace(symbol, info);
     }
     
-    void SymbolTable::insert(std::string&& symbol, SymbolInfo&& info)
+    bool SymbolTable::contains(const std::string& ns, const std::string& symbol) const
     {
-        symbols_.emplace(std::move(symbol), std::move(info));
+        auto iter = symbols_.find(symbol);
+        if(iter != symbols_.cend()) return true;
+        
+        const auto qualified_symbol = ns + "::" + symbol;
+        return symbols_.find(qualified_symbol) != symbols_.cend();
     }
-    
-    bool SymbolTable::contains(const std::string& symbol) const
+
+    const SymbolInfo& SymbolTable::find(const std::string& ns, const std::string& symbol, const SyntaxError& error) const
     {
-        return symbols_.find(symbol) == symbols_.cend();
-    }
-    
-    SymbolType SymbolTable::type(const std::string& symbol) const
-    {
-        const auto iter = symbols_.find(symbol);
+        auto iter = symbols_.find(symbol);
         if(iter != symbols_.cend())
         {
-            const auto& info = iter->second;
-            return info.type();
+            return iter->second;
         }
         
-        throw SymbolNotFound(symbol);
-    }
-    
-    ast::Node::smartptr SymbolTable::node(const std::string& symbol) const
-    {
-        const auto iter = symbols_.find(symbol);
+        const auto qualified_symbol = ns + "::" + symbol;
+        iter = symbols_.find(qualified_symbol);
         if(iter != symbols_.cend())
         {
-            const auto& info = iter->second;
-            return info.node();
+            return iter->second;
         }
         
-        throw SymbolNotFound(symbol);
+        throw error;
+    }
+    
+    SymbolInfo& SymbolTable::find(const std::string& ns, const std::string& symbol, const SyntaxError& error)
+    {
+        auto iter = symbols_.find(symbol);
+        if(iter != symbols_.cend())
+        {
+            return iter->second;
+        }
+        
+        const auto qualified_symbol = ns + "::" + symbol;
+        iter = symbols_.find(qualified_symbol);
+        if(iter != symbols_.cend())
+        {
+            return iter->second;
+        }
+        
+        throw error;
     }
 }}

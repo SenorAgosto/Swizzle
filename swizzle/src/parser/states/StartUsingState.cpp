@@ -27,8 +27,9 @@ namespace swizzle { namespace parser { namespace states {
             
             const auto& alias = static_cast<ast::nodes::TypeAlias&>(*node);
             const auto aliasWithNamespace = context.CurrentNamespace + "::" + alias.aliasedType().token().value().to_string();
-            context.TypeCache[aliasWithNamespace] = node;
-
+            
+            context.SymbolTable.insert(aliasWithNamespace, types::SymbolInfo(aliasWithNamespace, types::SymbolType::TypeAlias, node));
+            
             types::utils::attachAttributes(attributeStack, node);
             
             nodeStack.push(node);

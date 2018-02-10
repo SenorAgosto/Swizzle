@@ -1,7 +1,7 @@
 #pragma once
 #include <swizzle/ast/Node.hpp>
 #include <swizzle/types/EnumValue.hpp>
-#include <swizzle/types/TypeCache.hpp>
+#include <swizzle/types/SymbolTable.hpp>
 
 #include <cstddef>
 #include <string>
@@ -15,7 +15,7 @@ namespace swizzle { namespace parser {
 
     struct ParserStateContext
     {
-        types::TypeCacheType TypeCache;
+        types::SymbolTable SymbolTable;
         ast::Node::smartptr CurrentVariableOnFieldType = nullptr;       // the pointer to the field we're variable on, so we can query the type
 
         std::string CurrentNamespace;

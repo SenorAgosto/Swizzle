@@ -4,7 +4,6 @@
 #include <swizzle/ast/nodes/TypeAlias.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
 #include <swizzle/parser/ParserStateContext.hpp>
-#include <swizzle/parser/utils/NameInTypeCache.hpp>
 #include <swizzle/types/IsFloatType.hpp>
 #include <swizzle/types/IsIntegerType.hpp>
 #include <swizzle/types/NodeStack.hpp>
@@ -29,9 +28,8 @@ namespace swizzle { namespace parser { namespace states {
 
             if(types::utils::nodeStackTopIs<ast::nodes::TypeAlias>(nodeStack))
             {
-                // the aliased type must exist in the TypeCache, or it must be a supported type.
                 const auto v = info.token().value();
-                if(types::IsIntegerType(v) || types::IsFloatType(v) || utils::NameInTypeCache(context.TypeCache, info.token().value().to_string(), context.CurrentNamespace))
+                if(types::IsIntegerType(v) || types::IsFloatType(v) || context.SymbolTable.contains(context.CurrentNamespace, info.token().value().to_string()))
                 {
                     auto& top = static_cast<ast::nodes::TypeAlias&>(*nodeStack.top());
                     top.existingType(info);

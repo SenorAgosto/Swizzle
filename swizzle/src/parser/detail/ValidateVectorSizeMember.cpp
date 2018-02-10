@@ -97,14 +97,10 @@ namespace swizzle { namespace parser { namespace detail {
                     }
                     else
                     {
-                        const auto typeName = containsNamespace(type) ? type.to_string() : context.CurrentNamespace + "::" + type.to_string();
-                        const auto iter = context.TypeCache.find(typeName);
-                        if(iter == context.TypeCache.end())
-                        {
-                            throw SyntaxError("Vector size member invalid", " undefined type: " + typeName, tokenInfo);
-                        }
-
-                        structure = iter->second;
+                        const auto typeString = type.to_string();
+                        auto info = context.SymbolTable.find(context.CurrentNamespace, typeString, SyntaxError("Vector size member invalid, '" + typeString + "' is undefined", token));
+                        
+                        structure = info.node();
                     }
                 }
                 else

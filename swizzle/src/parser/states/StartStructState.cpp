@@ -12,20 +12,6 @@
 
 namespace swizzle { namespace parser { namespace states {
 
-    namespace {
-        void createTypeCacheEntry(ParserStateContext& context, const ast::nodes::Struct& s, const ast::Node::smartptr node)
-        {
-            const auto& name = s.name();
-            const auto iter = context.TypeCache.find(name);
-            if(iter != context.TypeCache.cend())
-            {
-                throw RedefinitionOfStructTypeException(name, s.info().fileInfo());
-            }
-
-            context.TypeCache[name] = node;
-        }
-    }
-
     ParserState StartStructState::consume(const lexer::TokenInfo& token, types::NodeStack& nodeStack, types::NodeStack& attributeStack, types::TokenStack& tokenStack, ParserStateContext& context)
     {
         const auto type = token.token().type();
@@ -43,7 +29,12 @@ namespace swizzle { namespace parser { namespace states {
             types::utils::attachAttributes(attributeStack, node);
 
             const auto structNode = static_cast<ast::nodes::Struct&>(*node);
-            createTypeCacheEntry(context, structNode, node);
+            if(context.SymbolTable.contains(context.CurrentNamespace, structNode.name()))
+            {
+                throw RedefinitionOfStructTypeException(structNode.name(), structNode.info().fileInfo());
+            }
+            
+            context.SymbolTable.insert(structNode.name(), types::SymbolInfo(structNode.name(), types::SymbolType::Struct, node));
 
             nodeStack.push(node);
             tokenStack.pop();

@@ -12,7 +12,6 @@
 #include <swizzle/types/utils/NodeStackTopIs.hpp>
 #include <swizzle/types/TokenStack.hpp>
 
-
 namespace swizzle { namespace parser { namespace states {
 
     ParserState StructVariableBlockCaseBlockNameReadState::consume(const lexer::TokenInfo& token, types::NodeStack& nodeStack, types::NodeStack&, types::TokenStack& tokenStack, ParserStateContext& context)
@@ -29,35 +28,30 @@ namespace swizzle { namespace parser { namespace states {
             const auto structType = types::utils::createType(tokenStack);
             const auto structTypeString = structType.token().to_string();
 
-            auto iter = context.TypeCache.find(structTypeString);
-            iter = iter == context.TypeCache.cend()
-                ? context.TypeCache.find(context.CurrentNamespace + "::" + structTypeString)
-                : iter;
-
-            if(iter == context.TypeCache.end())
+            if(context.SymbolTable.contains(context.CurrentNamespace, structTypeString))
             {
-                throw SyntaxError("Variable block case type must be defined, ", structTypeString + " not defined", token);
+                auto info = context.SymbolTable.find(context.CurrentNamespace, structTypeString, SyntaxError("Variable block case type must be defined, '" + structTypeString + "' not defined", token));
+                if(info.type() != types::SymbolType::Struct)
+                {
+                    throw SyntaxError("Variable block case type must be a struct, '", structTypeString + "' is not a struct", token);
+                }
+                
+                // set the structType on the variableBlock case node & pop the node
+                if(types::utils::nodeStackTopIs<ast::nodes::VariableBlockCase>(nodeStack))
+                {
+                    auto& blockCase = static_cast<ast::nodes::VariableBlockCase&>(*nodeStack.top());
+                    blockCase.type(structType);
+
+                    nodeStack.pop();
+                    types::utils::clear(tokenStack);
+
+                    return ParserState::StructVariableBlockBeginCases;
+                }
+
+                throw ParserError("Internal parser error, top of node stack was not ast::nodes::VariableBlockCase");
             }
 
-            const auto isStruct = dynamic_cast<ast::nodes::Struct*>(iter->second.get());
-            if(!isStruct)
-            {
-                throw SyntaxError("Variable block case type must be a struct, ", structTypeString + " is not a struct", token);
-            }
-
-            // set the structType on the variableBlock case node & pop the node
-            if(types::utils::nodeStackTopIs<ast::nodes::VariableBlockCase>(nodeStack))
-            {
-                auto& blockCase = static_cast<ast::nodes::VariableBlockCase&>(*nodeStack.top());
-                blockCase.type(structType);
-
-                nodeStack.pop();
-                types::utils::clear(tokenStack);
-
-                return ParserState::StructVariableBlockBeginCases;
-            }
-
-            throw ParserError("Internal parser error, top of node stack was not ast::nodes::VariableBlockCase");
+            throw SyntaxError("Variable block case type must be defined, ", structTypeString + " not defined", token);
         }
 
         throw SyntaxError("Expected ':' or ','", token);

@@ -89,7 +89,7 @@ namespace {
             field2.type("u32");
 
             // add the struct to the the type cache
-            context.TypeCache["my_namespace::MyStruct"] = nodeStack.top();
+            context.SymbolTable.insert("my_namespace::MyStruct", SymbolInfo("my_namespace::MyStruct", SymbolType::Struct, nodeStack.top()));
             nodeStack.pop();
 
             const auto info2 = TokenInfo(Token("struct", 0, 6, TokenType::keyword), FileInfo("test.swizzle"));

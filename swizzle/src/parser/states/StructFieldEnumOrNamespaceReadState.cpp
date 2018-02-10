@@ -6,7 +6,6 @@
 #include <swizzle/parser/ParserStateContext.hpp>
 #include <swizzle/types/utils/AppendNode.hpp>
 #include <swizzle/types/utils/CreateType.hpp>
-#include <swizzle/types/utils/IsEnum.hpp>
 #include <swizzle/types/utils/NodeStackTopIs.hpp>
 #include <swizzle/types/utils/ValidateEnumValue.hpp>
 
@@ -27,7 +26,9 @@ namespace swizzle { namespace parser { namespace states {
             if(types::utils::nodeStackTopIs<ast::nodes::StructField>(nodeStack))
             {
                 const auto& structField = static_cast<ast::nodes::StructField&>(*nodeStack.top());
-                if(types::utils::is_enum(context, structField.type()))
+                const auto info = context.SymbolTable.find(context.CurrentNamespace, structField.type(), SyntaxError("Struct field type not found", token));
+                
+                if(info.type() == types::SymbolType::Enum)
                 {
                     const auto enumValue = types::utils::createType(tokenStack);
                     
@@ -37,6 +38,7 @@ namespace swizzle { namespace parser { namespace states {
                         
                         context.MemberIsConst = false;
                         nodeStack.pop();
+                        
                         return ParserState::StructStartScope;
                     }
         

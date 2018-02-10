@@ -52,21 +52,11 @@ namespace swizzle { namespace parser { namespace states {
                     return ParserState::StructStartArray;
                 }
 
-                if(context.TypeCache.find(value.to_string()) != context.TypeCache.cend())
-                {
-                    top.type(value.to_string());
-                    return ParserState::StructStartArray;
-
-                }
-
-                const auto typeWithNamespace = context.CurrentNamespace + "::" + value.to_string();
-                if(context.TypeCache.find(typeWithNamespace) != context.TypeCache.cend())
-                {
-                    top.type(typeWithNamespace);
-                    return ParserState::StructStartArray;
-                }
-
-                throw SyntaxError("Struct array/vector member using undeclared type", token);
+                const auto valueType = value.to_string();
+                const auto info = context.SymbolTable.find(context.CurrentNamespace, valueType, SyntaxError("Struct array/vector member using undeclared type", token));
+                
+                top.type(info.symbol());
+                return ParserState::StructStartArray;
             }
 
             throw ParserError("Internal parser error, expect top of node stack to be ast::nodes::StructField");
@@ -98,20 +88,11 @@ namespace swizzle { namespace parser { namespace states {
                     return ParserState::StructFieldName;
                 }
 
-                if(context.TypeCache.find(value.to_string()) != context.TypeCache.cend())
-                {
-                    top.type(value.to_string());
-                    return ParserState::StructFieldName;
-                }
+                const auto valueType = value.to_string();
+                const auto info = context.SymbolTable.find(context.CurrentNamespace, valueType, SyntaxError("Struct member using undeclared type", token));
 
-                const auto typeWithNamespace = context.CurrentNamespace + "::" + value.to_string();
-                if(context.TypeCache.find(typeWithNamespace) != context.TypeCache.cend())
-                {
-                    top.type(typeWithNamespace);
-                    return ParserState::StructFieldName;
-                }
-
-                throw SyntaxError("Struct member using undeclared type", token);
+                top.type(info.symbol());
+                return ParserState::StructFieldName;
             }
 
             throw ParserError("Internal parser error, top of node stack was not ast::nodes::StructField");

@@ -42,12 +42,6 @@ namespace swizzle {
         RedefinitionOfStructTypeException(const std::string& structName, const lexer::FileInfo& fileInfo);
     };
 
-    class SymbolNotFound : public ParserError
-    {
-    public:
-        SymbolNotFound(const std::string& symbol);
-    };
-
     class StreamEmpty : std::runtime_error
     {
     public:

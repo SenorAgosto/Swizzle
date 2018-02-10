@@ -99,14 +99,11 @@ namespace swizzle { namespace parser { namespace detail {
                     }
                     else
                     {
-                        const auto typeName = containsNamespace(type) ? type.to_string() : context.CurrentNamespace + "::" + type.to_string();
-                        const auto iter = context.TypeCache.find(typeName);
-                        if(iter == context.TypeCache.end())
+                        const auto typeName = type.to_string();
+                        auto info = context.SymbolTable.find(context.CurrentNamespace, typeName, SyntaxError("Variable block member invalid, type '" + typeName + "' is undefined", token));
                         {
-                            throw SyntaxError("Variable block member invalid", " undefined type: " + typeName, tokenInfo);
+                            structure = info.node();
                         }
-
-                        structure = iter->second;
                     }
                 }
                 else

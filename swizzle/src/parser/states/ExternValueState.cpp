@@ -27,7 +27,9 @@ namespace swizzle { namespace parser { namespace states {
             types::utils::clear(tokenStack);
 
             types::utils::appendNode<ast::nodes::Extern>(nodeStack, externType);
-            context.TypeCache[externType.token().value().to_string()] = nullptr;     // insert a nullptr into TypeCache to indicate external type
+            
+            const auto externName = externType.token().value().to_string();
+            context.SymbolTable.insert(externName, types::SymbolInfo(externName, types::SymbolType::Extern, nullptr));
             
             return ParserState::Init;
         }

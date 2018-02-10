@@ -21,7 +21,7 @@ namespace {
         WhenTokenIsValidEnumValue()
         {
             context.CurrentNamespace = "foo";
-            context.TypeCache["foo::E"] = node;
+            context.SymbolTable.insert("foo::E", types::SymbolInfo("foo::E", types::SymbolType::Struct, node));
             
             node->append(new ast::nodes::EnumField(enum_value, underlying));
         }
@@ -47,7 +47,7 @@ namespace {
     {
         WhenTokenIsNotEnumValue()
         {
-            context.TypeCache["foo::E"] = node;
+            context.SymbolTable.insert("foo::E", types::SymbolInfo("foo::E", types::SymbolType::Struct, node));
         }
         
         const boost::string_view e = boost::string_view("enum E : u8 { e1 = 1, )");
@@ -71,7 +71,7 @@ namespace {
     {
         WhenTokenIsUndefinedEnumValue()
         {
-            context.TypeCache["foo::E"] = node;
+            context.SymbolTable.insert("foo::E", types::SymbolInfo("foo::E", types::SymbolType::Struct, node));
         }
         
         const boost::string_view e = boost::string_view("enum E : u8 { e1 = 1, )");

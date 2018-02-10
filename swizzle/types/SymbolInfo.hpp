@@ -1,10 +1,10 @@
 #pragma once
 #include <swizzle/ast/Node.hpp>
-#include <swizzle/parser/SymbolType.hpp>
+#include <swizzle/types/SymbolType.hpp>
 
 #include <string>
 
-namespace swizzle { namespace parser {
+namespace swizzle { namespace types {
 
     // Information to be stored in the SymbolTable
     class SymbolInfo

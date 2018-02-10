@@ -76,11 +76,6 @@ namespace swizzle {
     {
     }
 
-    SymbolNotFound::SymbolNotFound(const std::string& symbol)
-        : ParserError("Symbol lookup failed for symbol: '" + symbol + "'")
-    {
-    }
-
     StreamEmpty::StreamEmpty()
         : std::runtime_error("safe_istringstream empty when insertion operator called.")
     {

@@ -56,7 +56,7 @@ namespace {
             nodeStack.push(ast.root());
 
             auto node = make_struct("my_namespace", "MyStruct");
-            context.TypeCache["my_namespace::MyStruct"] = node;
+            context.SymbolTable.insert("my_namespace::MyStruct", SymbolInfo("my_namespace::MyStruct", SymbolType::Struct, node));
             nodeStack.push(node);
 
             node = make_field("u8", field1);
@@ -85,7 +85,7 @@ namespace {
 
             // my_namespace::struct1
             auto node = make_struct("my_namespace", "struct1");
-            context.TypeCache["my_namespace::struct1"] = node;
+            context.SymbolTable.insert("my_namespace::struct1", SymbolInfo("my_namespace::struct1", SymbolType::Struct, node));
             nodeStack.push(node);
 
             node = make_field("other_namespace::struct2", field1);
@@ -94,7 +94,7 @@ namespace {
 
             // other_namespace::struct2
             node = make_struct("other_namespace", "struct2");
-            context.TypeCache["other_namespace::struct2"] = node;
+            context.SymbolTable.insert("my_namespace::struct2", SymbolInfo("my_namespace::struct2", SymbolType::Struct, node));
 
             nodeStack.push(node);
             node = make_field("other2::struct3", f1);
@@ -102,7 +102,7 @@ namespace {
 
             // other2::struct3
             node = make_struct("other2", "struct3");
-            context.TypeCache["other2::struct3"] = node;
+            context.SymbolTable.insert("my_namespace::struct3", SymbolInfo("my_namespace::MyStruct", SymbolType::Struct, node));
 
             nodeStack.push(node);
             node = make_field("u8", field2);
@@ -134,7 +134,7 @@ namespace {
 
             // my_namespace::struct1
             auto node = make_struct("", "struct1");
-            context.TypeCache["my_namespace::struct1"] = node;
+            context.SymbolTable.insert("my_namespace::struct1", SymbolInfo("my_namespace::struct1", SymbolType::Struct, node));
             nodeStack.push(node);
 
             node = make_field("other_namespace::struct2", field1);
@@ -143,7 +143,7 @@ namespace {
 
             // other_namespace::struct2
             node = make_struct("other_namespace", "struct2");
-            context.TypeCache["other_namespace::struct2"] = node;
+            context.SymbolTable.insert("my_namespace::struct2", SymbolInfo("my_namespace::struct2", SymbolType::Struct, node));
 
             nodeStack.push(node);
             node = make_field("my_namespace::struct3", f1);
@@ -151,7 +151,7 @@ namespace {
 
             // other2::struct3
             node = make_struct("", "struct3");
-            context.TypeCache["my_namespace::struct3"] = node;
+            context.SymbolTable.insert("my_namespace::struct3", SymbolInfo("my_namespace::struct3", SymbolType::Struct, node));
 
             nodeStack.push(node);
             node = make_field("u8", field2);
@@ -181,7 +181,7 @@ namespace {
             nodeStack.push(ast.root());
 
             auto node = make_struct("my_namespace", "MyStruct");
-            context.TypeCache["my_namespace::MyStruct"] = node;
+            context.SymbolTable.insert("my_namespace::MyStruct", SymbolInfo("my_namespace::MyStruct", SymbolType::Struct, node));
             nodeStack.push(node);
 
             node = make_field("f32", field1);
@@ -205,7 +205,7 @@ namespace {
             nodeStack.push(ast.root());
 
             auto node = make_struct("my_namespace", "MyStruct");
-            context.TypeCache["my_namespace::MyStruct"] = node;
+            context.SymbolTable.insert("my_namespace::MyStruct", SymbolInfo("my_namespace::MyStruct", SymbolType::Struct, node));
             nodeStack.push(node);
 
             node = make_field("u8", field2);
@@ -231,10 +231,10 @@ namespace {
 
             // create ThatStruct
             auto node = make_struct("my_namespace", "ThatStruct");
-            context.TypeCache["my_namespace::ThatStruct"] = node;
+            context.SymbolTable.insert("my_namespace::ThatStruct", SymbolInfo("my_namespace::ThatStruct", SymbolType::Struct, node));
 
             node = make_struct("my_namespace", "MyStruct");
-            context.TypeCache["my_namespace::MyStruct"] = node;
+            context.SymbolTable.insert("my_namespace::MyStruct", SymbolInfo("my_namespace::MyStruct", SymbolType::Struct, node));
             nodeStack.push(node);
 
             node = make_field("my_namespace::ThatStruct", field1);

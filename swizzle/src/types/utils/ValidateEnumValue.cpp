@@ -38,44 +38,31 @@ namespace swizzle { namespace types { namespace utils {
             enum_name += *iter;
         }
         
-        auto iter = context.TypeCache.find(enum_name);
-        if(iter == context.TypeCache.cend())
-        {
-            iter = context.TypeCache.find(context.CurrentNamespace + "::" + enum_name);
-        }
+        auto info = context.SymbolTable.find(context.CurrentNamespace, enum_name, SyntaxError("Enum symbol not found: '" + enum_name + "'", token));
         
-        if(iter != context.TypeCache.cend())
+        const auto enum_node = info.node();
+        const auto& Enum = static_cast<ast::nodes::Enum&>(*enum_node);
+            
+        if(Enum.name() != enumType)
         {
-            const auto& enum_node = static_cast<ast::nodes::Enum&>(*iter->second);
+            throw SyntaxError("Mismatch enum types in assignment of default value", token);
+        }
             
-            if(enum_node.name() != enumType)
+        auto matcher = ast::Matcher().getChildrenOf<ast::nodes::EnumField>().bind("field");
+        
+        if(matcher(enum_node))
+        {
+            const auto matches = matcher.all_bound("field");
+            for(const auto match : matches)
             {
-                throw SyntaxError("Mismatch enum types in assignment of default value", token);
-            }
-            
-            auto matcher = ast::Matcher().getChildrenOf<ast::nodes::EnumField>().bind("field");
-            
-            if(matcher(iter->second))
-            {
-                const auto matches = matcher.all_bound("field");
-                for(const auto match : matches)
+                const auto& field = static_cast<ast::nodes::EnumField&>(*match);
+                if(field.name().token().value() == enum_value)
                 {
-                    const auto& field = static_cast<ast::nodes::EnumField&>(*match);
-                    if(field.name().token().value() == enum_value)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
-
-            throw SyntaxError("Enum value not declared on enum type", token);
-
         }
-        else
-        {
-            throw SyntaxError("Expected enum value", token);
-        }
-        
-        return false;
+
+        throw SyntaxError("Enum value not declared on enum type", token);
     }
 }}}

@@ -1,6 +1,6 @@
 #pragma once
 
-namespace swizzle { namespace parser {
+namespace swizzle { namespace types {
 
     enum class SymbolType
     {

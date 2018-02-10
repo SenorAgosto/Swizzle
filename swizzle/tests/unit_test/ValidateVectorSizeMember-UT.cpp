@@ -94,7 +94,7 @@ namespace {
 
             // other_namespace::struct2
             node = make_struct("other_namespace", "struct2");
-            context.SymbolTable.insert("my_namespace::struct2", SymbolInfo("my_namespace::struct2", SymbolType::Struct, node));
+            context.SymbolTable.insert("other_namespace::struct2", SymbolInfo("other_namespace::struct2", SymbolType::Struct, node));
 
             nodeStack.push(node);
             node = make_field("other2::struct3", f1);
@@ -102,7 +102,7 @@ namespace {
 
             // other2::struct3
             node = make_struct("other2", "struct3");
-            context.SymbolTable.insert("my_namespace::struct3", SymbolInfo("my_namespace::MyStruct", SymbolType::Struct, node));
+            context.SymbolTable.insert("other2::struct3", SymbolInfo("other2::struct3", SymbolType::Struct, node));
 
             nodeStack.push(node);
             node = make_field("u8", field2);
@@ -143,7 +143,7 @@ namespace {
 
             // other_namespace::struct2
             node = make_struct("other_namespace", "struct2");
-            context.SymbolTable.insert("my_namespace::struct2", SymbolInfo("my_namespace::struct2", SymbolType::Struct, node));
+            context.SymbolTable.insert("other_namespace::struct2", SymbolInfo("other_namespace::struct2", SymbolType::Struct, node));
 
             nodeStack.push(node);
             node = make_field("my_namespace::struct3", f1);

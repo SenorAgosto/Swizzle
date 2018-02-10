@@ -77,15 +77,14 @@ namespace swizzle { namespace plugins { namespace print {
     
     void PrintVisitor::print_multiline(const std::size_t indent, const std::string& comment)
     {
+        for(std::size_t i = 0; i < indent + 1; ++i) std::cout << "   ";
+
         std::vector<std::string> lines;
         boost::algorithm::split(lines, comment, boost::algorithm::is_any_of("\\"));
-        
-        for(auto& line : lines)
+
+        if(lines.size() > 0)
         {
-            for(std::size_t i = 0; i < indent + 1; ++i) std::cout << "   ";
-            
-            boost::algorithm::trim_left(line);
-            std::cout << (types::utils::starts_with(line, "//") ? "" : "// ") << line << "\n";
+            std::cout << lines[0] << " \\ ...\n";
         }
     }
     

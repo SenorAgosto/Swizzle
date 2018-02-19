@@ -19,6 +19,7 @@ namespace swizzle { namespace plugins { namespace print {
 
         void operator()(ast::AncestorInfo& ancestors, ast::nodes::Attribute& node) override;
         void operator()(ast::AncestorInfo& ancestors, ast::nodes::AttributeBlock& node) override;
+        void operator()(ast::AncestorInfo& ancestors, ast::nodes::BaseClass& node) override;
         void operator()(ast::AncestorInfo& ancestors, ast::nodes::Bitfield& node) override;
         void operator()(ast::AncestorInfo& ancestors, ast::nodes::BitfieldField& node) override;
         void operator()(ast::AncestorInfo& ancestors, ast::nodes::CharLiteral& node) override;

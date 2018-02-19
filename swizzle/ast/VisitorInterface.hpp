@@ -8,6 +8,7 @@ namespace swizzle { namespace ast {
 namespace swizzle { namespace ast { namespace nodes {
     class Attribute;
     class AttributeBlock;
+    class BaseClass;
     class Bitfield;
     class BitfieldField;
     class CharLiteral;
@@ -44,6 +45,7 @@ namespace swizzle { namespace ast {
 
         virtual void operator()(AncestorInfo& ancestors, nodes::Attribute& node) = 0;
         virtual void operator()(AncestorInfo& ancestors, nodes::AttributeBlock& node) = 0;
+        virtual void operator()(AncestorInfo& ancestors, nodes::BaseClass& node) = 0;
         virtual void operator()(AncestorInfo& ancestors, nodes::Bitfield& node) = 0;
         virtual void operator()(AncestorInfo& ancestors, nodes::BitfieldField& node) = 0;
         virtual void operator()(AncestorInfo& ancestors, nodes::CharLiteral& node) = 0;

@@ -40,6 +40,7 @@ namespace {
 
         void operator()(AncestorInfo&, nodes::Attribute&) override { attribute++; }
         void operator()(AncestorInfo&, nodes::AttributeBlock&) override { attributeBlock++; }
+        void operator()(AncestorInfo&, nodes::BaseClass&) override { baseClasses++; }
         void operator()(AncestorInfo&, nodes::Bitfield&) override { bitfield++; }
         void operator()(AncestorInfo&, nodes::BitfieldField&) override { bitfieldField++; }
         void operator()(AncestorInfo&, nodes::DefaultFloatValue&) override { defaultFloat++; }
@@ -69,6 +70,7 @@ namespace {
 
         std::size_t attribute = 0;
         std::size_t attributeBlock = 0;
+        std::size_t baseClasses = 0;
         std::size_t bitfield = 0;
         std::size_t bitfieldField = 0;
         std::size_t charLiteral = 0;

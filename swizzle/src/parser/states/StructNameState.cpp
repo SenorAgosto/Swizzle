@@ -17,6 +17,11 @@ namespace swizzle { namespace parser { namespace states {
             context.MemberIsConst = false;
             return ParserState::StructStartScope;
         }
+        
+        if(type == lexer::TokenType::colon)
+        {
+            return ParserState::StructBaseColonRead;
+        }
 
         throw SyntaxError("Expected '{'", token);
     }

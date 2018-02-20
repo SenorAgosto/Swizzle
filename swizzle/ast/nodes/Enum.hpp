@@ -13,10 +13,10 @@ namespace swizzle { namespace ast { namespace nodes {
     class Enum : public Node
     {
     public:
-        Enum(const lexer::TokenInfo& enumInfo, const lexer::TokenInfo& name, const std::string& containingNamespace);
+        Enum(const lexer::TokenInfo& keyword, const lexer::TokenInfo& name, const std::string& containingNamespace);
 
-        const lexer::TokenInfo& enumInfo() const;
-        const lexer::TokenInfo& nameInfo() const;
+        const lexer::TokenInfo& keyword() const;
+        const lexer::TokenInfo& nameDecl() const;
 
         std::string name() const;
 
@@ -37,10 +37,9 @@ namespace swizzle { namespace ast { namespace nodes {
     private:
         std::unique_ptr<types::EnumValueInterface> currentEnumValue_ = std::unique_ptr<types::EnumValueInterface>(new types::EnumValue<std::uint64_t>());
 
-        const lexer::TokenInfo enumInfo_;   // enum keyword
-        const lexer::TokenInfo nameInfo_;   // enum name
+        const lexer::TokenInfo keyword_;
+        const lexer::TokenInfo nameDecl_;
 
-        lexer::TokenInfo underlyingInfo_;
         lexer::TokenInfo underlyingType_;
 
         const std::string name_;

@@ -6,21 +6,21 @@
 
 namespace swizzle { namespace ast { namespace nodes {
 
-    Enum::Enum(const lexer::TokenInfo& enumInfo, const lexer::TokenInfo& name, const std::string& containingNamespace)
-        : enumInfo_(enumInfo)
-        , nameInfo_(name)
-        , name_(containingNamespace + "::" + nameInfo_.token().to_string())
+    Enum::Enum(const lexer::TokenInfo& keyword, const lexer::TokenInfo& name, const std::string& containingNamespace)
+        : keyword_(keyword)
+        , nameDecl_(name)
+        , name_(containingNamespace + "::" + nameDecl_.token().to_string())
     {
     }
 
-    const lexer::TokenInfo& Enum::enumInfo() const
+    const lexer::TokenInfo& Enum::keyword() const
     {
-        return enumInfo_;
+        return keyword_;
     }
 
-    const lexer::TokenInfo& Enum::nameInfo() const
+    const lexer::TokenInfo& Enum::nameDecl() const
     {
-        return nameInfo_;
+        return nameDecl_;
     }
 
     std::string Enum::name() const

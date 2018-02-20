@@ -193,7 +193,7 @@ namespace swizzle { namespace plugins { namespace print {
     void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::Enum& node)
     {
         std::stringstream ss;
-        ss  << print_node("enum", node.enumInfo().fileInfo())
+        ss  << print_node("enum", node.keyword().fileInfo())
             << node.name() << " (" << node.underlying().token().value() << ")";
         
         print_line(adjust_indentation(ancestors), ss.str());

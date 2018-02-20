@@ -10,11 +10,11 @@ namespace swizzle { namespace ast { namespace nodes {
     class Bitfield : public Node
     {
     public:
-        Bitfield(const lexer::TokenInfo& bitfieldInfo, const lexer::TokenInfo& name, const std::string& containingNamespace);
+        Bitfield(const lexer::TokenInfo& keyword, const lexer::TokenInfo& name, const std::string& containingNamespace);
 
-        const lexer::TokenInfo& bitfieldInfo() const;
-        const lexer::TokenInfo& nameInfo() const;
-        const lexer::TokenInfo& underlyingTypeInfo() const;
+        const lexer::TokenInfo& keyword() const;
+        const lexer::TokenInfo& nameDecl() const;
+        const lexer::TokenInfo& underlyingKeyword() const;
 
         std::string name() const;
 
@@ -28,10 +28,10 @@ namespace swizzle { namespace ast { namespace nodes {
         void accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth = Node::Depth::All) override;
 
     private:
-        const lexer::TokenInfo bitfieldInfo_;   // bitfield keyword
-        const lexer::TokenInfo nameInfo_;       // bitfield name
+        const lexer::TokenInfo keyword_;
+        const lexer::TokenInfo nameDecl_;
 
-        lexer::TokenInfo underlyingInfo_;
+        lexer::TokenInfo underlyingKeyword_;
         lexer::TokenInfo underlyingType_;
 
         const std::string name_;

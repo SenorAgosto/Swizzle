@@ -128,7 +128,7 @@ namespace swizzle { namespace plugins { namespace print {
     void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::Bitfield& node)
     {
         std::stringstream ss;
-        ss  << print_node("bitfield", node.bitfieldInfo().fileInfo())
+        ss  << print_node("bitfield", node.keyword().fileInfo())
             << node.name() << " (" << node.underlying().token().value() << ")";
         
         print_line(adjust_indentation(ancestors), ss.str());

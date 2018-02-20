@@ -10,22 +10,22 @@
 
 namespace swizzle { namespace ast { namespace nodes {
 
-    Bitfield::Bitfield(const lexer::TokenInfo& bitfieldInfo, const lexer::TokenInfo& name, const std::string& containingNamespace)
-        : bitfieldInfo_(bitfieldInfo)
-        , nameInfo_(name)
-        , name_(containingNamespace + "::" + nameInfo_.token().to_string())
+    Bitfield::Bitfield(const lexer::TokenInfo& keyword, const lexer::TokenInfo& name, const std::string& containingNamespace)
+        : keyword_(keyword)
+        , nameDecl_(name)
+        , name_(containingNamespace + "::" + nameDecl_.token().to_string())
         , current_bit_value_(std::numeric_limits<std::int16_t>::lowest())
     {
     }
 
-    const lexer::TokenInfo& Bitfield::bitfieldInfo() const
+    const lexer::TokenInfo& Bitfield::keyword() const
     {
-        return bitfieldInfo_;
+        return keyword_;
     }
 
-    const lexer::TokenInfo& Bitfield::nameInfo() const
+    const lexer::TokenInfo& Bitfield::nameDecl() const
     {
-        return nameInfo_;
+        return nameDecl_;
     }
 
     std::string Bitfield::name() const

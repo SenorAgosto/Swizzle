@@ -7,9 +7,9 @@ namespace swizzle { namespace ast { namespace nodes {
     class TypeAlias : public Node
     {
     public:
-        TypeAlias(const lexer::TokenInfo& info, const lexer::TokenInfo& newType);
+        TypeAlias(const lexer::TokenInfo& keyword, const lexer::TokenInfo& newType);
 
-        const lexer::TokenInfo& info() const;
+        const lexer::TokenInfo& keyword() const;
         const lexer::TokenInfo& aliasedType() const;
 
         void existingType(const lexer::TokenInfo& info);
@@ -18,7 +18,7 @@ namespace swizzle { namespace ast { namespace nodes {
         void accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth = Node::Depth::All) override;
         
     private:
-        const lexer::TokenInfo info_;
+        const lexer::TokenInfo keyword_;
 
         const lexer::TokenInfo aliasedType_;
         lexer::TokenInfo existingType_;

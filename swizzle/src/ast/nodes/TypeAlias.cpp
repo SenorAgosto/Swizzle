@@ -5,16 +5,16 @@
 
 namespace swizzle { namespace ast { namespace nodes {
 
-    TypeAlias::TypeAlias(const lexer::TokenInfo& info, const lexer::TokenInfo& aliasedInfo)
-        : info_(info)
+    TypeAlias::TypeAlias(const lexer::TokenInfo& keyword, const lexer::TokenInfo& aliasedInfo)
+        : keyword_(keyword)
         , aliasedType_(aliasedInfo)
-        , existingType_(lexer::Token(), lexer::FileInfo(info.fileInfo().filename()))
+        , existingType_(lexer::Token(), lexer::FileInfo(keyword.fileInfo().filename()))
     {
     }
 
-    const lexer::TokenInfo& TypeAlias::info() const
+    const lexer::TokenInfo& TypeAlias::keyword() const
     {
-        return info_;
+        return keyword_;
     }
 
     const lexer::TokenInfo& TypeAlias::aliasedType() const

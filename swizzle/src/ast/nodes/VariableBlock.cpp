@@ -5,14 +5,14 @@
 
 namespace swizzle { namespace ast { namespace nodes {
 
-    VariableBlock::VariableBlock(const lexer::TokenInfo& variableBlockInfo)
-        : variableBlockInfo_(variableBlockInfo)
+    VariableBlock::VariableBlock(const lexer::TokenInfo& keyword)
+        : keyword_(keyword)
     {
     }
 
-    const lexer::TokenInfo& VariableBlock::variableBlockInfo() const
+    const lexer::TokenInfo& VariableBlock::keyword() const
     {
-        return variableBlockInfo_;
+        return keyword_;
     }
 
     void VariableBlock::variableOnField(const lexer::TokenInfo& variableOnField)

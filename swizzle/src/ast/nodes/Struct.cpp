@@ -6,21 +6,28 @@
 
 namespace swizzle { namespace ast { namespace nodes {
 
-    Struct::Struct(const lexer::TokenInfo& info, const lexer::TokenInfo& name, const std::string& containingNamespace)
-        : info_(info)
-        , nameInfo_(name)
+    Struct::Struct(const lexer::TokenInfo& keyword, const lexer::TokenInfo& name, const std::string& containingNamespace)
+        : keyword_(keyword)
+        , nameDecl_(name)
         , name_(containingNamespace + "::" + name.token().to_string())
     {
     }
 
-    const lexer::TokenInfo& Struct::info() const
+    Struct::Struct(const Struct& str)
+        : keyword_(str.keyword())
+        , nameDecl_(str.nameDecl())
+        , name_(str.name())
     {
-        return info_;
+    }
+    
+    const lexer::TokenInfo& Struct::keyword() const
+    {
+        return keyword_;
     }
 
-    const lexer::TokenInfo& Struct::nameInfo() const
+    const lexer::TokenInfo& Struct::nameDecl() const
     {
-        return nameInfo_;
+        return nameDecl_;
     }
 
     std::string Struct::name() const

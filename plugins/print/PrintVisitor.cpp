@@ -229,8 +229,8 @@ namespace swizzle { namespace plugins { namespace print {
     void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::FieldLabel& node)
     {
         std::stringstream ss;
-        ss  << print_node("field label", node.info().fileInfo())
-            << "(" << node.info().token().value() << ")";
+        ss  << print_node("field label", node.label().fileInfo())
+            << "(" << node.label().token().value() << ")";
         
         print_line(adjust_indentation(ancestors), ss.str());
     }

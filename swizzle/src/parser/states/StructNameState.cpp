@@ -8,16 +8,20 @@
 
 namespace swizzle { namespace parser { namespace states {
 
-    ParserState StructNameState::consume(const lexer::TokenInfo& token, types::NodeStack&, types::NodeStack&, types::TokenStack&, ParserStateContext& context)
+    ParserState StructNameState::consume(const lexer::TokenInfo& token, types::NodeStack&, types::NodeStack&, types::TokenStack&, ParserStateContext&)
     {
         const auto type = token.token().type();
 
         if(type == lexer::TokenType::l_brace)
         {
-            context.MemberIsConst = false;
             return ParserState::StructStartScope;
         }
+        
+        if(type == lexer::TokenType::colon)
+        {
+            return ParserState::StructBaseColonRead;
+        }
 
-        throw SyntaxError("Expected '{'", token);
+        throw SyntaxError("Expected '{' or ':'", token);
     }
 }}}

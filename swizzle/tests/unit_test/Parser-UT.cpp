@@ -2,6 +2,7 @@
 
 #include <swizzle/ast/Matcher.hpp>
 #include <swizzle/ast/nodes/Attribute.hpp>
+#include <swizzle/ast/nodes/BaseClass.hpp>
 #include <swizzle/ast/nodes/Bitfield.hpp>
 #include <swizzle/ast/nodes/BitfieldField.hpp>
 #include <swizzle/ast/nodes/CharLiteral.hpp>
@@ -1386,6 +1387,229 @@ namespace {
     };
 
     TEST_FIXTURE(WhenInputIsNestedStruct_2, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+    
+    struct WhenInputIsStructWithBaseClass : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 { u8 field1; }" "\n"
+            "struct Struct2 : Struct1 { u8 field1; }"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithBaseClass, verifyConsume)
+    {
+        auto matcher = Matcher().getChildrenOf<nodes::Struct>().bind("struct");
+        CHECK(!matcher(parser.ast().root()));
+
+        tokenize(sv);
+        parse();
+        
+        REQUIRE CHECK(matcher(parser.ast().root()));
+        const auto struct_node = matcher.bound("struct_1");
+        
+        auto baseClassMatcher = Matcher().getChildrenOf<nodes::BaseClass>().bind("base");
+        CHECK(baseClassMatcher(struct_node));
+        
+        const auto base_node = baseClassMatcher.bound("base_0");
+        const auto& base = static_cast<nodes::BaseClass&>(*base_node);
+        
+        CHECK_EQUAL("foo::Struct1", base.name());
+    }
+    
+    struct WhenInputIsStructWithChainedInheritance : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 { u8 field1; }" "\n"
+            "struct Struct2 : Struct1 { u8 field1; }"
+            "struct Struct3 : Struct2 { u8 field1; }"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithChainedInheritance, verifyConsume)
+    {
+        auto matcher = Matcher().getChildrenOf<nodes::Struct>().bind("struct");
+        CHECK(!matcher(parser.ast().root()));
+        
+        tokenize(sv);
+        parse();
+        
+        REQUIRE CHECK(matcher(parser.ast().root()));
+        const auto struct_node = matcher.bound("struct_2");
+
+        auto baseClassMatcher = Matcher().getChildrenOf<nodes::BaseClass>().bind("base");
+        CHECK(baseClassMatcher(struct_node));
+        
+        const auto base_node = baseClassMatcher.bound("base_0");
+        const auto& base = static_cast<nodes::BaseClass&>(*base_node);
+        
+        CHECK_EQUAL("foo::Struct2", base.name());   // foo::Struct2 is the base of foo::Struct3
+    }
+
+    struct WhenInputIsStructWithMultipleInheritance : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 { u8 field1; }" "\n"
+            "struct Struct2 { u8 field1; }"
+            "struct Struct3 : Struct1, Struct2 { u8 field1; }"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithMultipleInheritance, verifyConsume)
+    {
+        auto matcher = Matcher().getChildrenOf<nodes::Struct>().bind("struct");
+        CHECK(!matcher(parser.ast().root()));
+        
+        tokenize(sv);
+        parse();
+        
+        REQUIRE CHECK(matcher(parser.ast().root()));
+        const auto struct_node = matcher.bound("struct_2");
+
+        auto baseClassMatcher = Matcher().getChildrenOf<nodes::BaseClass>().bind("base");
+        CHECK(baseClassMatcher(struct_node));
+        
+        const auto bases = baseClassMatcher.all_bound("base");
+        REQUIRE CHECK_EQUAL(2U, bases.size());
+        /* TODO: Matcher::all_bound() needs to preserve the order of the nodes, which means Matcher::variables_
+           data structure needs to be changed to preserve the order of nodes matched.
+        CHECK_EQUAL("foo::Struct1", static_cast<nodes::BaseClass&>(*bases[0]).name());
+        CHECK_EQUAL("foo::Struct2", static_cast<nodes::BaseClass&>(*bases[1]).name());
+        */
+    }
+
+    struct WhenInputIsStructWithAttributeOnBaseClass : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 { u8 field1; }" "\n"
+            "struct Struct2 { u8 field1; }"
+            "struct Struct3 : @base_1 Struct1, @base_2 Struct2 { u8 field1; }"
+        );
+    };
+    
+    TEST_FIXTURE(WhenInputIsStructWithAttributeOnBaseClass, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsStructWithCharAttributeOnBaseClass : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 { u8 field1; }" "\n"
+            "struct Struct2 { u8 field1; }"
+            "struct Struct3 : @base='1' Struct1, @base='2' Struct2 { u8 field1; }"
+        );
+    };
+    
+    TEST_FIXTURE(WhenInputIsStructWithCharAttributeOnBaseClass, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+    
+    struct WhenInputIsStructWithNumAttributeOnBaseClass : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 { u8 field1; }" "\n"
+            "struct Struct2 { u8 field1; }"
+            "struct Struct3 : @base=1 Struct1, @base=2 Struct2 { u8 field1; }"
+        );
+    };
+    
+    TEST_FIXTURE(WhenInputIsStructWithNumAttributeOnBaseClass, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsStructWithHexAttributeOnBaseClass : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 { u8 field1; }" "\n"
+            "struct Struct2 { u8 field1; }"
+            "struct Struct3 : @base=0x01 Struct1, @base=0x02 Struct2 { u8 field1; }"
+        );
+    };
+    
+    TEST_FIXTURE(WhenInputIsStructWithHexAttributeOnBaseClass, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsStructWithStringAttributeOnBaseClass : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 { u8 field1; }" "\n"
+            "struct Struct2 { u8 field1; }"
+            "struct Struct3 : @base=\"b1\" Struct1, @base=\"b2\" Struct2 { u8 field1; }"
+        );
+    };
+    
+    TEST_FIXTURE(WhenInputIsStructWithStringAttributeOnBaseClass, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsStructWithBlockAttributeOnBaseClass : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 { u8 field1; }" "\n"
+            "struct Struct2 { u8 field1; }"
+            "struct Struct3 : @base{whatever} Struct1, @base{whatever2} Struct2 { u8 field1; }"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithBlockAttributeOnBaseClass, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsStructWithCommentBeforeBaseClass : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 { u8 field1; }" "\n"
+            "struct Struct2 { u8 field1; }"
+            "struct Struct3 : // comment \n"
+                "Struct1, Struct2 { u8 field1; }"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithCommentBeforeBaseClass, verifyConsume)
+    {
+        tokenize(sv);
+        parse();
+    }
+
+    struct WhenInputIsStructWithMultiLineCommentBeforeBaseClass : public ParserFixture
+    {
+        const boost::string_view sv = boost::string_view(
+            "namespace foo;" "\n"
+            "struct Struct1 { u8 field1; }" "\n"
+            "struct Struct2 { u8 field1; }"
+            "struct Struct3 : // comment \\\n"
+                " comment continues \n"
+                "Struct1, Struct2 { u8 field1; }"
+        );
+    };
+
+    TEST_FIXTURE(WhenInputIsStructWithMultiLineCommentBeforeBaseClass, verifyConsume)
     {
         tokenize(sv);
         parse();

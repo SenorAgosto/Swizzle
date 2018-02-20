@@ -38,6 +38,9 @@
 #include <swizzle/parser/states/StartStructState.hpp>
 #include <swizzle/parser/states/StartUsingState.hpp>
 #include <swizzle/parser/states/StructArrayState.hpp>
+#include <swizzle/parser/states/StructBaseColonReadState.hpp>
+#include <swizzle/parser/states/StructBaseNameOrNamespaceFirstColonReadState.hpp>
+#include <swizzle/parser/states/StructBaseNameOrNamespaceReadState.hpp>
 #include <swizzle/parser/states/StructEndArrayOrVectorState.hpp>
 #include <swizzle/parser/states/StructFieldEnumOrNamespaceFirstColonReadState.hpp>
 #include <swizzle/parser/states/StructFieldEnumOrNamespaceReadState.hpp>
@@ -117,6 +120,9 @@ namespace swizzle { namespace parser {
         states::BitfieldFirstDotState bitfieldFirstDotState_;
         states::BitfieldSecondDotState bitfieldSecondDotState_;
         states::BitfieldEndPositionState bitfieldEndPositionState_;
+        states::StructBaseColonReadState structBaseColonReadState_;
+        states::StructBaseNameOrNamespaceFirstColonReadState structBaseNameOrNamespaceFirstColonReadState_;
+        states::StructBaseNameOrNamespaceReadState structBaseNameOrNamespaceReadState_;
         states::StartStructState startStructState_;
         states::StructNameState structNameState_;
         states::StructStartScopeState structStartScopeState_;

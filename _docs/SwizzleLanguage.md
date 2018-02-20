@@ -138,6 +138,10 @@ This is an informal description of the Swizzle DSL for describing messages on th
     using <type_name> = <namespace>::<namespace>::<type_name>;
     using <type_name> = <type_name>; 
 
+    // an empty struct
+    struct <name> {
+    }
+
     struct <name> {
         <type_name> <field_name>;
         <namespace>::<namespace>::<type_name> <field_name>;
@@ -183,6 +187,14 @@ This is an informal description of the Swizzle DSL for describing messages on th
         variable_block : <field_name>.<field_name> {
             case <literal>: <namespace>::<namespace>::<type_name>,
         }
+    }
+
+    // struct with a base struct
+    struct <name> : <base_name> {
+    }
+
+    // multiple inheritance
+    struct <name> : <base_name1>, <base_name2> {
     }
 
     // attribute applied to struct node

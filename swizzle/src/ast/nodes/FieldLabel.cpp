@@ -5,14 +5,14 @@
 
 namespace swizzle { namespace ast { namespace nodes {
 
-    FieldLabel::FieldLabel(const lexer::TokenInfo& info)
-        : info_(info)
+    FieldLabel::FieldLabel(const lexer::TokenInfo& label)
+        : label_(label)
     {
     }
 
-    const lexer::TokenInfo& FieldLabel::info() const
+    const lexer::TokenInfo& FieldLabel::label() const
     {
-        return info_;
+        return label_;
     }
 
     void FieldLabel::colon(const lexer::TokenInfo& colon)

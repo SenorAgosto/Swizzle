@@ -119,8 +119,8 @@ namespace swizzle { namespace plugins { namespace print {
     void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::BaseClass& node)
     {
         std::stringstream ss;
-        ss  << print_node("inherits from", node.name().fileInfo())
-            << node.name().token().value();
+        ss  << print_node("inherits from", node.nameDecl().fileInfo())
+            << node.name();
         
         print_line(adjust_indentation(ancestors), ss.str());
     }
@@ -293,7 +293,7 @@ namespace swizzle { namespace plugins { namespace print {
     void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::Struct& node)
     {
         std::stringstream ss;
-        ss  << print_node("struct", node.info().fileInfo())
+        ss  << print_node("struct", node.keyword().fileInfo())
             << node.name();
         
         print_line(adjust_indentation(ancestors), ss.str());

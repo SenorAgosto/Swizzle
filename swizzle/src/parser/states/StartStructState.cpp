@@ -31,7 +31,7 @@ namespace swizzle { namespace parser { namespace states {
             const auto structNode = static_cast<ast::nodes::Struct&>(*node);
             if(context.SymbolTable.contains(context.CurrentNamespace, structNode.name()))
             {
-                throw RedefinitionOfStructTypeException(structNode.name(), structNode.info().fileInfo());
+                throw RedefinitionOfStructTypeException(structNode.name(), structNode.keyword().fileInfo());
             }
             
             context.SymbolTable.insert(structNode.name(), types::SymbolInfo(structNode.name(), types::SymbolType::Struct, node));

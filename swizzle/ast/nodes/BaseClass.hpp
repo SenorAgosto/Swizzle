@@ -1,21 +1,16 @@
 #pragma once
-#include <swizzle/ast/Node.hpp>
+#include <swizzle/ast/nodes/Struct.hpp>
 #include <swizzle/lexer/TokenInfo.hpp>
 
 namespace swizzle { namespace ast { namespace nodes {
 
-    class BaseClass : public Node
+    class BaseClass : public Struct
     {
     public:
-        BaseClass(const lexer::TokenInfo& name);
+        BaseClass(const Struct& str);
 
-        // return base class token
-        const lexer::TokenInfo& name() const;
-
+    public:
         void accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth = Node::Depth::All) override;
-
-    private:
-        const lexer::TokenInfo name_;
     };
 }}}
 

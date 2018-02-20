@@ -5,16 +5,11 @@
 
 namespace swizzle { namespace ast { namespace nodes {
 
-    BaseClass::BaseClass(const lexer::TokenInfo& name)
-        : name_(name)
+    BaseClass::BaseClass(const Struct& str)
+        : Struct::Struct(str)
     {
     }
-
-    const lexer::TokenInfo& BaseClass::name() const
-    {
-        return name_;
-    }
-
+    
     void BaseClass::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth)
     {
         visitor(ancestors, *this);

@@ -121,7 +121,7 @@ namespace swizzle { namespace parser {
         states::BitfieldSecondDotState bitfieldSecondDotState_;
         states::BitfieldEndPositionState bitfieldEndPositionState_;
         states::StructBaseColonReadState structBaseColonReadState_;
-        states::StructBaseNameOrNamespaceFirstColonReadState structBaseNameOrNamespaceReadState_;
+        states::StructBaseNameOrNamespaceFirstColonReadState structBaseNameOrNamespaceFirstColonReadState_;
         states::StructBaseNameOrNamespaceReadState structBaseNameOrNamespaceReadState_;
         states::StartStructState startStructState_;
         states::StructNameState structNameState_;

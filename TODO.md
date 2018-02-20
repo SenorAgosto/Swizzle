@@ -2,7 +2,7 @@
 - Matcher::variables_ needs to preserve the order nodes were discovered in
 - add support for attributes on inherited classes 
 - implement inheritance for: 
-	- struct 
+	* struct 
 	- enum 
 	- bitfield
 

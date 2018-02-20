@@ -23,6 +23,6 @@ namespace swizzle { namespace parser { namespace states {
             return ParserState::StructBaseColonRead;
         }
 
-        throw SyntaxError("Expected '{'", token);
+        throw SyntaxError("Expected '{' or ':'", token);
     }
 }}}

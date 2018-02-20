@@ -5,14 +5,14 @@
 
 namespace swizzle { namespace ast { namespace nodes {
 
-    Namespace::Namespace(const lexer::TokenInfo& info)
-        : info_(info)
+    Namespace::Namespace(const lexer::TokenInfo& name)
+        : name_(name)
     {
     }
 
-    const lexer::TokenInfo& Namespace::info() const
+    const lexer::TokenInfo& Namespace::name() const
     {
-        return info_;
+        return name_;
     }
 
     void Namespace::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth)

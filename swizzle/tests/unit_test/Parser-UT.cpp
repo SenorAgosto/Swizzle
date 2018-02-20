@@ -277,7 +277,7 @@ namespace {
         REQUIRE CHECK(node);
 
         const auto& nameSpace = static_cast<nodes::Namespace&>(*node);
-        CHECK_EQUAL("foo", nameSpace.info().token().to_string());
+        CHECK_EQUAL("foo", nameSpace.name().token().to_string());
     }
 
     struct WhenInputIsNestedNamespace : public ParserFixture
@@ -299,7 +299,7 @@ namespace {
         REQUIRE CHECK(node);
 
         const auto& nameSpace = static_cast<nodes::Namespace&>(*node);
-        CHECK_EQUAL("foo::bar", nameSpace.info().token().to_string());
+        CHECK_EQUAL("foo::bar", nameSpace.name().token().to_string());
     }
 
     struct WhenInputIsMultipleNestedNamespaces : public ParserFixture
@@ -321,7 +321,7 @@ namespace {
         REQUIRE CHECK(node);
 
         const auto& nameSpace = static_cast<nodes::Namespace&>(*node);
-        CHECK_EQUAL("foo::bar::baz", nameSpace.info().token().to_string());
+        CHECK_EQUAL("foo::bar::baz", nameSpace.name().token().to_string());
     }
 
     struct WhenInputIsEnum : public ParserFixture

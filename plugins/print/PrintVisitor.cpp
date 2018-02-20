@@ -266,8 +266,8 @@ namespace swizzle { namespace plugins { namespace print {
     void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::Namespace& node)
     {
         std::stringstream ss;
-        ss  << print_node("namespace", node.info().fileInfo())
-            << node.info().token().value();
+        ss  << print_node("namespace", node.name().fileInfo())
+            << node.name().token().value();
         
         print_line(adjust_indentation(ancestors), ss.str());
     }

@@ -2,6 +2,7 @@
 
 #include <swizzle/ast/Matcher.hpp>
 #include <swizzle/ast/nodes/Attribute.hpp>
+#include <swizzle/ast/nodes/BaseClass.hpp>
 #include <swizzle/ast/nodes/Bitfield.hpp>
 #include <swizzle/ast/nodes/BitfieldField.hpp>
 #include <swizzle/ast/nodes/CharLiteral.hpp>

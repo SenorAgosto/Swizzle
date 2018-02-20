@@ -13,9 +13,9 @@ namespace swizzle { namespace ast { namespace nodes {
     class VariableBlock : public Node
     {
     public:
-        VariableBlock(const lexer::TokenInfo& variableBlockInfo);
+        VariableBlock(const lexer::TokenInfo& keyword);
 
-        const lexer::TokenInfo& variableBlockInfo() const;
+        const lexer::TokenInfo& keyword() const;
 
         void variableOnField(const lexer::TokenInfo& variableOnField);
         const lexer::TokenInfo& variableOnField() const;
@@ -23,7 +23,7 @@ namespace swizzle { namespace ast { namespace nodes {
         void accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth = Node::Depth::All) override;
 
     private:
-        const lexer::TokenInfo variableBlockInfo_;   // variable_block keyword
+        const lexer::TokenInfo keyword_;
         lexer::TokenInfo variableOnFieldInfo_;       // field we're variable on
     };
 }}}

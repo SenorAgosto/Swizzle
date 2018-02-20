@@ -333,7 +333,7 @@ namespace swizzle { namespace plugins { namespace print {
     void PrintVisitor::operator()(ast::AncestorInfo& ancestors, ast::nodes::VariableBlock& node)
     {
         std::stringstream ss;
-        ss  << print_node("variable block", node.variableBlockInfo().fileInfo())
+        ss  << print_node("variable block", node.keyword().fileInfo())
             << "(" << node.variableOnField().token().value() << ")";
         
         print_line(adjust_indentation(ancestors), ss.str());

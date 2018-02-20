@@ -1,11 +1,5 @@
 # TODO
 - Matcher::variables_ needs to preserve the order nodes were discovered in
-- add support for attributes on inherited classes 
-- implement inheritance for: 
-	* struct 
-	- enum 
-	- bitfield
-
 - implement test coverage showing const is correctly applied to fields, and correctly disallowed on variable_block's
 - implement test coverage showing case values don't overflow the switching type.
 - implement test coverage showing the switching type is an integer type. 

@@ -1,5 +1,6 @@
 #pragma once
 #include <swizzle/ast/MatchRule.hpp>
+#include <swizzle/ast/matchers/HasChildOfValueVisitor.hpp>
 
 #include <cstddef>
 #include <numeric>
@@ -21,8 +22,22 @@ namespace swizzle { namespace ast { namespace matchers {
                 {
                     if(results[i])
                     {
-                        binder.bind(bindName_, node);
-                        return true;
+                        if(nodeValue_.empty())
+                        {
+                            binder.bind(bindName_, node);
+                            return true;
+                        }
+                        
+                        AncestorInfo ancestors;
+                        HasChildOfValueVisitor visitor(nodeValue_);
+                        
+                        static_cast<Node*>(results[i])->accept(visitor, ancestors, Depth::One);
+                        
+                        if(visitor.value_matches())
+                        {
+                            binder.bind(bindName_, node);
+                            return true;
+                        }
                     }
                 }
             }

@@ -133,10 +133,26 @@ namespace swizzle { namespace ast {
             variables_[name] = node;
         }
         
+        // bind @name to @node
         void bind(const std::string& name, Node& node) override
         {
             Node::smartptr sp = &node;
             variables_[name] = sp;
+        }
+
+        // match if the node's value matches @value
+        MatcherImpl value_of(const std::string& value)
+        {
+            if(rules_.empty())
+            {
+                nodeValue_ = value;
+                return *this;
+            }
+            
+            auto& rule = rules_.back();
+            rule->value_of(value);
+            
+            return *this;
         }
 
         // return a node bound to @name, otherwise return null
@@ -172,6 +188,7 @@ namespace swizzle { namespace ast {
         std::deque<std::shared_ptr<MatchRule>> rules_;
         std::unordered_map<std::string, ast::Node::smartptr> variables_;
         std::string bindName_;
+        std::string nodeValue_;
     };
 
 

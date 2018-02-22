@@ -4,6 +4,8 @@
 #include <swizzle/ast/AbstractSyntaxTree.hpp>
 #include <swizzle/ast/Matcher.hpp>
 #include <swizzle/ast/Node.hpp>
+
+#include <swizzle/ast/nodes/Attribute.hpp>
 #include <swizzle/ast/nodes/Bitfield.hpp>
 #include <swizzle/ast/nodes/BitfieldField.hpp>
 #include <swizzle/ast/nodes/Comment.hpp>
@@ -88,6 +90,26 @@ namespace {
         CHECK(m(ast));
 
         utils::appendNode<nodes::MultilineComment>(nodeStack, info);
+        CHECK(m(ast));
+    }
+
+    struct HasChildOfAttributeFixture : public HasChildOfFixture
+    {
+        const Token token2 = Token("@message", 0, 8, TokenType::attribute);
+        const FileInfo fileInfo2 = FileInfo("test.swizzle");
+        
+        const TokenInfo info2 = TokenInfo(token2, fileInfo2);
+    };
+
+    TEST_FIXTURE(HasChildOfAttributeFixture, verifyHasValueOf)
+    {
+        Matcher m = Matcher().hasChildOf<nodes::Attribute>().value_of("@message");
+        CHECK(!m(ast));
+
+        utils::appendNode<nodes::Comment>(nodeStack, info);
+        CHECK(!m(ast));
+
+        utils::appendNode<nodes::Attribute>(nodeStack, info2);
         CHECK(m(ast));
     }
 

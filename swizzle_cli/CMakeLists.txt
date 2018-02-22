@@ -1,6 +1,6 @@
-MAKE_EXECUTABLE(swizzle
+MAKE_EXECUTABLE(swizzle_cli
 	DEPENDENCIES	
-		swzl	
+		swizzle	
 		${Boost_LIBRARIES}		# boost::intrusive_ptr
 		${PluginFactory_LIBRARIES}
 		${TBB_LIBRARIES} 		# only defined on Unix

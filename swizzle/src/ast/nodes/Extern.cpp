@@ -15,7 +15,7 @@ namespace swizzle { namespace ast { namespace nodes {
         return externType_;
     }
 
-    void Extern::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth)
+    void Extern::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Depth depth)
     {
         visitor(ancestors, *this);
         

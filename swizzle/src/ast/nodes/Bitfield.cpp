@@ -65,7 +65,7 @@ namespace swizzle { namespace ast { namespace nodes {
         return current_bit_value_;
     }
     
-    void Bitfield::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth)
+    void Bitfield::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Depth depth)
     {
         visitor(ancestors, *this);
         

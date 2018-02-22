@@ -32,7 +32,7 @@ namespace swizzle { namespace ast { namespace nodes {
         void set_value_from_char(const lexer::TokenInfo& token);
         
     public:
-        void accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth = Node::Depth::All) override;
+        void accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Depth depth = Depth::All) override;
 
     private:
         std::unique_ptr<types::EnumValueInterface> currentEnumValue_ = std::unique_ptr<types::EnumValueInterface>(new types::EnumValue<std::uint64_t>());

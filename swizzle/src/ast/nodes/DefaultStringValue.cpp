@@ -27,7 +27,7 @@ namespace swizzle { namespace ast { namespace nodes {
         return length_;
     }
 
-    void DefaultStringValue::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth)
+    void DefaultStringValue::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Depth depth)
     {
         visitor(ancestors, *this);
         

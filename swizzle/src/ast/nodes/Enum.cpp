@@ -111,7 +111,7 @@ namespace swizzle { namespace ast { namespace nodes {
     }
     
     // virtual
-    void Enum::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth)
+    void Enum::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Depth depth)
     {
         visitor(ancestors, *this);
         

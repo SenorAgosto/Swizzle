@@ -44,7 +44,7 @@ namespace swizzle { namespace ast { namespace nodes {
         return value_;
     }
 
-    void EnumField::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth)
+    void EnumField::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Depth depth)
     {
         visitor(ancestors, *this);
         

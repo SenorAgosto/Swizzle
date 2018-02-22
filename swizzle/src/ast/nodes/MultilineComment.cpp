@@ -15,7 +15,7 @@ namespace swizzle { namespace ast { namespace nodes {
         return info_;
     }
 
-    void MultilineComment::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth)
+    void MultilineComment::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Depth depth)
     {
         visitor(ancestors, *this);
         

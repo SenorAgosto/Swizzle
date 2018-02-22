@@ -20,7 +20,7 @@ namespace swizzle { namespace ast {
         return children_.empty();
     }
 
-    void Node::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth)
+    void Node::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Depth depth)
     {
         visitor(ancestors, *this);
         

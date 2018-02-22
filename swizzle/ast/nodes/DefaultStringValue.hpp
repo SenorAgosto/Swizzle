@@ -17,7 +17,7 @@ namespace swizzle { namespace ast { namespace nodes {
 
         std::ptrdiff_t length() const;
 
-        void accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth = Node::Depth::All) override;
+        void accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Depth depth = Depth::All) override;
 
     private:
         const lexer::TokenInfo value_;

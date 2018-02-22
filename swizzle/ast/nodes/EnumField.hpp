@@ -22,7 +22,7 @@ namespace swizzle { namespace ast { namespace nodes {
         void value(const std::uint64_t value);
         std::uint64_t value() const;
 
-        void accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth = Node::Depth::All) override;
+        void accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Depth depth = Depth::All) override;
 
     private:
         const lexer::TokenInfo name_;

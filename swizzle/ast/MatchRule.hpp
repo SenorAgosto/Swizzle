@@ -14,8 +14,10 @@ namespace swizzle { namespace ast {
 
         virtual bool evaluate(VariableBindingInterface& binder, Node::smartptr node) = 0;
         virtual void bind_variable(const std::string& name) { bindName_ = name; }
-
+        virtual void value_of(const std::string& value) { nodeValue_ = value; }
+        
     protected:
         std::string bindName_;
+        std::string nodeValue_;
     };
 }}

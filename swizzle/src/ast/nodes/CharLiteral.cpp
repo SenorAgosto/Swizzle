@@ -15,7 +15,7 @@ namespace swizzle { namespace ast { namespace nodes {
         return info_;
     }
 
-    void CharLiteral::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth)
+    void CharLiteral::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Depth depth)
     {
         visitor(ancestors, *this);
         

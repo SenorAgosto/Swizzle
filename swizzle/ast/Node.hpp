@@ -1,4 +1,6 @@
 #pragma once
+#include <swizzle/ast/Depth.hpp>
+
 #include <UsingIntrusivePtrIn/UsingIntrusivePtrIn.hpp>
 #include <UsingIntrusivePtrIn/details/SingleThreadedReferenceCountBase.hpp>
 
@@ -16,7 +18,6 @@ namespace swizzle { namespace ast {
     {
     public:
         using smartptr = boost::intrusive_ptr<Node>;
-        enum class Depth { One, All };
         
     public:
     

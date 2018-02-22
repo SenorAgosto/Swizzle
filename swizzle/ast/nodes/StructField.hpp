@@ -30,7 +30,7 @@ namespace swizzle { namespace ast { namespace nodes {
         bool isVector() const;
         const lexer::TokenInfo& vectorSizeMember() const;
 
-        void accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth = Node::Depth::All) override;
+        void accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Depth depth = Depth::All) override;
 
     private:
         lexer::TokenInfo name_;

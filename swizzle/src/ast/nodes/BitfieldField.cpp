@@ -50,7 +50,7 @@ namespace swizzle { namespace ast { namespace nodes {
         return endBit_;
     }
 
-    void BitfieldField::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth)
+    void BitfieldField::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Depth depth)
     {
         visitor(ancestors, *this);
         

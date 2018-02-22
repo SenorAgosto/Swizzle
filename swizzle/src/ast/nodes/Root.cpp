@@ -5,7 +5,7 @@
 
 namespace swizzle { namespace ast { namespace nodes {
 
-    void Root::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth)
+    void Root::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Depth depth)
     {
         visitor(ancestors, *this);
         

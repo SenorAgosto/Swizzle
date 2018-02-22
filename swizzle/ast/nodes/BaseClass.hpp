@@ -10,7 +10,7 @@ namespace swizzle { namespace ast { namespace nodes {
         BaseClass(const Struct& str);
 
     public:
-        void accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth = Node::Depth::All) override;
+        void accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Depth depth = Depth::All) override;
     };
 }}}
 

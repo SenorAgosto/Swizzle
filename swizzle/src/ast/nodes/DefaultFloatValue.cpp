@@ -22,7 +22,7 @@ namespace swizzle { namespace ast { namespace nodes {
         return underlying_;
     }
 
-    void DefaultFloatValue::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth)
+    void DefaultFloatValue::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Depth depth)
     {
         visitor(ancestors, *this);
         

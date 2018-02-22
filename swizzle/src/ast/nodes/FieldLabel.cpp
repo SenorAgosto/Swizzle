@@ -25,7 +25,7 @@ namespace swizzle { namespace ast { namespace nodes {
         return colon_;
     }
 
-    void FieldLabel::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth)
+    void FieldLabel::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Depth depth)
     {
         visitor(ancestors, *this);
         

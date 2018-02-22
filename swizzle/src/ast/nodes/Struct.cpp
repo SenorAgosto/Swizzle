@@ -49,7 +49,7 @@ namespace swizzle { namespace ast { namespace nodes {
     }
 
     // virtual
-    void Struct::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth)
+    void Struct::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Depth depth)
     {
         visitor(ancestors, *this);
         

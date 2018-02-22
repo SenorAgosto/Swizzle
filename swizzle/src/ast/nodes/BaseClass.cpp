@@ -10,7 +10,7 @@ namespace swizzle { namespace ast { namespace nodes {
     {
     }
     
-    void BaseClass::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth)
+    void BaseClass::accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Depth depth)
     {
         visitor(ancestors, *this);
         

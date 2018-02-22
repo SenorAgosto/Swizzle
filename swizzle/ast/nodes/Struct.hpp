@@ -21,7 +21,7 @@ namespace swizzle { namespace ast { namespace nodes {
         void allocate_label(const lexer::TokenInfo& token);
         
     public:
-        void accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth = Node::Depth::All) override;
+        void accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Depth depth = Depth::All) override;
 
     private:
         lexer::TokenInfo keyword_;

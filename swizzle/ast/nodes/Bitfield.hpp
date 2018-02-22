@@ -25,7 +25,7 @@ namespace swizzle { namespace ast { namespace nodes {
         std::int16_t current_bit() const;
         
     public:
-        void accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Node::Depth depth = Node::Depth::All) override;
+        void accept(VisitorInterface& visitor, AncestorInfo& ancestors, const Depth depth = Depth::All) override;
 
     private:
         const lexer::TokenInfo keyword_;

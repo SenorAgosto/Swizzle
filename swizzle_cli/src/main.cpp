@@ -190,15 +190,16 @@ namespace swizzle {
         auto backends = config.backends;
         std::sort(begin(backends), end(backends));
         
-        std::remove_if(begin(config.plugins), end(config.plugins), [&config, &backends](const auto plugin) -> bool {
-            const auto iter = config.pluginToNames.find(plugin);
-            if(iter != config.pluginToNames.cend())
-            {
-                return !std::binary_search(begin(backends), end(backends), iter->second);
-            }
+        config.plugins.erase(
+            std::remove_if(begin(config.plugins), end(config.plugins), [&config, &backends](const auto plugin) -> bool {
+                const auto iter = config.pluginToNames.find(plugin);
+                if(iter != config.pluginToNames.cend())
+                {
+                    return !std::binary_search(begin(backends), end(backends), iter->second);
+                }
             
-            return false;
-        });
+                return false;
+            }), end(config.plugins));
         
         return 0;
     }

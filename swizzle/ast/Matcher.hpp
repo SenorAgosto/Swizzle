@@ -69,7 +69,6 @@ namespace swizzle { namespace ast {
             return *this;
         }
 
-
         // evaluate AST
         bool operator()(AbstractSyntaxTree& ast)
         {
@@ -87,6 +86,21 @@ namespace swizzle { namespace ast {
                 }
             }
 
+            bind(bindName_, node);
+            return true;
+        }
+        
+        // evalute subtree
+        bool operator()(Node& node)
+        {
+            for(auto& rule : rules_)
+            {
+                if(!rule->evaluate(*this, node))
+                {
+                    return false;
+                }
+            }
+            
             bind(bindName_, node);
             return true;
         }
@@ -117,6 +131,12 @@ namespace swizzle { namespace ast {
         void bind(const std::string& name, Node::smartptr node) override
         {
             variables_[name] = node;
+        }
+        
+        void bind(const std::string& name, Node& node) override
+        {
+            Node::smartptr sp = &node;
+            variables_[name] = sp;
         }
 
         // return a node bound to @name, otherwise return null

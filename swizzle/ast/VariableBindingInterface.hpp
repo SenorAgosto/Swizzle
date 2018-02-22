@@ -8,6 +8,8 @@ namespace swizzle { namespace ast {
     {
     public:
         virtual ~VariableBindingInterface(){}
+        
         virtual void bind(const std::string& name, Node::smartptr node) = 0;
+        virtual void bind(const std::string& name, Node& node) = 0;
     };
 }}

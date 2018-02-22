@@ -95,7 +95,7 @@ namespace swizzle { namespace ast {
         {
             for(auto& rule : rules_)
             {
-                if(!rule->evaluate(*this, node))
+                if(!rule->evaluate(*this, &node))
                 {
                     return false;
                 }
@@ -136,8 +136,7 @@ namespace swizzle { namespace ast {
         // bind @name to @node
         void bind(const std::string& name, Node& node) override
         {
-            Node::smartptr sp = &node;
-            variables_[name] = sp;
+            variables_[name] = &node;
         }
 
         // match if the node's value matches @value

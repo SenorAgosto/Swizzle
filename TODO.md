@@ -1,4 +1,7 @@
 # TODO
+- allow default string value to be assigned to external types
+
+- improved matcher/getter support. Review libclang/libtooling to see how they accomplish this. 
 - add support for value_of matching to all matchers, currently HasChildOf is done
 - Matcher::variables_ needs to preserve the order nodes were discovered in
 - add support for attributes on inherited classes 

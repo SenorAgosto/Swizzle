@@ -25,6 +25,16 @@ namespace swizzle { namespace ast { namespace nodes {
         return name_;
     }
 
+    void StructField::typeDecl(const lexer::TokenInfo& type)
+    {
+        typeDecl_ = type;
+    }
+    
+    const lexer::TokenInfo& StructField::typeDecl() const
+    {
+        return typeDecl_;
+    }
+
     void StructField::type(const std::string& type)
     {
         type_ = type;

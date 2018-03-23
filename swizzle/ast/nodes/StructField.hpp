@@ -15,6 +15,9 @@ namespace swizzle { namespace ast { namespace nodes {
         void name(const lexer::TokenInfo& name);
         const lexer::TokenInfo& name() const;
 
+        void typeDecl(const lexer::TokenInfo& type);
+        const lexer::TokenInfo& typeDecl() const;
+
         void type(const std::string& type);
         std::string type() const;
 
@@ -34,6 +37,7 @@ namespace swizzle { namespace ast { namespace nodes {
 
     private:
         lexer::TokenInfo name_;
+        lexer::TokenInfo typeDecl_;
         std::string type_;
 
         lexer::TokenInfo vectorOnField_;

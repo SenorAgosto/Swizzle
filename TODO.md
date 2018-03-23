@@ -4,16 +4,11 @@
 - improved matcher/getter support. Review libclang/libtooling to see how they accomplish this. 
 - add support for value_of matching to all matchers, currently HasChildOf is done
 - Matcher::variables_ needs to preserve the order nodes were discovered in
-- add support for attributes on inherited classes 
-- implement inheritance for: 
-	* struct 
-	- enum 
-	- bitfield
-
 - implement test coverage showing const is correctly applied to fields, and correctly disallowed on variable_block's
 - implement test coverage showing case values don't overflow the switching type.
 - implement test coverage showing the switching type is an integer type. 
 
+- add up/down nodes to AST & implement a Tree Flattener for clients which want to deal with a flatten AST. Some tree automata and pattern matching is more easily done on a flat tree. 
 - implement an AST validator as tree automata. It will validate relationships only, i.e. attribute block needs to be appended to an attribute node, EnumField are only under Enum, etc. This will be one of the "standard" plugins available for users, it will be distributed with the tool.
 - open all unit tests and review headers to ensure I've included only things we're using. 
 

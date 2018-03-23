@@ -1802,7 +1802,7 @@ namespace {
     TEST_FIXTURE(WhenInputIsStructWithEnumFieldAssignedToInteger, verifyConsume)
     {
         tokenize(sv);
-        CHECK_THROW(parse(), swizzle::SyntaxError);
+        CHECK_THROW(parse(), std::exception);
     }
 
     struct WhenInputIsStructWithArray : public ParserFixture

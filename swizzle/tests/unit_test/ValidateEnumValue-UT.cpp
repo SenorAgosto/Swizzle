@@ -88,6 +88,6 @@ namespace {
     
     TEST_FIXTURE(WhenTokenIsUndefinedEnumValue, verifyValidateEnumValue)
     {
-        CHECK_THROW(types::utils::validateEnumValue(context, "foo::E", token), SyntaxError);
+        CHECK_THROW(types::utils::validateEnumValue(context, "foo::E", token), std::exception);
     }
 }

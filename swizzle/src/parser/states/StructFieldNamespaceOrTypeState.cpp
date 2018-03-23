@@ -79,8 +79,7 @@ namespace swizzle { namespace parser { namespace states {
 
                 const auto t = types::utils::createType(tokenStack);
                 types::utils::clear(tokenStack);
-                
-                top.typeDecl(t);
+
                 const auto& value = t.token().value();
 
                 if(types::IsIntegerType(value) || types::IsFloatType(value))

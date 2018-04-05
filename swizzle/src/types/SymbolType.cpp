@@ -1,4 +1,5 @@
 #include <swizzle/types/SymbolType.hpp>
+#include <stdexcept>
 
 namespace swizzle { namespace types {
 

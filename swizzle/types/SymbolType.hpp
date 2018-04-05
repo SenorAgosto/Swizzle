@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 namespace swizzle { namespace types {
 
@@ -16,4 +17,6 @@ namespace swizzle { namespace types {
         TypeAlias,
         VariableBlock,
     };
+
+    std::string to_string(const SymbolType type);
 }}

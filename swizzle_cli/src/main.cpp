@@ -31,7 +31,8 @@ namespace swizzle {
         }
         
         std::vector<std::string> backends;
-        mutable std::unordered_map<swizzle::backend::BackendInterface*, std::string> pluginToNames;    // we don't own this memory, the plugin instance does
+
+        mutable std::unordered_map<std::string, swizzle::backend::BackendInterface*> plugin_lookup;
         mutable std::vector<swizzle::backend::BackendInterface*> plugins;   // we don't own this memory, the plugin instance does
         
         std::vector<boost::filesystem::path> files;
@@ -63,7 +64,7 @@ namespace swizzle {
         po::notify(config.vars);
         
         config.factory = PluginFactory(config.plugin_dir, config.service);
-        
+
         return config;
     }
 
@@ -167,40 +168,26 @@ namespace swizzle {
             config.plugins.push_back(config.factory.instance(plugin));
         }
         
-        std::vector<std::string> pluginNames;
         for(auto plugin : config.plugins)
         {
-            pluginNames.push_back(plugin->print_name());
-            config.pluginToNames.emplace(plugin, pluginNames.back());
+            const auto name = plugin->print_name();
+
+            config.plugin_lookup.emplace(name, plugin);
         }
         
-        std::sort(begin(pluginNames), end(pluginNames));
-        
+        std::vector<swizzle::backend::BackendInterface*> plugins;
         for(const auto backend : config.backends)
         {
-            if(!std::binary_search(begin(pluginNames), end(pluginNames), backend))
+            const auto iter = config.plugin_lookup.find(backend);
+            if(iter == config.plugin_lookup.cend())
             {
-                std::stringstream ss;
-                ss << "Backend '" << backend << "' could not be located";
-                
-                throw std::runtime_error(ss.str());
+                throw std::runtime_error("Backend '" + backend + "' could not be located");
             }
+
+            plugins.push_back(iter->second);
         }
         
-        auto backends = config.backends;
-        std::sort(begin(backends), end(backends));
-        
-        config.plugins.erase(
-            std::remove_if(begin(config.plugins), end(config.plugins), [&config, &backends](const auto plugin) -> bool {
-                const auto iter = config.pluginToNames.find(plugin);
-                if(iter != config.pluginToNames.cend())
-                {
-                    return !std::binary_search(begin(backends), end(backends), iter->second);
-                }
-            
-                return false;
-            }), end(config.plugins));
-        
+        config.plugins = plugins;
         return 0;
     }
 

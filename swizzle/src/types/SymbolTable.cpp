@@ -41,27 +41,4 @@ namespace swizzle { namespace types {
         
         throw error;
     }
-    
-    SymbolInfo& SymbolTable::find(const std::string& ns, const std::string& symbol, const SyntaxError& error)
-    {
-        return find(ns, symbol, static_cast<const std::exception&>(error));
-    }
-    
-    SymbolInfo& SymbolTable::find(const std::string& ns, const std::string& symbol, const std::exception& error)
-    {
-        auto iter = symbols_.find(symbol);
-        if(iter != symbols_.cend())
-        {
-            return iter->second;
-        }
-        
-        const auto qualified_symbol = ns + "::" + symbol;
-        iter = symbols_.find(qualified_symbol);
-        if(iter != symbols_.cend())
-        {
-            return iter->second;
-        }
-        
-        throw error;
-    }
 }}

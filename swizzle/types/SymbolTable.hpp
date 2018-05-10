@@ -20,11 +20,31 @@ namespace swizzle { namespace types {
         const SymbolInfo& find(const std::string& ns, const std::string& symbol, const SyntaxError& error) const;
         const SymbolInfo& find(const std::string& ns, const std::string& symbol, const std::exception& error) const;
         
-        SymbolInfo& find(const std::string& ns, const std::string& symbol, const SyntaxError& error);
-        SymbolInfo& find(const std::string& ns, const std::string& symbol, const std::exception& error);
+        template<typename Exception>
+        SymbolInfo& find(const std::string& ns, const std::string& symbol, const Exception& error);
         
     private:
         using SymbolContainer = std::unordered_map<std::string, SymbolInfo>;
         SymbolContainer symbols_;
     };
+
+    template<typename Exception>
+    SymbolInfo& SymbolTable::find(const std::string& ns, const std::string& symbol, const Exception& error)
+    {
+        auto iter = symbols_.find(symbol);
+        if(iter != symbols_.cend())
+        {
+            return iter->second;
+        }
+        
+        const auto qualified_symbol = ns + "::" + symbol;
+
+        iter = symbols_.find(qualified_symbol);
+        if(iter != symbols_.cend())
+        {
+            return iter->second;
+        }
+        
+        throw error;
+    }
 }}

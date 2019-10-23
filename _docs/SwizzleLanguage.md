@@ -207,17 +207,66 @@ This is an informal description of the Swizzle DSL for describing messages on th
 
 It should be noted, Swizzle doesn't process attributes beyond attaching them to the correct node in the AST. It is up to the backend processing the AST to define and interpret attributes.
 
-Here are some attributes a backend might define:
+You might wish to specify a string field is right or left aligned:
 
-    @validate{size != 0}
-    @justified="left"
-    @justified="right"
-    @padded=' '
-    @padded='\0'
-    @ignore 
-    @optional
-    @little_endian
-    @big_endian
+	@justified="left"
+	@justified="right"
+
+You might wish to specify a string field is padded:
+
+	@padded=' '
+	@padded='\0'
+
+You might wish to ignore some fields defined in the message:
+
+    struct Message {
+		@ignore
+		u8 ignored;
+	}
+
+You might wish to mark some fields as optional in the wire format:
+
+    struct Message {
+		@optional
+		u8 optional;
+	}
+
+You might wish to specify a numeric field is big-endian or little-endian:
+
+    struct Message {
+		@big_endian
+		u16 port;
+
+		@little_endian
+		u16 le_port;
+	}
+
+You might wish to specify some bounds checking on fields: 
+
+	struct Entry {
+		u16 i;
+	}
+
+	struct Message {
+
+		@validate{num_entries != 0}
+		u16 num_entries;
+
+		Entry[num_entries] entries;
+	}
+
+You might wish to specify structures as inbound or outbound messages in order to distinguish them from structures which are defined for reuse.
+
+	struct Status {
+		u8 value; 
+	}
+
     @inbound
-    @outbound
+    struct Message {
+		Status status;
+	}
 
+	@outbound
+	struct Response {
+		Status status;
+	}

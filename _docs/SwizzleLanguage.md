@@ -172,7 +172,8 @@ This is an informal description of the Swizzle DSL for describing messages on th
         const <type_name> <field_name> = <literal>;
 
         // variable_block indicates content in the message which 
-        // will vary based on the value of another field. The <field_name>
+        // will vary based on the value of another field.
+		// This is a simple use of dependent types. The <field_name>
         // field is the who's value indicates the contents that follow, the 
         // case statements link specific values to other structures. 
         variable_block : <field_name> {
